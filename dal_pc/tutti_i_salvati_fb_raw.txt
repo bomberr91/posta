@@ -1,0 +1,331 @@
+=== PAGINA GENERALE /SAVED ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+Tutte
+00:36
+XERJ is a free, self-hosted alternative to Elasticsearch. xerj — XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work. On GitHub → xerj-org/xerj #ai #search #opensource #github #rust
+Reel • Elemento salvato in TIPS AI
+Elemento salvato dal post di GitHunt
+Aggiungi alla raccolta
+Which AI model can I use for 24 hours without hitting daily limits❓❓❓❓
+Post • Sunday Uche
+Salvato dal post di Sunday Uche in Vibe Coding is Life
+Aggiungi alla raccolta
+01:30
+Same AI agent. 5 different frameworks. The gap shocked me. 🤯 I rebuilt the same order-return agent in OpenAI Agents SDK, Microsoft Agent Framework, PydanticAI, LangGraph and Google ADK - same virtual machine, no database, simulated AI model, then pushed traffic until each one broke. The best handled 270 active users at once. The worst only 80. Same agent, same machine. A 3.4x gap. The framework you pick is not a small detail. It decides how far your agent can scale. Follow Monsoor Ali R first, then comment AI and I'll DM you the full breakdown. #AIAgents #LangGraph #OpenAI #AIFrameworks #AIEngineering
+Reel • Monsoor Ali R
+Elemento salvato dal post di Monsoor Ali R
+Aggiungi alla raccolta
+01:44
+12 GitHub repositories every AI developer should know. From coding agents and local LLMs to automation, RAG and agent frameworks - these open-source projects are worth exploring. OpenClaw, Hermes Agent, OpenCode, n8n, Firecrawl, Ollama, Agent Skills, Dify, Open WebUI, Langflow, Claude Code and LangChain. Stop just reading about AI. Start building with it. Follow Monsoor Ali R first, then comment GITLINK and I'll DM you all twelve links. #github #aiagents #opensource #aitools #developers
+Reel • Monsoor Ali R
+Elemento salvato dal post di Monsoor Ali R
+Aggiungi alla raccolta
+Ogni mattina apri la posta e la prima mezz’ora se ne va a decidere dove va ogni messaggio: il preventivo, il reclamo, la fattura da girare, il contatto da richiamare. È un lavoro che fai decine di volte al giorno, e ChatGPT ti aiuta poco, perché è fatto per scrivere: gli incolli la mail, aspetti la risposta, la rileggi, e alla fine la decisione l’hai presa comunque tu. Per questo lavoro esiste un altro strumento, che si chiama decision model. Stabilisci tu le caselle (vendite, assistenza, amministrazione), gli dai qualche esempio di come smisti tu, e da lì in poi legge ogni messaggio e lo mette nella casella giusta in una frazione di secondo, dicendoti anche quanto è sicuro. Quando non lo è abbastanza, la decisione torna a te. Funziona come un filtro di primo livello: ChatGPT continua a scrivere, il decision model smista. Martedì 27 ottobre alle 21 lo costruiamo dal vivo. Chiedo a Claude un’AI che smista le mie email e tu lo guardi mentre scarica il modello, lo addestra sui miei esempi e lo mette al lavoro, con il confronto prima e dopo l’addestramento. Il lavoro tecnico lo fa Claude, quindi puoi seguire anche se non hai mai scritto una riga di codice. Ti faccio vedere anche Rizzo Flow, il decision model che ho costruito e pubblicato gratis a settembre: in tre settimane ha preso 897 stelle su GitHub e oltre 11.000 download su Hugging Face. Gira sul tuo computer, così i dati dei tuoi clienti restano da te. Spiegato a parole sembra semplice, ma per capire dove ti fa risparmiare tempo devi vederlo lavorare su un caso vero, dall’inizio alla fine. Il workshop è online e gratuito: ti iscrivi, entri nella community WhatsApp e lì ricevi il link della diretta. Porta la decisione ripetitiva che ti ruba più tempo, perché a fine serata sai già da dove partire. 👉 Iscriviti al workshop dal link.
+Post • Simone Rizzo AI
+Elemento salvato dal post di Simone Rizzo AI
+Aggiungi alla raccolta
+Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.3-Flash
+Link • z.ai
+Elemento salvato dal post di Chris Porter
+Aggiungi alla raccolta
+00:38
+Comment repo🙌🏻🔥 #productivity #ai #programming #code #tech
+Reel • Omkar Desai
+Elemento salvato dal post di Omkar Desai
+Aggiungi alla raccolta
+00:21
+Video di Baljeet Singh
+Reel • Baljeet Singh
+Elemento salvato dal post di Baljeet Singh
+Aggiungi alla raccolta
+🚨 This 12K+ star GitHub repo is INSANE. A FR££ open-source AI workspace that puts video creation, translation, dubbing, AI avatars, voice generation, and editing all in one place. It's called OpenCreator. Here's why it's different: → Create and edit videos, images, voiceovers, and AI avatars. → Transcribe, translate, and dub any video. → Generate localized content for different languages and audiences. → Use AI agents and reusable skills to speed up your creative workflow. → Make video summaries, creator campaigns, and podcast content. I ran a 46-minute video through it and it subtitled the entire thing in one shot — zero manual fixes. One video. Every language. Ready for YouTube, TikTok, Bilibili, Douyin, and more. GitHub repo: 👇👇👇
+Post • Elemento salvato in TIPS AI
+Elemento salvato dal post di Chris Porter
+Aggiungi alla raccolta
+01:49
+🛑 TI REGALO 10 MILIONI DI VISUALIZZAZIONI (GRATIS) 💰 Con l’esatto metodo che ho usato io per generare video con l’ai sul calcio che fanno centinaia di migliaia di views. Ecco a te il metodo “spogliatoio” #jpgmedia Guarda il video e scopri come averli anche tu, ripeto in maniera totalmente GRATUITA 💰 #calcioai #intelligenzaartificiale #calcio #serieatim
+Reel • Elemento salvato in TIPS AI
+Elemento salvato dal post di Pietro Gangemi
+Aggiungi alla raccolta
+
+=== RACCOLTA: POST Solo io ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+POST
+Solo io
+Invita
+25 AI tools you can’t ignore in 2025 1. ChatGPT.com – solves anything 2. Syllaby.io – create and publish videos 3. MidJourney.com – generates art 4. Replit.com – writes and runs code 5. Heygen.com – creates AI avatars 6. Soundraw.io – produces music in seconds 7. Ranked.ai – rank higher on Google 8. Submagic.co – turn long videos into shorts 9. SlidesAI.io – makes presentations for you 10. PicWish.com – edits photos fast 11. Fastread.io - create ebooks 12. Bibley.io - ai for Bible study 13. Manus.im - code any app 14. Capsho.com - podcast into content 15. Webinarkit.com - ai for webinars 16. Creatorunlock.com - ai for YouTube 17. sociable.how - write viral comments 18. Adcreative.ai - ai tool for advertising 19. Canva.com - design anything 20. Fastphoto.io - create ai headshots 21. askcoachken.com - ai relationship coach 22. threadmaster.ai - create viral Facebook thread 23. V0.dev - create frontend mockups 24. suno.com - create ai music 25. keywordsearch.com - boost ad conversions
+Post • Austin Armstrong
+Yo 5 minutos después de meter mis 10 varos a mi alcancía:
+Post • 1 foto • 𝐺𝑖𝑟𝑙𝑠
+Questa raccolta è visibile solo a te
+
+=== RACCOLTA: TIPS AI Solo io ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+TIPS AI
+Solo io
+Invita
+00:36
+XERJ is a free, self-hosted alternative to Elasticsearch. xerj — XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work. On GitHub → xerj-org/xerj #ai #search #opensource #github #rust
+Reel • GitHunt
+🚨 This 12K+ star GitHub repo is INSANE. A FR££ open-source AI workspace that puts video creation, translation, dubbing, AI avatars, voice generation, and editing all in one place. It's called OpenCreator. Here's why it's different: → Create and edit videos, images, voiceovers, and AI avatars. → Transcribe, translate, and dub any video. → Generate localized content for different languages and audiences. → Use AI agents and reusable skills to speed up your creative workflow. → Make video summaries, creator campaigns, and podcast content. I ran a 46-minute video through it and it subtitled the entire thing in one shot — zero manual fixes. One video. Every language. Ready for YouTube, TikTok, Bilibili, Douyin, and more. GitHub repo: 👇👇👇
+Post • 1 foto • Chris Porter
+01:49
+🛑 TI REGALO 10 MILIONI DI VISUALIZZAZIONI (GRATIS) 💰 Con l’esatto metodo che ho usato io per generare video con l’ai sul calcio che fanno centinaia di migliaia di views. Ecco a te il metodo “spogliatoio” #jpgmedia Guarda il video e scopri come averli anche tu, ripeto in maniera totalmente GRATUITA 💰 #calcioai #intelligenzaartificiale #calcio #serieatim
+Reel • Pietro Gangemi
+1 foto
+Post • La Vita a 30 Anni
+Someone built an open-source inference engine that can run massive AI models on a single mini PC! Meet Kyojin, an open-source project by Yamz Labs designed to run large language models locally on AMD Strix Halo hardware. What's impressive is that it can run 300B-class Mixture-of-Experts (MoE) models on a mini PC equipped with 128GB of unified memory. No massive GPU server required. Kyojin is built on ExLlamaV3 and uses speculative decoding to improve inference performance. According to the project's benchmarks, it achieves: - Qwen3.8-Flash-Next (95GB): 45.7–66.8 tokens/sec - GLM-5.3-Flash (99.73GB): 26.2–33.4 tokens/sec - MiMo-V2.6-Flash (105.8GB): 28.9–37.0 tokens/sec These results were reported on a Ryzen AI Max+ 395 with 128GB of memory. Another interesting feature is its OpenAI-compatible API server, allowing developers to connect applications to locally hosted models using a familiar API interface. Just keep in mind that this isn't designed for ordinary laptops. It specifically targets AMD Strix Halo systems using ROCm, and you'll need the right hardware and software setup. Still, it's fascinating how far local AI inference has come. Models that previously seemed practical only on expensive GPU servers are becoming increasingly accessible on compact machines. If you're interested in self-hosted AI, local LLMs, or experimenting with large models without relying entirely on cloud APIs, Kyojin is worth checking out. GitHub repository is available in the comments. #OpenSource #LocalLLM #AI #AMD #MachineLearning #GitHub #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+An AI text-to-speech model that can run without a GPU? This is worth checking out! Meet KittenTTS, an open-source text-to-speech project designed to generate natural-sounding speech while supporting CPU-based inference. What's interesting about this project is that you don't necessarily need an expensive GPU to run it locally. Its lightweight models are incredibly small, with the smallest quantized version requiring only around 25MB of storage! Some of its features include: - Text-to-speech generation using AI - Runs locally on a CPU without requiring a dedicated GPU - Lightweight models ranging from 15M to 80M parameters - KittenTTS 2 with a 1.7B-parameter, 1-bit speech model - Voice cloning using just 5–30 seconds of reference audio - 47 built-in voices in KittenTTS 2 - Multilingual speech generation - Emotion and expression controls - Long-form text generation and audio streaming - Python integration for developers The lightweight models are particularly interesting for developers building applications where hardware resources are limited. Imagine integrating text-to-speech into: - Offline AI assistants - Accessibility applications - Audiobook generators - Educational applications - Local AI projects - Voice-enabled software And because the models can run locally, you can build certain speech applications without sending every text request to a cloud-based TTS API. For developers, KittenTTS provides a Python library, making it relatively straightforward to integrate speech generation into your own applications. Just keep in mind that performance depends on your hardware and model choice. The larger KittenTTS 2 model requires more resources than the lightweight versions. The repository is open-source under Apache 2.0, although the model weights have separate licensing terms. If you're exploring local AI, voice applications, or alternatives to cloud-based text-to-speech services, this is definitely a project worth experimenting with. GitHub link is in the comments. #OpenSource #TextToSpeech #LocalAI #MachineLearning #Python #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+PS5 Jailbreak geht noch weiter und neue App verspricht kostenlose Spiele und DLCs
+Post • 1 foto • PlayStation Info
+🚨 This 278K-star GitHub repo is currently #1 trending on GitHub. 38 skills that can turn your coding agent into a senior-level developer. Matt Pocock’s repo packs decades of software engineering experience into ready-to-use agent skills, with setup taking roughly 30 seconds. Repo: 👇👇
+Post • 1 foto • Chris KE
+🚨 I JUST FOUND A FR££ OPEN-SOURCE TOOL THAT GIVES CLAUDE CODE MULTIPLE AGENTS. Collaborator lets you run several Claude Code agents side by side, each handling different parts of your workflow. They can research, write code, debug issues, and create documentation simultaneously. You stay in control and oversee the work instead of constantly switching contexts. 100% FR££. Open source. It’s called Collaborator. L!nk 👇👇
+Post • 1 foto • Chris KE
+Tons of useful APIs for free🔥🔗//apivault.dev
+Post • 1 foto • Niyitech
+Questa raccolta è visibile solo a te
+
+=== RACCOLTA: spunti Gabriele Solo io ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+spunti Gabriele
+Solo io
+Invita
+Questo elemento non è al momento disponibile.
+Le impostazioni sulla privacy potrebbero essere cambiate o sono scadute.
+00:12
+Comment BOOK and I’ll send a link! Make sure you’re following so my message can get through and to catch more fun finds for families. Every page is so cute. Will easily become a new favorite board book in your Mario fan household.
+Reel • Whimsical Toy Finds with Emily
+00:31
+Comment “books ” for the link! If you do, check your DMs (it might land in your message requests!) — the links will be sent to you automatically. Or just tap the link in my bio → Natalia’s Amazon Storefront →”interactive books” list to shop
+Reel • Natalia Berestovskaia
+00:30
+Set educativo e divertente per bambini! 🎨
+Reel • Soldius
+01:03
+“Papà”. Una delle prime parole che i bambini imparano a pronunciare, perché è semplice da dire, facile da imitare e visivamente interessante. È inoltre una parolina che racchiude un grande significato… prova anche tu con il tuo bimbo e fammi sapere . #logopedista #giochiamoaparlare #papà #linguaggio
+Reel • Logopedista.it
+00:14
+🎨 Jednoduchá DIY hra z obyčejné krabice! Potřebuješ jen: 📦 větší pevnou krabici ⚽ plastové míčky 📐 kus kartonu na skluz ✂️ nůžky / řezák Nejdřív jsem vystřihla otvory na míčky. Dovnitř jsem vložila kus kartonu, aby vytvořil skluz, po kterém míčky sjedou dolů. Na spodní straně jsem udělala otvor, aby mohly zase vypadnout ven. Nakonec jsem krabici vyzdobila, aby byla veselá a lákavá pro děti 🤍 Skvělá aktivita na trénování jemné motoriky, koordinace oko–ruka a trpělivosti 🎯 A bonus? Může posloužit i jako provizorní chodítko při prvních krůčcích ❤️ Uložíš si na později? 💾❤️ #diy #prodeti #tvorenisdetmi #batole #momlife 🧸❤️
+Reel • Barbara Sulimanov
+00:23
+Crafts For Your Kids
+Reel • crafts for kids
+00:17
+Creative drawing is simple and fun, try it with your kids during the holidays! #CreativeCraftsForChildren #ParentChildCrafts #ChildrensCreativeDrawing #FoldingPainting
+Reel • hand made crafts for kids
+00:39
+Prima che un bambino possa formare parole e frasi, ci sono alcune abilità di base che lo aiutano a comunicare: i prerequisiti del linguaggio. 💡 Cosa sono? Le basi e le fondamenta del linguaggio e della comunicazione: 🔹 Contatto visivo – guardare chi gli parla 🔹 Attenzione condivisa – seguire lo sguardo o indicare oggetti 🔹 Gesti comunicativi – indicare, salutare, dare o mostrare qualcosa 🔹 Ascolto dei suoni – rispondere ai rumori e alle parole 🔹 Giochi di turn-taking – dare e ricevere, “tocco e torna” 🔹 Intenzionalità – capire che le azioni comunicano bisogni o desideri 💡 ecco alcuni giochi che puoi utilizzare per stimolare questi importantissimi mattoncini del linguaggio. #logopedista #giochiamoaparlare #prerequisitidellinguaggio#bambini
+Reel • Logopedista.it
+01:38
+Ogni cartone lascia qualcosa. La domanda è: cosa resta a tuo figlio? Masha e orso Paw Patrol Peppa Pig Pocoyo Bing Daniel Tiger Bluey
+Reel • Dott.ssa Ciarallo Katty - Pedagogista & Coordinatrice genitoriale
+Questa raccolta è visibile solo a te
+
+=== RACCOLTA: TIPS AI ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+TIPS AI
+Solo io
+Invita
+00:36
+XERJ is a free, self-hosted alternative to Elasticsearch. xerj — XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work. On GitHub → xerj-org/xerj #ai #search #opensource #github #rust
+Reel • GitHunt
+🚨 This 12K+ star GitHub repo is INSANE. A FR££ open-source AI workspace that puts video creation, translation, dubbing, AI avatars, voice generation, and editing all in one place. It's called OpenCreator. Here's why it's different: → Create and edit videos, images, voiceovers, and AI avatars. → Transcribe, translate, and dub any video. → Generate localized content for different languages and audiences. → Use AI agents and reusable skills to speed up your creative workflow. → Make video summaries, creator campaigns, and podcast content. I ran a 46-minute video through it and it subtitled the entire thing in one shot — zero manual fixes. One video. Every language. Ready for YouTube, TikTok, Bilibili, Douyin, and more. GitHub repo: 👇👇👇
+Post • 1 foto • Chris Porter
+01:49
+🛑 TI REGALO 10 MILIONI DI VISUALIZZAZIONI (GRATIS) 💰 Con l’esatto metodo che ho usato io per generare video con l’ai sul calcio che fanno centinaia di migliaia di views. Ecco a te il metodo “spogliatoio” #jpgmedia Guarda il video e scopri come averli anche tu, ripeto in maniera totalmente GRATUITA 💰 #calcioai #intelligenzaartificiale #calcio #serieatim
+Reel • Pietro Gangemi
+1 foto
+Post • La Vita a 30 Anni
+Someone built an open-source inference engine that can run massive AI models on a single mini PC! Meet Kyojin, an open-source project by Yamz Labs designed to run large language models locally on AMD Strix Halo hardware. What's impressive is that it can run 300B-class Mixture-of-Experts (MoE) models on a mini PC equipped with 128GB of unified memory. No massive GPU server required. Kyojin is built on ExLlamaV3 and uses speculative decoding to improve inference performance. According to the project's benchmarks, it achieves: - Qwen3.8-Flash-Next (95GB): 45.7–66.8 tokens/sec - GLM-5.3-Flash (99.73GB): 26.2–33.4 tokens/sec - MiMo-V2.6-Flash (105.8GB): 28.9–37.0 tokens/sec These results were reported on a Ryzen AI Max+ 395 with 128GB of memory. Another interesting feature is its OpenAI-compatible API server, allowing developers to connect applications to locally hosted models using a familiar API interface. Just keep in mind that this isn't designed for ordinary laptops. It specifically targets AMD Strix Halo systems using ROCm, and you'll need the right hardware and software setup. Still, it's fascinating how far local AI inference has come. Models that previously seemed practical only on expensive GPU servers are becoming increasingly accessible on compact machines. If you're interested in self-hosted AI, local LLMs, or experimenting with large models without relying entirely on cloud APIs, Kyojin is worth checking out. GitHub repository is available in the comments. #OpenSource #LocalLLM #AI #AMD #MachineLearning #GitHub #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+An AI text-to-speech model that can run without a GPU? This is worth checking out! Meet KittenTTS, an open-source text-to-speech project designed to generate natural-sounding speech while supporting CPU-based inference. What's interesting about this project is that you don't necessarily need an expensive GPU to run it locally. Its lightweight models are incredibly small, with the smallest quantized version requiring only around 25MB of storage! Some of its features include: - Text-to-speech generation using AI - Runs locally on a CPU without requiring a dedicated GPU - Lightweight models ranging from 15M to 80M parameters - KittenTTS 2 with a 1.7B-parameter, 1-bit speech model - Voice cloning using just 5–30 seconds of reference audio - 47 built-in voices in KittenTTS 2 - Multilingual speech generation - Emotion and expression controls - Long-form text generation and audio streaming - Python integration for developers The lightweight models are particularly interesting for developers building applications where hardware resources are limited. Imagine integrating text-to-speech into: - Offline AI assistants - Accessibility applications - Audiobook generators - Educational applications - Local AI projects - Voice-enabled software And because the models can run locally, you can build certain speech applications without sending every text request to a cloud-based TTS API. For developers, KittenTTS provides a Python library, making it relatively straightforward to integrate speech generation into your own applications. Just keep in mind that performance depends on your hardware and model choice. The larger KittenTTS 2 model requires more resources than the lightweight versions. The repository is open-source under Apache 2.0, although the model weights have separate licensing terms. If you're exploring local AI, voice applications, or alternatives to cloud-based text-to-speech services, this is definitely a project worth experimenting with. GitHub link is in the comments. #OpenSource #TextToSpeech #LocalAI #MachineLearning #Python #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+PS5 Jailbreak geht noch weiter und neue App verspricht kostenlose Spiele und DLCs
+Post • 1 foto • PlayStation Info
+🚨 This 278K-star GitHub repo is currently #1 trending on GitHub. 38 skills that can turn your coding agent into a senior-level developer. Matt Pocock’s repo packs decades of software engineering experience into ready-to-use agent skills, with setup taking roughly 30 seconds. Repo: 👇👇
+Post • 1 foto • Chris KE
+🚨 I JUST FOUND A FR££ OPEN-SOURCE TOOL THAT GIVES CLAUDE CODE MULTIPLE AGENTS. Collaborator lets you run several Claude Code agents side by side, each handling different parts of your workflow. They can research, write code, debug issues, and create documentation simultaneously. You stay in control and oversee the work instead of constantly switching contexts. 100% FR££. Open source. It’s called Collaborator. L!nk 👇👇
+Post • 1 foto • Chris KE
+Tons of useful APIs for free🔥🔗//apivault.dev
+Post • 1 foto • Niyitech
+Questa raccolta è visibile solo a te
+
+=== RACCOLTA: TIPS AI ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+TIPS AI
+Solo io
+Invita
+00:36
+XERJ is a free, self-hosted alternative to Elasticsearch. xerj — XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work. On GitHub → xerj-org/xerj #ai #search #opensource #github #rust
+Reel • GitHunt
+🚨 This 12K+ star GitHub repo is INSANE. A FR££ open-source AI workspace that puts video creation, translation, dubbing, AI avatars, voice generation, and editing all in one place. It's called OpenCreator. Here's why it's different: → Create and edit videos, images, voiceovers, and AI avatars. → Transcribe, translate, and dub any video. → Generate localized content for different languages and audiences. → Use AI agents and reusable skills to speed up your creative workflow. → Make video summaries, creator campaigns, and podcast content. I ran a 46-minute video through it and it subtitled the entire thing in one shot — zero manual fixes. One video. Every language. Ready for YouTube, TikTok, Bilibili, Douyin, and more. GitHub repo: 👇👇👇
+Post • 1 foto • Chris Porter
+01:49
+🛑 TI REGALO 10 MILIONI DI VISUALIZZAZIONI (GRATIS) 💰 Con l’esatto metodo che ho usato io per generare video con l’ai sul calcio che fanno centinaia di migliaia di views. Ecco a te il metodo “spogliatoio” #jpgmedia Guarda il video e scopri come averli anche tu, ripeto in maniera totalmente GRATUITA 💰 #calcioai #intelligenzaartificiale #calcio #serieatim
+Reel • Pietro Gangemi
+1 foto
+Post • La Vita a 30 Anni
+Someone built an open-source inference engine that can run massive AI models on a single mini PC! Meet Kyojin, an open-source project by Yamz Labs designed to run large language models locally on AMD Strix Halo hardware. What's impressive is that it can run 300B-class Mixture-of-Experts (MoE) models on a mini PC equipped with 128GB of unified memory. No massive GPU server required. Kyojin is built on ExLlamaV3 and uses speculative decoding to improve inference performance. According to the project's benchmarks, it achieves: - Qwen3.8-Flash-Next (95GB): 45.7–66.8 tokens/sec - GLM-5.3-Flash (99.73GB): 26.2–33.4 tokens/sec - MiMo-V2.6-Flash (105.8GB): 28.9–37.0 tokens/sec These results were reported on a Ryzen AI Max+ 395 with 128GB of memory. Another interesting feature is its OpenAI-compatible API server, allowing developers to connect applications to locally hosted models using a familiar API interface. Just keep in mind that this isn't designed for ordinary laptops. It specifically targets AMD Strix Halo systems using ROCm, and you'll need the right hardware and software setup. Still, it's fascinating how far local AI inference has come. Models that previously seemed practical only on expensive GPU servers are becoming increasingly accessible on compact machines. If you're interested in self-hosted AI, local LLMs, or experimenting with large models without relying entirely on cloud APIs, Kyojin is worth checking out. GitHub repository is available in the comments. #OpenSource #LocalLLM #AI #AMD #MachineLearning #GitHub #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+An AI text-to-speech model that can run without a GPU? This is worth checking out! Meet KittenTTS, an open-source text-to-speech project designed to generate natural-sounding speech while supporting CPU-based inference. What's interesting about this project is that you don't necessarily need an expensive GPU to run it locally. Its lightweight models are incredibly small, with the smallest quantized version requiring only around 25MB of storage! Some of its features include: - Text-to-speech generation using AI - Runs locally on a CPU without requiring a dedicated GPU - Lightweight models ranging from 15M to 80M parameters - KittenTTS 2 with a 1.7B-parameter, 1-bit speech model - Voice cloning using just 5–30 seconds of reference audio - 47 built-in voices in KittenTTS 2 - Multilingual speech generation - Emotion and expression controls - Long-form text generation and audio streaming - Python integration for developers The lightweight models are particularly interesting for developers building applications where hardware resources are limited. Imagine integrating text-to-speech into: - Offline AI assistants - Accessibility applications - Audiobook generators - Educational applications - Local AI projects - Voice-enabled software And because the models can run locally, you can build certain speech applications without sending every text request to a cloud-based TTS API. For developers, KittenTTS provides a Python library, making it relatively straightforward to integrate speech generation into your own applications. Just keep in mind that performance depends on your hardware and model choice. The larger KittenTTS 2 model requires more resources than the lightweight versions. The repository is open-source under Apache 2.0, although the model weights have separate licensing terms. If you're exploring local AI, voice applications, or alternatives to cloud-based text-to-speech services, this is definitely a project worth experimenting with. GitHub link is in the comments. #OpenSource #TextToSpeech #LocalAI #MachineLearning #Python #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+PS5 Jailbreak geht noch weiter und neue App verspricht kostenlose Spiele und DLCs
+Post • 1 foto • PlayStation Info
+🚨 This 278K-star GitHub repo is currently #1 trending on GitHub. 38 skills that can turn your coding agent into a senior-level developer. Matt Pocock’s repo packs decades of software engineering experience into ready-to-use agent skills, with setup taking roughly 30 seconds. Repo: 👇👇
+Post • 1 foto • Chris KE
+🚨 I JUST FOUND A FR££ OPEN-SOURCE TOOL THAT GIVES CLAUDE CODE MULTIPLE AGENTS. Collaborator lets you run several Claude Code agents side by side, each handling different parts of your workflow. They can research, write code, debug issues, and create documentation simultaneously. You stay in control and oversee the work instead of constantly switching contexts. 100% FR££. Open source. It’s called Collaborator. L!nk 👇👇
+Post • 1 foto • Chris KE
+Tons of useful APIs for free🔥🔗//apivault.dev
+Post • 1 foto • Niyitech
+Questa raccolta è visibile solo a te
+
+=== RACCOLTA: TIPS AI ===
+ 
+Numero di notifiche non lette
+4
+Elementi salvati
+Elementi salvati
+Le mie raccolte
+CUCINA GABRIELE
+Solo io
+POST
+Solo io
+TIPS AI
+Solo io
+psicologa
+Solo io
+spunti Gabriele
+Solo io
+Vedi altro
+Crea nuova raccolta
+TIPS AI
+Solo io
+Invita
+00:36
+XERJ is a free, self-hosted alternative to Elasticsearch. xerj — XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work. On GitHub → xerj-org/xerj #ai #search #opensource #github #rust
+Reel • GitHunt
+🚨 This 12K+ star GitHub repo is INSANE. A FR££ open-source AI workspace that puts video creation, translation, dubbing, AI avatars, voice generation, and editing all in one place. It's called OpenCreator. Here's why it's different: → Create and edit videos, images, voiceovers, and AI avatars. → Transcribe, translate, and dub any video. → Generate localized content for different languages and audiences. → Use AI agents and reusable skills to speed up your creative workflow. → Make video summaries, creator campaigns, and podcast content. I ran a 46-minute video through it and it subtitled the entire thing in one shot — zero manual fixes. One video. Every language. Ready for YouTube, TikTok, Bilibili, Douyin, and more. GitHub repo: 👇👇👇
+Post • 1 foto • Chris Porter
+01:49
+🛑 TI REGALO 10 MILIONI DI VISUALIZZAZIONI (GRATIS) 💰 Con l’esatto metodo che ho usato io per generare video con l’ai sul calcio che fanno centinaia di migliaia di views. Ecco a te il metodo “spogliatoio” #jpgmedia Guarda il video e scopri come averli anche tu, ripeto in maniera totalmente GRATUITA 💰 #calcioai #intelligenzaartificiale #calcio #serieatim
+Reel • Pietro Gangemi
+1 foto
+Post • La Vita a 30 Anni
+Someone built an open-source inference engine that can run massive AI models on a single mini PC! Meet Kyojin, an open-source project by Yamz Labs designed to run large language models locally on AMD Strix Halo hardware. What's impressive is that it can run 300B-class Mixture-of-Experts (MoE) models on a mini PC equipped with 128GB of unified memory. No massive GPU server required. Kyojin is built on ExLlamaV3 and uses speculative decoding to improve inference performance. According to the project's benchmarks, it achieves: - Qwen3.8-Flash-Next (95GB): 45.7–66.8 tokens/sec - GLM-5.3-Flash (99.73GB): 26.2–33.4 tokens/sec - MiMo-V2.6-Flash (105.8GB): 28.9–37.0 tokens/sec These results were reported on a Ryzen AI Max+ 395 with 128GB of memory. Another interesting feature is its OpenAI-compatible API server, allowing developers to connect applications to locally hosted models using a familiar API interface. Just keep in mind that this isn't designed for ordinary laptops. It specifically targets AMD Strix Halo systems using ROCm, and you'll need the right hardware and software setup. Still, it's fascinating how far local AI inference has come. Models that previously seemed practical only on expensive GPU servers are becoming increasingly accessible on compact machines. If you're interested in self-hosted AI, local LLMs, or experimenting with large models without relying entirely on cloud APIs, Kyojin is worth checking out. GitHub repository is available in the comments. #OpenSource #LocalLLM #AI #AMD #MachineLearning #GitHub #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+An AI text-to-speech model that can run without a GPU? This is worth checking out! Meet KittenTTS, an open-source text-to-speech project designed to generate natural-sounding speech while supporting CPU-based inference. What's interesting about this project is that you don't necessarily need an expensive GPU to run it locally. Its lightweight models are incredibly small, with the smallest quantized version requiring only around 25MB of storage! Some of its features include: - Text-to-speech generation using AI - Runs locally on a CPU without requiring a dedicated GPU - Lightweight models ranging from 15M to 80M parameters - KittenTTS 2 with a 1.7B-parameter, 1-bit speech model - Voice cloning using just 5–30 seconds of reference audio - 47 built-in voices in KittenTTS 2 - Multilingual speech generation - Emotion and expression controls - Long-form text generation and audio streaming - Python integration for developers The lightweight models are particularly interesting for developers building applications where hardware resources are limited. Imagine integrating text-to-speech into: - Offline AI assistants - Accessibility applications - Audiobook generators - Educational applications - Local AI projects - Voice-enabled software And because the models can run locally, you can build certain speech applications without sending every text request to a cloud-based TTS API. For developers, KittenTTS provides a Python library, making it relatively straightforward to integrate speech generation into your own applications. Just keep in mind that performance depends on your hardware and model choice. The larger KittenTTS 2 model requires more resources than the lightweight versions. The repository is open-source under Apache 2.0, although the model weights have separate licensing terms. If you're exploring local AI, voice applications, or alternatives to cloud-based text-to-speech services, this is definitely a project worth experimenting with. GitHub link is in the comments. #OpenSource #TextToSpeech #LocalAI #MachineLearning #Python #PinoyFreeCoder
+Post • 1 foto • Pinoyfreecoder
+PS5 Jailbreak geht noch weiter und neue App verspricht kostenlose Spiele und DLCs
+Post • 1 foto • PlayStation Info
+🚨 This 278K-star GitHub repo is currently #1 trending on GitHub. 38 skills that can turn your coding agent into a senior-level developer. Matt Pocock’s repo packs decades of software engineering experience into ready-to-use agent skills, with setup taking roughly 30 seconds. Repo: 👇👇
+Post • 1 foto • Chris KE
+🚨 I JUST FOUND A FR££ OPEN-SOURCE TOOL THAT GIVES CLAUDE CODE MULTIPLE AGENTS. Collaborator lets you run several Claude Code agents side by side, each handling different parts of your workflow. They can research, write code, debug issues, and create documentation simultaneously. You stay in control and oversee the work instead of constantly switching contexts. 100% FR££. Open source. It’s called Collaborator. L!nk 👇👇
+Post • 1 foto • Chris KE
+Tons of useful APIs for free🔥🔗//apivault.dev
+Post • 1 foto • Niyitech
+Questa raccolta è visibile solo a te
