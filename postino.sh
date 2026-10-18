@@ -49,6 +49,8 @@ gira(){
     { echo "# Risposta a «$n»"; echo; echo "_$(date '+%d/%m/%Y %H:%M') · $(hostname)_"; echo; } > "$OUT"
     if [ "$ext" = "sh" ]; then
       timeout 1800 bash "$f" >> "$OUT" 2>&1
+    elif [[ "$b" == squadra_* ]] && [ -x "$DIR/squadra.sh" ]; then
+      timeout 2700 "$DIR/squadra.sh" "$(cat "$f")" "$OUT" >/dev/null 2>&1
     else
       timeout 2700 opencode run -m opencode/big-pickle "$(cat "$f")" >> "$OUT" 2>&1 \
         || timeout 2700 opencode run "$(cat "$f")" >> "$OUT" 2>&1
