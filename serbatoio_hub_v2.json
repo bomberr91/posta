@@ -1,0 +1,90 @@
+{
+  "versione": "2.0-pre-hub",
+  "descrizione": "Configurazione unificata per il FreeLLM Hub v2 + Centrale Agenti FilippoPC",
+  "proxy_locali": {
+    "magpie_gateway": "http://127.0.0.1:3425",
+    "headroom_compressor": "http://127.0.0.1:8787",
+    "browser_cdp": "http://127.0.0.1:9222"
+  },
+  "stato_fusion_live": "stato_fusion.json",
+  "squadra_agenti": [
+    {
+      "id": "opencode",
+      "nome": "OpenCode",
+      "ruolo": "Architetto & Codice",
+      "cli": "opencode"
+    },
+    {
+      "id": "goose",
+      "nome": "Goose (Block)",
+      "ruolo": "Automazione & Sub-Agenti",
+      "cli": "goose"
+    },
+    {
+      "id": "secondhand",
+      "nome": "Secondhand (Rust)",
+      "ruolo": "Revisore & Harness Economico",
+      "cli": "interpreter"
+    },
+    {
+      "id": "hermes",
+      "nome": "Hermes Agent (NousResearch)",
+      "ruolo": "Strategia & Ricerca",
+      "cli": "hermes"
+    },
+    {
+      "id": "openclaw",
+      "nome": "OpenClaw",
+      "ruolo": "Operatore Autonomo PC & Browser H24",
+      "cli": "openclaw"
+    },
+    {
+      "id": "gemini",
+      "nome": "Gemini CLI (Google)",
+      "ruolo": "Agente Google Terminale",
+      "cli": "gemini"
+    }
+  ],
+  "innesti_attivi": [
+    {
+      "id": "headroom",
+      "funzione": "Compressione automatica contesto/tool (-50%/-95% token)"
+    },
+    {
+      "id": "xerj",
+      "funzione": "Ricerca e auto-index Rust per agenti (40x meno token di grep)"
+    },
+    {
+      "id": "beads",
+      "funzione": "Memoria persistente a grafo per compiti e missioni degli agenti"
+    },
+    {
+      "id": "markitdown",
+      "funzione": "Conversione istantanea PDF/Word/Excel/HTML in Markdown pulito"
+    },
+    {
+      "id": "ricerca_strategica",
+      "funzione": "Dossier multi-fonte web/GitHub/social stile GPT-Researcher"
+    }
+  ],
+  "fonti_extra_modelli": [
+    {
+      "nome": "Z.ai GLM-5.3-Flash Web & Agent",
+      "url": "https://chat.z.ai/"
+    },
+    {
+      "nome": "OpenCode Zen Free Pool",
+      "modelli": [
+        "glm-5.1-free",
+        "kimi-k2.5-free",
+        "minimax-m2.5-free",
+        "qwen3.6-plus-free",
+        "nemotron-3-super-free"
+      ]
+    },
+    {
+      "nome": "OmniRoute / FreeLLMAPI Pool",
+      "nota": "57+ provider catalogati nel Roster per rotazione automatica"
+    }
+  ]
+}

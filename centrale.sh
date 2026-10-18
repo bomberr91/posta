@@ -3,7 +3,9 @@
 set -u
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
+NODE22_BIN="$HOME/.nvm/versions/node/v22.22.2/bin"
+export PATH="$NODE22_BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
+
 if [ -f "$HOME/CHIAVI_LOCALI.md" ]; then
   OC_KEY=$(grep -oE 'oc_sk_[A-Za-z0-9_-]+' "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | head -1)
   [ -n "$OC_KEY" ] && export OPENCODE_API_KEY="$OC_KEY"
@@ -11,7 +13,7 @@ if [ -f "$HOME/CHIAVI_LOCALI.md" ]; then
   [ -n "$GQ_KEY" ] && export GROQ_API_KEY="$GQ_KEY"
 fi
 
-# 0. Se il potenziamento del 18/10 (26 skill + nuovi agenti) non è ancora stato eseguito, fallo subito!
+# 0. Se il potenziamento non è ancora stato eseguito, fallo subito!
 if [ ! -f "$HOME/.skills_v2_installed" ] && [ -f "$HOME/posta/aggiorna_tutto.sh" ]; then
   bash "$HOME/posta/aggiorna_tutto.sh"
 fi
@@ -32,28 +34,23 @@ pulisci_desktop(){
 }
 pulisci_desktop
 
-# Assicura che yt-dlp sia presente per i video
-if ! command -v yt-dlp >/dev/null 2>&1; then
-  curl -fsSL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$HOME/.local/bin/yt-dlp" 2>/dev/null && chmod +x "$HOME/.local/bin/yt-dlp" || true
-fi
-
 while :; do
   clear 2>/dev/null || true
   POSTINO_ST=$(pgrep -f 'postino.sh' >/dev/null 2>&1 && echo "🟢 ATTIVO" || echo "🔴 SPENTO")
   MAGPIE_ST=$(pgrep -f 'magpie serve' >/dev/null 2>&1 && echo "🟢 ATTIVO" || echo "🔴 SPENTO")
   SKILLS_N=$(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)
   echo "======================================================================"
-  echo "   ⚡ CENTRALE AGENTI H24 — FILIPPOPC"
+  echo "   ⚡ CENTRALE AGENTI H24 — FILIPPOPC (Pre-Hub v2)"
   echo "   Ponte GitHub: $POSTINO_ST  ·  Magpie: $MAGPIE_ST  ·  Skill attive: $SKILLS_N"
   echo "======================================================================"
   echo ""
-  echo "  [1] 💬 Chatta con un Agente singolo (OpenCode / Goose / Hermes / Secondhand)"
-  echo "  [2] 🔥 SQUADRA FUSION (lancia 3 Agenti in sincronia su un compito)"
+  echo "  [1] 💬 Chatta con un Agente singolo (OpenCode / Goose / Secondhand / Hermes / OpenClaw / Gemini)"
+  echo "  [2] 🔥 SQUADRA FUSION 2.0 (Il Regista sceglie gli Agenti + Barra 0%->100% + Qualità>Tempo)"
   echo "  [3] 🎬 TRASCRIVI & CATALOGA VIDEO/REEL (incolla link FB, YouTube, IG, TikTok)"
-  echo "  [4] 📌 LEGGI POST + TUTTI I COMMENTI FACEBOOK (o Salvati) col Browser Agenti"
+  echo "  [4] 📌 LEGGI POST/COMMENTI FB O DISCORD col Browser Agenti (Sola Lettura)"
   echo "  [5] 🌐 APRI IL BROWSER DEGLI AGENTI (Chrome/Edge profilo isolato porta 9222)"
   echo "  [6] 📁 APRI CARTELLA COMPITI E RISPOSTE (in Esplora Risorse di Windows)"
-  echo "  [7] 📊 STATO AGENTI, SKILL E CREDITI (Magpie Quota)"
+  echo "  [7] 📊 STATO AGENTI, INNESTI (Headroom/XERJ/Beads) E QUOTE MAGPIE"
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
   echo ""
   echo "  [0] Esci"
@@ -63,15 +60,19 @@ while :; do
   case "$SCELTA" in
     1)
       echo "Quale agente vuoi aprire?"
-      echo "  [a] OpenCode (consigliato per codice e tuttofare)"
-      echo "  [b] Goose (ricette e sub-agenti)"
-      echo "  [c] Secondhand / OpenInterpreter (camaleonte Rust)"
-      echo "  [d] Hermes Agent (NousResearch)"
-      read -r -p "Scelta [a/b/c/d, INVIO=a]: " AG
+      echo "  [a] OpenCode (Architetto & Codice)"
+      echo "  [b] Goose (Automazione & Sub-Agenti)"
+      echo "  [c] Secondhand / OpenInterpreter (Revisore Rust)"
+      echo "  [d] Hermes Agent (Strategia & Ricerca NousResearch)"
+      echo "  [e] OpenClaw (Operatore Autonomo PC & Browser H24)"
+      echo "  [f] Gemini CLI (Agente da terminale Google)"
+      read -r -p "Scelta [a/b/c/d/e/f, INVIO=a]: " AG
       case "${AG:-a}" in
         b|B) cd "$HOME/posta" && goose session ;;
         c|C) cd "$HOME/posta" && interpreter ;;
         d|D) cd "$HOME/posta" && (hermes || "$HOME/.hermes/hermes-agent/venv/bin/hermes") ;;
+        e|E) cd "$HOME/posta" && (openclaw || "$NODE22_BIN/openclaw") ;;
+        f|F) cd "$HOME/posta" && (gemini || "$NODE22_BIN/gemini") ;;
         *)   cd "$HOME/posta" && opencode ;;
       esac
       ;;
@@ -104,13 +105,20 @@ while :; do
       explorer.exe "$(wslpath -w "$HOME/posta")" 2>/dev/null || true
       ;;
     7)
-      echo "── Versioni Agenti installati ──"
+      echo "── Squadra Agenti su FilippoPC ──"
       echo "  • OpenCode   : $(opencode --version 2>&1 | head -1)"
       echo "  • Goose      : $(goose --version 2>&1 | head -1)"
       echo "  • Secondhand : $(interpreter --version 2>&1 | head -1 || echo non presente)"
       echo "  • Hermes     : $(hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo installato in ~/.hermes || echo non presente))"
-      echo "  • OpenClaw   : $(openclaw --version 2>&1 | head -1 || echo non presente)"
-      echo "  • Skill (26) : $(ls "$HOME/.agents/skills" 2>/dev/null | tr '\n' ' ')"
+      echo "  • OpenClaw   : $(openclaw --version 2>&1 | head -1 || "$NODE22_BIN/openclaw" --version 2>&1 | head -1 || echo non presente)"
+      echo "  • Gemini CLI : $(gemini --version 2>&1 | head -1 || "$NODE22_BIN/gemini" --version 2>&1 | head -1 || echo in installazione)"
+      echo ""
+      echo "── Super-Poteri & Innesti Attivi ──"
+      echo "  • Headroom   : $(headroom --version 2>&1 | head -1 || echo non presente)"
+      echo "  • XERJ (Rust): $(xerj --version 2>&1 | head -1 || echo non presente)"
+      echo "  • Beads (Mem): $(bd version 2>&1 | head -1 || bd --version 2>&1 | head -1 || echo in installazione)"
+      echo "  • MarkItDown : $(markitdown --version 2>&1 | head -1 || ([ -x ~/.local/bin/markitdown ] && echo attivo) || echo in installazione)"
+      echo "  • Skill ($SKILLS_N) : $(ls "$HOME/.agents/skills" 2>/dev/null | tr '\n' ' ')"
       echo ""
       echo "── Stato Quote Magpie ──"
       magpie quota 2>/dev/null || true
