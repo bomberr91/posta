@@ -4,6 +4,13 @@ set -u
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 NODE22_BIN="$HOME/.nvm/versions/node/v22.22.2/bin"
+# Auto-rileva il Node giusto se la versione inchiodata non esiste (preferisci v22: su WSL1 Node 24 non parte)
+if [ ! -x "$NODE22_BIN/node" ]; then
+  CAND=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
+  [ -z "$CAND" ] && CAND=$(ls -d "$HOME/.nvm/versions/node/"*/bin 2>/dev/null | sort -V | tail -1)
+  [ -n "$CAND" ] && NODE22_BIN="$CAND"
+fi
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
 export PATH="$NODE22_BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
 
 if [ -f "$HOME/CHIAVI_LOCALI.md" ]; then
@@ -141,8 +148,16 @@ while :; do
         echo "Installazione: ~2-5 minuti via npm (Node 22 già presente). Nessun costo."
         read -r -p "Vuoi installarlo ADESSO? [s/N]: " OK9
         if [[ "$OK9" == "s" || "$OK9" == "S" ]]; then
-          "$NODE22_BIN/npm" config set allow-scripts=omniroute,keytar,onnxruntime-node,@parcel/watcher,@swc/core,protobufjs,esbuild --location=user 2>/dev/null || true
-          "$NODE22_BIN/npm" install -g omniroute && echo "✅ Installato! Rientra nel menu [9] per avviarlo." || echo "❌ Errore installazione: rilancia o controlla la connessione."
+          NPM_BIN=$(command -v npm || true)
+          [ -z "$NPM_BIN" ] && [ -x "$NODE22_BIN/npm" ] && NPM_BIN="$NODE22_BIN/npm"
+          [ -z "$NPM_BIN" ] && NPM_BIN=$(ls "$HOME/.nvm/versions/node/"*/bin/npm 2>/dev/null | sort -V | tail -1)
+          if [ -z "$NPM_BIN" ]; then
+            echo "❌ npm non trovato in nessun Node di nvm: dimmelo in chat e sistemiamo."
+          else
+            echo "Uso npm: $NPM_BIN"
+            "$NPM_BIN" config set allow-scripts=omniroute,keytar,onnxruntime-node,@parcel/watcher,@swc/core,protobufjs,esbuild --location=user 2>/dev/null || true
+            "$NPM_BIN" install -g omniroute && echo "✅ Installato! Rientra nel menu [9] per avviarlo." || echo "❌ Errore installazione: rilancia o controlla la connessione."
+          fi
         else
           echo "Ok, nessuna installazione. (Regola: niente auto-avvio installer!)"
         fi
