@@ -142,6 +142,8 @@ rm -f "$HOME/posta/da_me/aggiorna_26_skill_e_browser.sh" "$HOME/posta/da_me/prov
   echo "- **Browser Agenti**: pronto (BROWSER_AGENTI.bat sul Desktop)"
 } > "$HOME/posta/dal_pc/stato_18_10.md"
 
+bash "$HOME/posta/omni_free.sh" || true
+
 cd "$HOME/posta"
 git add -A >/dev/null 2>&1 && git commit -qm "aggiornamento completo 18/10 da $(hostname)" >/dev/null 2>&1 || true
 if [ -n "${TOKEN:-}" ] && [ -n "${LOGIN:-}" ]; then
