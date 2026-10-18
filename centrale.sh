@@ -52,7 +52,7 @@ while :; do
   echo "======================================================================"
   echo ""
   echo "  [1] 💬 Chatta con un Agente singolo (OpenCode / Goose / Secondhand / Hermes / OpenClaw / Gemini)"
-  echo "  [2] 🔥 SQUADRA FUSION 2.0 (Il Regista sceglie gli Agenti + Barra 0%->100% + Qualità>Tempo)"
+  echo "  [2] 🔥 SQUADRA FUSION 2.1 (Il Regista sceglie gli Agenti + Barra 0%->100% + Qualità>Tempo)"
   echo "  [3] 🎬 TRASCRIVI & CATALOGA VIDEO/REEL (incolla link FB, YouTube, IG, TikTok)"
   echo "  [4] 📌 LEGGI POST/COMMENTI FB O DISCORD col Browser Agenti (Sola Lettura)"
   echo "  [5] 🌐 APRI IL BROWSER DEGLI AGENTI (Chrome/Edge profilo isolato porta 9222)"

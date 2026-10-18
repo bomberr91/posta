@@ -3,7 +3,10 @@
 set -u
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
+# Auto-rileva il bin del Node v22 (MAI versioni cablate: sul PC puo' cambiare)
+V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
+[ -n "$V22BIN" ] && export PATH="$V22BIN:$PATH"
 
 # Assicura che PATH sia sempre in cima a ~/.bashrc e ~/.profile anche per shell non-interattive
 for rc in "$HOME/.bashrc" "$HOME/.profile"; do
@@ -106,7 +109,7 @@ else
     echo "  · OpenClaw richiede Node >=24 (installo Node 24 in nvm per OpenClaw)..."
     if [ -s "$NVM_DIR/nvm.sh" ]; then
       nvm install 24 >/dev/null 2>&1 && npm install -g openclaw@latest --allow-scripts=openclaw >/dev/null 2>&1 || true
-      nvm alias default 24 >/dev/null 2>&1 || true
+      : # (rimosso: MAI mettere il default su Node 24, su WSL1 non parte)
     fi
     command -v openclaw >/dev/null 2>&1 && echo "  ✓ OpenClaw installato: $(openclaw --version 2>&1 | head -1)" || echo "  · OpenClaw: riproveremo al prossimo giro"
   fi
@@ -156,7 +159,7 @@ echo "=========================================================="
 # === POTENZIAMENTO SCAGLIONE 1 (18/10): Headroom + XERJ + Beads + MarkItDown + Gemini CLI + Marketing/Taste Skills ===
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-NODE22_BIN="$HOME/.nvm/versions/node/v22.22.2/bin"
+NODE22_BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
 export PATH="$NODE22_BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
 mkdir -p "$HOME/.local/bin" "$HOME/.agents/skills"
 

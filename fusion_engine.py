@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-fusion_engine.py — MOTORE SQUADRA FUSION 2.0 (FilippoPC & FreeLLM Hub v2 Ready)
+fusion_engine.py — MOTORE SQUADRA FUSION 2.1 (FilippoPC & FreeLLM Hub v2 Ready)
 1. Il Regista (il modello più intelligente) analizza la missione e seleziona gli agenti giusti.
 2. Barra di avanzamento reale 0% -> 100% (terminale + stato_fusion.json per la futura GUI Hub v2).
 3. Compromesso Qualità > Tempo:
@@ -107,7 +107,7 @@ def chiama_regista_llm(system_prompt, user_prompt, timeout=45):
                 headers={
                     "Authorization": f"Bearer {gkey}",
                     "Content-Type": "application/json",
-                    "User-Agent": "FusionEngine/2.0"
+                    "User-Agent": "FusionEngine/2.1"
                 }
             )
             with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -220,7 +220,7 @@ def main():
         missione = " ".join(sys.argv[1:]).strip()
     else:
         print("======================================================================")
-        print("   🔥 SQUADRA FUSION 2.0 — REGISTA INTELLIGENTE + QUALITÀ > TEMPO")
+        print("   🔥 SQUADRA FUSION 2.1 — REGISTA INTELLIGENTE + QUALITÀ > TEMPO")
         print("======================================================================")
         missione = input("Scrivi la missione per la Squadra Fusion: ").strip()
     if not missione:
@@ -228,7 +228,7 @@ def main():
         return
 
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    aggiorna_progresso(5, "Avvio Squadra Fusion 2.0", f"Missione ricevuta: {missione[:80]}...")
+    aggiorna_progresso(5, "Avvio Squadra Fusion 2.1", f"Missione ricevuta: {missione[:80]}...")
 
     # FASE 1 (15%): Il Regista seleziona la squadra in base alla missione
     aggiorna_progresso(15, "Il Regista Intelligente sta analizzando la missione e scegliendo gli Agenti...")
@@ -278,7 +278,7 @@ def main():
     # Salvataggio del report completo
     report_path = os.path.join(RISPOSTE_DIR, f"FUSION_{ts}.md")
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(f"# 🔥 RISULTATO SQUADRA FUSION 2.0 ({ts})\n\n")
+        f.write(f"# 🔥 RISULTATO SQUADRA FUSION 2.1 ({ts})\n\n")
         f.write(f"- **Missione**: {missione}\n")
         f.write(f"- **Squadra scelta dal Regista**: {', '.join(nomi_scelti)}\n")
         f.write(f"- **Perché questa formazione**: {motivo}\n\n---\n\n")
