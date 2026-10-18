@@ -24,3 +24,12 @@ _18/10/2026 09:33 · FilippoPC_
 ── 6/6 · Installo OpenClaw (392k★) e creo le nuove icone sul Desktop...
   · OpenClaw richiede Node >=24 (installo Node 24 in nvm per OpenClaw)...
   · OpenClaw: riproveremo al prossimo giro
+
+==========================================================
+ 🎉 TUTTO PRONTO SU FILIPPOPC!
+ Sul Desktop ora hai anche:
+   - BROWSER_AGENTI.bat  (apre il browser controllato dagli agenti)
+   - SQUADRA_FUSION.bat  (lancia 3 agenti in sincronia su un compito)
+==========================================================
+
+<!-- fine aggiorna_26_skill_e_browser -->
