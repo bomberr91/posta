@@ -38,3 +38,4 @@ No providers configured.
 
 ## Riaccensione motore + test VERO
 ### Domanda di prova al modello auto (deve rispondere OK):
+{"error":{"message":"oc/big-pickle: auth — OpenCode's free tier can only be used from within OpenCode. Download it at https://opencode.ai and keep building. (HTTP 403)","type":"permission_error","code":"permission_denied"},"diagnostics":{"poolSize":10,"attempted":1,"excluded":[],"attemptOrder":[{"provider":"opencode","model":"oc/big-pickle"}],"terminalReason":"OpenCode's free tier can only be used from within OpenCode. Download it at https://opencode.ai and keep building.","recovery":{"action":"retry","next_step":"The combo failed transiently. Retry the same combo, or switch to model: auto if the failure repeats."}},"recovery_hint":{"action":"retry","next_step":"The combo failed transiently. Retry the same combo, or switch to model: auto if the failure repeats."}}
