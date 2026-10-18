@@ -9,3 +9,5 @@ _18/10/2026 13:04 · FilippoPC_
 - **Data**: 18/10/2026 13:06
 - **XERJ**: xerj v1.0.0-rc.96
 - **Headroom**: headroom, version 0.41.0
+
+<!-- fine scaglione1_headroom_e_salvati -->
