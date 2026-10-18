@@ -1,7 +1,7 @@
 # ✅ Rapporto Aggiornamento FilippoPC (18/10/2026)
-_18/10/2026 20:07 · FilippoPC_
+_18/10/2026 20:25 · FilippoPC_
 
-- **Skill installate**: 26 (in OpenCode, Goose, Hermes, Secondhand)
+- **Skill installate**: 28 (in OpenCode, Goose, Hermes, Secondhand)
 - **OpenCode**: 1.19.3
 - **Goose**:  1.55.0
 - **Secondhand (interpreter)**: interpreter 0.0.56
