@@ -1,0 +1,89 @@
+
+== 1/7 · pacchetti di base
+✓ git curl python3 jq unzip build-essential
+
+== 2/7 · Node 22
+✓ node v22.23.3 · npm 10.9.9
+
+== 3/7 · OpenCode
+✓ già installato: 1.19.3
+
+== 4/7 · Goose
+✓ già installato:  1.55.0
+
+== 5/7 · skill (canale 10)
+✓ skill: superpowers (5 skill: subagent, debugging, tdd, review, worktrees) [opencode]
+✓ skill: build-mcp-server (anthropics/claude-plugins-official) [opencode]
+✓ skill: ffmpeg (digitalsamba/claude-code-video-toolkit) [goose]
+✓ skill: tts Kokoro (noizai/skills) [goose]
+✓ skill: video (smixs/visual-skills) [goose]
+✓ skill: memory-merger (github/awesome-copilot) [goose]
+
+== 6/7 · magpie (gateway + failover quote)
+→ scarico magpie CLI…
+  ✓ Groq — ✓ added Groq (groq)
+  ✓ Mistral — ✓ added Mistral (mistral)
+  ✓ NVIDIA — ✓ added NVIDIA NIM (nvidia)
+  ✓ OpenRouter — ✓ added OpenRouter (openrouter)
+  ✓ Zhipu — ✓ added Zhipu GLM (zhipu)
+  ✓ Ollama Cloud — ✓ added Ollama Cloud (ollama-cloud)
+  ✓ Google AI Studio — ✓ added Google Gemini (google)
+  ✓ OpenCode Zen — ✓ added OpenCode Zen (opencode-zen)
+  ✓ Kilo — ✓ added Kilo Gateway (kilo)
+  ✓ Aion Labs — ✓ added Aion Labs (aion-labs)
+  ✓ Api.Airforce — ✓ added Api.Airforce (api-airforce)
+  ✓ Auray — ✓ added Auray (auray)
+  ✓ BazaarLink — ✓ added BazaarLink (bazaarlink)
+  ✓ CLōD — ✓ added CLōD (cl-d)
+  ✓ NavyAI — ✓ added NavyAI (navyai)
+  ✓ OrcaRouter — ✓ added OrcaRouter (orcarouter)
+  ✓ Pollinations — ✓ added Pollinations (pollinations)
+  ✓ NaraRouter — ✓ added NaraRouter (nararouter)
+  ✓ Routeway — ✓ added Routeway (routeway)
+  ✓ Septor Labs — ✓ added Septor Labs (septor-labs)
+  ✓ Token Harbor — ✓ added Token Harbor (token-harbor)
+  ✓ UnoRouter — ✓ added UnoRouter (unorouter)
+  ✓ Plugsky — ✓ added Plugsky (plugsky)
+  ✓ SimpleLLM — ✓ added SimpleLLM (simplellm)
+  ✓ LLMTR — ✓ added LLMTR (llmtr)
+  ✓ Router9 — ✓ added Router9 (router9)
+  ✓ Waterfall — ✓ added Waterfall (waterfall)
+  ✓ BlazeAPI — ✓ added BlazeAPI (blazeapi)
+  ✓ Logfare — ✓ added Logfare (logfare)
+  ✓ Lucidity (Composite) — ✓ added Lucidity (Composite) (lucidity-composite)
+  ✓ Speechify — ✓ added Speechify (speechify)
+  ✓ FreeAI — ✓ added FreeAI (freeai)
+  ✓ Chutes.ai — ✓ added Chutes.ai (chutes-ai)
+  ✓ Speka — ✓ added Speka (speka)
+  ✓ HuggingFace Router — ✓ added HuggingFace Router (huggingface-router)
+  ✓ Cohere — ✓ added Cohere (cohere)
+  ✓ Requesty — ✓ added Requesty (requesty)
+  ✓ Moondream — ✓ added Moondream (moondream)
+  ✓ Cloudflare Workers AI — ✓ added Cloudflare Workers AI (cloudflare-workers-ai)
+  ✓ group/free (routing smart)
+
+Fatto. Comandi utili:
+  magpie providers            # chi risponde
+  magpie provider test <id>   # ping reale
+  magpie models               # catalogo
+  magpie group/free →  magpie serve   (gateway su 127.0.0.1:3425, key: magpie)
+  magpie opencode group/free  # mette opencode su group/free
+  magpie quota                # cosa resta
+✓ magpie + group/free
+
+== 7/7 · postino (ponte con il comandante)
+✓ token valido per bomberr91
+✓ repo posta pronta → https://github.com/bomberr91/posta
+
+──── RIEPILOGO ────
+riusciti: 13   ·   falliti: 0   ·   saltati: 0
+
+Comandi utili (dentro Ubuntu):
+  opencode run "ciao"        → una risposta, senza aprire la TUI
+  goose run -t "ciao"        → idem con goose
+  magpie quota               → quanto resta su ogni provider
+  ~/posta/postino.sh --loop  → accende il ponte
+
+Sul Desktop trovi: AVVIA_POSTINO.bat (ponte) · APRI_AGENTE.bat (chat) · COMPITI (cartella)
+Log completo: /home/agenti/agenti_install.log
+
