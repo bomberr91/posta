@@ -12,3 +12,9 @@
 - cloudflare-ai: · saltato (id inesistente o richiede OAuth/chiave)
 - cloudflare: · saltato (id inesistente o richiede OAuth/chiave)
 - kiro: · saltato (id inesistente o richiede OAuth/chiave)
+- longcat: · saltato (id inesistente o richiede OAuth/chiave)
+- qwen: · saltato (id inesistente o richiede OAuth/chiave)
+- felo: · saltato (id inesistente o richiede OAuth/chiave)
+- ai-horde: · saltato (id inesistente o richiede OAuth/chiave)
+
+## 3. Connessioni attive adesso
