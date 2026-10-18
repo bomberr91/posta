@@ -84,10 +84,15 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     4)
-      echo "Incolla il link del post/gruppo Facebook da leggere fino all'ultimo commento"
-      read -r -p "(oppure premi solo INVIO per leggere il post Vibe Coding 24h): " FB_URL
-      [ -z "$FB_URL" ] && FB_URL="https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776"
-      python3 "$HOME/posta/leggi_fb_cdp.py" "$FB_URL"
+      echo "Cosa vuoi far leggere in SOLA LETTURA dal Browser degli Agenti?"
+      echo "  [INVIO vuoto] -> Leggi subito il Server Discord Ecom Elite"
+      echo "  [oppure incolla un link Facebook / Discord]"
+      read -r -p "Scelta: " TARGET_U
+      if [ -z "$TARGET_U" ] || [[ "$TARGET_U" == *"discord.com"* ]]; then
+        python3 "$HOME/posta/leggi_discord.py"
+      else
+        python3 "$HOME/posta/leggi_fb_cdp.py" "$TARGET_U"
+      fi
       read -r -p "Fatto! Premi INVIO per tornare al menu..." _
       ;;
     5)
