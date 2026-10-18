@@ -8,3 +8,7 @@
 - opencode: · saltato (id inesistente o richiede OAuth/chiave)
 - pollinations: · saltato (id inesistente o richiede OAuth/chiave)
 - qoder: · saltato (id inesistente o richiede OAuth/chiave)
+- duckduckgo: · saltato (id inesistente o richiede OAuth/chiave)
+- cloudflare-ai: · saltato (id inesistente o richiede OAuth/chiave)
+- cloudflare: · saltato (id inesistente o richiede OAuth/chiave)
+- kiro: · saltato (id inesistente o richiede OAuth/chiave)
