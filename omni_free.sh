@@ -6,6 +6,8 @@ V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail 
 [ -n "$V22BIN" ] && export PATH="$V22BIN:$PATH"
 OMNI=$(command -v omniroute || echo "$V22BIN/omniroute")
 [ -x "$OMNI" ] || { echo "  ❌ omniroute non trovato"; exit 0; }
+echo "== 0/4 Spengo il motore per sbloccare il database (lo riaccendo io alla fine)..."
+pkill -f omniroute 2>/dev/null; sleep 3
 D="$HOME/posta/dal_pc"; mkdir -p "$D"
 noansi(){ sed -e 's/\x1b\[[0-9;]*[A-Za-z]//g'; }
 
@@ -64,9 +66,15 @@ R="$D/omni_setup_report.md"
   echo "## Connessioni attive dopo i tentativi"
   timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | head -50
   echo
-  echo "## Test gateway /v1/models"
+  echo "## Riaccensione motore + test VERO"
+  nohup "$OMNI" >/tmp/omniroute.log 2>&1 &
+  sleep 12
   OKEY=$(grep -E '^omniroute ' "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | grep -oE 'sk-[A-Za-z0-9-]+' | head -1)
-  if [ -n "$OKEY" ]; then curl -s --max-time 15 http://localhost:20128/v1/models -H "Authorization: Bearer $OKEY" | head -c 3000; echo; else echo "chiave omniroute non in ~/CHIAVI_LOCALI.md"; fi
+  if [ -n "$OKEY" ]; then
+    echo "### Domanda di prova al modello auto (deve rispondere OK):"
+    curl -s --max-time 90 http://localhost:20128/v1/chat/completions -H "Authorization: Bearer $OKEY" -H "Content-Type: application/json" -d '{"model":"auto","messages":[{"role":"user","content":"Rispondi solo con la parola: OK"}],"max_tokens":20}' | head -c 1500
+    echo
+  else echo "chiave omniroute non in ~/CHIAVI_LOCALI.md"; fi
 } > "$R" 2>&1
 
 echo "== 4/4 Spedisco il rapporto sul ponte..."
