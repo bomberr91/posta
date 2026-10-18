@@ -49,6 +49,45 @@ def leggi_chiave_groq():
 
 import re
 
+def leggi_chiave_agentrouter():
+    """Chiave AgentRouter (125$ una tantum): SOLO per il Giudice Supremo di qualita' (ordine utente: spenderli con senso)."""
+    chiavi_path = os.path.join(HOME, "CHIAVI_LOCALI.md")
+    if os.path.exists(chiavi_path):
+        for riga in open(chiavi_path, encoding="utf-8", errors="ignore").read().splitlines():
+            if "agentrouter" in riga.lower():
+                m = re.search(r'sk-[A-Za-z0-9_-]{20,}', riga)
+                if m:
+                    return m.group(0)
+    return os.environ.get("AGENTROUTER_API_KEY", "")
+
+def chiama_giudice_opus(system_prompt, user_prompt, timeout=90):
+    """Giudice Supremo = Claude Opus 5 via AgentRouter (solo verdetto finale, mai lavoro di massa). None se non disponibile."""
+    akey = leggi_chiave_agentrouter()
+    if not akey:
+        return None
+    try:
+        body = json.dumps({
+            "model": "claude-opus-5",
+            "temperature": 0.2,
+            "max_tokens": 4096,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ]
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            "https://agentrouter.org/v1/chat/completions",
+            data=body,
+            headers={"Authorization": f"Bearer {akey}", "Content-Type": "application/json",
+                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) FusionEngine/2.1"}
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            resp = json.loads(r.read().decode("utf-8"))
+            txt = resp["choices"][0]["message"]["content"]
+            return txt if txt and len(txt.strip()) > 20 else None
+    except Exception:
+        return None
+
 def chiama_regista_llm(system_prompt, user_prompt, timeout=45):
     """Usa il modello più intelligente e reattivo (Llama-3.3-70B-Versatile / OpenCode Zen) come Regista."""
     gkey = leggi_chiave_groq()
@@ -229,7 +268,12 @@ def main():
         "2) Unisci il meglio di ogni agente in una RISPOSTA FINALE UNICA, strutturata, pronta all'uso e di qualità superiore.\n"
         "3) Aggiungi in fondo un breve box '📊 Vantaggio & Prossima Decisione Consigliata'."
     )
-    finale = chiama_regista_llm(sys_sintesi, f"MISSIONE: {missione}\n\nCONTRIBUTI DEGLI AGENTI:\n{raccolta}", timeout=60)
+    finale = None
+    if leggi_chiave_agentrouter():
+        aggiorna_progresso(88, "GIUDICE SUPREMO: Claude Opus 5 (AgentRouter, crediti una tantum) sta emettendo il verdetto di Qualita'...", "", scelti)
+        finale = chiama_giudice_opus(sys_sintesi, f"MISSIONE: {missione}\n\nCONTRIBUTI DEGLI AGENTI:\n{raccolta}")
+    if not finale:
+        finale = chiama_regista_llm(sys_sintesi, f"MISSIONE: {missione}\n\nCONTRIBUTI DEGLI AGENTI:\n{raccolta}", timeout=60)
 
     # Salvataggio del report completo
     report_path = os.path.join(RISPOSTE_DIR, f"FUSION_{ts}.md")
