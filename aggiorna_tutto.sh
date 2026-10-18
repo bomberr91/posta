@@ -52,11 +52,22 @@ fi
 
 echo ""
 echo "── 3/6 · Installo gli strumenti Browser & Web (agent-browser + firecrawl-cli)..."
-if command -v npm >/dev/null 2>&1; then
-  npm i -g agent-browser firecrawl-cli >/dev/null 2>&1 && echo "  ✓ agent-browser + firecrawl-cli pronti" || echo "  · npm install parziale"
+# npm robusto: preferisci SEMPRE il Node v22 di nvm (su WSL1 il Node 24 non parte: Exec format error)
+NPM22=$(ls "$HOME/.nvm/versions/node/v22"*/bin/npm 2>/dev/null | sort -V | tail -1)
+[ -z "$NPM22" ] && command -v npm >/dev/null 2>&1 && NPM22=$(command -v npm)
+if [ -n "$NPM22" ]; then
+  "$NPM22" i -g agent-browser firecrawl-cli >/dev/null 2>&1 && echo "  ✓ agent-browser + firecrawl-cli pronti (npm: $NPM22)" || echo "  · npm install parziale (non blocca nulla: i tool gia' presenti restano attivi)"
+else
+  echo "  · npm non trovato: salto (non blocca nulla)"
 fi
 
 echo ""
+# Riporta il default nvm su v22 se qualche giro precedente lo aveva messo su 24 (rotto su WSL1)
+V22DIR=$(ls -d "$HOME/.nvm/versions/node/v22"* 2>/dev/null | sort -V | tail -1)
+if [ -n "$V22DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 && nvm alias default "$(basename "$V22DIR")" >/dev/null 2>&1 || true
+fi
+
 echo "── 4/6 · Installo Secondhand (OpenInterpreter Rust - 68k★)..."
 if command -v interpreter >/dev/null 2>&1; then
   echo "  ✓ Secondhand (interpreter) già installato: $(interpreter --version 2>&1 | head -1)"
