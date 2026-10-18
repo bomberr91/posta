@@ -167,6 +167,7 @@ while :; do
         echo "  [a] Avvia il motore in background"
         echo "  [d] Apri la Dashboard nel browser Windows"
         echo "  [f] Attiva i provider GRATIS (automatico, ~2-5 min)"
+        echo "  [k] Innesta le chiavi API del portachiavi nei provider free (~2-3 min)"
         echo "  [x] Spegni il motore"
         echo "  [INVIO] Torna al menu"
         read -r -p "Scelta: " OM
@@ -175,6 +176,7 @@ while :; do
                pgrep -f omniroute >/dev/null && echo "🟢 Motore avviato! Dashboard: http://localhost:20128" || echo "❌ Problema all'avvio: guarda /tmp/omniroute.log" ;;
           d|D) cmd.exe /c start "" "http://localhost:20128" 2>/dev/null || echo "Apri a mano: http://localhost:20128" ;;
           f|F) bash "$HOME/posta/omni_free.sh" ;;
+          k|K) bash "$HOME/posta/omni_chiavi.sh" ;;
           x|X) pkill -f omniroute 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
         esac
       fi
