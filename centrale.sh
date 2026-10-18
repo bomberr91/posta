@@ -50,7 +50,7 @@ while :; do
   echo "  [1] 💬 Chatta con un Agente singolo (OpenCode / Goose / Hermes / Secondhand)"
   echo "  [2] 🔥 SQUADRA FUSION (lancia 3 Agenti in sincronia su un compito)"
   echo "  [3] 🎬 TRASCRIVI & CATALOGA VIDEO/REEL (incolla link FB, YouTube, IG, TikTok)"
-  echo "  [4] 📌 LEGGI I TUOI 'SALVATI' DI FACEBOOK (via Browser degli Agenti)"
+  echo "  [4] 📌 LEGGI POST + TUTTI I COMMENTI FACEBOOK (o Salvati) col Browser Agenti"
   echo "  [5] 🌐 APRI IL BROWSER DEGLI AGENTI (Chrome/Edge profilo isolato porta 9222)"
   echo "  [6] 📁 APRI CARTELLA COMPITI E RISPOSTE (in Esplora Risorse di Windows)"
   echo "  [7] 📊 STATO AGENTI, SKILL E CREDITI (Magpie Quota)"
@@ -84,8 +84,11 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     4)
-      python3 "$HOME/posta/leggi_video.py" --saved
-      read -r -p "Premi INVIO per tornare al menu..." _
+      echo "Incolla il link del post/gruppo Facebook da leggere fino all'ultimo commento"
+      read -r -p "(oppure premi solo INVIO per leggere il post Vibe Coding 24h): " FB_URL
+      [ -z "$FB_URL" ] && FB_URL="https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776"
+      node "$HOME/posta/leggi_fb_cdp.mjs" "$FB_URL"
+      read -r -p "Fatto! Premi INVIO per tornare al menu..." _
       ;;
     5)
       cmd.exe /c start "" "$(wslpath -w "$HOME/posta/6_BROWSER_AGENTI.bat")" 2>/dev/null \
