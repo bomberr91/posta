@@ -52,10 +52,11 @@ while :; do
   echo "  [6] 📁 APRI CARTELLA COMPITI E RISPOSTE (in Esplora Risorse di Windows)"
   echo "  [7] 📊 STATO AGENTI, INNESTI (Headroom/XERJ/Beads) E QUOTE MAGPIE"
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
+  echo "  [9] 🧠 MOTORE OMNIROUTE — HUB V2 (359 provider, 90+ GRATIS, dashboard web)"
   echo ""
   echo "  [0] Esci"
   echo "======================================================================"
-  read -r -p "Scegli un numero [0-8] e premi INVIO: " SCELTA
+  read -r -p "Scegli un numero [0-9] e premi INVIO: " SCELTA
   echo ""
   case "$SCELTA" in
     1)
@@ -118,6 +119,7 @@ while :; do
       echo "  • XERJ (Rust): $(xerj --version 2>&1 | head -1 || echo non presente)"
       echo "  • Beads (Mem): $(bd version 2>&1 | head -1 || bd --version 2>&1 | head -1 || echo in installazione)"
       echo "  • MarkItDown : $(markitdown --version 2>&1 | head -1 || ([ -x ~/.local/bin/markitdown ] && echo attivo) || echo in installazione)"
+      echo "  • OmniRoute  : $(omniroute --version 2>&1 | head -1 || (pgrep -f omniroute >/dev/null && echo ATTIVO) || echo non ancora installato — menu [9])"
       echo "  • Skill ($SKILLS_N) : $(ls "$HOME/.agents/skills" 2>/dev/null | tr '\n' ' ')"
       echo ""
       echo "── Stato Quote Magpie ──"
@@ -130,6 +132,36 @@ while :; do
       pulisci_desktop
       read -r -p "Aggiornato! Premi INVIO per ricaricare la Centrale..." _
       exec bash "$HOME/posta/centrale.sh"
+      ;;
+    9)
+      echo "── 🧠 MOTORE OMNIROUTE (Scaglione 2 — Hub v2) ──"
+      OMNI_BIN=$(command -v omniroute || echo "$NODE22_BIN/omniroute")
+      if [ ! -x "$OMNI_BIN" ] && ! command -v omniroute >/dev/null 2>&1; then
+        echo "OmniRoute NON è ancora installato (78k+ stelle, MIT, 359 provider di cui 90+ gratis)."
+        echo "Installazione: ~2-5 minuti via npm (Node 22 già presente). Nessun costo."
+        read -r -p "Vuoi installarlo ADESSO? [s/N]: " OK9
+        if [[ "$OK9" == "s" || "$OK9" == "S" ]]; then
+          "$NODE22_BIN/npm" config set allow-scripts=omniroute,keytar,onnxruntime-node,@parcel/watcher,@swc/core,protobufjs,esbuild --location=user 2>/dev/null || true
+          "$NODE22_BIN/npm" install -g omniroute && echo "✅ Installato! Rientra nel menu [9] per avviarlo." || echo "❌ Errore installazione: rilancia o controlla la connessione."
+        else
+          echo "Ok, nessuna installazione. (Regola: niente auto-avvio installer!)"
+        fi
+      else
+        if pgrep -f "omniroute" >/dev/null 2>&1; then OMNI_ST="🟢 ATTIVO"; else OMNI_ST="🔴 SPENTO"; fi
+        echo "Stato motore: $OMNI_ST  ·  Dashboard: http://localhost:20128  ·  API: http://localhost:20128/v1 (model: auto)"
+        echo "  [a] Avvia il motore in background"
+        echo "  [d] Apri la Dashboard nel browser Windows"
+        echo "  [x] Spegni il motore"
+        echo "  [INVIO] Torna al menu"
+        read -r -p "Scelta: " OM
+        case "$OM" in
+          a|A) nohup "$OMNI_BIN" >/tmp/omniroute.log 2>&1 & sleep 3
+               pgrep -f omniroute >/dev/null && echo "🟢 Motore avviato! Dashboard: http://localhost:20128" || echo "❌ Problema all'avvio: guarda /tmp/omniroute.log" ;;
+          d|D) cmd.exe /c start "" "http://localhost:20128" 2>/dev/null || echo "Apri a mano: http://localhost:20128" ;;
+          x|X) pkill -f omniroute 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
+        esac
+      fi
+      read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     0|q|Q)
       exit 0
