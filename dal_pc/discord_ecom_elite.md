@@ -22,9 +22,7 @@
 
 ---
 
-## 📖 Canale 1: (1248) Discord | #📌・introduzione | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000721262227507`)
-### 🔗 Link esterni nel canale:
--  -> https://cdn.discordapp.com/attachments/1203305753079717898/1277425167840317500/ECOM_ELITE.png?ex=6ad564e5&is=6ad41365&hm=585cf7a285624d0074e1762a4a1ced8f29b392f281a7c1b22584435b4cebb617&
+## 📖 Canale 1: (1248) Discord | #🎫・apri-un-ticket | Ecom Elite (`https://discord.com/channels/1119998900271587471/1156516921689260072`)
 
 ### 📝 Contenuto:
 ```text
@@ -134,83 +132,211 @@ bomber91
 bomberr91
 Online
 Togli il silenziamento al microfono
-Canale delle notizie
+Canale testuale
 Ecom Elite:
-📌・introduzione
-Segui
+🎫・apri-un-ticket
 Cerca Ecom Elite
 ﻿
 
-Chat di 📌・introduzione
-
-Benvenuto su
-
-Ecom Elite
-
-Da qui ha inizio il server.
-26 agosto 2024
-Ecom Elite
+Chat di 🎫・apri-un-ticket
+1 nuovo messaggio dalle 21:18 del giorno 4 marzo 2025
+Segna come già letto
+Ti diamo il benvenuto nel #🎫・apri-un-ticket!
+Questo è l'inizio del canale #🎫・apri-un-ticket. 
+27 settembre 2023
+Ticket Tool
+APP VERIFICATA
 APP
  — 
-26/08/24, 02:33
-lunedì 26 agosto 2024 alle ore 02:33
-Benvenuto/a in Ecom Elite
-Siamo una community italiana a tema ecommerce e dropshipping.
-
-All’interno di questo server vengono condivise quotidianamente risorse, guide, strumenti e consigli utili per scalare il tuo business o per iniziarne uno completamente da zero.
-
-Potrai fare networking con altre persone che lavorano nel settore o che stanno cominciando proprio ora a comprenderne i meccanismi.
-
-Avrai accesso a contenuti di alto valore e un ambiente stimolante da cui potrai trarre benefici sostanziali per la tua crescita.
-
-Ogni contributo alla community viene apprezzato e premiato.
-
-Buona permanenza! 
-
-ATTENZIONE
-
-È necessario accettare il regolamento per ottenere il ruolo Verificato e sbloccare tutte le sezioni gratuite presenti nel server.
-
-CLICCA QUI
-⁠📖・regolamento
-Inoltra
-Di più
-31 dicembre 2024
+27/09/23, 11:13
+mercoledì 27 settembre 2023 alle ore 11:13
+Ticket
+Per ricevere supporto o chiedere informazioni riguardo ai servizi clicca 
+TicketTool.xyz - Ticketing without clutter
+Crea
+,
+,
+4 marzo 2025
 NOVITÀ
-Rana [ECOM], 
-Tag del server: ECOM
-ECOM
+danisennas97
+ ha avviato un thread: Come posso eliminare l abbonamento?. Visualizza tutti i thread.
  — 
-31/12/24, 19:58
-martedì 31 dicembre 2024 alle ore 19:58
-@everyone Ecom Elite is an exclusively Italian community, if you are not Italian join here:
+04/03/25, 21:18
+martedì 4 marzo 2025 alle ore 21:18
+Thread
+Come posso eliminare l abbonamento?
+Visualizza thread ›
+Non ci sono messaggi recenti in questo thread.
+Non hai il permesso necessario per scrivere messaggi in questo canale.
+﻿
 
-discord.gg/scalecord
-Scalecord
-Scalecord
-Server di community
-Chi ha un link d'invito può unirsi.
-Livello 3
-25 potenziamenti
-Tag del server: ECOM
-ECOM
-Online: 803
-8240 Membri
-Creato in data dic 2024
-#1 Free ecom community on Discord.
-ecommerce
-dropshipping
-shopify
-Unisciti
-Inoltra
-Di più
-Segui per ottenere gli aggiornamenti di questo canale sul tuo server.
-Segui
 ```
 
 ---
 
-## 📖 Canale 2: (1248) Discord | #📖・regolamento | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000664966266951`)
+## 📖 Canale 2: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120001810409734204`)
+### 🔗 Link esterni nel canale:
+- SMM FLARE -> https://smmflare.com/ref/3yyo7
+- https://smmflare.com/ref/3yyo7 -> https://smmflare.com/ref/3yyo7
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197906609150623786/dssmain.webp?ex=6ad57cb7&is=6ad42b37&hm=5f4ee985c8088e8f02205204814d1627f709c9a813714e199906f3ae81ae4384&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197466243926589500/3dgifmaker91704.gif?ex=6ad5dcd8&is=6ad48b58&hm=9e6d0b7c13ad51008fe0e6b2749f779727715b616f9b4df8317bd4dbb88ad95a&
+
+### 📝 Contenuto:
+```text
+Ecom Elite
+Messaggi diretti
+Messaggi non letti, Logfare
+Server di community
+Chi ha un link d'invito può unirsi.
+Logfare
+LISTEN MARKETING SAGL - server
+Server di community
+Chi ha un link d'invito può unirsi.
+LISTEN MARKETING SAGL - server
+4 menzioni, Vyro Clipping
+4
+Server di community
+Chi ha un link d'invito può unirsi.
+Livello 3
+14 potenziamenti
+Vyro Clipping
+Messaggi non letti, LuciditySH
+Server di community
+Chiunque può unirsi a questo server.
+Nessun livello
+3 potenziamenti
+LuciditySH
+Messaggi non letti, DOM Cloud
+Server di community
+Chi ha un link d'invito può unirsi.
+DOM Cloud
+Messaggi non letti, Ecom Elite
+Server di community
+Chi ha un link d'invito può unirsi.
+Ecom Elite
+MOVIMENTUM LAB
+Server di community
+Chi ha un link d'invito può unirsi.
+Livello 1
+2 potenziamenti
+MOVIMENTUM LAB
+2 menzioni, ᴛʜᴇ ʙʟᴀᴄᴋ ᴛᴇᴀᴍ
+2
+Server di community
+Chi ha un link d'invito può unirsi.
+ᴛʜᴇ ʙʟᴀᴄᴋ ᴛᴇᴀᴍ
+Server di BuLL89MI
+SdB
+Server di BuLL89MI
+Server di bomber91
+Sdb
+Server di bomber91
+1063 menzioni, PlayToEarn
+1K+
+Server di community
+Chiunque può unirsi a questo server.
+Livello 3
+16 potenziamenti
+PlayToEarn
+179 menzioni, Midjourney
+179
+Server di community
+Verificato
+Chiunque può unirsi a questo server.
+Livello 3
+241 potenziamenti
+Midjourney
+NOVITÀ
+Server di community
+Chi ha un link d'invito può unirsi.
+Ecom Elite
+Canali
+Obiettivo di potenziamento
+0/33 potenziamenti
+Sfoglia canali
+╭──📊Statistiche
+Voce (bloccata)
+💎・Elite Club: 28
+╭──📍Informazioni
+Annunci
+📌・introduzione
+Regole
+📖・regolamento
+Annunci (limitati)
+📢・annunci
+Annunci (limitati)
+🔒・updates
+╭──💎Abbonamento
+Annunci (limitati)
+💎・upgrade
+Testo (limitato)
+💞・recensioni
+╭──🎫Supporto
+Testo
+🎫・apri-un-ticket
+╭──💣Servizi
+Testo (limitato)
+📈・social-media-boost
+Testo (limitato)
+🚀・agency-ad-accounts
+Testo (limitato)
+📡・facebook-assets
+Testo (limitato)
+🏢・uk-company
+Testo (limitato)
+🏢・us-company
+bomber91
+bomberr91
+Online
+Togli il silenziamento al microfono
+Canale testuale
+Ecom Elite:
+📈・social-media-boost
+Cerca Ecom Elite
+﻿
+
+Chat di 📈・social-media-boost
+Ti diamo il benvenuto nel #📈・social-media-boost!
+Questo è l'inizio del canale #📈・social-media-boost. 
+19 gennaio 2024
+Ecom Elite
+APP
+ — 
+19/01/24, 15:13
+venerdì 19 gennaio 2024 alle ore 15:13
+SMM FLARE
+Il miglior provider di servizi/bot per qualsiasi social network esistente.
+
+Follower, likes, commenti, visualizzazioni e decine di altri servizi ai prezzi migliori sul mercato.
+
+
+TikTok
+,
+Instagram
+,
+Facebook
+,
+Youtube
+,
+X
+,
+Telegram
+,
+Discord
+,
+E molto, molto altro...
+,
+
+Link:
+https://smmflare.com/ref/3yyo7
+Non hai il permesso necessario per scrivere messaggi in questo canale.
+﻿
+
+```
+
+---
+
+## 📖 Canale 3: (1248) Discord | #📖・regolamento | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000664966266951`)
 
 ### 📝 Contenuto:
 ```text
@@ -375,7 +501,7 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 3: (1248) Discord | #📢・annunci | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000775951753236`)
+## 📖 Canale 4: (1248) Discord | #📢・annunci | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000775951753236`)
 ### 🔗 Link esterni nel canale:
 -  -> https://cdn.discordapp.com/attachments/1120000775951753236/1280131332009103381/image.png?ex=6ad559f5&is=6ad40875&hm=b5335116aaa1e9d0e29badf9da913dc843c6fa0715c938646b47633f2f25abcb&
 -  -> https://cdn.discordapp.com/attachments/1120000775951753236/1284199272082047121/CleanShot_2024-09-10_at_21.png?ex=6ad5a605&is=6ad45485&hm=86e65e4d8d229ff453a334fe0160bb7138480866eedd17bf82e0196c9621d7d8&
@@ -644,7 +770,7 @@ Segui
 
 ---
 
-## 📖 Canale 4: (1248) Discord | #🔒・updates | Ecom Elite (`https://discord.com/channels/1119998900271587471/1289267168072040471`)
+## 📖 Canale 5: (1248) Discord | #🔒・updates | Ecom Elite (`https://discord.com/channels/1119998900271587471/1289267168072040471`)
 
 ### 📝 Contenuto:
 ```text
@@ -770,7 +896,7 @@ Segui
 
 ---
 
-## 📖 Canale 5: (1248) Discord | #💎・upgrade | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120007178359677019`)
+## 📖 Canale 6: (1248) Discord | #💎・upgrade | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120007178359677019`)
 
 ### 📝 Contenuto:
 ```text
@@ -904,7 +1030,14 @@ Segui
 
 ---
 
-## 📖 Canale 6: (1248) Discord | #💞・recensioni | Ecom Elite (`https://discord.com/channels/1119998900271587471/1162495153035034694`)
+## 📖 Canale 7: (1248) Discord | #💞・recensioni | Ecom Elite (`https://discord.com/channels/1119998900271587471/1162495153035034694`)
+### 🔗 Link esterni nel canale:
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634674605424660/IMG_7021.png?ex=6ad5ea8a&is=6ad4990a&hm=0d48359ad2a519676eefc98a3d1a7935d9c7793af6cc36bba787daf45fca3c97&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634692284420246/IMG_7018.png?ex=6ad5ea8e&is=6ad4990e&hm=3db17eab2e13784cbfe5b6adb93280ff192f95f9758c3267260e63c7ee75ccb5&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634712438181940/IMG_7016.png?ex=6ad5ea93&is=6ad49913&hm=70b951445ff24f4beb676d32fff4b46729d76813714d7b1c5b7428223b9a5221&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634742876381287/IMG_7015.png?ex=6ad5ea9a&is=6ad4991a&hm=00d5a36f00d0d74ee2b9ee14beaab1431085f730e3460ff2235e93e7f0998e48&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1214286169336971344/IMG_7548.png?ex=6ad5bfdf&is=6ad46e5f&hm=6749b095ddf45f48f511d53ebe8b4d8933ddd7af7f8c71ec416233f2bb8539be&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1291664366349058121/Screenshot_20241004-171652.png?ex=6ad5c7ae&is=6ad4762e&hm=39d617a29ad4281b2c0edbb479b87eb21c9647a46dfcb7202849d2ade29a70e4&
 
 ### 📝 Contenuto:
 ```text
@@ -1108,191 +1241,12 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 7: (1248) Discord | #📌・introduzione | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000721262227507`)
+## 📖 Canale 8: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120001810409734204`)
 ### 🔗 Link esterni nel canale:
--  -> https://cdn.discordapp.com/attachments/1203305753079717898/1277425167840317500/ECOM_ELITE.png?ex=6ad564e5&is=6ad41365&hm=585cf7a285624d0074e1762a4a1ced8f29b392f281a7c1b22584435b4cebb617&
-
-### 📝 Contenuto:
-```text
-Ecom Elite
-Messaggi diretti
-Messaggi non letti, Logfare
-Server di community
-Chi ha un link d'invito può unirsi.
-Logfare
-LISTEN MARKETING SAGL - server
-Server di community
-Chi ha un link d'invito può unirsi.
-LISTEN MARKETING SAGL - server
-4 menzioni, Vyro Clipping
-4
-Server di community
-Chi ha un link d'invito può unirsi.
-Livello 3
-14 potenziamenti
-Vyro Clipping
-Messaggi non letti, LuciditySH
-Server di community
-Chiunque può unirsi a questo server.
-Nessun livello
-3 potenziamenti
-LuciditySH
-Messaggi non letti, DOM Cloud
-Server di community
-Chi ha un link d'invito può unirsi.
-DOM Cloud
-Messaggi non letti, Ecom Elite
-Server di community
-Chi ha un link d'invito può unirsi.
-Ecom Elite
-MOVIMENTUM LAB
-Server di community
-Chi ha un link d'invito può unirsi.
-Livello 1
-2 potenziamenti
-MOVIMENTUM LAB
-2 menzioni, ᴛʜᴇ ʙʟᴀᴄᴋ ᴛᴇᴀᴍ
-2
-Server di community
-Chi ha un link d'invito può unirsi.
-ᴛʜᴇ ʙʟᴀᴄᴋ ᴛᴇᴀᴍ
-Server di BuLL89MI
-SdB
-Server di BuLL89MI
-Server di bomber91
-Sdb
-Server di bomber91
-1063 menzioni, PlayToEarn
-1K+
-Server di community
-Chiunque può unirsi a questo server.
-Livello 3
-16 potenziamenti
-PlayToEarn
-179 menzioni, Midjourney
-179
-Server di community
-Verificato
-Chiunque può unirsi a questo server.
-Livello 3
-241 potenziamenti
-Midjourney
-NOVITÀ
-Server di community
-Chi ha un link d'invito può unirsi.
-Ecom Elite
-Canali
-Obiettivo di potenziamento
-0/33 potenziamenti
-Sfoglia canali
-╭──📊Statistiche
-Voce (bloccata)
-💎・Elite Club: 28
-╭──📍Informazioni
-Annunci
-📌・introduzione
-Regole
-📖・regolamento
-Annunci (limitati)
-📢・annunci
-Annunci (limitati)
-🔒・updates
-╭──💎Abbonamento
-Annunci (limitati)
-💎・upgrade
-Testo (limitato)
-💞・recensioni
-╭──🎫Supporto
-Testo
-🎫・apri-un-ticket
-╭──💣Servizi
-Testo (limitato)
-📈・social-media-boost
-Testo (limitato)
-🚀・agency-ad-accounts
-Testo (limitato)
-📡・facebook-assets
-Testo (limitato)
-🏢・uk-company
-Testo (limitato)
-🏢・us-company
-bomber91
-bomberr91
-Online
-Togli il silenziamento al microfono
-Canale delle notizie
-Ecom Elite:
-📌・introduzione
-Segui
-Cerca Ecom Elite
-﻿
-
-Chat di 📌・introduzione
-
-Benvenuto su
-
-Ecom Elite
-
-Da qui ha inizio il server.
-26 agosto 2024
-Ecom Elite
-APP
- — 
-26/08/24, 02:33
-lunedì 26 agosto 2024 alle ore 02:33
-Benvenuto/a in Ecom Elite
-Siamo una community italiana a tema ecommerce e dropshipping.
-
-All’interno di questo server vengono condivise quotidianamente risorse, guide, strumenti e consigli utili per scalare il tuo business o per iniziarne uno completamente da zero.
-
-Potrai fare networking con altre persone che lavorano nel settore o che stanno cominciando proprio ora a comprenderne i meccanismi.
-
-Avrai accesso a contenuti di alto valore e un ambiente stimolante da cui potrai trarre benefici sostanziali per la tua crescita.
-
-Ogni contributo alla community viene apprezzato e premiato.
-
-Buona permanenza! 
-
-ATTENZIONE
-
-È necessario accettare il regolamento per ottenere il ruolo Verificato e sbloccare tutte le sezioni gratuite presenti nel server.
-
-CLICCA QUI
-⁠📖・regolamento
-31 dicembre 2024
-Rana [ECOM], 
-Tag del server: ECOM
-ECOM
- — 
-31/12/24, 19:58
-martedì 31 dicembre 2024 alle ore 19:58
-@everyone Ecom Elite is an exclusively Italian community, if you are not Italian join here:
-
-discord.gg/scalecord
-Scalecord
-Scalecord
-Server di community
-Chi ha un link d'invito può unirsi.
-Livello 3
-25 potenziamenti
-Tag del server: ECOM
-ECOM
-Online: 803
-8240 Membri
-Creato in data dic 2024
-#1 Free ecom community on Discord.
-ecommerce
-+ 2 ulteriori
-dropshipping
-shopify
-Unisciti
-Segui per ottenere gli aggiornamenti di questo canale sul tuo server.
-Segui
-```
-
----
-
-## 📖 Canale 8: (1248) Discord | #📖・regolamento | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000664966266951`)
+- SMM FLARE -> https://smmflare.com/ref/3yyo7
+- https://smmflare.com/ref/3yyo7 -> https://smmflare.com/ref/3yyo7
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197906609150623786/dssmain.webp?ex=6ad57cb7&is=6ad42b37&hm=5f4ee985c8088e8f02205204814d1627f709c9a813714e199906f3ae81ae4384&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197466243926589500/3dgifmaker91704.gif?ex=6ad5dcd8&is=6ad48b58&hm=9e6d0b7c13ad51008fe0e6b2749f779727715b616f9b4df8317bd4dbb88ad95a&
 
 ### 📝 Contenuto:
 ```text
@@ -1404,52 +1358,44 @@ Online
 Togli il silenziamento al microfono
 Canale testuale
 Ecom Elite:
-📖・regolamento
+📈・social-media-boost
 Cerca Ecom Elite
 ﻿
 
-Chat di 📖・regolamento
-Ti diamo il benvenuto nel #📖・regolamento!
-Questo è l'inizio del canale #📖・regolamento. 
-26 agosto 2024
+Chat di 📈・social-media-boost
+Ti diamo il benvenuto nel #📈・social-media-boost!
+Questo è l'inizio del canale #📈・social-media-boost. 
+19 gennaio 2024
 Ecom Elite
 APP
  — 
-26/08/24, 02:43
-lunedì 26 agosto 2024 alle ore 02:43
-Regolamento
-Rispetto reciproco: È fondamentale che tutti i membri si trattino con rispetto e cortesia. Non sono tollerati insulti, attacchi personali o discriminazioni di qualsiasi tipo.
+19/01/24, 15:13
+venerdì 19 gennaio 2024 alle ore 15:13
+SMM FLARE
+Il miglior provider di servizi/bot per qualsiasi social network esistente.
 
-No spam: Evita di inviare messaggi ripetitivi, inutili o fuori contesto. Non pubblicare link non pertinenti o promozionali senza il consenso degli amministratori.
+Follower, likes, commenti, visualizzazioni e decine di altri servizi ai prezzi migliori sul mercato.
 
-Contenuti appropriati: Assicurati che tutti i contenuti condivisi nel server siano appropriati per un pubblico generale. Evita materiale offensivo, pornografico o illegale.
 
-No truffatori: Qualsiasi membro coinvolto in truffe, frodi o comportamenti fraudolenti sarà immediatamente bannato dal server. Segnala qualsiasi attività sospetta agli amministratori.
-
-Lingua e comunicazione: Utilizza un linguaggio chiaro e comprensibile per tutti i membri. Evita abbreviazioni eccessive o dialetti che potrebbero creare confusione.
-
-Canali appropriati: Usa i canali appropriati per i vari argomenti di discussione. Mantieni le conversazioni organizzate e pertinenti.
-
-Divieto di pubblicità non autorizzata: Non promuovere prodotti, servizi o link di affiliazione senza il permesso degli amministratori. Il server non è un luogo per autopromozione senza controllo.
-
-Riservatezza dei dati: Non condividere informazioni personali o sensibili di altri membri senza il loro consenso. Rispetta la privacy degli altri e rispetta le leggi sulla protezione dei dati.
-
-Collaborazione e condivisione: Incoraggiamo la condivisione di idee, consigli e risorse tra i membri. Promuovi un ambiente di collaborazione positiva e aiuta gli altri quando possibile.
-
-Rispetto dei termini di Discord: Segui le linee guida generali di Discord e rispetta i suoi Termini di Servizio e le Linee guida.
- This is an Italian community, if you are not Italian and write in other languages you will be kicked out.
-(modificato)
-lunedì 26 agosto 2024 alle ore 02:45
-Dyno
-APP VERIFICATA
-APP
- — 
-26/08/24, 02:52
-lunedì 26 agosto 2024 alle ore 02:52
-Clicca il pulsante per accettare il regolamento
-Accetto
+TikTok
 ,
+Instagram
 ,
+Facebook
+,
+Youtube
+,
+X
+,
+Telegram
+,
+Discord
+,
+E molto, molto altro...
+,
+
+Link:
+https://smmflare.com/ref/3yyo7
 Non hai il permesso necessario per scrivere messaggi in questo canale.
 ﻿
 
