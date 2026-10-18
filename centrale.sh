@@ -87,7 +87,7 @@ while :; do
       echo "Incolla il link del post/gruppo Facebook da leggere fino all'ultimo commento"
       read -r -p "(oppure premi solo INVIO per leggere il post Vibe Coding 24h): " FB_URL
       [ -z "$FB_URL" ] && FB_URL="https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776"
-      node "$HOME/posta/leggi_fb_cdp.mjs" "$FB_URL"
+      python3 "$HOME/posta/leggi_fb_cdp.py" "$FB_URL"
       read -r -p "Fatto! Premi INVIO per tornare al menu..." _
       ;;
     5)
