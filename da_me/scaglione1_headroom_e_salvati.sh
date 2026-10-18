@@ -14,7 +14,7 @@ push_git(){
   git add dal_pc/ >/dev/null 2>&1
   git commit -qm "Scaglione 1: salvati FB + Headroom" >/dev/null 2>&1 || true
   if [ -n "$TOKEN" ]; then
-    git pull -q --rebase "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" main >/dev/null 2>&1 || true
+    git pull -q --autostash --rebase "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" main >/dev/null 2>&1 || true
     git push -q "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" HEAD:main >/dev/null 2>&1 || true
   fi
 }

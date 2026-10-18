@@ -12,7 +12,7 @@ fi
 pgrep -f 'magpie serve' >/dev/null 2>&1 || (nohup magpie serve >/dev/null 2>&1 &)
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG="$DIR/postino.log"
+LOG="/tmp/postino.log"
 mkdir -p "$DIR/da_me" "$DIR/dal_pc" "$DIR/fatti"
 cd "$DIR" || exit 1
 
@@ -25,7 +25,7 @@ REMOTE="origin"
 say(){ echo "[$(date '+%d/%m %H:%M')] $*" | tee -a "$LOG"; }
 
 sync_down(){
-  git pull -q --rebase "$REMOTE" main >/dev/null 2>&1 || git pull -q --rebase >/dev/null 2>&1 || true
+  git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 || git pull -q --autostash --rebase >/dev/null 2>&1 || true
   if [ -f "$DIR/skills_pack.tar.gz" ] && [ ! -f "$HOME/.skills_v2_installed" ]; then
     tar -xzf "$DIR/skills_pack.tar.gz" -C "$HOME" && date -Is > "$HOME/.skills_v2_installed"
     say "✓ 26 skill aggiornate automaticamente in ~/.config/opencode e ~/.config/goose"
