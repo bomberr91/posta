@@ -1,90 +1,122 @@
 {
-  "versione": "2.0-pre-hub",
-  "descrizione": "Configurazione unificata per il FreeLLM Hub v2 + Centrale Agenti FilippoPC",
-  "proxy_locali": {
-    "magpie_gateway": "http://127.0.0.1:3425",
-    "headroom_compressor": "http://127.0.0.1:8787",
-    "browser_cdp": "http://127.0.0.1:9222"
+ "versione": "2.0-pre-hub",
+ "descrizione": "Configurazione unificata per il FreeLLM Hub v2 + Centrale Agenti FilippoPC",
+ "proxy_locali": {
+  "magpie_gateway": "http://127.0.0.1:3425",
+  "headroom_compressor": "http://127.0.0.1:8787",
+  "browser_cdp": "http://127.0.0.1:9222"
+ },
+ "stato_fusion_live": "stato_fusion.json",
+ "squadra_agenti": [
+  {
+   "id": "opencode",
+   "nome": "OpenCode",
+   "ruolo": "Architetto & Codice",
+   "cli": "opencode"
   },
-  "stato_fusion_live": "stato_fusion.json",
-  "squadra_agenti": [
-    {
-      "id": "opencode",
-      "nome": "OpenCode",
-      "ruolo": "Architetto & Codice",
-      "cli": "opencode"
-    },
-    {
-      "id": "goose",
-      "nome": "Goose (Block)",
-      "ruolo": "Automazione & Sub-Agenti",
-      "cli": "goose"
-    },
-    {
-      "id": "secondhand",
-      "nome": "Secondhand (Rust)",
-      "ruolo": "Revisore & Harness Economico",
-      "cli": "interpreter"
-    },
-    {
-      "id": "hermes",
-      "nome": "Hermes Agent (NousResearch)",
-      "ruolo": "Strategia & Ricerca",
-      "cli": "hermes"
-    },
-    {
-      "id": "openclaw",
-      "nome": "OpenClaw",
-      "ruolo": "Operatore Autonomo PC & Browser H24",
-      "cli": "openclaw"
-    },
-    {
-      "id": "gemini",
-      "nome": "Gemini CLI (Google)",
-      "ruolo": "Agente Google Terminale",
-      "cli": "gemini"
-    }
-  ],
-  "innesti_attivi": [
-    {
-      "id": "headroom",
-      "funzione": "Compressione automatica contesto/tool (-50%/-95% token)"
-    },
-    {
-      "id": "xerj",
-      "funzione": "Ricerca e auto-index Rust per agenti (40x meno token di grep)"
-    },
-    {
-      "id": "beads",
-      "funzione": "Memoria persistente a grafo per compiti e missioni degli agenti"
-    },
-    {
-      "id": "markitdown",
-      "funzione": "Conversione istantanea PDF/Word/Excel/HTML in Markdown pulito"
-    },
-    {
-      "id": "ricerca_strategica",
-      "funzione": "Dossier multi-fonte web/GitHub/social stile GPT-Researcher"
-    }
-  ],
-  "fonti_extra_modelli": [
-    {
-      "nome": "Z.ai GLM-5.3-Flash Web & Agent",
-      "url": "https://chat.z.ai/"
-    },
-    {
-      "nome": "OpenCode Zen Free Pool",
-      "modelli": [
-        "glm-5.1-free",
-        "kimi-k2.5-free",
-        "minimax-m2.5-free",
-        "qwen3.6-plus-free",
-        "nemotron-3-super-free"
-      ]
-    },
-    {
-      "nome": "OmniRoute / FreeLLMAPI Pool",
-      "nota": "57+ provider catalogati nel Roster per rotazione automatica"
-    }
-  ]
+  {
+   "id": "goose",
+   "nome": "Goose (Block)",
+   "ruolo": "Automazione & Sub-Agenti",
+   "cli": "goose"
+  },
+  {
+   "id": "secondhand",
+   "nome": "Secondhand (Rust)",
+   "ruolo": "Revisore & Harness Economico",
+   "cli": "interpreter"
+  },
+  {
+   "id": "hermes",
+   "nome": "Hermes Agent (NousResearch)",
+   "ruolo": "Strategia & Ricerca",
+   "cli": "hermes"
+  },
+  {
+   "id": "openclaw",
+   "nome": "OpenClaw",
+   "ruolo": "Operatore Autonomo PC & Browser H24",
+   "cli": "openclaw"
+  },
+  {
+   "id": "gemini",
+   "nome": "Gemini CLI (Google)",
+   "ruolo": "Agente Google Terminale",
+   "cli": "gemini"
+  }
+ ],
+ "innesti_attivi": [
+  {
+   "id": "headroom",
+   "funzione": "Compressione automatica contesto/tool (-50%/-95% token)"
+  },
+  {
+   "id": "xerj",
+   "funzione": "Ricerca e auto-index Rust per agenti (40x meno token di grep)"
+  },
+  {
+   "id": "beads",
+   "funzione": "Memoria persistente a grafo per compiti e missioni degli agenti"
+  },
+  {
+   "id": "markitdown",
+   "funzione": "Conversione istantanea PDF/Word/Excel/HTML in Markdown pulito"
+  },
+  {
+   "id": "ricerca_strategica",
+   "funzione": "Dossier multi-fonte web/GitHub/social stile GPT-Researcher"
+  }
+ ],
+ "fonti_extra_modelli": [
+  {
+   "nome": "Z.ai GLM-5.3-Flash Web & Agent",
+   "url": "https://chat.z.ai/"
+  },
+  {
+   "nome": "OpenCode Zen Free Pool",
+   "modelli": [
+    "glm-5.1-free",
+    "kimi-k2.5-free",
+    "minimax-m2.5-free",
+    "qwen3.6-plus-free",
+    "nemotron-3-super-free"
+   ]
+  },
+  {
+   "nome": "OmniRoute / FreeLLMAPI Pool",
+   "nota": "57+ provider catalogati nel Roster per rotazione automatica"
+  },
+  {
+   "nome": "AgentRouter 125$ una tantum (vedi provider_premium_una_tantum)",
+   "url": "https://agentrouter.org/"
+  }
+ ],
+ "provider_premium_una_tantum": {
+  "agentrouter": {
+   "nome": "AgentRouter.org — 125 $ UNA TANTUM (18/10/2026)",
+   "stato": "IN ATTIVAZIONE — login GitHub OAuth da fare A MANO (account GitHub >= 1 anno!)",
+   "base_url_openai": "https://agentrouter.org/v1",
+   "base_url_anthropic": "https://agentrouter.org",
+   "chiave": "agentrouter.org/console/token -> poi in CHIAVI_LOCALI.md",
+   "modelli_pregiati": [
+    "claude-opus-5",
+    "claude-opus-4-8",
+    "gpt-6-astra",
+    "gpt-5.6-sol",
+    "claude-sonnet-4-5-20250929",
+    "deepseek-v4-flash"
+   ],
+   "regole_uso": [
+    "SOLO ruoli pregiati: Regista/Giudice SQUADRA FUSION + verdetti Qualita' finali",
+    "MAI lavoro di massa (per quello ci sono i provider gratis del serbatoio)",
+    "Claude/GPT escono a lotti ~02:00 e ~11:00 UTC: se un modello non risponde riprovare li'",
+    "controllare il saldo in dashboard a ogni sessione; possibile check-in giornaliero bonus"
+   ],
+   "integrazione_opencode": {
+    "provider": "openai-compatible",
+    "baseURL": "https://agentrouter.org/v1",
+    "apiKey": "{env:AGENTROUTER_API_KEY}"
+   }
+  }
+ }
 }
