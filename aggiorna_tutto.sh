@@ -141,3 +141,27 @@ echo " Sul Desktop ora hai anche:"
 echo "   - BROWSER_AGENTI.bat  (apre il browser controllato dagli agenti)"
 echo "   - SQUADRA_FUSION.bat  (lancia 3 agenti in sincronia su un compito)"
 echo "=========================================================="
+
+# === POTENZIAMENTO SCAGLIONE 1 (18/10): Headroom + XERJ + Beads + MarkItDown + Gemini CLI + Marketing/Taste Skills ===
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+NODE22_BIN="$HOME/.nvm/versions/node/v22.22.2/bin"
+export PATH="$NODE22_BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
+mkdir -p "$HOME/.local/bin" "$HOME/.agents/skills"
+
+if [ -f "$HOME/posta/da_me/scaglione1_applica_innesti.sh" ] && [ ! -f "$HOME/.scaglione1_innesti_done" ]; then
+  bash "$HOME/posta/da_me/scaglione1_applica_innesti.sh" && touch "$HOME/.scaglione1_innesti_done"
+fi
+
+# Installa anche le skill di Marketing (CRO, Copywriting, SEO, Social) e Taste-Skill (UI Anti-Slop)
+if [ ! -d "$HOME/.agents/skills/taste-skill" ]; then
+  git clone --depth 1 -q https://github.com/leonxlnx/taste-skill.git /tmp/ts_sk 2>/dev/null && cp -r /tmp/ts_sk "$HOME/.agents/skills/taste-skill" && rm -rf /tmp/ts_sk/.git /tmp/ts_sk || true
+fi
+if [ ! -d "$HOME/.agents/skills/marketingskills" ]; then
+  git clone --depth 1 -q https://github.com/coreyhaines31/marketingskills.git /tmp/mk_sk 2>/dev/null && cp -r /tmp/mk_sk "$HOME/.agents/skills/marketingskills" && rm -rf /tmp/mk_sk/.git /tmp/mk_sk || true
+fi
+
+# Riavvia il Postino col nuovo script blindato (--autostash e log in /tmp/postino.log)
+pkill -f 'postino.sh' 2>/dev/null || true
+nohup "$HOME/posta/postino.sh" --loop >/dev/null 2>&1 &
+
