@@ -1,0 +1,370 @@
+  📋 Loaded env from /home/agenti/.omniroute/.env
+  📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env
+  ⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first
+  ⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.
+
+OmniRoute Available Providers
+
+358 providers available.
+Categories: api-key, audio-only, cloud-agent, local, noauth, oauth, search, system, upstream-proxy, web-cookie
+Use --search <text> or --category <category> to filter.
+
+ID                       Category       Name                         Notes
+azure-openai             api-key        Azure OpenAI                 alias:azure, passthrough
+azure-ai                 api-key        Azure AI Foundry             alias:azure-ai, passthrough
+bedrock                  api-key        Amazon Bedrock               alias:bedrock, passthrough
+watsonx                  api-key        IBM watsonx.ai Gateway       alias:watsonx, passthrough
+oci                      api-key        OCI Generative AI            alias:oci, passthrough
+sap                      api-key        SAP Generative AI Hub        alias:sap, passthrough
+modal                    api-key        Modal                        alias:mdl, free, passthrough
+vertex                   api-key        Vertex AI                    alias:vertex, free
+vertex-partner           api-key        Vertex AI Partners           alias:vp
+cloudflare-ai            api-key        Cloudflare Workers AI        alias:cf, free
+scaleway                 api-key        Scaleway AI                  alias:scw, free
+ovhcloud                 api-key        OVHcloud AI                  alias:ovh
+heroku                   api-key        Heroku AI                    alias:heroku
+databricks               api-key        Databricks                   alias:databricks
+datarobot                api-key        DataRobot                    alias:datarobot, passthrough
+clarifai                 api-key        Clarifai                     alias:clarifai, passthrough
+snowflake                api-key        Snowflake Cortex             alias:snowflake
+openai                   api-key        OpenAI                       alias:openai
+reka                     api-key        Reka                         alias:reka, free
+pioneer                  api-key        Pioneer AI                   alias:pn
+uc-direct                api-key        UC Direct (uncensored.com)   alias:ucd
+anthropic                api-key        Anthropic                    alias:anthropic
+gemini                   api-key        Gemini (Google AI Studio)    alias:gemini, free
+groq                     api-key        Groq                         alias:groq, free
+blackbox                 api-key        Blackbox AI                  alias:bb, free, deprecated
+xai                      api-key        xAI (Grok)                   alias:xai
+mistral                  api-key        Mistral                      alias:mistral, free
+perplexity               api-key        Perplexity                   alias:pplx
+perplexity-agent         api-key        Perplexity Agent             alias:pplx-agent, passthrough
+cohere                   api-key        Cohere                       alias:cohere, free
+meta-llama               api-key        Meta Llama API               alias:meta
+morph                    api-key        Morph                        alias:morph, free
+galadriel                api-key        Galadriel                    alias:galadriel, deprecated
+ai21                     api-key        AI21 Labs                    alias:ai21, free
+venice                   api-key        Venice.ai                    alias:venice
+codestral                api-key        Codestral                    alias:codestral
+upstage                  api-key        Upstage                      alias:upstage
+maritalk                 api-key        Maritalk                     alias:maritalk
+nous-research            api-key        Nous Research                alias:nous, free
+arcee-ai                 api-key        Arcee AI                     alias:arcee, free, passthrough
+liquid                   api-key        Liquid AI                    alias:liquid, free, passthrough
+inception                api-key        Inception                    alias:inception, free
+writer                   api-key        Writer                       alias:writer
+oneminai                 api-key        1min.AI                      alias:1min, passthrough
+cheaperinference         api-key        Cheaper Inference            alias:cinf, passthrough
+freebuff                 api-key        Freebuff                     alias:freebuff, free, passthrough
+charm-hyper              api-key        Charm Hyper                  alias:charm-hyper, free, passthrough
+agentrouter              api-key        AgentRouter                  alias:agentrouter, free, passthrough
+unorouter                api-key        UnoRouter                    alias:unorouter, free, passthrough
+command-code             api-key        Command Code                 alias:cmd
+openrouter               api-key        OpenRouter                   alias:openrouter, free, passthrough
+opper                    api-key        Opper                        alias:opper, passthrough
+requesty                 api-key        Requesty                     alias:requesty, free, passthrough
+zylo-api                 api-key        Zylo API                     alias:zylo, free, passthrough
+fastrouter               api-key        FastRouter                   alias:fastrouter, free, passthrough
+anyapi                   api-key        AnyAPI AI                    alias:anyapi, free, passthrough
+electronhub              api-key        Electron Hub                 alias:electronhub, free, passthrough
+llmgateway               api-key        LLM Gateway                  alias:llmgateway, free, passthrough
+lyceum                   api-key        Lyceum                       alias:lyceum, free, passthrough
+llm-kiwi                 api-key        LLM.Kiwi                     alias:llmkiwi, free, passthrough
+literouter               api-key        LiteRouter                   alias:literouter, free, passthrough
+greenpt                  api-key        GreenPT                      alias:greenpt, passthrough
+eurouter                 api-key        EURouter                     alias:eurouter, passthrough
+mnn-ai                   api-key        MNN AI                       alias:mnn-ai, free, passthrough
+meganova-ai              api-key        MegaNova AI                  alias:meganova-ai, free, passthrough
+mixlayer                 api-key        Mixlayer                     alias:mixlayer, free, passthrough
+speka                    api-key        Speka AI                     alias:speka, free, passthrough
+tokenreply               api-key        TokenReply                   alias:tokenreply, free, passthrough
+yolo-auto                api-key        Yolo-Auto                    alias:yolo-auto, free, passthrough
+dxnt                     api-key        DXNT / DX Token              alias:dxnt, free, passthrough
+cloudcode-one            api-key        CloudCode.ONE                alias:cloudcode-one, free, passthrough
+ofoxai                   api-key        OfoxAI                       alias:ofoxai, free, passthrough
+zerolimitai              api-key        ZeroLimitAI                  alias:zerolimitai, free, passthrough
+chatanywhere             api-key        ChatAnywhere                 alias:chatanywhere, free, passthrough
+helyxai                  api-key        Helyx AI                     alias:helyxai, free, passthrough
+auriko                   api-key        Auriko                       alias:auriko, free, passthrough
+poixe-ai                 api-key        Poixe AI                     alias:poixe-ai, free, passthrough
+naga-ai                  api-key        Naga AI                      alias:naga-ai, free, passthrough
+chat-oripe               api-key        Chat Oripe                   alias:chat-oripe, free, passthrough
+freeinference            api-key        FreeInference                alias:freeinference, free, passthrough
+free-ai                  api-key        Free.ai                      alias:free-ai, free, passthrough
+dgrid                    api-key        DGrid                        alias:dgrid, free, passthrough
+qiniu                    api-key        Qiniu                        alias:qiniu, passthrough
+orcarouter               api-key        OrcaRouter                   alias:orcarouter, passthrough
+api-airforce             api-key        Api.airforce                 alias:af, free
+crof                     api-key        CrofAI                       alias:crof
+bazaarlink               api-key        BazaarLink                   alias:bzl, free
+synthetic                api-key        Synthetic                    alias:synthetic, passthrough
+kilo-gateway             api-key        Kilo Gateway                 alias:kg, passthrough
+wafer                    api-key        Wafer AI                     alias:wafer
+opencode-zen             api-key        OpenCode Zen                 alias:opencode-zen, passthrough
+opencode-go              api-key        OpenCode Go                  alias:opencode-go, passthrough
+dahl                     api-key        Dahl                         alias:dahl, free
+freetheai                api-key        FreeTheAi                    alias:fta, free, passthrough
+g4f-groq                 api-key        g4f.space — Groq             alias:g4fgroq, passthrough
+g4f-gemini               api-key        g4f.space — Gemini           alias:g4fgem, passthrough
+g4f-pollinations         api-key        g4f.space — Pollinations     alias:g4fpol, passthrough
+g4f-ollama               api-key        g4f.space — Ollama           alias:g4foll, passthrough
+g4f-nvidia               api-key        g4f.space — NVIDIA           alias:g4fnv, passthrough
+vercel-ai-gateway        api-key        Vercel AI Gateway            alias:vag, passthrough
+llm7                     api-key        LLM7.io                      alias:llm7, free
+llamagate                api-key        LlamaGate                    alias:llamagate
+gitlawb                  api-key        Gitlawb Opengateway (MiMo)   alias:glb
+gitlawb-gmi              api-key        Gitlawb Opengateway (GMI Cloud) alias:glb-gmi
+nanogpt                  api-key        NanoGPT                      alias:nanogpt
+aimlapi                  api-key        AI/ML API                    alias:aiml, passthrough
+novita                   api-key        Novita AI                    alias:novita, free, passthrough
+piapi                    api-key        PiAPI                        alias:pi, passthrough
+getgoapi                 api-key        GoAPI                        alias:ggo, passthrough
+laozhang                 api-key        LaoZhang AI                  alias:lz, passthrough
+thebai                   api-key        TheB.AI                      alias:thebai, passthrough
+bai                      api-key        b.ai                         alias:bai, passthrough
+fenayai                  api-key        FenayAI                      alias:fenayai, passthrough
+empower                  api-key        Empower                      alias:empower, passthrough
+poe                      api-key        Poe                          alias:poe, passthrough
+chutes                   api-key        Chutes.ai                    alias:chutes, passthrough
+factory                  api-key        Factory                      alias:factory, passthrough
+bluesminds               api-key        BluesMinds                   alias:bm, free
+freemodel-dev            api-key        FreeModel.dev                alias:fmd, free
+freeaiapikey             api-key        FreeAIAPIKey                 alias:faik
+zenmux                   api-key        ZenMux                       alias:zm, free
+openadapter              api-key        OpenAdapter                  alias:oad, free
+dit                      api-key        DIT.ai                       alias:dai
+tokenrouter              api-key        TokenRouter                  alias:trk, free
+token-kiosk              api-key        Token Kiosk                  alias:tk
+sumopod                  api-key        SumoPod                      alias:sumopod, passthrough
+x5lab                    api-key        X5Lab                        alias:x5lab, passthrough
+chenzk                   api-key        Chenzk API                   alias:chenzk, passthrough
+kenari                   api-key        Kenari                       alias:kenari, passthrough
+navy                     api-key        NavyAI                       alias:navy, free, passthrough
+ainative                 api-key        AINative Studio              alias:ainative, free, passthrough
+aion                     api-key        Aion Labs                    alias:aion, free, passthrough
+routeway                 api-key        Routeway                     alias:routeway, free, passthrough
+nara                     api-key        NaraRouter                   alias:nara, free, passthrough
+xkiro                    api-key        xKiro                        alias:xkiro, free, passthrough
+regolo                   api-key        Regolo AI                    alias:regolo, passthrough
+naga-ac                  api-key        Naga.ac                      alias:naga, free, passthrough
+void-ai                  api-key        Void AI                      alias:void-ai, free, passthrough
+helixmind                api-key        HelixMind                    alias:helixmind, passthrough
+logfare                  api-key        Logfare                      alias:logfare, free, passthrough
+tabitoken                api-key        TabiToken                    alias:tabitoken, passthrough
+seekai                   api-key        SeekAi                       alias:ska, free, passthrough
+together                 api-key        Together AI                  alias:together
+openvecta                api-key        OpenVecta                    alias:openvecta, free
+openference-api          api-key        Openference API              alias:ofa, free
+poolside                 api-key        Poolside                     alias:poolside, free, passthrough
+fireworks                api-key        Fireworks AI                 alias:fireworks, free
+cerebras                 api-key        Cerebras                     alias:cerebras, free
+nvidia                   api-key        NVIDIA NIM                   alias:nvidia, free
+nebius                   api-key        Nebius AI                    alias:nebius, free
+nube                     api-key        Nube.sh                      alias:nube
+siliconflow              api-key        SiliconFlow                  alias:siliconflow, free
+hyperbolic               api-key        Hyperbolic                   alias:hyp, free
+ollama-cloud             api-key        Ollama Cloud                 alias:ollamacloud, free
+huggingface              api-key        HuggingFace                  alias:hf, free
+deepinfra                api-key        DeepInfra                    alias:deepinfra, free
+lambda-ai                api-key        Lambda AI                    alias:lambda
+sambanova                api-key        SambaNova                    alias:samba, free
+nscale                   api-key        nScale                       alias:nscale, free
+baseten                  api-key        Baseten                      alias:baseten, free
+publicai                 api-key        PublicAI                     alias:publicai
+featherless-ai           api-key        Featherless AI               alias:featherless
+friendliai               api-key        FriendliAI                   alias:friendli, free
+wandb                    api-key        Weights & Biases Inference   alias:wandb
+inference-net            api-key        Inference.net                alias:inet, free
+predibase                api-key        Predibase                    alias:predibase, deprecated
+bytez                    api-key        Bytez                        alias:bytez, free
+monsterapi               api-key        MonsterAPI                   alias:monster, free, passthrough, deprecated
+modelscope               api-key        ModelScope                   alias:ms, free
+byteplus                 api-key        BytePlus ModelArk            alias:bpm, free
+digitalocean             api-key        DigitalOcean                 alias:digitalocean, passthrough
+qianfan                  api-key        Baidu Qianfan                alias:qianfan
+glm                      api-key        GLM Coding                   alias:glm
+glm-cn                   api-key        GLM Coding (China)           alias:glmcn
+glmt                     api-key        GLM Thinking                 alias:glmt
+bailian-coding-plan      api-key        Alibaba Token Plan           alias:bcp
+qwen-cloud               api-key        Qwen Cloud                   alias:qwc
+qwen-cloud-token-plan    api-key        Qwen Cloud Token Plan        alias:qct
+kimi                     api-key        Kimi (Legacy Moonshot API)   alias:kimi
+kimi-coding-apikey       api-key        Kimi Code API Key            alias:kmca
+minimax                  api-key        Minimax Coding               alias:minimax
+minimax-cn               api-key        Minimax (China)              alias:minimax-cn
+deepseek                 api-key        DeepSeek                     alias:ds, free
+zai                      api-key        Z.AI                         alias:zai
+alibaba                  api-key        Alibaba Cloud Model Studio   alias:ali
+alibaba-cn               api-key        Alibaba (China)              alias:ali-cn
+longcat                  api-key        LongCat AI                   alias:lc, free
+moonshot                 api-key        Kimi                         alias:moonshot
+volcengine               api-key        Volcengine                   alias:volcengine
+volcengine-agent-plan    api-key        Volcengine Ark Agent Plan    alias:veap
+volcengine-coding-plan   api-key        Volcengine Ark Coding Plan   alias:vecp
+gigachat                 api-key        GigaChat (Sber)              alias:gigachat
+xiaomi-mimo              api-key        Xiaomi MiMo                  alias:mimo
+xiaomi-mimo-token-plan   api-key        Xiaomi MiMo Token Plan       alias:mimotp
+baidu                    api-key        Baidu (ERNIE)                alias:baidu, free, passthrough
+tencent                  api-key        Tencent Hunyuan              alias:tencent, free, passthrough
+iflytek                  api-key        iFlytek Spark                alias:iflytek, free, passthrough
+baichuan                 api-key        Baichuan                     alias:baichuan, free, passthrough
+yi                       api-key        Yi (01.AI)                   alias:yi, passthrough
+stepfun                  api-key        StepFun                      alias:stepfun, free, passthrough
+coze                     api-key        Coze                         alias:coze, free, passthrough
+360ai                    api-key        360 AI                       alias:360ai, free, passthrough
+doubao                   api-key        Doubao                       alias:doubao, free, passthrough
+sensenova                api-key        SenseNova                    alias:sensenova, free, passthrough
+sparkdesk                api-key        SparkDesk                    alias:sparkdesk, free, passthrough
+hcnsec                   api-key        Huancheng Public API         alias:hcnsec, free, passthrough
+agnes                    api-key        Agnes AI                     alias:agnes, free
+agnes-cn                 api-key        Agnes AI (China)             alias:agnescn, free
+sealion                  api-key        SEA-LION                     alias:sealion, free
+clova-studio             api-key        Naver CLOVA Studio           alias:clova
+internlm                 api-key        InternLM (Intern-S1)         alias:internlm, free
+ant-ling                 api-key        Ant Ling / Ring (inclusionAI) alias:ling, free
+sarvam                   api-key        Sarvam AI                    alias:sarvam, free
+plamo                    api-key        PLaMo                        alias:plamo
+typhoon                  api-key        Typhoon                      alias:typhoon, free
+nlpcloud                 api-key        NLP Cloud                    alias:nlpc, free
+runwayml                 api-key        Runway                       alias:runway
+kie                      api-key        KIE.AI                       alias:kie
+pollinations             api-key        Pollinations AI              alias:pol, free
+haiper                   api-key        Haiper                       alias:hp
+leonardo                 api-key        Leonardo AI                  alias:leo
+ideogram                 api-key        Ideogram                     alias:ideo
+magnific                 api-key        Magnific                     alias:freepik, free
+udio                     api-key        Udio                         alias:udio
+v0-vercel                api-key        v0 (Vercel)                  alias:v0
+gitlab                   api-key        GitLab Duo PAT               alias:gitlab
+voyage-ai                api-key        Voyage AI                    alias:voyage, free
+jina-ai                  api-key        Jina AI (Foundation API)     alias:jina, free
+fal-ai                   api-key        Fal.ai                       alias:fal
+stability-ai             api-key        Stability AI                 alias:stability
+black-forest-labs        api-key        Black Forest Labs            alias:bfl
+recraft                  api-key        Recraft                      alias:recraft
+topaz                    api-key        Topaz                        alias:topaz
+segmind                  api-key        Segmind                      alias:segmind, free
+dify                     api-key        Dify                         alias:dify, free, passthrough
+nomic                    api-key        Nomic                        alias:nomic, free, passthrough
+mixedbread               api-key        Mixedbread AI                alias:mxbai, free
+jina-reader              api-key        Jina Reader (r.jina.ai)      alias:jr, free
+tinyfish                 api-key        TinyFish Fetch               alias:tf
+deepai                   api-key        DeepAI                       alias:deepai
+cursor-api               api-key        Cursor API                   alias:cua
+deepgram                 audio-only     Deepgram                     alias:dg
+assemblyai               audio-only     AssemblyAI                   alias:aai
+soniox                   audio-only     Soniox                       alias:sx
+elevenlabs               audio-only     ElevenLabs                   alias:el
+cartesia                 audio-only     Cartesia                     alias:cartesia
+fishaudio                audio-only     Fish Audio                   alias:fishaudio
+playht                   audio-only     PlayHT                       alias:playht
+inworld                  audio-only     Inworld                      alias:inworld
+aws-polly                audio-only     AWS Polly                    alias:polly
+gladia                   audio-only     Gladia                       alias:gladia
+rev-ai                   audio-only     Rev AI                       alias:revai
+speechmatics             audio-only     Speechmatics                 alias:sm, free
+jules                    cloud-agent    Google Jules                 alias:jules
+devin                    cloud-agent    Devin                        alias:devin
+codex-cloud              cloud-agent    Codex Cloud                  alias:codex-cloud
+mlx-gemma                local          MLX Gemma 26B                alias:mlx-gemma
+mlx-qwen                 local          MLX Qwen 3.8 27B             alias:mlx-qwen
+ollama-local             local          Ollama                       alias:ollama, passthrough
+lm-studio                local          LM Studio                    alias:lmstudio, passthrough
+vllm                     local          vLLM                         alias:vllm, passthrough
+lemonade                 local          Lemonade Server              alias:lemonade, passthrough
+llamafile                local          Llamafile                    alias:llamafile, passthrough
+llama-cpp                local          llama.cpp                    alias:llamacpp, passthrough
+triton                   local          NVIDIA Triton                alias:triton, passthrough
+docker-model-runner      local          Docker Model Runner          alias:dmr, passthrough
+xinference               local          XInference                   alias:xinference, passthrough
+oobabooga                local          oobabooga                    alias:ooba, passthrough
+sdwebui                  local          SD WebUI                     alias:sdwebui, free
+comfyui                  local          ComfyUI                      alias:comfyui, free
+devin-cli-agentic        noauth         Devin CLI Agentic Bridge     alias:dva
+opencode                 noauth         OpenCode Free                alias:oc, free
+duckduckgo-web           noauth         DuckDuckGo AI Chat           alias:ddgw, free
+cloudflare-playground    noauth         Cloudflare AI Playground     alias:cfp, free
+veoaifree-web            noauth         Veo AI Free                  alias:veo-free, free
+auggie                   noauth         Augment (Auggie CLI)         alias:aug
+zcode                    noauth         ZCode (GLM Coding Plan)      alias:zc
+codex-app-server         noauth         OpenAI Codex (App-Server)    alias:cxa
+uncloseai                noauth         UncloseAI                    alias:unc, free, passthrough
+aihorde                  noauth         AI Horde                     alias:horde, free, passthrough
+ghe-copilot              oauth          GitHub Enterprise Copilot    alias:ghe-copilot
+xai-oauth                oauth          xAI OAuth (Grok)             alias:xao
+openference              oauth          Openference                  alias:of, free
+grok-cli                 oauth          Grok Build                   alias:gc
+qoder                    oauth          Qoder                        alias:if, free
+agy                      oauth          Antigravity CLI              alias:agy, free
+kiro                     oauth          Kiro AI                      alias:kr, free
+amazon-q                 oauth          Amazon Q                     alias:aq, free
+claude                   oauth          Claude Code                  alias:cc
+antigravity              oauth          Antigravity                  
+codex                    oauth          OpenAI Codex                 alias:cx
+github                   oauth          GitHub Copilot               alias:gh
+gitlab-duo               oauth          GitLab Duo                   alias:gitlab-duo
+cursor                   oauth          Cursor IDE                   alias:cu
+zed                      oauth          Zed IDE                      alias:zd
+zed-hosted               oauth          Zed Hosted Models            
+trae                     oauth          Trae                         alias:tr
+kimi-coding              oauth          Kimi Code CLI                alias:kmc
+kilocode                 oauth          Kilo Code                    alias:kc
+cline                    oauth          Cline                        alias:cl
+clinepass                oauth          ClinePass                    alias:cp
+devin-desktop            oauth          Devin Desktop                
+devin-cli                oauth          Devin CLI                    alias:dv
+codebuddy-cn             oauth          CodeBuddy CN                 alias:cbcn
+muse-code                oauth          Muse Code (Meta)             alias:mc, passthrough
+perplexity-search        search         Perplexity Search            alias:pplx-search
+serper-search            search         Serper Search                alias:serper-search, free
+brave-search             search         Brave Search                 alias:brave-search
+exa-search               search         Exa Search                   alias:exa-search, free
+tavily-search            search         Tavily Search                alias:tavily-search, free
+anysearch-search         search         AnySearch                    alias:anysearch, free
+firecrawl                search         Firecrawl                    alias:fc, free
+google-pse-search        search         Google Programmable Search   alias:google-pse
+nimble-search            search         Nimble Search                alias:nimble
+linkup-search            search         Linkup Search                alias:linkup
+searchapi-search         search         SearchAPI                    alias:searchapi
+youcom-search            search         You.com Search               alias:youcom-search
+searxng-search           search         SearXNG Search               alias:searxng, free
+x-search                 search         X Search (Grok)              alias:x_search
+xquik-search             search         Xquik X Search               alias:xquik
+ollama-search            search         Ollama Search                alias:ollama-search
+context7                 search         Context7 (library docs)      alias:context7, free
+auto                     system         Auto (Zero-Config)           alias:auto
+cliproxyapi              upstream-proxy CLIProxyAPI                  alias:cpa
+9router                  upstream-proxy 9router                      alias:nr
+chatgpt-web              web-cookie     ChatGPT Web (Clean Room)     
+chatgpt-web-codex        web-cookie     ChatGPT Web (Codex)          alias:cgpt-codex
+grok-web                 web-cookie     Grok Web (Subscription)      alias:gw
+gemini-web               web-cookie     Gemini Web (Free)            alias:gweb
+perplexity-web           web-cookie     Perplexity Web (Pro/Max)     alias:pplx-web
+blackbox-web             web-cookie     Blackbox Web (Subscription)  alias:bb-web
+muse-spark-web           web-cookie     Muse Spark Web (Meta AI)     alias:ms-web, free
+claude-web               web-cookie     Claude Web                   alias:cw
+deepseek-web             web-cookie     DeepSeek Web                 alias:ds-web
+copilot-web              web-cookie     Microsoft Copilot Web        alias:copilot
+copilot-m365-web         web-cookie     Microsoft 365 Copilot (BizChat) alias:m365copilot
+t3-web                   web-cookie     t3.chat (Pro/Free)           alias:t3chat, free
+inner-ai                 web-cookie     Inner.ai (Subscription)      alias:in-ai
+adapta-web               web-cookie     Adapta.org (Adapta One Web)  alias:adp-web
+lmarena                  web-cookie     Arena (Free)                 alias:lma, free
+yuanbao-web              web-cookie     Tencent Yuanbao (Free)       alias:ybw, free
+tencent-aistudio-web     web-cookie     Tencent AI Studio (Free)     alias:tasw, free
+huggingchat              web-cookie     HuggingChat (Free)           alias:huggingchat, free
+poe-web                  web-cookie     Poe Web (Subscription)       alias:poe
+venice-web               web-cookie     Venice Web (Privacy)         alias:ven
+v0-vercel-web            web-cookie     v0 Vercel Web (Code Gen)     alias:v0-vercel-web
+kimi-web                 web-cookie     Kimi Web                     alias:kimi-web
+doubao-web               web-cookie     Dola Web (ByteDance)         alias:db
+zenmux-free              web-cookie     ZenMux Free (Web)            alias:zmf, free
+tinycms-web              web-cookie     TinyCMS Web (Free/Sub)       alias:tcw, free
+zai-web                  web-cookie     Z.ai Web                     alias:zw, free
+promptql                 web-cookie     PromptQL (Unofficial/Experimental) alias:pql
+notion-web               web-cookie     Notion AI Web (Unofficial/Experimental) alias:nw
+adobe-firefly            web-cookie     Adobe Firefly (Image/Video)  alias:firefly
+hyperagent               web-cookie     HyperAgent (Unofficial/Experimental) alias:ha
+conol-web                web-cookie     Conol (Unofficial/Experimental) alias:cnl
+maxai                    web-cookie     MaxAI                        alias:mx
+uc                       web-cookie     UC (uncensored.com)          alias:ucn

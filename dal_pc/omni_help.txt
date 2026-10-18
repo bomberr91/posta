@@ -1,0 +1,63 @@
+  📋 Loaded env from /home/agenti/.omniroute/.env
+  📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env
+  ⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first
+  ⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.
+Usage: omniroute setup [options] [command]
+
+OmniRoute Setup
+
+Options:
+  --password <value>         Set admin password
+  --add-provider             Add an API-key provider connection
+  --provider <id>            Provider id, for example openai or anthropic
+  --provider-name <name>     Display name for the connection
+  --api-key <value>          Provider API key
+  --default-model <model>    Optional default model
+  --provider-base-url <url>  Optional OpenAI-compatible base URL override
+  --test-provider            Test the provider after saving it
+  --non-interactive          Read all inputs from flags/env and do not prompt
+  --list                     List all supported CLI tools
+  -h, --help                 display help for command
+
+Commands:
+  opencode [options]         Install and configure the bundled
+                             @omniroute/opencode-plugin for OpenCode
+---
+  📋 Loaded env from /home/agenti/.omniroute/.env
+  📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env
+  ⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first
+  ⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.
+Usage: omniroute providers [options] [command]
+
+Providers
+
+Options:
+  -h, --help                                display help for command
+
+Commands:
+  available [options]                       Show available providers in the OmniRoute catalog
+  list [options]                            List configured provider connections
+  test [options] <idOrName>                 Test a configured provider connection
+  test-all [options]                        Test all active provider connections
+  validate [options]                        Validate local provider configuration without calling upstream
+  rotate [options] <idOrName>               Rotate the upstream API key for a provider connection
+  status [options]                          Show key health for all provider connections (age, expiry, cooldown)
+  add [options] <provider>                  Add an API-key provider connection through the active local/remote server
+  import [options] <file>                   Import provider connections from a JSON file
+  auth [options] <provider>                 Start an existing OAuth flow for a provider
+  remove [options] <idOrName>               Remove one provider connection from the active local/remote server
+  edit [options] <idOrName>                 Edit one provider connection on the active local/remote server
+  metrics [options]                         Show provider performance metrics (latency, success rate, cost)
+  metric [options] <connectionId> <metric>  Get a single metric value for a specific connection
+  help [command]                            display help for command
+---
+  📋 Loaded env from /home/agenti/.omniroute/.env
+  📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env
+  ⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first
+  ⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.
+Usage: omniroute provider [options] [subcommand]
+
+Manage provider connections (use 'providers' for the full interface)
+
+Options:
+  -h, --help  display help for command

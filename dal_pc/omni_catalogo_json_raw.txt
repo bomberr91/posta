@@ -1,0 +1,803 @@
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+{
+  "count": 358,
+  "categories": [
+    "api-key",
+    "audio-only",
+    "cloud-agent",
+    "local",
+    "noauth",
+    "oauth",
+    "search",
+    "system",
+    "upstream-proxy",
+    "web-cookie"
+  ],
+  "providers": [
+    {
+      "id": "azure-openai",
+      "name": "Azure OpenAI",
+      "category": "api-key",
+      "alias": "azure",
+      "website": "https://azure.microsoft.com/products/ai-services/openai-service",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "azure-ai",
+      "name": "Azure AI Foundry",
+      "category": "api-key",
+      "alias": "azure-ai",
+      "website": "https://learn.microsoft.com/azure/ai-foundry",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "bedrock",
+      "name": "Amazon Bedrock",
+      "category": "api-key",
+      "alias": "bedrock",
+      "website": "https://aws.amazon.com/bedrock",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "watsonx",
+      "name": "IBM watsonx.ai Gateway",
+      "category": "api-key",
+      "alias": "watsonx",
+      "website": "https://www.ibm.com/products/watsonx-ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "oci",
+      "name": "OCI Generative AI",
+      "category": "api-key",
+      "alias": "oci",
+      "website": "https://www.oracle.com/artificial-intelligence/generative-ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "sap",
+      "name": "SAP Generative AI Hub",
+      "category": "api-key",
+      "alias": "sap",
+      "website": "https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "modal",
+      "name": "Modal",
+      "category": "api-key",
+      "alias": "mdl",
+      "website": "https://modal.com/docs",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "vertex",
+      "name": "Vertex AI",
+      "category": "api-key",
+      "alias": "vertex",
+      "website": "https://cloud.google.com/vertex-ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "vertex-partner",
+      "name": "Vertex AI Partners",
+      "category": "api-key",
+      "alias": "vp",
+      "website": "https://cloud.google.com/vertex-ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "cloudflare-ai",
+      "name": "Cloudflare Workers AI",
+      "category": "api-key",
+      "alias": "cf",
+      "website": "https://developers.cloudflare.com/workers-ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "scaleway",
+      "name": "Scaleway AI",
+      "category": "api-key",
+      "alias": "scw",
+      "website": "https://www.scaleway.com/en/docs/ai-data/generative-apis/",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "ovhcloud",
+      "name": "OVHcloud AI",
+      "category": "api-key",
+      "alias": "ovh",
+      "website": "https://www.ovhcloud.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "heroku",
+      "name": "Heroku AI",
+      "category": "api-key",
+      "alias": "heroku",
+      "website": "https://www.heroku.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "databricks",
+      "name": "Databricks",
+      "category": "api-key",
+      "alias": "databricks",
+      "website": "https://www.databricks.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "datarobot",
+      "name": "DataRobot",
+      "category": "api-key",
+      "alias": "datarobot",
+      "website": "https://docs.datarobot.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "clarifai",
+      "name": "Clarifai",
+      "category": "api-key",
+      "alias": "clarifai",
+      "website": "https://docs.clarifai.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "snowflake",
+      "name": "Snowflake Cortex",
+      "category": "api-key",
+      "alias": "snowflake",
+      "website": "https://www.snowflake.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "category": "api-key",
+      "alias": "openai",
+      "website": "https://platform.openai.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "reka",
+      "name": "Reka",
+      "category": "api-key",
+      "alias": "reka",
+      "website": "https://docs.reka.ai/chat/overview",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "pioneer",
+      "name": "Pioneer AI",
+      "category": "api-key",
+      "alias": "pn",
+      "website": "https://pioneer.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "uc-direct",
+      "name": "UC Direct (uncensored.com)",
+      "category": "api-key",
+      "alias": "ucd",
+      "website": "https://uncensored.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic",
+      "category": "api-key",
+      "alias": "anthropic",
+      "website": "https://platform.claude.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini (Google AI Studio)",
+      "category": "api-key",
+      "alias": "gemini",
+      "website": "https://aistudio.google.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "groq",
+      "name": "Groq",
+      "category": "api-key",
+      "alias": "groq",
+      "website": "https://groq.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "blackbox",
+      "name": "Blackbox AI",
+      "category": "api-key",
+      "alias": "bb",
+      "website": "https://blackbox.ai",
+      "deprecated": true,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "xai",
+      "name": "xAI (Grok)",
+      "category": "api-key",
+      "alias": "xai",
+      "website": "https://x.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral",
+      "category": "api-key",
+      "alias": "mistral",
+      "website": "https://mistral.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "category": "api-key",
+      "alias": "pplx",
+      "website": "https://www.perplexity.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "perplexity-agent",
+      "name": "Perplexity Agent",
+      "category": "api-key",
+      "alias": "pplx-agent",
+      "website": "https://www.perplexity.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "cohere",
+      "name": "Cohere",
+      "category": "api-key",
+      "alias": "cohere",
+      "website": "https://cohere.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "meta-llama",
+      "name": "Meta Llama API",
+      "category": "api-key",
+      "alias": "meta",
+      "website": "https://llama.developer.meta.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "morph",
+      "name": "Morph",
+      "category": "api-key",
+      "alias": "morph",
+      "website": "https://morphllm.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "galadriel",
+      "name": "Galadriel",
+      "category": "api-key",
+      "alias": "galadriel",
+      "website": "https://galadriel.com",
+      "deprecated": true,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "ai21",
+      "name": "AI21 Labs",
+      "category": "api-key",
+      "alias": "ai21",
+      "website": "https://www.ai21.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "venice",
+      "name": "Venice.ai",
+      "category": "api-key",
+      "alias": "venice",
+      "website": "https://venice.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "codestral",
+      "name": "Codestral",
+      "category": "api-key",
+      "alias": "codestral",
+      "website": "https://mistral.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "upstage",
+      "name": "Upstage",
+      "category": "api-key",
+      "alias": "upstage",
+      "website": "https://www.upstage.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "maritalk",
+      "name": "Maritalk",
+      "category": "api-key",
+      "alias": "maritalk",
+      "website": "https://www.maritaca.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "nous-research",
+      "name": "Nous Research",
+      "category": "api-key",
+      "alias": "nous",
+      "website": "https://portal.nousresearch.com/help",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "arcee-ai",
+      "name": "Arcee AI",
+      "category": "api-key",
+      "alias": "arcee",
+      "website": "https://arcee.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "liquid",
+      "name": "Liquid AI",
+      "category": "api-key",
+      "alias": "liquid",
+      "website": "https://liquid.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "inception",
+      "name": "Inception",
+      "category": "api-key",
+      "alias": "inception",
+      "website": "https://docs.inceptionlabs.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": false
+    },
+    {
+      "id": "writer",
+      "name": "Writer",
+      "category": "api-key",
+      "alias": "writer",
+      "website": "https://dev.writer.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "oneminai",
+      "name": "1min.AI",
+      "category": "api-key",
+      "alias": "1min",
+      "website": "https://1min.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "cheaperinference",
+      "name": "Cheaper Inference",
+      "category": "api-key",
+      "alias": "cinf",
+      "website": "https://cheaperinference.com/?utm_source=omniroute",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "freebuff",
+      "name": "Freebuff",
+      "category": "api-key",
+      "alias": "freebuff",
+      "website": "https://freebuff.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "charm-hyper",
+      "name": "Charm Hyper",
+      "category": "api-key",
+      "alias": "charm-hyper",
+      "website": "https://hyper.charm.land",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "agentrouter",
+      "name": "AgentRouter",
+      "category": "api-key",
+      "alias": "agentrouter",
+      "website": "https://agentrouter.org",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "unorouter",
+      "name": "UnoRouter",
+      "category": "api-key",
+      "alias": "unorouter",
+      "website": "https://unorouter.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "command-code",
+      "name": "Command Code",
+      "category": "api-key",
+      "alias": "cmd",
+      "website": "https://commandcode.ai/",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": false
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter",
+      "category": "api-key",
+      "alias": "openrouter",
+      "website": "https://openrouter.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "opper",
+      "name": "Opper",
+      "category": "api-key",
+      "alias": "opper",
+      "website": "https://opper.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "requesty",
+      "name": "Requesty",
+      "category": "api-key",
+      "alias": "requesty",
+      "website": "https://requesty.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "zylo-api",
+      "name": "Zylo API",
+      "category": "api-key",
+      "alias": "zylo",
+      "website": "https://zyloai.net",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "fastrouter",
+      "name": "FastRouter",
+      "category": "api-key",
+      "alias": "fastrouter",
+      "website": "https://fastrouter.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "anyapi",
+      "name": "AnyAPI AI",
+      "category": "api-key",
+      "alias": "anyapi",
+      "website": "https://anyapi.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "electronhub",
+      "name": "Electron Hub",
+      "category": "api-key",
+      "alias": "electronhub",
+      "website": "https://www.electronhub.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "llmgateway",
+      "name": "LLM Gateway",
+      "category": "api-key",
+      "alias": "llmgateway",
+      "website": "https://llmgateway.io",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "lyceum",
+      "name": "Lyceum",
+      "category": "api-key",
+      "alias": "lyceum",
+      "website": "https://lyceum.technology",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "llm-kiwi",
+      "name": "LLM.Kiwi",
+      "category": "api-key",
+      "alias": "llmkiwi",
+      "website": "https://llm.kiwi",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "literouter",
+      "name": "LiteRouter",
+      "category": "api-key",
+      "alias": "literouter",
+      "website": "https://literouter.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "greenpt",
+      "name": "GreenPT",
+      "category": "api-key",
+      "alias": "greenpt",
+      "website": "https://greenpt.com",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "eurouter",
+      "name": "EURouter",
+      "category": "api-key",
+      "alias": "eurouter",
+      "website": "https://eurouter.ai",
+      "deprecated": false,
+      "hasFree": false,
+      "passthroughModels": true
+    },
+    {
+      "id": "mnn-ai",
+      "name": "MNN AI",
+      "category": "api-key",
+      "alias": "mnn-ai",
+      "website": "https://mnnai.ru",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "meganova-ai",
+      "name": "MegaNova AI",
+      "category": "api-key",
+      "alias": "meganova-ai",
+      "website": "https://meganova.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "mixlayer",
+      "name": "Mixlayer",
+      "category": "api-key",
+      "alias": "mixlayer",
+      "website": "https://www.mixlayer.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "speka",
+      "name": "Speka AI",
+      "category": "api-key",
+      "alias": "speka",
+      "website": "https://speka.me",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "tokenreply",
+      "name": "TokenReply",
+      "category": "api-key",
+      "alias": "tokenreply",
+      "website": "https://www.tokenreply.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "yolo-auto",
+      "name": "Yolo-Auto",
+      "category": "api-key",
+      "alias": "yolo-auto",
+      "website": "https://yolo-auto.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "dxnt",
+      "name": "DXNT / DX Token",
+      "category": "api-key",
+      "alias": "dxnt",
+      "website": "https://www.dxnt.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "cloudcode-one",
+      "name": "CloudCode.ONE",
+      "category": "api-key",
+      "alias": "cloudcode-one",
+      "website": "https://cloudcode.one",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "ofoxai",
+      "name": "OfoxAI",
+      "category": "api-key",
+      "alias": "ofoxai",
+      "website": "https://ofox.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "zerolimitai",
+      "name": "ZeroLimitAI",
+      "category": "api-key",
+      "alias": "zerolimitai",
+      "website": "https://www.zerolimitai.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "chatanywhere",
+      "name": "ChatAnywhere",
+      "category": "api-key",
+      "alias": "chatanywhere",
+      "website": "https://chatanywhere.tech",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "helyxai",
+      "name": "Helyx AI",
+      "category": "api-key",
+      "alias": "helyxai",
+      "website": "https://helyxai.space",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "auriko",
+      "name": "Auriko",
+      "category": "api-key",
+      "alias": "auriko",
+      "website": "https://www.auriko.ai",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "poixe-ai",
+      "name": "Poixe AI",
+      "category": "api-key",
+      "alias": "poixe-ai",
+      "website": "https://poixe.com",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "naga-ai",
+      "name": "Naga AI",
+      "category": "api-key",
+      "alias": "naga-ai",
+      "website": "https://naga.ac",
+      "deprecated": false,
+      "hasFree": true,
+      "passthroughModels": true
+    },
+    {
+      "id": "chat-oripe",
+      "name": "Chat Oripe",
+      "category": "api-key",
+      "alias": "chat-oripe",
+      "website": "https://api.oriper.
