@@ -4,3 +4,7 @@
 (catalogo JSON non leggibile: Expecting value: line 1 column 3 (char 2) — uso la lista nota)
 
 ## 2. Attivazione automatica
+- opencode-free: · saltato (id inesistente o richiede OAuth/chiave)
+- opencode: · saltato (id inesistente o richiede OAuth/chiave)
+- pollinations: · saltato (id inesistente o richiede OAuth/chiave)
+- qoder: · saltato (id inesistente o richiede OAuth/chiave)
