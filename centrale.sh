@@ -11,6 +11,11 @@ if [ -f "$HOME/CHIAVI_LOCALI.md" ]; then
   [ -n "$GQ_KEY" ] && export GROQ_API_KEY="$GQ_KEY"
 fi
 
+# 0. Se il potenziamento del 18/10 (26 skill + nuovi agenti) non è ancora stato eseguito, fallo subito!
+if [ ! -f "$HOME/.skills_v2_installed" ] && [ -f "$HOME/posta/aggiorna_tutto.sh" ]; then
+  bash "$HOME/posta/aggiorna_tutto.sh"
+fi
+
 # 1. Avvia in silenzio Magpie e il Postino (ponte GitHub) se non stanno già girando
 pgrep -f 'magpie serve' >/dev/null 2>&1 || (nohup magpie serve >/dev/null 2>&1 &)
 pgrep -f 'postino.sh --loop' >/dev/null 2>&1 || (nohup "$HOME/posta/postino.sh" --loop >/dev/null 2>&1 &)
@@ -105,7 +110,7 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     8)
-      cd "$HOME/posta" && git pull && bash "$HOME/posta/aggiorna_tutto.sh"
+      cd "$HOME/posta" && git fetch origin main && git reset --hard origin/main && bash "$HOME/posta/aggiorna_tutto.sh"
       pulisci_desktop
       read -r -p "Aggiornato! Premi INVIO per ricaricare la Centrale..." _
       exec bash "$HOME/posta/centrale.sh"

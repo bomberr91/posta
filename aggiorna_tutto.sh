@@ -27,11 +27,11 @@ echo ""
 echo "── 1/6 · Sincronizzo il ponte ~/posta da GitHub..."
 if [ -d "$HOME/posta/.git" ]; then
   cd "$HOME/posta"
-  TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
+  TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"; [ -z "$TOKEN" ] && [ -f "$HOME/CHIAVI_LOCALI.md" ] && TOKEN="$(grep -oE 'ghp_[A-Za-z0-9]{30,}' "$HOME/CHIAVI_LOCALI.md" | head -1)"
   LOGIN=""; [ -s "$HOME/.posta_login" ] && LOGIN="$(tr -d '\r\n' < "$HOME/.posta_login")"
   [ -z "$LOGIN" ] && [ -s "$HOME/posta/.padrone" ] && LOGIN="$(tr -d '\r\n' < "$HOME/posta/.padrone")"
   if [ -n "$TOKEN" ] && [ -n "$LOGIN" ]; then
-    git pull -q --rebase "https://x-access-token:$TOKEN@github.com/$LOGIN/posta.git" main || git pull -q || true
+    git fetch -q origin main && git reset -q --hard origin/main || true
   else
     git pull -q || true
   fi
