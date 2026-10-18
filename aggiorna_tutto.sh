@@ -101,11 +101,12 @@ else
   fi
 fi
 
+chmod +x "$HOME/posta/centrale.sh" "$HOME/posta/leggi_video.py" "$HOME/posta/squadra.sh" "$HOME/posta/postino.sh" 2>/dev/null || true
 for d in /mnt/c/Users/*/Desktop /mnt/c/Users/*/OneDrive*/Desktop; do
-  if [ -d "$d" ] && [ -f "$d/RAPPORTO_AGENTI.txt" -o -f "$d/COMPITI.lnk" ]; then
-    cp -f "$HOME/posta/6_BROWSER_AGENTI.bat" "$d/BROWSER_AGENTI.bat" 2>/dev/null || true
-    cp -f "$HOME/posta/7_SQUADRA_FUSION.bat" "$d/SQUADRA_FUSION.bat" 2>/dev/null || true
-    echo "  ✓ Nuove icone create sul Desktop: BROWSER_AGENTI.bat e SQUADRA_FUSION.bat"
+  if [ -d "$d" ] && [ -f "$d/RAPPORTO_AGENTI.txt" -o -f "$d/COMPITI.lnk" -o -f "$d/BROWSER_AGENTI.bat" -o -f "$d/CENTRALE_AGENTI.bat" ]; then
+    cp -f "$HOME/posta/CENTRALE_AGENTI.bat" "$d/CENTRALE_AGENTI.bat" 2>/dev/null || true
+    rm -f "$d/BROWSER_AGENTI.bat" "$d/SQUADRA_FUSION.bat" "$d/APRI_AGENTE.lnk" "$d/AVVIA_POSTINO.lnk" "$d/COMPITI.lnk" "$d/AGGIORNA_TUTTO_PC.bat" 2>/dev/null || true
+    echo "  ✓ Desktop ripulito: ora hai UN'UNICA icona → CENTRALE_AGENTI.bat"
   fi
 done
 
