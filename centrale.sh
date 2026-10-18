@@ -166,6 +166,7 @@ while :; do
         echo "Stato motore: $OMNI_ST  ·  Dashboard: http://localhost:20128  ·  API: http://localhost:20128/v1 (model: auto)"
         echo "  [a] Avvia il motore in background"
         echo "  [d] Apri la Dashboard nel browser Windows"
+        echo "  [f] Attiva i provider GRATIS (automatico, ~2-5 min)"
         echo "  [x] Spegni il motore"
         echo "  [INVIO] Torna al menu"
         read -r -p "Scelta: " OM
@@ -173,6 +174,7 @@ while :; do
           a|A) nohup "$OMNI_BIN" >/tmp/omniroute.log 2>&1 & sleep 3
                pgrep -f omniroute >/dev/null && echo "🟢 Motore avviato! Dashboard: http://localhost:20128" || echo "❌ Problema all'avvio: guarda /tmp/omniroute.log" ;;
           d|D) cmd.exe /c start "" "http://localhost:20128" 2>/dev/null || echo "Apri a mano: http://localhost:20128" ;;
+          f|F) bash "$HOME/posta/omni_free.sh" ;;
           x|X) pkill -f omniroute 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
         esac
       fi

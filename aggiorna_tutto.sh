@@ -135,14 +135,12 @@ rm -f "$HOME/posta/da_me/aggiorna_26_skill_e_browser.sh" "$HOME/posta/da_me/prov
   echo "- **OpenCode**: $(opencode --version 2>&1 | head -1)"
   echo "- **Goose**: $(goose --version 2>&1 | head -1)"
   echo "- **Secondhand (interpreter)**: $(interpreter --version 2>&1 | head -1 || echo non presente)"
-  echo "- **Hermes Agent**: $(hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo installato in ~/.hermes || echo non presente))"
-  echo "- **OpenClaw**: $(openclaw --version 2>&1 | head -1 || echo non presente)"
+  echo "- **Hermes Agent**: $(command -v hermes >/dev/null 2>&1 && hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo 'cartella presente ma comando fuori PATH' || echo 'NON installato'))"
+  echo "- **OpenClaw**: $(command -v openclaw >/dev/null 2>&1 && openclaw --version 2>&1 | head -1 || echo 'NON installato (richiede Node 24, rotto su WSL1)')"
   echo "- **Agent-Browser**: $(agent-browser --version 2>&1 | head -1 || echo non presente)"
   echo "- **Squadra Fusion**: pronta (~/posta/squadra.sh + SQUADRA_FUSION.bat sul Desktop)"
   echo "- **Browser Agenti**: pronto (BROWSER_AGENTI.bat sul Desktop)"
 } > "$HOME/posta/dal_pc/stato_18_10.md"
-
-bash "$HOME/posta/omni_free.sh" || true
 
 cd "$HOME/posta"
 git add -A >/dev/null 2>&1 && git commit -qm "aggiornamento completo 18/10 da $(hostname)" >/dev/null 2>&1 || true
