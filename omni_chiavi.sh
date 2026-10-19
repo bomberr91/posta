@@ -27,10 +27,15 @@ cerca(){ grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1; }
   echo "# 🔑 Rapporto innesto chiavi in OmniRoute — $(date '+%d/%m/%Y %H:%M')"
   echo
   # provider_id | riga da cercare | pattern chiave
-  while IFS='|' read -r PID RIGA PAT; do
+  while IFS=';' read -r PID RIGA PAT; do
     [ -z "$PID" ] && continue
     KEY=$(cerca "$RIGA" "$PAT")
     if [ -z "$KEY" ]; then echo "- $PID: · nessuna chiave nel portachiavi (salto)"; continue; fi
+    if timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | grep -qiE "[[:space:]]$PID[[:space:]]"; then
+      ROT=$(timeout 90 "$OMNI" providers rotate "$PID" --api-key "$KEY" </dev/null 2>&1 | noansi | tail -2 | tr '\n' ' ')
+      if echo "$ROT" | grep -qiE "success|rotat|updated|saved"; then echo "- $PID: 🔄 chiave aggiornata ($ROT)"; continue; fi
+      printf 'y\n' | timeout 60 "$OMNI" providers remove "$PID" >/dev/null 2>&1 || true
+    fi
     OUT=$(timeout 90 "$OMNI" providers add "$PID" --api-key "$KEY" </dev/null 2>&1 | noansi | tail -2 | tr '\n' ' ')
     if echo "$OUT" | grep -qiE "success|added|saved|creat|configur"; then
       echo "- $PID: ✅ INNESTATO ($OUT)"
@@ -39,14 +44,13 @@ cerca(){ grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1; }
       echo "- $PID: ① ${OUT:-nulla} ② ${OUT2:-nulla}"
     fi
   done << 'MAPPA'
-groq|groq|gsk_[A-Za-z0-9_-]+
-gemini|gemini|AIza[A-Za-z0-9_-]+
-mistral|mistral|[A-Za-z0-9]{30,40}
-cohere|cohere|[A-Za-z0-9]{40}
-openrouter|openrouter|sk-or-[A-Za-z0-9_-]+
-nvidia|nvidia|nvapi-[A-Za-z0-9_-]+
-together|together|tgp_[A-Za-z0-9_-]+
-agentrouter|^agentrouter |sk-[A-Za-z0-9]{20,}
+groq;groq;gsk_[A-Za-z0-9_-]+
+gemini;gemini|google ai;AQ\.[A-Za-z0-9_-]+
+mistral;mistral;mstrl_[A-Za-z0-9_-]+
+cohere;cohere;[A-Za-z0-9]{40}
+openrouter;openrouter;sk-or-[A-Za-z0-9_-]+
+nvidia;nvidia;nvapi-[A-Za-z0-9_-]+
+agentrouter;^agentrouter ;sk-[A-Za-z0-9]{30,}
 MAPPA
   echo
   echo "## Connessioni configurate adesso"
