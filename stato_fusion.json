@@ -1,8 +1,12 @@
 {
-  "percentuale": 15,
-  "fase": "Il Regista Intelligente sta analizzando la missione e scegliendo gli Agenti...",
-  "dettaglio": "",
-  "agenti_scelti": [],
+  "percentuale": 40,
+  "fase": "Agente [1/3] in azione: OpenCode (Architetto & Codice)",
+  "dettaglio": "Compito: Scrivi in 10 righe i pro e contro di usare un gateway locale (OmniRoute) per instradare gl...",
+  "agenti_scelti": [
+    "opencode",
+    "goose",
+    "secondhand"
+  ],
   "stato": "in_corso",
-  "aggiornato_il": "2026-10-19 10:32:39"
+  "aggiornato_il": "2026-10-19 10:33:24"
 }
