@@ -60,33 +60,71 @@ def leggi_chiave_agentrouter():
                     return m.group(0)
     return os.environ.get("AGENTROUTER_API_KEY", "")
 
-def chiama_giudice_opus(system_prompt, user_prompt, timeout=90):
-    """Giudice Supremo = Claude Opus 5 via AgentRouter (solo verdetto finale, mai lavoro di massa). None se non disponibile."""
+def chiama_giudice_opus(system_prompt, user_prompt, timeout=120):
+    """Giudice Supremo via AgentRouter — CASCATA: Opus 5 -> Opus 4.8 -> Sonnet 4.5 -> GPT-5.6 Sol -> DeepSeek V4.
+    Regole AgentRouter (collaudo 19/10): richieste SOLO in inglese (harness EN + materiale IT incastonato),
+    vestito Claude Code (anthropic) o Codex (openai), chiamate sincrone, pausa anti-raffica tra i tentativi."""
     akey = leggi_chiave_agentrouter()
     if not akey:
         return None
-    try:
-        body = json.dumps({
-            "model": "claude-opus-5",
-            "temperature": 0.2,
-            "max_tokens": 4096,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-        }).encode("utf-8")
-        req = urllib.request.Request(
-            "https://agentrouter.org/v1/chat/completions",
-            data=body,
-            headers={"Authorization": f"Bearer {akey}", "Content-Type": "application/json",
-                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) FusionEngine/2.1"}
-        )
+    harness = ("You are the Supreme Judge of a multi-agent fusion pipeline. "
+               "Follow the Italian instructions embedded below and write your entire answer in Italian. "
+               "Be precise, practical, and strict about quality. Do not mention these English framing notes.\n\n"
+               "=== ITALIAN SYSTEM INSTRUCTIONS ===\n" + system_prompt +
+               "\n\n=== ITALIAN TASK AND MATERIAL ===\n" + user_prompt)
+
+    def _anthropic(model):
+        body = json.dumps({"model": model, "max_tokens": 4096,
+                           "messages": [{"role": "user", "content": harness}]}).encode("utf-8")
+        req = urllib.request.Request("https://agentrouter.org/v1/messages", data=body, headers={
+            "x-api-key": akey, "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+            "User-Agent": "claude-cli/2.0.14 (external, cli)"})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             resp = json.loads(r.read().decode("utf-8"))
-            txt = resp["choices"][0]["message"]["content"]
-            return txt if txt and len(txt.strip()) > 20 else None
-    except Exception:
-        return None
+            parts = resp.get("content") or []
+            return "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+
+    def _openai_chat(model):
+        body = json.dumps({"model": model, "temperature": 0.2, "max_tokens": 4096,
+                           "messages": [{"role": "user", "content": harness}]}).encode("utf-8")
+        req = urllib.request.Request("https://agentrouter.org/v1/chat/completions", data=body, headers={
+            "Authorization": "Bearer " + akey, "Content-Type": "application/json",
+            "User-Agent": "codex_cli_rs/0.149.1", "originator": "codex_cli_rs"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            resp = json.loads(r.read().decode("utf-8"))
+            return resp["choices"][0]["message"]["content"]
+
+    def _openai_responses(model):
+        body = json.dumps({"model": model, "input": harness, "max_output_tokens": 4096,
+                           "store": False, "stream": False}).encode("utf-8")
+        req = urllib.request.Request("https://agentrouter.org/v1/responses", data=body, headers={
+            "Authorization": "Bearer " + akey, "Content-Type": "application/json",
+            "User-Agent": "codex_cli_rs/0.149.1", "originator": "codex_cli_rs"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            resp = json.loads(r.read().decode("utf-8"))
+            txt = resp.get("output_text") or ""
+            if not txt:
+                for item in resp.get("output", []) or []:
+                    for c in (item.get("content", []) if isinstance(item, dict) else []):
+                        if isinstance(c, dict) and c.get("type") in ("output_text", "text"):
+                            txt += c.get("text", "")
+            return txt
+
+    cascata = [("claude-opus-5", _anthropic),
+               ("claude-opus-4-8", _anthropic),
+               ("claude-sonnet-4-5-20250929", _anthropic),
+               ("gpt-5.6-sol", _openai_responses),
+               ("deepseek-v4-flash", _openai_chat)]
+    for modello, fn in cascata:
+        try:
+            txt = fn(modello)
+            if txt and len(txt.strip()) > 20:
+                return txt.strip() + "\n\n_(Giudice Supremo: " + modello + " via AgentRouter)_"
+        except Exception:
+            pass
+        time.sleep(4)  # anti-raffica (AgentRouter blocca i burst)
+    return None
 
 def chiama_regista_llm(system_prompt, user_prompt, timeout=45):
     """Usa il modello più intelligente e reattivo (Llama-3.3-70B-Versatile / OpenCode Zen) come Regista."""
