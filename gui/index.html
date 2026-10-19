@@ -42,7 +42,7 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
     <div class="riga"><span>Saldo letto</span><span class="saldo" id="saldo">—</span></div>
     <div class="riga"><span>Check-in di oggi</span><span id="chk">—</span></div>
     <button class="primario" onclick="checkin(true)">Riscatta ora</button>
-    <div class="fase" style="margin-top:8px">All'apertura ci provo da solo (browser invisibile). Il bonus si rinnova a mezzanotte cinese ≈ <b>18:00 italiane</b>.</div>
+    <div class="fase" style="margin-top:8px">⏰ <b>Sveglia automatica</b>: riscatto da solo appena scatta il giorno cinese (≈18:05 italiane; con l'ora solare ≈17:05). PC spento a quell'ora? Riscatto all'accensione. Popup verde a successo avvenuto.</div>
   </div>
   <div class="card largo"><h2>💬 Chat Hub <span class="fase">— modelli gratis via OmniRoute, risponde il migliore (model: auto)</span></h2>
     <div id="chatlog" style="max-height:320px;overflow:auto;margin-bottom:10px"></div>
@@ -72,7 +72,9 @@ async function aggiorna(){try{
   $('l_brow').className='led '+(s.browser_agenti?'on':'off');
   $('saldo').textContent=s.saldo?('$'+s.saldo):'—';$('saldo').title=s.saldo_vivo?'saldo vivo dal sito':'ultimo saldo noto';
   $('contam').textContent=s.modelli?('— '+s.modelli+' modelli · '+s.linee+' linee'):'';
-  $('chk').textContent=s.checkin_oggi?'✅ fatto':'⏳ da fare';
+  $('chk').textContent=s.checkin_oggi?('✅ fatto'+(s.checkin_ora?(' alle '+s.checkin_ora):'')):'⏳ da fare';
+  if(s.checkin_oggi && window._chkPrev===false){toast('🎉 <b>+25$ riscattati automaticamente!</b>'+(s.checkin_ora?(' ('+s.checkin_ora+')'):'')+(s.saldo?('<br>saldo: $'+s.saldo):''),12000)}
+  window._chkPrev=s.checkin_oggi;
   const f=s.fusion||{};
   $('barra').style.width=(f.percentuale||0)+'%';
   $('fase').textContent=(f.percentuale||0)+'% — '+(f.fase||'in attesa');

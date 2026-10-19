@@ -121,7 +121,33 @@ def chrome_headless_chiudi():
     except Exception:
         pass
 
+_chk_lock = threading.Lock()
+_ultimo_tentativo = [0.0]
+
+def sveglia_checkin():
+    """SVEGLIA INTERNA: appena scocca il giorno cinese (00:05 Pechino = 18:05 IT ora legale,
+    17:05 ora solare) riscatta da sola. Se il PC era spento, riscatta all'accensione.
+    Riprova ogni 30 min finche' non riesce."""
+    while True:
+        try:
+            sh = time.gmtime(time.time() + 8 * 3600)
+            if (sh.tm_hour, sh.tm_min) >= (0, 5) and not os.path.exists(flag_checkin()) \
+               and time.time() - _ultimo_tentativo[0] > 1800:
+                _ultimo_tentativo[0] = time.time()
+                fai_checkin(forza=False)
+        except Exception:
+            pass
+        time.sleep(60)
+
 def fai_checkin(forza=False):
+    if not _chk_lock.acquire(blocking=False):
+        return {"stato": "in_corso", "msg": "⏳ Riscatto già in corso..."}
+    try:
+        return _fai_checkin(forza)
+    finally:
+        _chk_lock.release()
+
+def _fai_checkin(forza=False):
     if os.path.exists(flag_checkin()) and not forza:
         return {"stato": "gia_fatto", "saldo": saldo_ultimo(),
                 "msg": "💰 Check-in di oggi già riscattato."}
@@ -163,7 +189,7 @@ def stato():
     sv = saldo_live()
     mo = modelli_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
-            "checkin_oggi": os.path.exists(flag_checkin()), "saldo": sv or saldo_ultimo(),
+            "checkin_oggi": os.path.exists(flag_checkin()), "checkin_ora": leggi(flag_checkin(), "").strip(), "saldo": sv or saldo_ultimo(),
             "saldo_vivo": bool(sv), "modelli": mo["modelli"], "linee": mo["linee"],
             "fusion": fus, "risultati": ultimi, "ora": time.strftime("%H:%M:%S")}
 
@@ -244,5 +270,6 @@ def postino_bg():
 
 if __name__ == "__main__":
     postino_bg()
+    threading.Thread(target=sveglia_checkin, daemon=True).start()
     print("GUI CENTRALE su http://localhost:20200")
     ThreadingHTTPServer(("0.0.0.0", 20200), H).serve_forever()
