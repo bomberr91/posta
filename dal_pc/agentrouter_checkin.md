@@ -1,8 +1,8 @@
-# 💰 Check-in AgentRouter (GUI) — 19/10/2026 11:24
+# 💰 Check-in AgentRouter (GUI) — 19/10/2026 11:39
 
 ```
-[checkin] 19/10/2026 11:23
-[checkin] saldo prima: 150.00
+[checkin] 19/10/2026 11:39
+[checkin] saldo prima: non letto
 [checkin] logout http: 200
 [checkin] bottone GitHub: click-github
 [checkin] saldo dopo: non letto · rientrato: NO
