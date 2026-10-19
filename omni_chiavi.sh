@@ -9,12 +9,9 @@ OMNI=$(command -v omniroute || echo "$V22BIN/omniroute")
 K="$HOME/CHIAVI_LOCALI.md"
 [ -f "$K" ] || { echo "  ❌ ~/CHIAVI_LOCALI.md non trovato"; exit 0; }
 
-# il comando 'providers add' passa dal server attivo: accendi il motore se spento
-if ! pgrep -f omniroute >/dev/null 2>&1; then
-  echo "== Accendo il motore..."
-  nohup "$OMNI" >/tmp/omniroute.log 2>&1 &
-  sleep 12
-fi
+# il database si scrive SOLO a motore spento (lezione "locking protocol")
+echo "== Spengo il motore per sbloccare il database (lo riaccendo io alla fine)..."
+pkill -f omniroute 2>/dev/null; sleep 4
 
 D="$HOME/posta/dal_pc"; mkdir -p "$D"
 R="$D/omni_chiavi_report.md"
@@ -56,8 +53,17 @@ MAPPA
   echo "## Connessioni configurate adesso"
   timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | head -40
   echo
-  echo "## Test di tutte le connessioni"
+  echo "## Test di tutte le connessioni (a motore spento)"
   timeout 180 "$OMNI" providers test-all </dev/null 2>&1 | noansi | head -40
+  echo
+  echo "## Riaccensione motore + domanda di prova"
+  nohup "$OMNI" >/tmp/omniroute.log 2>&1 &
+  sleep 15
+  OKEY=$(grep -E '^omniroute ' "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | grep -oE 'sk-[A-Za-z0-9-]+' | head -1)
+  if [ -n "$OKEY" ]; then
+    curl -s --max-time 90 http://localhost:20128/v1/chat/completions -H "Authorization: Bearer $OKEY" -H "Content-Type: application/json" -d '{"model":"auto","messages":[{"role":"user","content":"Rispondi solo con la parola: OK"}],"max_tokens":20}' | head -c 1200
+    echo
+  fi
 } > "$R" 2>&1
 
 echo "== Spedisco il rapporto sul ponte..."
