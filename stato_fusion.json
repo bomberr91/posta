@@ -1,12 +1,8 @@
 {
-  "percentuale": 100,
-  "fase": "Missione Completata e Certificata al 100%!",
-  "dettaglio": "File salvato in: /home/agenti/posta/RISPOSTE_AGENTI/FUSION_20261019_095243.md",
-  "agenti_scelti": [
-    "opencode",
-    "goose",
-    "secondhand"
-  ],
-  "stato": "completato",
-  "aggiornato_il": "2026-10-19 09:57:36"
+  "percentuale": 15,
+  "fase": "Il Regista Intelligente sta analizzando la missione e scegliendo gli Agenti...",
+  "dettaglio": "",
+  "agenti_scelti": [],
+  "stato": "in_corso",
+  "aggiornato_il": "2026-10-19 10:32:39"
 }
