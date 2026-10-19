@@ -54,7 +54,13 @@ MAPPA
   timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | head -40
   echo
   echo "## Test di tutte le connessioni (a motore spento)"
-  timeout 180 "$OMNI" providers test-all </dev/null 2>&1 | noansi | head -40
+  TESTOUT=$(timeout 180 "$OMNI" providers test-all </dev/null 2>&1 | noansi)
+  echo "$TESTOUT" | head -40
+  TOTL=$(timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | grep -ciE "kiro|opencode|pollinations|longcat|cloudflare|qwen|qoder|ddg|duck|felo|groq|gemini|mistral|cohere|openrouter|nvidia|agentrouter" || true)
+  OKL=$(echo "$TESTOUT" | grep -ciE "✓|success|passed|\bok\b" || true)
+  NST=$(echo "$TESTOUT" | grep -ciE "not supported" || true)
+  echo
+  echo "## 📊 LINEE: $OKL/$TOTL superano il test ($NST non testabili dal CLI, non per forza rotte)"
   echo
   echo "## Riaccensione motore + domanda di prova"
   nohup "$OMNI" >/tmp/omniroute.log 2>&1 &
@@ -62,6 +68,11 @@ MAPPA
   OKEY=$(grep -E '^omniroute ' "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | grep -oE 'sk-[A-Za-z0-9-]+' | head -1)
   if [ -n "$OKEY" ]; then
     curl -s --max-time 90 http://localhost:20128/v1/chat/completions -H "Authorization: Bearer $OKEY" -H "Content-Type: application/json" -d '{"model":"auto","messages":[{"role":"user","content":"Rispondi solo con la parola: OK"}],"max_tokens":20}' | head -c 1200
+    echo
+    MJ=$(curl -s --max-time 20 http://localhost:20128/v1/models -H "Authorization: Bearer $OKEY" 2>/dev/null)
+    NM=$(echo "$MJ" | grep -o '"id"' | wc -l)
+    NL=$(echo "$MJ" | grep -oE '"owned_by":"[^"]*"' | sort -u | wc -l)
+    echo "## 📊 A MOTORE ACCESO: $NM modelli usabili su $NL linee vive"
     echo
   fi
 } > "$R" 2>&1

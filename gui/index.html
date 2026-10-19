@@ -33,7 +33,7 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
 <div class="toast" id="toast"></div>
 <div class="griglia">
   <div class="card"><h2>🚦 Semafori</h2>
-    <div class="riga"><span><span id="l_omni" class="led off"></span>OmniRoute (17 linee)</span>
+    <div class="riga"><span><span id="l_omni" class="led off"></span>OmniRoute <span class="fase" id="contam"></span></span>
       <span><button onclick="omni('avvia')">Accendi</button> <button onclick="omni('spegni')">Spegni</button></span></div>
     <div class="riga"><span><span id="l_brow" class="led off"></span>Browser agenti</span><span class="fase">serve solo per il check-in</span></div>
     <div class="riga"><span>Dashboard OmniRoute</span><a href="http://localhost:20128" target="_blank">apri ↗</a></div>
@@ -42,7 +42,12 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
     <div class="riga"><span>Saldo letto</span><span class="saldo" id="saldo">—</span></div>
     <div class="riga"><span>Check-in di oggi</span><span id="chk">—</span></div>
     <button class="primario" onclick="checkin(true)">Riscatta ora</button>
-    <div class="fase" style="margin-top:8px">All'apertura della pagina ci provo da solo (browser invisibile).</div>
+    <div class="fase" style="margin-top:8px">All'apertura ci provo da solo (browser invisibile). Il bonus si rinnova a mezzanotte cinese ≈ <b>18:00 italiane</b>.</div>
+  </div>
+  <div class="card largo"><h2>💬 Chat Hub <span class="fase">— modelli gratis via OmniRoute, risponde il migliore (model: auto)</span></h2>
+    <div id="chatlog" style="max-height:320px;overflow:auto;margin-bottom:10px"></div>
+    <textarea id="chatmsg" placeholder="Chiedi qualcosa ai modelli gratis..." style="min-height:60px"></textarea>
+    <button class="primario" onclick="chat()">💬 Invia</button> <button onclick="chatPulisci()">Pulisci</button>
   </div>
   <div class="card largo"><h2>🔥 Squadra Fusion 2.1 <span class="fase">— il Regista sceglie, il Giudice Supremo certifica</span></h2>
     <textarea id="missione" placeholder="Scrivi qui la missione per la squadra..."></textarea>
@@ -65,7 +70,8 @@ async function aggiorna(){try{
   $('ora').textContent=s.ora;
   $('l_omni').className='led '+(s.omniroute?'on':'off');
   $('l_brow').className='led '+(s.browser_agenti?'on':'off');
-  $('saldo').textContent=s.saldo?('$'+s.saldo):'—';
+  $('saldo').textContent=s.saldo?('$'+s.saldo):'—';$('saldo').title=s.saldo_vivo?'saldo vivo dal sito':'ultimo saldo noto';
+  $('contam').textContent=s.modelli?('— '+s.modelli+' modelli · '+s.linee+' linee'):'';
   $('chk').textContent=s.checkin_oggi?'✅ fatto':'⏳ da fare';
   const f=s.fusion||{};
   $('barra').style.width=(f.percentuale||0)+'%';
@@ -89,6 +95,24 @@ async function fusion(){
   toast(r.stato==='avviata'?'🚀 Squadra lanciata! Segui la barra.':'⚠️ '+(r.msg||'errore'));
 }
 async function omni(a){await api('/api/omniroute',{azione:a});setTimeout(aggiorna,3000);toast(a==='avvia'?'🧠 Accensione motore...':'🔴 Spento.')}
+let STORIA=[];
+function md(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
+function bolla(ruolo,testo,modello){
+  const d=document.createElement('div');
+  d.style.cssText='margin:6px 0;padding:10px 12px;border-radius:10px;font-size:14px;'+(ruolo==='user'?'background:#1f6feb33;border:1px solid #1f6feb55':'background:#21262d;border:1px solid #30363d');
+  d.innerHTML=(ruolo==='user'?'🧑 ':'🤖 ')+md(testo)+(modello?'<div class="fase" style="margin-top:4px">↳ '+modello+'</div>':'');
+  $('chatlog').appendChild(d);$('chatlog').scrollTop=99999;
+}
+async function chat(){
+  const m=$('chatmsg').value.trim();if(!m)return;
+  $('chatmsg').value='';STORIA.push({role:'user',content:m});bolla('user',m);
+  bolla('assistant','⏳ sto scegliendo il modello migliore...');
+  const r=await api('/api/chat',{messaggi:STORIA});
+  $('chatlog').lastChild.remove();
+  STORIA.push({role:'assistant',content:r.testo});bolla('assistant',r.testo,r.modello);
+}
+function chatPulisci(){STORIA=[];$('chatlog').innerHTML=''}
+$('chatmsg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chat()}});
 aggiorna();setInterval(aggiorna,3000);
 setTimeout(()=>checkin(false),1500); // riscatto automatico all'apertura
 </script></body></html>

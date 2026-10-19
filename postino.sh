@@ -41,7 +41,7 @@ sync_up(){
 gira(){
   sync_down
   # check-in AgentRouter +25$/gg (1 volta al giorno, solo se BROWSER_AGENTI acceso)
-  ARF="$HOME/.ar_checkin_$(date +%F)"
+  ARF="$HOME/.ar_checkin_$(TZ=Asia/Shanghai date +%F)"  # il bonus si azzera a mezzanotte cinese (~18:00 italiane)
   if [ ! -f "$ARF" ] && curl -s --max-time 2 http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
     touch "$ARF"
     say "→ check-in agentrouter (+25\$/gg)"

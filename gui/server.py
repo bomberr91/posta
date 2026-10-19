@@ -32,8 +32,65 @@ def leggi(path, default=""):
     except Exception:
         return default
 
+def giorno_cina():
+    # AgentRouter azzera il bonus a mezzanotte cinese (UTC+8) = 18:00 italiane (ora legale)
+    return time.strftime("%Y-%m-%d", time.gmtime(time.time() + 8 * 3600))
+
 def flag_checkin():
-    return os.path.join(HOME, f".ar_checkin_{date.today().isoformat()}")
+    return os.path.join(HOME, f".ar_checkin_{giorno_cina()}")
+
+_cache = {}
+
+def chiave(riga_pat, key_pat):
+    for r in leggi(os.path.join(HOME, "CHIAVI_LOCALI.md")).splitlines():
+        if re.search(riga_pat, r, re.I):
+            m = re.search(key_pat, r)
+            if m:
+                return m.group(0)
+    return None
+
+def saldo_live():
+    """Saldo vero da agentrouter.org (API billing con la chiave sk-), cache 5 minuti."""
+    v = _cache.get("saldo")
+    if v and time.time() - v[0] < 300:
+        return v[1]
+    saldo = None
+    key = chiave(r"agentrouter", r"sk-[A-Za-z0-9]{30,}")
+    if key:
+        import urllib.request
+        try:
+            def gj(p):
+                req = urllib.request.Request("https://agentrouter.org" + p, headers={
+                    "Authorization": "Bearer " + key, "User-Agent": "codex_cli_rs/0.149.1"})
+                return json.loads(urllib.request.urlopen(req, timeout=15).read().decode())
+            tot = float(gj("/dashboard/billing/subscription").get("hard_limit_usd") or 0)
+            usato = float(gj("/dashboard/billing/usage").get("total_usage") or 0) / 100.0
+            if tot:
+                saldo = f"{tot - usato:.2f}"
+        except Exception:
+            saldo = None
+    _cache["saldo"] = (time.time(), saldo)
+    return saldo
+
+def modelli_omni():
+    """Conta modelli e linee esposti ORA da OmniRoute, cache 60s."""
+    v = _cache.get("mod")
+    if v and time.time() - v[0] < 60:
+        return v[1]
+    r = {"modelli": 0, "linee": 0}
+    if porta_viva(20128):
+        try:
+            import urllib.request
+            key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
+            req = urllib.request.Request("http://127.0.0.1:20128/v1/models",
+                                         headers={"Authorization": "Bearer " + key})
+            data = json.loads(urllib.request.urlopen(req, timeout=10).read().decode()).get("data", [])
+            r["modelli"] = len(data)
+            r["linee"] = len({(m.get("owned_by") or "?") for m in data})
+        except Exception:
+            pass
+    _cache["mod"] = (time.time(), r)
+    return r
 
 def saldo_ultimo():
     txt = leggi(os.path.join(POSTA, "dal_pc", "agentrouter_checkin.md"))
@@ -100,8 +157,11 @@ def stato():
         pass
     ris_dir = os.path.join(POSTA, "RISPOSTE_AGENTI")
     ultimi = sorted(os.listdir(ris_dir), reverse=True)[:5] if os.path.isdir(ris_dir) else []
+    sv = saldo_live()
+    mo = modelli_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
-            "checkin_oggi": os.path.exists(flag_checkin()), "saldo": saldo_ultimo(),
+            "checkin_oggi": os.path.exists(flag_checkin()), "saldo": sv or saldo_ultimo(),
+            "saldo_vivo": bool(sv), "modelli": mo["modelli"], "linee": mo["linee"],
             "fusion": fus, "risultati": ultimi, "ora": time.strftime("%H:%M:%S")}
 
 class H(BaseHTTPRequestHandler):
@@ -145,6 +205,21 @@ class H(BaseHTTPRequestHandler):
             subprocess.Popen(["bash", os.path.join(POSTA, "squadra.sh"), missione, out],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self._json({"stato": "avviata", "out": os.path.basename(out)})
+        elif self.path == "/api/chat":
+            msgs = self._body().get("messaggi") or []
+            if not msgs:
+                self._json({"err": "vuoto"}, 400); return
+            key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
+            try:
+                import urllib.request
+                req = urllib.request.Request("http://127.0.0.1:20128/v1/chat/completions",
+                    data=json.dumps({"model": "auto", "messages": msgs[-12:]}).encode(),
+                    headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+                d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
+                self._json({"testo": d["choices"][0]["message"]["content"],
+                            "modello": d.get("model") or "?"})
+            except Exception as e:
+                self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
         elif self.path == "/api/omniroute":
             az = self._body().get("azione")
             if az == "avvia":
