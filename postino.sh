@@ -40,6 +40,13 @@ sync_up(){
 
 gira(){
   sync_down
+  # check-in AgentRouter +25$/gg (1 volta al giorno, solo se BROWSER_AGENTI acceso)
+  ARF="$HOME/.ar_checkin_$(date +%F)"
+  if [ ! -f "$ARF" ] && curl -s --max-time 2 http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
+    touch "$ARF"
+    say "→ check-in agentrouter (+25\$/gg)"
+    timeout 240 bash "$DIR/checkin_agentrouter.sh" >/dev/null 2>&1 || say "⚠ check-in agentrouter fallito (vedi dal_pc/agentrouter_checkin.md)"
+  fi
   for f in da_me/*; do
     [ -f "$f" ] || continue
     b="$(basename "$f")"; n="${b%.*}"; ext="${b##*.}"
