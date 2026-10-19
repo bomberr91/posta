@@ -41,3 +41,4 @@ SKIP nvidia: Provider test not supported
 OK OpenRouter: provider test passed
 
 ## Riaccensione motore + domanda di prova
+{"id":"chatcmpl-8aa36235-a685-4d6b-a5b7-f96430c3c9ea","object":"chat.completion","created":1792396147,"model":"openai/gpt-oss-120b","choices":[{"index":0,"finish_reason":"length","message":{"role":"assistant","content":"","reasoning":"The user wants a response only with the word \"OK\". So I should reply with"},"logprobs":null}],"usage":{"prompt_tokens":80,"completion_tokens":20,"total_tokens":100,"completion_tokens_details":{"reasoning_tokens":18}},"system_fingerprint":"fp_a655021f7d"}
