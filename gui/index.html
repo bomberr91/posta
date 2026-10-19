@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🧠 CENTRALE — Hub & Agenti</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--bordo:#30363d;--testo:#e6edf3;--dim:#8b949e;--verde:#3fb950;--rosso:#f85149;--blu:#58a6ff;--oro:#d29922}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--testo);font:15px/1.5 system-ui,Segoe UI,sans-serif;padding:24px;max-width:1000px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+.sub{color:var(--dim);margin-bottom:20px;font-size:13px}
+.griglia{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--bordo);border-radius:12px;padding:18px}
+.card h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.riga{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #21262d;font-size:14px}
+.riga:last-child{border:none}
+.led{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.on{background:var(--verde);box-shadow:0 0 6px var(--verde)}.off{background:var(--rosso)}
+button{background:#21262d;color:var(--testo);border:1px solid var(--bordo);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px}
+button:hover{border-color:var(--blu)}
+button.primario{background:#1f6feb;border-color:#1f6feb;font-weight:600}
+textarea{width:100%;background:#0d1117;color:var(--testo);border:1px solid var(--bordo);border-radius:8px;padding:10px;font-size:14px;min-height:80px;resize:vertical;margin-bottom:10px}
+.barra{height:14px;background:#21262d;border-radius:7px;overflow:hidden;margin:10px 0 6px}
+.barra>div{height:100%;background:linear-gradient(90deg,#1f6feb,#3fb950);width:0%;transition:width .8s;border-radius:7px}
+.fase{font-size:13px;color:var(--dim)}
+.toast{position:fixed;top:16px;right:16px;background:var(--card);border:1px solid var(--oro);border-radius:10px;padding:14px 18px;max-width:380px;font-size:14px;box-shadow:0 8px 30px #000a;display:none;z-index:9}
+pre{background:#0d1117;border:1px solid var(--bordo);border-radius:8px;padding:12px;white-space:pre-wrap;font-size:12.5px;max-height:420px;overflow:auto;margin-top:10px}
+.saldo{font-size:26px;font-weight:700;color:var(--oro)}
+a{color:var(--blu);text-decoration:none}
+select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);border-radius:8px;padding:6px;font-size:13px;max-width:100%}
+.largo{grid-column:1/-1}
+</style></head><body>
+<h1>🧠 CENTRALE — Hub &amp; Agenti</h1>
+<div class="sub">FilippoPC · tutto in una pagina, niente terminale nero · <span id="ora">—</span></div>
+<div class="toast" id="toast"></div>
+<div class="griglia">
+  <div class="card"><h2>🚦 Semafori</h2>
+    <div class="riga"><span><span id="l_omni" class="led off"></span>OmniRoute (17 linee)</span>
+      <span><button onclick="omni('avvia')">Accendi</button> <button onclick="omni('spegni')">Spegni</button></span></div>
+    <div class="riga"><span><span id="l_brow" class="led off"></span>Browser agenti</span><span class="fase">serve solo per il check-in</span></div>
+    <div class="riga"><span>Dashboard OmniRoute</span><a href="http://localhost:20128" target="_blank">apri ↗</a></div>
+  </div>
+  <div class="card"><h2>💰 AgentRouter</h2>
+    <div class="riga"><span>Saldo letto</span><span class="saldo" id="saldo">—</span></div>
+    <div class="riga"><span>Check-in di oggi</span><span id="chk">—</span></div>
+    <button class="primario" onclick="checkin(true)">Riscatta ora</button>
+    <div class="fase" style="margin-top:8px">All'apertura della pagina ci provo da solo (browser invisibile).</div>
+  </div>
+  <div class="card largo"><h2>🔥 Squadra Fusion 2.1 <span class="fase">— il Regista sceglie, il Giudice Supremo certifica</span></h2>
+    <textarea id="missione" placeholder="Scrivi qui la missione per la squadra..."></textarea>
+    <button class="primario" onclick="fusion()">🚀 Lancia la squadra</button>
+    <div class="barra"><div id="barra"></div></div>
+    <div class="fase" id="fase">in attesa di una missione</div>
+  </div>
+  <div class="card largo"><h2>📬 Risultati</h2>
+    <select id="lista" onchange="apri(this.value)"><option>—</option></select>
+    <pre id="testo">(scegli un risultato)</pre>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function toast(msg,ms){const t=$('toast');t.innerHTML=msg;t.style.display='block';clearTimeout(t._x);t._x=setTimeout(()=>t.style.display='none',ms||6000)}
+async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json()}
+let note=false;
+async function aggiorna(){try{
+  const s=await api('/api/stato');
+  $('ora').textContent=s.ora;
+  $('l_omni').className='led '+(s.omniroute?'on':'off');
+  $('l_brow').className='led '+(s.browser_agenti?'on':'off');
+  $('saldo').textContent=s.saldo?('$'+s.saldo):'—';
+  $('chk').textContent=s.checkin_oggi?'✅ fatto':'⏳ da fare';
+  const f=s.fusion||{};
+  $('barra').style.width=(f.percentuale||0)+'%';
+  $('fase').textContent=(f.percentuale||0)+'% — '+(f.fase||'in attesa');
+  if(f.stato==='completato'&&!note&&(f.percentuale||0)===100){note=true}
+  const L=$('lista');const sel=L.value;
+  L.innerHTML=(s.risultati||[]).map(r=>`<option ${r===sel?'selected':''}>${r}</option>`).join('')||'<option>—</option>';
+}catch(e){}}
+async function apri(n){if(!n||n==='—')return;const r=await api('/api/risultato?f='+encodeURIComponent(n));$('testo').textContent=r.testo}
+async function checkin(forza){
+  toast('💰 Riscatto in corso... (browser invisibile, ~1 min)');
+  const r=await api('/api/checkin',{forza:!!forza});
+  toast(r.msg+(r.saldo?(' · saldo: $'+r.saldo):''),9000);
+  aggiorna();
+}
+async function fusion(){
+  const m=$('missione').value.trim();
+  if(m.length<5){toast('Scrivi prima la missione!');return}
+  note=false;
+  const r=await api('/api/fusion',{missione:m});
+  toast(r.stato==='avviata'?'🚀 Squadra lanciata! Segui la barra.':'⚠️ '+(r.msg||'errore'));
+}
+async function omni(a){await api('/api/omniroute',{azione:a});setTimeout(aggiorna,3000);toast(a==='avvia'?'🧠 Accensione motore...':'🔴 Spento.')}
+aggiorna();setInterval(aggiorna,3000);
+setTimeout(()=>checkin(false),1500); // riscatto automatico all'apertura
+</script></body></html>

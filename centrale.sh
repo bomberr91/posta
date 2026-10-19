@@ -60,6 +60,7 @@ while :; do
   echo "  [7] 📊 STATO AGENTI, INNESTI (Headroom/XERJ/Beads) E QUOTE MAGPIE"
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
   echo "  [9] 🧠 MOTORE OMNIROUTE — HUB V2 (359 provider, 90+ GRATIS, dashboard web)"
+  echo "  [g] 🖥️  GUI CENTRALE (interfaccia web: Hub + Agenti + check-in automatico)"
   echo ""
   echo "  [0] Esci"
   echo "======================================================================"
@@ -180,6 +181,14 @@ while :; do
           x|X) pkill -f omniroute 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
         esac
       fi
+      read -r -p "Premi INVIO per tornare al menu..." _
+      ;;
+    g|G)
+      pkill -f "gui/server.py" 2>/dev/null
+      nohup python3 "$HOME/posta/gui/server.py" >/tmp/gui.log 2>&1 &
+      sleep 2
+      cmd.exe /c start "" "http://localhost:20200" 2>/dev/null || echo "Apri a mano: http://localhost:20200"
+      echo "🖥️ GUI avviata su http://localhost:20200 (il check-in parte da solo)"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     0|q|Q)
