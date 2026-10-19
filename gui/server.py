@@ -65,8 +65,11 @@ def saldo_live():
                 return json.loads(urllib.request.urlopen(req, timeout=15).read().decode())
             tot = float(gj("/dashboard/billing/subscription").get("hard_limit_usd") or 0)
             usato = float(gj("/dashboard/billing/usage").get("total_usage") or 0) / 100.0
-            if tot:
-                saldo = f"{tot - usato:.2f}"
+            s_ = tot - usato
+            if s_ > 50000:          # il sito conta in unita' interne (500000 = 1$)
+                s_ = s_ / 500000.0
+            if 0 < s_ < 50000:      # sanita': se resta assurdo, meglio l'ultimo saldo vero
+                saldo = f"{s_:.2f}"
         except Exception:
             saldo = None
     _cache["saldo"] = (time.time(), saldo)
