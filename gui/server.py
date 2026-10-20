@@ -353,6 +353,9 @@ class H(BaseHTTPRequestHandler):
             self._json({"err": "not found"}, 404)
 
 def postino_bg():
+    # in collaudo (sandbox/CI) il postino NON parte: non deve committare/pushare nulla
+    if os.environ.get("CENTRALE_NO_POSTINO") == "1" or os.environ.get("AR_IGNORA_FINESTRA") == "1":
+        return
     if subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True).returncode != 0:
         subprocess.Popen(["bash", os.path.join(POSTA, "postino.sh"), "--loop"],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
