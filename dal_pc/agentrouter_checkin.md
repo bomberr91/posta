@@ -1,4 +1,4 @@
-# 💰 Check-in AgentRouter (GUI) — 20/10/2026 18:23
+# 💰 Check-in AgentRouter — 20/10/2026 18:23
 
 ```
 [checkin] 20/10/2026 18:22 · base=https://agentrouter.org · modo=RISCATTO
@@ -9,5 +9,5 @@
 [checkin] ⚠ rientro non riuscito (GitHub loggato ma l'OAuth non e' tornato)
 [checkin] 👉 serve un login manuale una volta nel BROWSER_AGENTI
 [login_manuale] OAuth non tornato
-
+esito: 3
 ```
