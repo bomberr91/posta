@@ -36,22 +36,8 @@ LISTA
 [ "$TUTTI" = "1" ] && MIGLIORI=$(grep -v '^#' "$QUI/mappa_innesto.txt" | grep -v '^$' | while IFS='|' read -r pid riga; do
   echo "$pid|$pid||auto"; done)
 
-chiave(){
-  local riga="$1" txt key=""
-  txt=$(grep -iE "\*\*$riga" "$K" 2>/dev/null)
-  [ -z "$txt" ] && txt=$(grep -iE "$riga" "$K" 2>/dev/null | head -1)
-  for PAT in 'oc_sk_[A-Za-z0-9_]+' 'gsk_[A-Za-z0-9_-]+' 'AQ\.[A-Za-z0-9_.-]{20,}' \
-             'nvapi-[A-Za-z0-9_-]+' 'mstrl_[A-Za-z0-9_-]+' 'hf_[A-Za-z0-9]+' \
-             'sk-or-[A-Za-z0-9_-]+' 'sk-bl-[A-Za-z0-9_-]+' 'sk-air-[A-Za-z0-9_-]+' \
-             'sk-nry-[A-Za-z0-9_-]+' 'sk-orca-[A-Za-z0-9_-]+' 'sk-navy-[A-Za-z0-9_-]+' \
-             'sk-xt-[A-Za-z0-9_-]+' 'rqsty-sk-[A-Za-z0-9+/=_-]+' 'ek-[A-Za-z0-9]{20,}' \
-             'sk_[A-Za-z0-9]{20,}' 'ak_[A-Za-z0-9]+' 'alv2_[A-Za-z0-9]+' 'cfut_[A-Za-z0-9]+' \
-             'lfu_[A-Za-z0-9]+' 'sk-free-[A-Za-z0-9_-]+' 'ghp_[A-Za-z0-9]+' 'sk-[A-Za-z0-9_-]{16,}'; do
-    key=$(printf '%s' "$txt" | grep -oE "$PAT" | head -1); [ -n "$key" ] && break
-  done
-  [ -z "$key" ] && key=$(printf '%s' "$txt" | grep -oE '[A-Za-z0-9_+=.-]{24,}' | grep -v '/' \
-      | awk '{print length" "$0}' | sort -rn | head -1 | cut -d' ' -f2-)
-  printf '%s' "$key"
+chiave(){   # $1 = nome provider → chiave (usa l'estrattore unico)
+  python3 "$QUI/chiave_di.py" "$1" 2>/dev/null
 }
 
 TMP=$(mktemp -d)

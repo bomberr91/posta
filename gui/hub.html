@@ -243,7 +243,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
 
       <section class="agCard">
-        <h3>🧠 OmniRoute</h3>
+        <h3>🧠 Motore (OmniRoute)</h3>
         <div class="agRiga"><span>Stato</span><b id="agOmni">—</b></div>
         <div class="agRiga"><span>Modelli disponibili</span><span id="agModelli" class="agDim">—</span></div>
         <div class="agDim" id="agMotoreNota" style="margin-top:4px">È il cervello di tutti gli agenti: parte da solo con la Centrale.</div>
@@ -336,7 +336,11 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agBottoni"><button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button></div>
       </section>
 
-      <div id="agLog" class="agLargo"></div>
+      <section class="agCard agLargo" id="agLogSezione" style="display:none">
+        <h3>📋 Qui il dettaglio in chiaro</h3>
+        <div class="agDim">Quando qualcosa non va, qui sotto trovi il motivo scritto in italiano: copialo e mandamelo.</div>
+        <div id="agLog" style="margin-top:8px"></div>
+      </section>
     </div>
   </div>
 </div>
@@ -2269,22 +2273,67 @@ function aggiornaPilota(){
 
   const led = (el, testo, cls) => { el.textContent = testo; el.className = cls || ''; };
 
+  // errori SEMPRE IN CHIARO: niente JSON nel riquadro, solo frasi che si capiscono
+  const COSA_SI_FACEVA = {
+    '/api/browser':            'aprire il browser degli agenti',
+    '/api/omniroute':          'comandare OmniRoute',
+    '/api/appello':            'l\'appello delle chiavi',
+    '/api/agenti':             'leggere lo stato degli agenti',
+    '/api/agenti/installa':    'installare gli agenti',
+    '/api/agenti/prova':       'provare gli agenti',
+    '/api/chat':               'parlare col motore',
+    '/api/openclaw':           'OpenClaw',
+    '/api/checkin':            'il check-in',
+    '/api/checkin/riscatta':   'il riscatto del bonus',
+    '/api/pc/aggiorna':        'aggiornare il PC',
+    '/api/chiavi':             'leggere le chiavi',
+    '/api/salute':             'il controllo salute',
+    '/api/ponte':              'il ponte col PC',
+    '/api/fusion':             'la squadra'
+  };
+  function cosa(percorso){
+    for(const k in COSA_SI_FACEVA) if(percorso.indexOf(k) === 0) return COSA_SI_FACEVA[k];
+    return 'questa operazione';
+  }
+  // dalla risposta del server tiro fuori la frase più utile, in italiano
+  function fraseErrore(percorso, d){
+    d = d || {};
+    const m = d.msg || d.messaggio || d.errore || d.dettaglio || d.testo || d.err || '';
+    if(typeof m === 'string' && m && !m.trim().startsWith('{')) return m.replace(/^⚠️\s*/, '');
+    if(typeof m === 'object' && m.message) return String(m.message).replace(/^⚠️\s*/, '');
+    return '';
+  }
+  function avvisa(percorso, d, e){
+    const azione = cosa(percorso);
+    const f = fraseErrore(percorso, d);
+    let testo = '⚠️ Non sono riuscito a ' + azione + '.';
+    if(f) testo += '\n' + f;
+    else if(e) testo += '\nIl problema è di collegamento o il programma non risponde adesso.';
+    else testo += '\nIl programma ha risposto che qualcosa non va, ma non ha detto cosa.';
+    testo += '\n\nCosa puoi fare: riprova una volta. Se rifà lo stesso, premi «📋 Dettagli in basso» sulla scheda e mandamelo: te lo sistemo.';
+    log(testo);
+  }
+
   async function api(percorso, corpo){
     try{
       const r = await fetch(percorso, corpo ? {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo)} : {});
       const d = await r.json();
-      const guasto = !r.ok || d.stato === 'ko' || d.errore || d.err
-                     || (d.testo && String(d.testo).indexOf('⚠️') === 0);
-      if(guasto) log('⚠️ ERRORE su ' + percorso + '\n\n' + JSON.stringify(d, null, 1).slice(0, 1600) +
-                     '\n\n(copia questo e mandalo in chat: lo sistemo)');
+      const guasto = !r.ok || d.stato === 'ko' || d.errore || d.err ||
+                     (typeof d.testo === 'string' && d.testo.indexOf('⚠️') === 0);
+      if(guasto) avvisa(percorso, d, null);
       return d;
     }catch(e){
-      log('⚠️ ERRORE di rete su ' + percorso + '\n\n' + (e && e.message ? e.message : e) +
-          '\n\n(copia questo e mandalo in chat: lo sistemo)');
+      avvisa(percorso, null, e);
       return {};
     }
   }
+  // il riquadro degli errori si mostra solo quando c'e' qualcosa da leggere
+  function mostraRiquadro(){
+    const sez = document.getElementById('agLogSezione');
+    if(sez) sez.style.display = 'block';
+  }
   function log(t){
+    mostraRiquadro();
     const c = $('agLog');
     c.innerHTML = '<pre>' + String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
   }
@@ -2375,7 +2424,7 @@ function aggiornaPilota(){
       // risultati
       const L = $('agRisLista'); const sel = L.value;
       L.innerHTML = (s.risultati || []).map(r => '<option' + (r === sel ? ' selected' : '') + '>' + r + '</option>').join('') || '<option>—</option>';
-    }catch(e){ log('Non riesco a leggere lo stato: ' + e); }
+    }catch(e){ avvisa('/api/stato', null, e); }
     try{
       const c = await api('/api/chiavi');
       led($('agChiavi'), (c.attive ?? 0) + ' / ' + (c.totali ?? 0), 'ok');

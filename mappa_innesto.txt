@@ -1,36 +1,39 @@
 # mappa_innesto.txt — provider OmniRoute ← chiave del portachiavi
-# formato: id_omniroute|testo da cercare in ~/CHIAVI_LOCALI.md
-# generato il 20/10/2026 incrociando il catalogo vero (358 provider) col portachiavi
-# i provider con carta obbligatoria o media/embedding sono esclusi di proposito
-agnes|Agnes\ AI
-aion|Aion\ Labs
-api-airforce|Api\.Airforce
-agentrouter|AgentRouter
-anyapi|AnyAPI
-bazaarlink|BazaarLink
-cloudflare-ai|Cloudflare\ Workers\ AI
-cohere|Cohere
-electronhub|ElectronHub
-github|GitHub\ Models
-gemini|Google\ AI\ Studio
-groq|Groq
-huggingface|HuggingFace\ Router
-llm7|LLM7
-longcat|LongCat
-mistral|Mistral
-navy|NavyAI
-nvidia|NVIDIA
-ollama-cloud|Ollama\ Cloud
-opencode-zen|OpenCode\ Zen
-openrouter|OpenRouter
-orcarouter|OrcaRouter
-pollinations|Pollinations
-nara|NaraRouter
-requesty|Requesty
-routeway|Routeway
-sealion|SeaLION
-typhoon|Typhoon
-unorouter|UnoRouter
-xkiro|xKiro
-logfare|Logfare
-free-ai|FreeAI
+# formato: id_omniroute|testo da cercare|SENZA (se il provider non vuole chiave)
+# generato il 20/10/2026 dal catalogo VERO di OmniRoute (358 provider)
+# esclusi: carta obbligatoria (nebius, nscale senza chiave), media/audio/embedding
+agentrouter|AgentRouter|
+agnes|Agnes AI|
+aion|Aion Labs|
+anyapi|AnyAPI|
+api-airforce|Api.Airforce|
+bazaarlink|BazaarLink|
+chutes|Chutes|
+cloudflare-ai|Cloudflare Workers AI|
+cohere|Cohere|
+electronhub|ElectronHub|
+free-ai|FreeAI|
+gemini|Google AI Studio|
+github|GitHub Models|
+groq|Groq|
+huggingface|HuggingFace Router|
+kilo-gateway|Kilo|SENZA
+llm7|LLM7|
+logfare|Logfare|
+longcat|LongCat|
+mistral|Mistral|
+nara|NaraRouter|
+navy|NavyAI|
+nvidia|NVIDIA|
+ollama-cloud|Ollama Cloud|
+opencode-zen|OpenCode Zen|
+openrouter|OpenRouter|
+orcarouter|OrcaRouter|
+pollinations|Pollinations|
+requesty|Requesty|
+routeway|Routeway|
+sealion|SeaLION|
+speka|Speka|
+typhoon|Typhoon|
+unorouter|UnoRouter|
+xkiro|xKiro|

@@ -53,7 +53,8 @@ G="$(printf '\033[32m')"; R="$(printf '\033[31m')"; Y="$(printf '\033[33m')"; O=
 
 # cerca_chiave <etichetta> <pattern>
 chiave_di(){
-  grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1
+  # usa lo stesso estrattore del resto (chiave_di.py): legge solo la riga del provider
+  python3 "$QUI/chiave_di.py" "$1" 2>/dev/null
 }
 
 # scegli_modello <file-json-modelli>  → stampa l'id di un modello CHAT decente

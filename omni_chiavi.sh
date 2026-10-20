@@ -31,25 +31,15 @@ cerca(){ grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1; }
   echo "# 🔑 Rapporto innesto chiavi in OmniRoute — $(date '+%d/%m/%Y %H:%M')"
   echo
   # provider_id | riga da cercare | pattern chiave
-  while IFS='|' read -r PID RIGA; do
+  while IFS='|' read -r PID RIGA SENZA; do
     [ -z "$PID" ] && continue
-    # chiave = il token piu' lungo sulla riga del provider (funziona per tutti, senza
-    # dover scrivere un formato a mano per ognuno)
-    RIGA_TXT=$(grep -iE "\*\*$RIGA" "$K" 2>/dev/null)
-    KEY=""
-    # prima i formati di chiave noti (in ordine), poi il token piu' lungo senza "/" (mai i percorsi)
-    for PAT in 'oc_sk_[A-Za-z0-9_]+' 'gsk_[A-Za-z0-9_-]+' 'AQ\.[A-Za-z0-9_.-]{20,}' \
-               'nvapi-[A-Za-z0-9_-]+' 'mstrl_[A-Za-z0-9_-]+' 'hf_[A-Za-z0-9]+' \
-               'sk-or-[A-Za-z0-9_-]+' 'sk-bl-[A-Za-z0-9_-]+' 'sk-air-[A-Za-z0-9_-]+' \
-               'sk-nry-[A-Za-z0-9_-]+' 'sk-orca-[A-Za-z0-9_-]+' 'sk-navy-[A-Za-z0-9_-]+' \
-               'sk-xt-[A-Za-z0-9_-]+' 'rqsty-sk-[A-Za-z0-9+/=_-]+' 'ek-[A-Za-z0-9]+' \
-               'ak_[A-Za-z0-9]+' 'alv2_[A-Za-z0-9]+' 'cfut_[A-Za-z0-9]+' 'lfu_[A-Za-z0-9]+' \
-               'sk-free-[A-Za-z0-9_-]+' 'ghp_[A-Za-z0-9]+' 'sk-[A-Za-z0-9_-]{16,}'; do
-      KEY=$(printf '%s' "$RIGA_TXT" | grep -oE "$PAT" | head -1)
-      [ -n "$KEY" ] && break
-    done
-    [ -z "$KEY" ] && KEY=$(printf '%s' "$RIGA_TXT" | grep -oE '[A-Za-z0-9_+=.-]{24,}' \
-          | grep -v '/' | awk '{print length" "$0}' | sort -rn | head -1 | cut -d' ' -f2-)
+    # la chiave la tira fuori chiave_di.py (legge SOLO la riga del provider: niente
+    # chiavi del vicino, come succedeva con grep)
+    if [ "${SENZA:-}" = "SENZA" ]; then
+      KEY="free"
+    else
+      KEY=$(python3 "$QUI/chiave_di.py" "$RIGA" 2>/dev/null)
+    fi
     if [ -z "$KEY" ]; then echo "- $PID: · nessuna chiave nel portachiavi (salto)"; continue; fi
     if timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | grep -qiE "[[:space:]]$PID[[:space:]]"; then
       ROT=$(timeout 90 "$OMNI" providers rotate "$PID" --api-key "$KEY" </dev/null 2>&1 | noansi | tail -2 | tr '\n' ' ')
