@@ -1,4 +1,4 @@
-# ✅ Aggiornamento FilippoPC — 20/10/2026 22:25
+# ✅ Aggiornamento FilippoPC — 21/10/2026 00:03
 
 ## Novità applicate in questo giro (1)
 
@@ -11,4 +11,4 @@
 - Goose:  1.55.0
 - Secondhand: interpreter 0.0.56
 - Hermes: presente in ~/.hermes
-- OpenClaw: (node:4348) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+- OpenClaw: (node:2452) ExperimentalWarning: SQLite is an experimental feature and might change at any time
