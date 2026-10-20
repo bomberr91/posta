@@ -30,6 +30,64 @@ BASE = os.environ.get("AR_BASE", "https://agentrouter.org").rstrip("/")
 GH = os.environ.get("AR_GH", "https://github.com")
 GH_NETLOC = re.sub(r"^https?://", "", GH).split("/")[0].lower()
 ATTESA_OAUTH = int(os.environ.get("AR_ATTESA_OAUTH", "70"))   # secondi di pazienza per il giro OAuth
+MAX_GIRI = 3                     # tentativi massimi al giorno (niente logout a vuoto)
+HOME = os.path.expanduser("~")
+FINESTRA = (18, 5)               # ora ITALIANA: prima NESSUN login/logout (regola anti-ban)
+
+
+def adesso_it():
+    fake = os.environ.get("AR_ORA_FAKE")            # "HH:MM" — usato SOLO dai collaudi
+    if fake and ":" in fake:
+        h, m = fake.split(":")[:2]
+        return int(h), int(m)
+    t = time.localtime()
+    return t.tm_hour, t.tm_min
+
+
+def finestra_aperta():
+    if os.environ.get("AR_IGNORA_FINESTRA") == "1":
+        return True
+    return adesso_it() >= FINESTRA
+
+
+def file_flag():
+    return os.path.join(HOME, ".ar_checkin_" + time.strftime("%Y-%m-%d"))
+
+
+def file_try():
+    return os.path.join(HOME, ".ar_checkin_try_" + time.strftime("%Y-%m-%d"))
+
+
+def file_lm():
+    return os.path.join(HOME, ".ar_login_manuale")
+
+
+def _leggi_int(p):
+    try:
+        return int(open(p).read().strip() or 0)
+    except Exception:
+        return 0
+
+
+def _scrivi_int(p, n):
+    try:
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(str(n))
+    except Exception:
+        pass
+
+
+def _success():
+    try:
+        with open(file_flag(), "w", encoding="utf-8") as f:
+            f.write(time.strftime("%H:%M"))
+    except Exception:
+        pass
+    try:
+        os.remove(file_lm())
+    except Exception:
+        pass
+    return 0
 
 
 # ─────────────────────────────── CDP minimale ────────────────────────────────
@@ -345,6 +403,31 @@ def attendi_rientro(schede_iniziali, tmax=ATTESA_OAUTH):
 def main(argv):
     sola_verifica = "--verifica" in argv
     print(f"[checkin] {time.strftime('%d/%m/%Y %H:%M')} · base={BASE} · modo={'VERIFICA' if sola_verifica else 'RISCATTO'}")
+
+    # 0) CANCELLO ORARIO: prima delle 18:05 italiane non si fa NULLA su agentrouter (anti-ban)
+    if not sola_verifica and not finestra_aperta():
+        hh, mm = adesso_it()
+        print(f"[checkin] ⏳ finestra chiusa: sono le {hh:02d}:{mm:02d} (ora italiana), "
+              f"il bonus si riscatta dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}.")
+        print("[checkin] nessun login e nessun logout fatti — si aspetta la finestra (regola anti-ban).")
+        return 4
+
+    # 0-bis) guardie giornaliere: un giro utile al giorno, mai in loop
+    if not sola_verifica:
+        forzato = os.environ.get("FORZA") == "1"
+        if not forzato:
+            if os.path.exists(file_lm()):
+                print("[checkin] ⏭ salto: c'e' un login manuale da fare (~/.ar_login_manuale)")
+                return 5
+            if os.path.exists(file_flag()):
+                print("[checkin] ⏭ salto: bonus di oggi gia' riscosso alle "
+                      + (open(file_flag()).read().strip() or "?"))
+                return 5
+            if _leggi_int(file_try()) >= MAX_GIRI:
+                print(f"[checkin] ⏭ salto: gia' {MAX_GIRI} tentativi oggi (niente logout a vuoto)")
+                return 5
+        _scrivi_int(file_try(), _leggi_int(file_try()) + 1)
+
     try:
         http_json("/json/version")
     except Exception:
@@ -373,6 +456,13 @@ def main(argv):
         dentro = loggato_su_agentrouter(ws_ar)
         print(f"[checkin] AgentRouter: {'dentro' if dentro else 'fuori'} · saldo prima: "
               f"{saldo_prima if saldo_prima is not None else 'non letto'}")
+        if dentro is True:
+            try:
+                if os.path.exists(file_lm()):
+                    os.remove(file_lm())
+                    print("[checkin] tolto il flag ~/.ar_login_manuale (sessione di nuovo valida)")
+            except Exception:
+                pass
         if dentro is True:
             try:
                 if os.path.exists(file_lm()):
@@ -445,11 +535,13 @@ def main(argv):
               + (f" · delta: {'+' if (delta or 0) >= 0 else ''}{delta}$" if delta is not None else ""))
         if delta is not None and delta >= 20:
             print(f"[checkin] ✅ BONUS INCASSATO: +{delta}$ (il +25$ giornaliero)")
+            return _success()
         elif delta is not None and abs(delta) < 0.01:
             print("[checkin] ✅ giro completato, ma nessun accredito: probabile bonus gia' riscattato oggi")
+            return _success()
         else:
             print("[checkin] ✅ giro logout→login completato (accredito non misurabile: saldo non leggibile)")
-        return 0
+        return _success()
     finally:
         for t in tab_da_chiudere:
             chiudi_scheda(t)
