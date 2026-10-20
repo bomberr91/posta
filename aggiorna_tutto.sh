@@ -1,182 +1,224 @@
 #!/usr/bin/env bash
-# aggiorna_tutto.sh — Aggiornamento completo FilippoPC (18/10/2026)
+# aggiorna_tutto.sh — v2 (20/10/2026) · "SOLO LE NOVITÀ"
+# ─────────────────────────────────────────────────────────────────────────────
+# Prima: ogni [8] rifaceva TUTTO (skill, npm -g, OpenClaw con Node 24, ecc.) = minuti buttati.
+# Adesso: ogni passo ha un TIMBRO in ~/.stato_aggiorna/. Se è già fatto → lo salta in un attimo.
+#   · si rifà da solo se qualcosa è cambiato (es. skills_pack.tar.gz nuovo → reinstalla le skill)
+#   · FORZA=1  → rifà tutto per davvero (riparazione completa)
+#   · DRY=1    → mostra cosa farebbe, senza toccare niente
+# Passo 1 (sincronizza il ponte) gira SEMPRE: è quello che porta le novità.
 set -u
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
-# Auto-rileva il bin del Node v22 (MAI versioni cablate: sul PC puo' cambiare)
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
 V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
-[ -n "$V22BIN" ] && export PATH="$V22BIN:$PATH"
+export PATH="$V22BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
 
-# Assicura che PATH sia sempre in cima a ~/.bashrc e ~/.profile anche per shell non-interattive
-for rc in "$HOME/.bashrc" "$HOME/.profile"; do
-  if [ -f "$rc" ] && ! head -n 5 "$rc" | grep -q 'opencode/bin'; then
-    tmp=$(mktemp)
-    cat << 'EOP' > "$tmp"
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
-EOP
-    cat "$rc" >> "$tmp"
-    mv "$tmp" "$rc"
-  fi
-done
+FORZA="${FORZA:-0}"; DRY="${DRY:-0}"
+ST="$HOME/.stato_aggiorna"; mkdir -p "$ST"
+SALTATI=0; FATTI=0; DAFARE=0; NOVITA=""
+
+ok()   { echo "  ✓ $*"; FATTI=$((FATTI+1)); NOVITA="$NOVITA\n  ✓ $*"; }
+salto(){ echo "  · $* (già a posto, salto)"; SALTATI=$((SALTATI+1)); }
+nota() { echo "  · $*"; }
+
+# timbro <chiave> <impronta>: 0 = da fare, 1 = già fatto con la stessa impronta
+timbro(){
+  local k="$1" imp="${2:-statico}"
+  [ "$FORZA" = "1" ] && return 0
+  [ -f "$ST/$k" ] && [ "$(cat "$ST/$k" 2>/dev/null)" = "$imp" ] && return 1
+  return 0
+}
+marca(){ printf '%s' "${2:-statico}" > "$ST/$1" 2>/dev/null || true; }
+esegui(){ if [ "$DRY" = "1" ]; then nota "[DRY] eseguirei: $*"; DAFARE=$((DAFARE+1)); return 0; fi; "$@"; }
 
 echo "=========================================================="
-echo " 🚀 AGGIORNAMENTO POTENZIAMENTO FILIPPOPC (18/10/2026)"
+echo " 🚀 AGGIORNAMENTO FILIPPOPC — solo le novità ($(date '+%d/%m %H:%M'))"
+[ "$FORZA" = "1" ] && echo "    ⚠ FORZA=1: rifaccio tutto"
+[ "$DRY" = "1" ]   && echo "    ⚠ DRY=1: non tocco niente, solo simulazione"
 echo "=========================================================="
 
+# ── 1 · PONTE (sempre: è quello che porta le novità) ────────────────────────────
 echo ""
-echo "── 1/6 · Sincronizzo il ponte ~/posta da GitHub..."
+echo "── 1/6 · Sincronizzo il ponte ~/posta..."
 if [ -d "$HOME/posta/.git" ]; then
-  cd "$HOME/posta"
-  TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"; [ -z "$TOKEN" ] && [ -f "$HOME/CHIAVI_LOCALI.md" ] && TOKEN="$(grep -oE 'ghp_[A-Za-z0-9]{30,}' "$HOME/CHIAVI_LOCALI.md" | head -1)"
+  cd "$HOME/posta" || exit 1
+  TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
+  [ -z "$TOKEN" ] && [ -f "$HOME/CHIAVI_LOCALI.md" ] && TOKEN="$(grep -oE 'ghp_[A-Za-z0-9]{30,}' "$HOME/CHIAVI_LOCALI.md" | head -1)"
   LOGIN=""; [ -s "$HOME/.posta_login" ] && LOGIN="$(tr -d '\r\n' < "$HOME/.posta_login")"
   [ -z "$LOGIN" ] && [ -s "$HOME/posta/.padrone" ] && LOGIN="$(tr -d '\r\n' < "$HOME/posta/.padrone")"
-  if [ -n "$TOKEN" ] && [ -n "$LOGIN" ]; then
-    git fetch -q origin main && git reset -q --hard origin/main || true
-  else
-    git pull -q || true
+  PRIMA="$(git rev-parse --short HEAD 2>/dev/null || echo '?')"
+  if [ "$DRY" != "1" ]; then
+    if [ -n "$TOKEN" ] && [ -n "$LOGIN" ]; then
+      git fetch -q origin main && git reset -q --hard origin/main || true
+    else
+      git pull -q || true
+    fi
   fi
-  chmod +x "$HOME/posta/postino.sh" "$HOME/posta/squadra.sh" 2>/dev/null || true
-  echo "  ✓ Ponte ~/posta aggiornato"
+  DOPO="$(git rev-parse --short HEAD 2>/dev/null || echo '?')"
+  [ "$PRIMA" = "$DOPO" ] && echo "  ✓ ponte già aggiornato ($DOPO)" || ok "ponte aggiornato: $PRIMA → $DOPO"
+  chmod +x "$HOME/posta/postino.sh" "$HOME/posta/squadra.sh" "$HOME/posta/centrale.sh" 2>/dev/null || true
+else
+  nota "~/posta non è un repo git: salto la sincronizzazione"
 fi
 
+# ── 2 · SKILL (solo se il pacchetto è cambiato) ────────────────────────────────
 echo ""
-echo "── 2/6 · Installo tutte le 26 Skill (Pacchetti A+B+C+D) per TUTTI gli agenti..."
-if [ -f "$HOME/posta/skills_pack.tar.gz" ]; then
-  tar -xzf "$HOME/posta/skills_pack.tar.gz" -C "$HOME"
-  mkdir -p "$HOME/.claude/skills" "$HOME/.hermes/skills"
-  cp -rf "$HOME/.agents/skills/"* "$HOME/.claude/skills/" 2>/dev/null || true
-  cp -rf "$HOME/.agents/skills/"* "$HOME/.hermes/skills/" 2>/dev/null || true
-  date -Is > "$HOME/.skills_v2_installed"
-  echo "  ✓ 26 Skill attive in ~/.agents/skills, ~/.config/opencode/skills, ~/.config/goose/skills, ~/.hermes/skills"
+echo "── 2/6 · Skill (26 pacchetti A+B+C+D)..."
+PACK="$HOME/posta/skills_pack.tar.gz"
+if [ -f "$PACK" ]; then
+  IMP="$(md5sum "$PACK" 2>/dev/null | cut -d' ' -f1)"
+  N_SKILL=$(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)
+  if timbro skills "$IMP"; then
+    esegui tar -xzf "$PACK" -C "$HOME"
+    esegui mkdir -p "$HOME/.claude/skills" "$HOME/.hermes/skills"
+    esegui bash -c "cp -rf \"$HOME/.agents/skills/\"* \"$HOME/.claude/skills/\" 2>/dev/null || true"
+    esegui bash -c "cp -rf \"$HOME/.agents/skills/\"* \"$HOME/.hermes/skills/\" 2>/dev/null || true"
+    if [ "$DRY" = "1" ]; then
+      nota "[DRY] installerei/aggiornerei le skill dal pacchetto nuovo"
+    else
+      date -Is > "$HOME/.skills_v2_installed"; marca skills "$IMP"
+      ok "Skill installate/aggiornate ($(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l) attive) — pacchetto nuovo"
+    fi
+  else
+    salto "Skill: $N_SKILL attive · pacchetto identico a quello già installato"
+  fi
+else
+  nota "skills_pack.tar.gz non trovato nel ponte"
 fi
 
+# ── 3 · STRUMENTI BROWSER/WEB (solo se mancano) ───────────────────────────────
 echo ""
-echo "── 3/6 · Installo gli strumenti Browser & Web (agent-browser + firecrawl-cli)..."
-# npm robusto: preferisci SEMPRE il Node v22 di nvm (su WSL1 il Node 24 non parte: Exec format error)
+echo "── 3/6 · Strumenti Browser & Web (agent-browser + firecrawl-cli)..."
 NPM22=$(ls "$HOME/.nvm/versions/node/v22"*/bin/npm 2>/dev/null | sort -V | tail -1)
 [ -z "$NPM22" ] && command -v npm >/dev/null 2>&1 && NPM22=$(command -v npm)
-if [ -n "$NPM22" ]; then
-  "$NPM22" i -g agent-browser firecrawl-cli >/dev/null 2>&1 && echo "  ✓ agent-browser + firecrawl-cli pronti (npm: $NPM22)" || echo "  · npm install parziale (non blocca nulla: i tool gia' presenti restano attivi)"
+if command -v agent-browser >/dev/null 2>&1 && command -v firecrawl-cli >/dev/null 2>&1; then
+  salto "agent-browser $(agent-browser --version 2>&1 | head -1) + firecrawl-cli già presenti"
+elif [ -n "$NPM22" ]; then
+  esegui "$NPM22" i -g agent-browser firecrawl-cli >/dev/null 2>&1 \
+    && { marca browser_tools; ok "agent-browser + firecrawl-cli installati"; } \
+    || nota "npm install parziale (non blocca nulla)"
 else
-  echo "  · npm non trovato: salto (non blocca nulla)"
+  nota "npm non trovato: salto"
 fi
 
-echo ""
-# Riporta il default nvm su v22 se qualche giro precedente lo aveva messo su 24 (rotto su WSL1)
+# default nvm SEMPRE su v22 (su WSL1 il 24 non parte) — costa un istante
 V22DIR=$(ls -d "$HOME/.nvm/versions/node/v22"* 2>/dev/null | sort -V | tail -1)
-if [ -n "$V22DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+if [ -n "$V22DIR" ] && [ -s "$NVM_DIR/nvm.sh" ] && [ "$DRY" != "1" ]; then
   . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 && nvm alias default "$(basename "$V22DIR")" >/dev/null 2>&1 || true
 fi
 
-echo "── 4/6 · Installo Secondhand (OpenInterpreter Rust - 68k★)..."
+# ── 4 · SECONDHAND ────────────────────────────────────────────────────────────
+echo ""
+echo "── 4/6 · Secondhand (OpenInterpreter Rust)..."
 if command -v interpreter >/dev/null 2>&1; then
-  echo "  ✓ Secondhand (interpreter) già installato: $(interpreter --version 2>&1 | head -1)"
+  salto "Secondhand $(interpreter --version 2>&1 | head -1)"
 else
-  OPEN_INTERPRETER_NONINTERACTIVE=1 curl -fsSL https://www.openinterpreter.com/install | OPEN_INTERPRETER_NONINTERACTIVE=1 sh >/dev/null 2>&1 || true
+  esegui bash -c "OPEN_INTERPRETER_NONINTERACTIVE=1 curl -fsSL https://www.openinterpreter.com/install | OPEN_INTERPRETER_NONINTERACTIVE=1 sh >/dev/null 2>&1 || true"
   export PATH="$HOME/.local/bin:$PATH"
-  if command -v interpreter >/dev/null 2>&1; then
-    echo "  ✓ Secondhand installato: $(interpreter --version 2>&1 | head -1)"
-  else
-    echo "  · Secondhand: installazione saltata o non compatibile WSL1"
-  fi
+  command -v interpreter >/dev/null 2>&1 && ok "Secondhand installato" || nota "Secondhand: non compatibile WSL1 (salto)"
 fi
 
+# ── 5 · HERMES ────────────────────────────────────────────────────────────────
 echo ""
-echo "── 5/6 · Installo Hermes Agent (NousResearch - 254k★)..."
+echo "── 5/6 · Hermes Agent (NousResearch)..."
 if command -v hermes >/dev/null 2>&1 || [ -x "$HOME/.hermes/hermes-agent/venv/bin/hermes" ]; then
-  echo "  ✓ Hermes Agent già installato"
+  salto "Hermes già installato"
 else
-  curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1 || true
-  if command -v hermes >/dev/null 2>&1 || [ -d "$HOME/.hermes/hermes-agent" ]; then
-    echo "  ✓ Hermes Agent installato in ~/.hermes"
-  else
-    echo "  · Hermes Agent: installazione saltata"
-  fi
+  esegui bash -c "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1 || true"
+  { command -v hermes >/dev/null 2>&1 || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || nota "Hermes: installazione saltata"
 fi
 
+# ── 6 · OPENCLAW (richiede Node ≥24: su WSL1 non parte → un tentativo ogni 7 giorni) ──
 echo ""
-echo "── 6/6 · Installo OpenClaw (392k★) e creo le nuove icone sul Desktop..."
+echo "── 6/6 · OpenClaw..."
 if command -v openclaw >/dev/null 2>&1; then
-  echo "  ✓ OpenClaw già installato: $(openclaw --version 2>&1 | head -1)"
+  salto "OpenClaw $(openclaw --version 2>&1 | head -1)"
 else
-  curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh | OPENCLAW_NO_ONBOARD=1 OPENCLAW_NO_PROMPT=1 bash -s -- --runtime node --no-onboard --no-prompt >/dev/null 2>&1 || true
-  if command -v openclaw >/dev/null 2>&1; then
-    echo "  ✓ OpenClaw installato: $(openclaw --version 2>&1 | head -1)"
+  ULTIMO="$ST/openclaw_ultimo_tentativo"
+  TENTA=1
+  if [ -f "$ULTIMO" ] && [ "$FORZA" != "1" ]; then
+    T0=$(date -r "$ULTIMO" +%s 2>/dev/null || echo 0)
+    G=$(( ( $(date +%s) - T0 ) / 86400 ))
+    [ "$G" -lt 7 ] && TENTA=0
+  fi
+  if [ "$TENTA" = "0" ]; then
+    salto "OpenClaw: tentato $G giorni fa, riprovo tra $((7-G)) giorni (serve Node ≥24, non disponibile su WSL1)"
+  elif [ "$DRY" = "1" ]; then
+    nota "[DRY] tenterei l'installazione di OpenClaw"
   else
-    echo "  · OpenClaw richiede Node >=24 (installo Node 24 in nvm per OpenClaw)..."
-    if [ -s "$NVM_DIR/nvm.sh" ]; then
-      nvm install 24 >/dev/null 2>&1 && npm install -g openclaw@latest --allow-scripts=openclaw >/dev/null 2>&1 || true
-      : # (rimosso: MAI mettere il default su Node 24, su WSL1 non parte)
+    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh \
+      | OPENCLAW_NO_ONBOARD=1 OPENCLAW_NO_PROMPT=1 bash -s -- --runtime node --no-onboard --no-prompt >/dev/null 2>&1 || true
+    date -Is > "$ULTIMO"
+    if command -v openclaw >/dev/null 2>&1; then
+      ok "OpenClaw installato: $(openclaw --version 2>&1 | head -1)"
+    else
+      nota "OpenClaw: serve Node ≥24 (su WSL1 non parte) → prossimo tentativo tra 7 giorni"
     fi
-    command -v openclaw >/dev/null 2>&1 && echo "  ✓ OpenClaw installato: $(openclaw --version 2>&1 | head -1)" || echo "  · OpenClaw: riproveremo al prossimo giro"
   fi
 fi
 
-chmod +x "$HOME/posta/centrale.sh" "$HOME/posta/leggi_video.py" "$HOME/posta/squadra.sh" "$HOME/posta/postino.sh" 2>/dev/null || true
+# ── Extra: innesti Scaglione 1 + skill di marketing (con timbro) ──────────────
+if [ -f "$HOME/posta/da_me/scaglione1_applica_innesti.sh" ] && [ ! -f "$HOME/.scaglione1_innesti_done" ] && [ "$DRY" != "1" ]; then
+  bash "$HOME/posta/da_me/scaglione1_applica_innesti.sh" && touch "$HOME/.scaglione1_innesti_done" && ok "Innesti Scaglione 1 applicati"
+fi
+if [ ! -d "$HOME/.agents/skills/taste-skill" ] && [ "$DRY" != "1" ]; then
+  git clone --depth 1 -q https://github.com/leonxlnx/taste-skill.git /tmp/ts_sk 2>/dev/null \
+    && cp -r /tmp/ts_sk "$HOME/.agents/skills/taste-skill" && rm -rf /tmp/ts_sk && ok "Skill taste-skill aggiunta"
+fi
+if [ ! -d "$HOME/.agents/skills/marketingskills" ] && [ "$DRY" != "1" ]; then
+  git clone --depth 1 -q https://github.com/coreyhaines31/marketingskills.git /tmp/mk_sk 2>/dev/null \
+    && cp -r /tmp/mk_sk "$HOME/.agents/skills/marketingskills" && rm -rf /tmp/mk_sk && ok "Skill marketingskills aggiunta"
+fi
+
+# ── Desktop: un'unica icona (istantaneo) ─────────────────────────────────────
 for d in /mnt/c/Users/*/Desktop /mnt/c/Users/*/OneDrive*/Desktop; do
-  if [ -d "$d" ] && [ -f "$d/RAPPORTO_AGENTI.txt" -o -f "$d/COMPITI.lnk" -o -f "$d/BROWSER_AGENTI.bat" -o -f "$d/CENTRALE_AGENTI.bat" ]; then
+  if [ -d "$d" ]; then
     cp -f "$HOME/posta/CENTRALE_AGENTI.bat" "$d/CENTRALE_AGENTI.bat" 2>/dev/null || true
     cp -f "$HOME/posta/8_CENTRALE_GUI.bat" "$d/CENTRALE_GUI.bat" 2>/dev/null || true
     rm -f "$d/BROWSER_AGENTI.bat" "$d/SQUADRA_FUSION.bat" "$d/APRI_AGENTE.lnk" "$d/AVVIA_POSTINO.lnk" "$d/COMPITI.lnk" "$d/AGGIORNA_TUTTO_PC.bat" 2>/dev/null || true
-    echo "  ✓ Desktop ripulito: ora hai UN'UNICA icona → CENTRALE_AGENTI.bat"
   fi
 done
+chmod +x "$HOME/posta/centrale.sh" "$HOME/posta/leggi_video.py" "$HOME/posta/squadra.sh" "$HOME/posta/postino.sh" 2>/dev/null || true
 
-# Segna i vecchi task di aggiornamento come già fatti e manda il rapporto sul ponte
-mkdir -p "$HOME/posta/fatti" "$HOME/posta/dal_pc"
-rm -f "$HOME/posta/da_me/aggiorna_26_skill_e_browser.sh" "$HOME/posta/da_me/prova.md" 2>/dev/null || true
-{
-  echo "# ✅ Rapporto Aggiornamento FilippoPC (18/10/2026)"
-  echo "_$(date '+%d/%m/%Y %H:%M') · $(hostname)_"
-  echo ""
-  echo "- **Skill installate**: $(ls -1 ~/.agents/skills 2>/dev/null | wc -l) (in OpenCode, Goose, Hermes, Secondhand)"
-  echo "- **OpenCode**: $(opencode --version 2>&1 | head -1)"
-  echo "- **Goose**: $(goose --version 2>&1 | head -1)"
-  echo "- **Secondhand (interpreter)**: $(interpreter --version 2>&1 | head -1 || echo non presente)"
-  echo "- **Hermes Agent**: $(command -v hermes >/dev/null 2>&1 && hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo 'cartella presente ma comando fuori PATH' || echo 'NON installato'))"
-  echo "- **OpenClaw**: $(command -v openclaw >/dev/null 2>&1 && openclaw --version 2>&1 | head -1 || echo 'NON installato (richiede Node 24, rotto su WSL1)')"
-  echo "- **Agent-Browser**: $(agent-browser --version 2>&1 | head -1 || echo non presente)"
-  echo "- **Squadra Fusion**: pronta (~/posta/squadra.sh + SQUADRA_FUSION.bat sul Desktop)"
-  echo "- **Browser Agenti**: pronto (BROWSER_AGENTI.bat sul Desktop)"
-} > "$HOME/posta/dal_pc/stato_18_10.md"
+# ── Rapporto sul ponte (solo se c'è qualcosa di nuovo) ──────────────────────
+mkdir -p "$HOME/posta/fatti" "$HOME/posta/dal_pc" 2>/dev/null || true
+if [ "$FATTI" -gt 0 ] && [ "$DRY" != "1" ]; then
+  {
+    echo "# ✅ Aggiornamento FilippoPC — $(date '+%d/%m/%Y %H:%M')"
+    echo ""
+    echo "## Novità applicate in questo giro ($FATTI)"
+    printf '%b\n' "$NOVITA"
+    echo ""
+    echo "## Saltati perché già a posto: $SALTATI"
+    echo ""
+    echo "- Skill: $(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)"
+    echo "- OpenCode: $(opencode --version 2>&1 | head -1)"
+    echo "- Goose: $(goose --version 2>&1 | head -1)"
+    echo "- Secondhand: $(interpreter --version 2>&1 | head -1 || echo non presente)"
+    echo "- Hermes: $(command -v hermes >/dev/null 2>&1 && hermes --version 2>&1 | head -1 || echo 'presente ma fuori PATH')"
+    echo "- OpenClaw: $(command -v openclaw >/dev/null 2>&1 && openclaw --version 2>&1 | head -1 || echo 'non installato (Node 24 su WSL1)')"
+  } > "$HOME/posta/dal_pc/stato_aggiornamento.md"
+  cd "$HOME/posta" || exit 0
+  git add -A >/dev/null 2>&1 || true
+  git diff --cached --quiet || git commit -qm "aggiornamento $(date '+%d/%m %H:%M') · $FATTI novità" >/dev/null 2>&1 || true
+  [ -n "${TOKEN:-}" ] && [ -n "${LOGIN:-}" ] && git push -q "https://x-access-token:$TOKEN@github.com/$LOGIN/posta.git" HEAD:main >/dev/null 2>&1 || true
+fi
 
-cd "$HOME/posta"
-git add -A >/dev/null 2>&1 && git commit -qm "aggiornamento completo 18/10 da $(hostname)" >/dev/null 2>&1 || true
-if [ -n "${TOKEN:-}" ] && [ -n "${LOGIN:-}" ]; then
-  git push -q "https://x-access-token:$TOKEN@github.com/$LOGIN/posta.git" HEAD:main >/dev/null 2>&1 || true
+# ── Riavvio del postino (istantaneo) ─────────────────────────────────────────
+if [ "$DRY" != "1" ]; then
+  pkill -f 'postino.sh' 2>/dev/null || true
+  sleep 0.3
+  nohup "$HOME/posta/postino.sh" --loop >/dev/null 2>&1 &
 fi
 
 echo ""
 echo "=========================================================="
-echo " 🎉 TUTTO PRONTO SU FILIPPOPC!"
-echo " Sul Desktop ora hai anche:"
-echo "   - BROWSER_AGENTI.bat  (apre il browser controllato dagli agenti)"
-echo "   - SQUADRA_FUSION.bat  (lancia 3 agenti in sincronia su un compito)"
+if [ "$DRY" = "1" ]; then
+  echo " 🔎 SIMULAZIONE: avrei fatto $DAFARE passi · $SALTATI già a posto"
+elif [ "$FATTI" -eq 0 ]; then
+  echo " ✅ NIENTE DA FARE: tutto già a posto ($SALTATI controlli saltati in un lampo)"
+else
+  echo " 🎉 FATTO: $FATTI novità applicate · $SALTATI passi saltati (erano già a posto)"
+fi
+echo " Per rifare tutto da zero:  FORZA=1 bash ~/posta/aggiorna_tutto.sh"
 echo "=========================================================="
-
-# === POTENZIAMENTO SCAGLIONE 1 (18/10): Headroom + XERJ + Beads + MarkItDown + Gemini CLI + Marketing/Taste Skills ===
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-NODE22_BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
-export PATH="$NODE22_BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
-mkdir -p "$HOME/.local/bin" "$HOME/.agents/skills"
-
-if [ -f "$HOME/posta/da_me/scaglione1_applica_innesti.sh" ] && [ ! -f "$HOME/.scaglione1_innesti_done" ]; then
-  bash "$HOME/posta/da_me/scaglione1_applica_innesti.sh" && touch "$HOME/.scaglione1_innesti_done"
-fi
-
-# Installa anche le skill di Marketing (CRO, Copywriting, SEO, Social) e Taste-Skill (UI Anti-Slop)
-if [ ! -d "$HOME/.agents/skills/taste-skill" ]; then
-  git clone --depth 1 -q https://github.com/leonxlnx/taste-skill.git /tmp/ts_sk 2>/dev/null && cp -r /tmp/ts_sk "$HOME/.agents/skills/taste-skill" && rm -rf /tmp/ts_sk/.git /tmp/ts_sk || true
-fi
-if [ ! -d "$HOME/.agents/skills/marketingskills" ]; then
-  git clone --depth 1 -q https://github.com/coreyhaines31/marketingskills.git /tmp/mk_sk 2>/dev/null && cp -r /tmp/mk_sk "$HOME/.agents/skills/marketingskills" && rm -rf /tmp/mk_sk/.git /tmp/mk_sk || true
-fi
-
-# Riavvia il Postino col nuovo script blindato (--autostash e log in /tmp/postino.log)
-pkill -f 'postino.sh' 2>/dev/null || true
-nohup "$HOME/posta/postino.sh" --loop >/dev/null 2>&1 &
-
