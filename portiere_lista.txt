@@ -44,14 +44,14 @@ speka|Speka|Speka|https://speka.me/v1|google/gemma-4-31b-it|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|auto|modelli
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
+ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
+teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
 aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
 
 ## DA CONFERMARE — non contano nel numero del Portiere
 # Per farli entrare basta scrivere l'indirizzo nella riga qui sotto e spostarla sopra.
 # Nome nel portachiavi | perché è fermo
-OVH|nel portachiavi è scritto «NO KEY» e fa solo embedding
-TeamoRouter|chiave mai salvata per intero (solo «sk-teamo-e0c685…»)
 LLM7|indirizzo API mai scritto nel portachiavi
 LongCat|indirizzo API mai scritto nel portachiavi
 Ollama Cloud|indirizzo API mai scritto nel portachiavi
