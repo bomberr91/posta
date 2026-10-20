@@ -32,7 +32,7 @@ chiedi(){  # $1 etichetta, resto = comando
   if printf '%s' "$out" | grep -qiE "\bOK\b"; then
     ok "$etichetta" "risponde"
   elif [ -z "$out" ]; then
-    at "$etichetta" "nessuna risposta (può servire un login o il motore acceso)"
+    at "$etichetta" "nessuna risposta: gli manca la configurazione (una volta sola: «goose configure»)"
   else
     at "$etichetta" "risposta strana: $(printf '%s' "$out" | head -1 | cut -c1-60)"
   fi
@@ -46,15 +46,23 @@ echo "════════════════════════�
 MOTORE=0
 (exec 3<>/dev/tcp/127.0.0.1/20128) 2>/dev/null && { exec 3<&-; MOTORE=1; }
 if [ "$MOTORE" = 1 ]; then
-  MODS=$(curl -s -m 10 -H "Authorization: Bearer ${OPENAI_API_KEY:-sk-omniroute}" http://127.0.0.1:20128/v1/models | grep -o '"id"' | wc -l)
-  ok "OmniRoute" "🟢 acceso · ${MODS:-0} modelli disponibili"
+  MODS=0
+  for K in "${OMNIROUTE_API_KEY:-}" "${OPENAI_API_KEY:-}" ""; do
+    MODS=$(curl -s -m 10 ${K:+-H "Authorization: Bearer $K"} http://127.0.0.1:20128/v1/models | grep -o '"id"' | wc -l)
+    [ "${MODS:-0}" -gt 0 ] && break
+  done
+  if [ "${MODS:-0}" -gt 0 ]; then
+    ok "OmniRoute" "🟢 acceso · $MODS modelli disponibili"
+  else
+    at "OmniRoute" "🟢 acceso ma 0 modelli: attiva i provider free col [9] → f (senza modelli gli agenti non rispondono)"
+  fi
 else
   ko "OmniRoute" "🔴 spento: senza di lui gli agenti non hanno cervello (accendilo col [9])"
 fi
 
 # ── 1 · versioni (sempre)
 for a in opencode goose interpreter hermes gemini; do
-  if c_e "$a"; then
+  if c_e "$a" || { [ "$a" = hermes ] && [ -d "$HOME/.hermes/hermes-agent" ]; }; then
     V=$(timeout 20 "$a" --version 2>&1 | head -1 | tr -d '\r')
     [ -z "$V" ] && V=$(timeout 20 "$a" version 2>&1 | head -1 | tr -d '\r')
     [ -n "$V" ] && ok "$a" "installato · $V" || at "$a" "installato (versione non dichiarata)"
@@ -80,8 +88,8 @@ if [ "$SVELTO" = 0 ] && [ "$MOTORE" = 1 ]; then
   fi
   # Secondhand: il binario Rust non ha un "una domanda e via" affidabile
   c_e interpreter && at "Secondhand" "installato: si prova aprendolo (non ha un modo automatico sicuro)"
-  # Hermes: idem
-  { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && at "Hermes" "installato: si prova aprendolo"
+  # Hermes: binario OPPURE cartella (spesso vive solo in ~/.hermes)
+  { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && at "Hermes" "installato (in ~/.hermes): si prova aprendolo"
   # OpenClaw: sta su Windows, il segnale vero è il gateway
   if [ "$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null || echo no)" != "no" ]; then
     if (exec 3<>/dev/tcp/127.0.0.1/18789) 2>/dev/null; then

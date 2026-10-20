@@ -181,7 +181,7 @@ while :; do
           d|D) cmd.exe /c start "" "http://localhost:20128" 2>/dev/null || echo "Apri a mano: http://localhost:20128" ;;
           f|F) bash "$HOME/posta/omni_free.sh" ;;
           k|K) bash "$HOME/posta/omni_chiavi.sh" ;;
-          x|X) pkill -f omniroute 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
+          x|X) pkill -x omniroute 2>/dev/null; pkill -f "bin/omniroute" 2>/dev/null && echo "🔴 Motore spento." || echo "Era già spento." ;;
         esac
       fi
       read -r -p "Premi INVIO per tornare al menu..." _

@@ -11,7 +11,7 @@ K="$HOME/CHIAVI_LOCALI.md"
 
 # il database si scrive SOLO a motore spento (lezione "locking protocol")
 echo "== Spengo il motore per sbloccare il database (lo riaccendo io alla fine)..."
-pkill -f omniroute 2>/dev/null; sleep 4
+pkill -x omniroute 2>/dev/null; pkill -f "bin/omniroute" 2>/dev/null; sleep 4
 
 D="$HOME/posta/dal_pc"; mkdir -p "$D"
 R="$D/omni_chiavi_report.md"

@@ -31,8 +31,9 @@ OMNI_URL="http://127.0.0.1:20128/v1"
 
 export OPENCODE_API_KEY="${OC_KEY:-}"
 export GROQ_API_KEY="${GQ_KEY:-}"
+# Gemini CLI avvisa se ci sono TUTTE E DUE: ne imposto una sola (GEMINI_API_KEY)
 export GEMINI_API_KEY="${GM_KEY:-}"
-export GOOGLE_API_KEY="${GM_KEY:-}"
+unset GOOGLE_API_KEY 2>/dev/null || true
 export AGENTROUTER_API_KEY="${AR_KEY:-}"
 
 # "il cervello di default" per gli agenti compatibili OpenAI (OmniRoute se c'è la chiave)

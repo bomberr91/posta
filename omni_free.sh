@@ -7,7 +7,7 @@ V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail 
 OMNI=$(command -v omniroute || echo "$V22BIN/omniroute")
 [ -x "$OMNI" ] || { echo "  ❌ omniroute non trovato"; exit 0; }
 echo "== 0/4 Spengo il motore per sbloccare il database (lo riaccendo io alla fine)..."
-pkill -f omniroute 2>/dev/null; sleep 3
+pkill -x omniroute 2>/dev/null; pkill -f "bin/omniroute" 2>/dev/null; sleep 3
 D="$HOME/posta/dal_pc"; mkdir -p "$D"
 noansi(){ sed -e 's/\x1b\[[0-9;]*[A-Za-z]//g'; }
 

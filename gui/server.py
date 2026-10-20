@@ -10,7 +10,7 @@
 #   · "ho già riscattato a mano" → segna il giorno senza toccare il browser
 #   · saldo letto solo se la risposta è JSON (il WAF Aliyun restituisce HTML)
 import glob
-import json, os, re, subprocess, sys, time, threading
+import json, os, re, shutil, subprocess, sys, time, threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HOME = os.path.expanduser("~")
@@ -216,22 +216,129 @@ def saldo_ultimo():
     return m[-1] if m else None
 
 
-def modelli_omni():
-    v = _cache.get("mod")
-    if v and time.time() - v[0] < 60:
-        return v[1]
-    r = {"modelli": 0, "linee": 0}
+def omni_bin():
+    """Il programma del motore, se c'è: altrimenti stringa vuota."""
+    p = shutil.which("omniroute")
+    if p:
+        return p
+    for p in sorted(glob.glob(os.path.join(HOME, ".nvm", "versions", "node", "*", "bin", "omniroute")))[::-1]:
+        if os.access(p, os.X_OK):
+            return p
+    return ""
+
+
+def omniroute_avvia(attesa=25):
+    """Accende OmniRoute se è spento e aspetta che risponda (era il comportamento di prima)."""
     if porta_viva(20128):
+        return True
+    script = ("export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
+              "B=$(ls -d $HOME/.nvm/versions/node/v22*/bin 2>/dev/null | sort -V | tail -1); "
+              "[ -x \"$B/omniroute\" ] || B=$(dirname \"$(command -v omniroute)\") ; "
+              "cd \"$HOME\" ; nohup \"$B/omniroute\" >/tmp/omniroute.log 2>&1 &")
+    try:
+        subprocess.Popen(["bash", "-lc", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        return False
+    for _ in range(attesa):
+        if porta_viva(20128):
+            return True
+        time.sleep(1)
+    return porta_viva(20128)
+
+
+def omni_pids():
+    """I processi VERI di OmniRoute. Prima si usava «pkill -f omniroute», che ammazzava
+    anche il curl che stava chiamando /api/omniroute (l'indirizzo contiene la parola):
+    risultato, la GUI sembrava bloccarsi. Qui si guarda il comando, non l'indirizzo."""
+    pids = []
+    try:
+        out = subprocess.run(["pgrep", "-af", "omniroute"], capture_output=True,
+                             text=True, timeout=10).stdout
+    except Exception:
+        return pids
+    for riga in out.splitlines():
+        pid, _, cmd = riga.partition(" ")
+        if not pid.isdigit():
+            continue
+        if int(pid) in (os.getpid(), os.getppid()):
+            continue
+        if ("gui/server.py" in cmd or "curl" in cmd or "wget" in cmd
+                or "prova_agenti" in cmd or "agenti_stato" in cmd):
+            continue
+        if "omniroute" in cmd.lower():
+            pids.append(int(pid))
+    return pids
+
+
+def omni_spegni(attesa=6):
+    """Spegne il motore senza toccare altro."""
+    pids = omni_pids()
+    for sig in ("TERM", "KILL"):
+        if not pids:
+            break
+        for p in pids:
+            try:
+                os.kill(p, getattr(__import__("signal"), sig))
+            except Exception:
+                pass
+        for _ in range(attesa):
+            if not porta_viva(20128):
+                return True
+            time.sleep(1)
+        pids = omni_pids()
+    return not porta_viva(20128)
+
+
+def omniroute_riavvia():
+    omni_spegni()
+    time.sleep(2)
+    return omniroute_avvia(attesa=30)
+
+
+def chiave_omni():
+    """La chiave che OmniRoute si aspetta, se ne ha una configurata."""
+    k = chiave(r"omniroute", r"sk-[A-Za-z0-9-]{12,}")
+    if k:
+        return k
+    for f in (os.path.join(HOME, ".omniroute", "config.json"),
+              os.path.join(HOME, ".config", "omniroute", "config.json")):
         try:
-            import urllib.request
-            key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
-            req = urllib.request.Request("http://127.0.0.1:20128/v1/models",
-                                         headers={"Authorization": "Bearer " + key})
-            data = json.loads(urllib.request.urlopen(req, timeout=10).read().decode()).get("data", [])
-            r["modelli"] = len(data)
-            r["linee"] = len({(m.get("owned_by") or "?") for m in data})
+            dati = json.loads(open(f, encoding="utf-8").read())
+            for campo in ("apiKey", "key", "token", "masterKey"):
+                if isinstance(dati.get(campo), str) and dati[campo]:
+                    return dati[campo]
         except Exception:
             pass
+    return ""
+
+
+def modelli_omni():
+    v = _cache.get("mod")
+    if v and time.time() - v[0] < 30:
+        return v[1]
+    r = {"modelli": 0, "linee": 0, "errore": ""}
+    if not porta_viva(20128):
+        r["errore"] = "motore spento"
+        _cache["mod"] = (time.time(), r)
+        return r
+    import urllib.request
+    for k in [chiave_omni(), "sk-omniroute", ""]:
+        try:
+            intest = {"Accept": "application/json"}
+            if k:
+                intest["Authorization"] = "Bearer " + k
+            req = urllib.request.Request("http://127.0.0.1:20128/v1/models", headers=intest)
+            dati = json.loads(urllib.request.urlopen(req, timeout=12).read().decode())
+            lista = dati.get("data", dati if isinstance(dati, list) else [])
+            if lista:
+                r["modelli"] = len(lista)
+                r["linee"] = len({(m.get("owned_by") or "?") for m in lista if isinstance(m, dict)})
+                r["errore"] = ""
+                _cache["mod"] = (time.time(), r)
+                return r
+            r["errore"] = "il motore è acceso ma non ha modelli: attiva i provider col [9] (voce f)"
+        except Exception as e:
+            r["errore"] = "non riesco a leggere i modelli (" + type(e).__name__ + ")"
     _cache["mod"] = (time.time(), r)
     return r
 
@@ -697,6 +804,21 @@ def aggiorna_pc():
     return {"stato": "avviato", "msg": "Aggiornamento partito: 1-3 minuti. Puoi continuare a usare l'Hub.",
             "log": _aggiorna["log"]}
 
+def _sorveglianza():
+    """In sottofondo: se il motore è spento lo riaccende (come faceva prima)."""
+    time.sleep(5)
+    while True:
+        try:
+            if not omni_bin():          # motore non installato: non insisto
+                time.sleep(600)
+                continue
+            if not porta_viva(20128):
+                omniroute_avvia(attesa=30)
+        except Exception:
+            pass
+        time.sleep(120)
+
+
 def stato():
     fus = {}
     try:
@@ -721,6 +843,8 @@ def stato():
             "adesso": adesso_hhmm(),
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
+            "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
+                       "installato": bool(omni_bin()), "nome": "OmniRoute"},
             "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
@@ -979,15 +1103,24 @@ class H(BaseHTTPRequestHandler):
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/omniroute":
             az = self._body().get("azione")
+            if az in ("avvia", "riavvia") and not omni_bin():
+                self._json({"stato": "ko", "gateway": False,
+                            "msg": "⚠️ OmniRoute non è installato su questo PC: aprilo una volta col [9] "
+                                   "(voce Motore). Dopo parte da solo."})
+                return
             if az == "avvia":
-                subprocess.Popen(["bash", "-lc",
-                                  "export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
-                                  "B=$(ls -d $HOME/.nvm/versions/node/v22*/bin 2>/dev/null | sort -V | tail -1); "
-                                  "nohup $B/omniroute >/tmp/omniroute.log 2>&1 &"])
-                self._json({"stato": "avvio richiesto"})
+                su = omniroute_avvia()
+                self._json({"stato": "ok" if su else "ko", "gateway": su,
+                            "msg": "🟢 Motore acceso" if su else "⚠️ Non si è acceso: vedi /tmp/omniroute.log"})
+            elif az == "riavvia":
+                su = omniroute_riavvia()
+                self._json({"stato": "ok" if su else "ko", "gateway": su,
+                            "msg": "🔄 Motore riavviato" if su else "⚠️ Non è ripartito: vedi /tmp/omniroute.log"})
             elif az == "spegni":
-                subprocess.run(["pkill", "-f", "omniroute"])
-                self._json({"stato": "spento"})
+                spento = omni_spegni()
+                self._json({"stato": "ok" if spento else "ko", "gateway": porta_viva(20128),
+                            "msg": "🔴 Motore spento (si riaccende da solo con la Centrale)"
+                                   if spento else "⚠️ Non sono riuscito a spegnerlo: riprova"})
             else:
                 self._json({"err": "azione?"}, 400)
         else:
@@ -1027,6 +1160,7 @@ def libera_porta_20200():
 if __name__ == "__main__":
     libera_porta_20200()
     postino_bg()
+    threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
     if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":
         threading.Thread(target=sveglia_checkin, daemon=True).start()
     else:

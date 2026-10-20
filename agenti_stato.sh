@@ -48,7 +48,8 @@ else aggiungi "Secondhand" "interpreter" false "" false "da installare" "interpr
 
 # ── 4 · Hermes (Strategia e ricerca)
 if c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; then
-  aggiungi "Hermes" "hermes" true "$(ver hermes)" true "" "hermes"
+  HV=$(ver hermes); [ -z "$HV" ] && HV="in ~/.hermes"
+  aggiungi "Hermes" "hermes" true "$HV" true "" "hermes"
 else aggiungi "Hermes" "hermes" false "" false "da installare" "hermes"; fi
 
 # ── 5 · Gemini CLI (Google)
@@ -65,14 +66,13 @@ if [ "$OC" != "no" ]; then
 else aggiungi "OpenClaw" "openclaw" false "" false "da installare (su Windows)" "INSTALLA_OPENCLAW.bat"; fi
 
 # ── 7 · OmniRoute (il motore di tutti: non è un agente ma serve a tutti)
-GWM=0; (exec 3<>"/dev/tcp/127.0.0.1/20128") 2>/dev/null && { exec 3<&-; GWM=1; }
-OMNI_INST=false; { c_e omniroute || ls "$HOME"/.nvm/versions/node/*/bin/omniroute >/dev/null 2>&1; } && OMNI_INST=true
-aggiungi "OmniRoute" "omniroute" "$OMNI_INST" "" true \
-  "$([ "$GWM" = 1 ] && echo '' || { [ "$OMNI_INST" = true ] && echo 'installato ma spento: accendilo col [9] o dalla scheda' || echo 'da installare col [9]'; })" "omniroute"
+# (OmniRoute NON è un agente: è il MOTORE. Lo dice a parte, nel campo "motore" del JSON)
 
 case "${1:-}" in
-  --json) printf '{"agenti":[%s],"chiavi":{"opencode":%s,"groq":%s,"google":%s,"omniroute":%s},"cervello":"%s"}\n' \
+  --json) MOT=0; (exec 3<>"/dev/tcp/127.0.0.1/20128") 2>/dev/null && { exec 3<&-; MOT=1; }
+          printf '{"agenti":[%s],"motore":{"acceso":%s,"nome":"OmniRoute"},"chiavi":{"opencode":%s,"groq":%s,"google":%s,"omniroute":%s},"cervello":"%s"}\n' \
             "${json_pezzi%,}" \
+            "$([ "$MOT" = 1 ] && echo true || echo false)" \
             "$([ -n "${OPENCODE_API_KEY:-}" ] && echo true || echo false)" \
             "$([ -n "${GROQ_API_KEY:-}" ] && echo true || echo false)" \
             "$([ -n "${GEMINI_API_KEY:-}" ] && echo true || echo false)" \

@@ -243,11 +243,13 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
 
       <section class="agCard">
-        <h3>🧠 Motore (OmniRoute)</h3>
+        <h3>🧠 MOTORE — OmniRoute (non è un agente: è il cervello di tutti)</h3>
         <div class="agRiga"><span>Stato</span><b id="agOmni">—</b></div>
         <div class="agRiga"><span>Modelli disponibili</span><span id="agModelli" class="agDim">—</span></div>
+        <div class="agDim" id="agMotoreNota" style="margin-top:4px">Il motore è il cervello di TUTTI gli agenti: parte da solo con la Centrale.</div>
         <div class="agBottoni">
-          <button class="agB" id="agOmniOn">Accendi</button>
+          <button class="agB pri" id="agOmniOn">Avvia</button>
+          <button class="agB" id="agOmniRi">Riavvia</button>
           <button class="agB" id="agOmniOff">Spegni</button>
           <button class="agB" id="agOmniDash">Dashboard ↗</button>
         </div>
@@ -2281,8 +2283,17 @@ function aggiornaPilota(){
       $('agRiscatta').disabled = !!s.checkin_oggi;
       $('agSegna').disabled = !!s.checkin_oggi;
       // motore
+      const mot = s.motore || {};
       led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
-      $('agModelli').textContent = (s.modelli || '—') + ' modelli · ' + (s.linee || '—') + ' linee';
+      $('agModelli').textContent = s.omniroute
+          ? ((s.modelli || 0) + ' modelli · ' + (s.linee || 0) + ' linee')
+          : '—';
+      if(mot.errore && s.omniroute && !s.modelli) $('agMotoreNota').textContent = '⚠️ ' + mot.errore;
+      else if(mot.installato === false) $('agMotoreNota').textContent = '⚪ OmniRoute non è ancora installato su questo PC: si installa una volta col [9] → Motore. Dopo parte da solo.';
+      else if(!s.omniroute) $('agMotoreNota').textContent = '🔴 spento: lo riaccendo da solo tra poco (sorveglianza ogni 2 minuti).';
+      else $('agMotoreNota').textContent = 'Cervello di TUTTI gli agenti. Parte da solo con la Centrale.';
+      $('agOmniOn').disabled = !!s.omniroute;
+      $('agOmniRi').disabled = !s.omniroute;
       // openclaw
       const oc = s.openclaw || {};
       led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
@@ -2320,6 +2331,7 @@ function aggiornaPilota(){
     log(r.msg || 'segnato'); aggiorna();
   });
   $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
+  $('agOmniRi').addEventListener('click', async () => { log('Riavvio del motore… (10-30 s)'); log((await api('/api/omniroute', {azione:'riavvia'})).msg || ''); setTimeout(() => { aggiorna(); }, 3000); });
   $('agOmniOff').addEventListener('click', async () => { log((await api('/api/omniroute', {azione:'spegni'})).msg || 'spento'); setTimeout(aggiorna, 2000); });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
   $('agOcOn').addEventListener('click', async () => { log('Accendo OpenClaw… (30-60 s, non premere altro)'); const r = await api('/api/openclaw', {azione:'avvia'}); log(r.msg + (r.log ? '\n\n' + r.log : '')); aggiorna(); });
@@ -2363,14 +2375,20 @@ function aggiornaPilota(){
     try{
       const r = await fetch('/api/agenti');
       const d = await r.json();
-      const lista = d.agenti || [];
-      $('agListaAgenti').innerHTML = lista.map(rigaAgente).join('') || '<div class="agDim">nessun dato</div>';
+      const lista = d.agenti || [];   // solo agenti veri: il motore sta nella sua scheda
+      const vecchio = $('agListaAgenti').innerHTML;
+      $('agListaAgenti').innerHTML = lista.length ? lista.map(rigaAgente).join('')
+        : (vecchio && vecchio.indexOf('nessun dato') < 0 ? vecchio : '<div class="agDim">nessun dato</div>');
       const mancano = lista.filter(a => !a.installato).length;
       const pronti = lista.filter(a => a.pronto).length;
       $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
         (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
         (d.cervello ? ' · cervello: ' + d.cervello : '');
-    }catch(e){ $('agListaAgenti').innerHTML = '<div class="agDim">non riesco a leggere lo stato</div>'; }
+    }catch(e){
+      const el = $('agListaAgenti');
+      if(!el.innerHTML || el.innerHTML.indexOf('agRiga') < 0)
+        el.innerHTML = '<div class="agDim">non riesco a leggere lo stato (il motore potrebbe essere occupato: riprovo)</div>';
+    }
   }
 
   $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', carica);
