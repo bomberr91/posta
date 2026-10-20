@@ -360,7 +360,31 @@ def postino_bg():
         subprocess.Popen(["bash", os.path.join(POSTA, "postino.sh"), "--loop"],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
+def libera_porta_20200():
+    """Se gira ancora una GUI vecchia (dal giro di stamattina), la chiudo: altrimenti la nuova
+    non riesce ad aprire la porta e tu vedresti la pagina VECCHIA (quella col check-in all'apertura)."""
+    import signal
+    mio = os.getpid()
+    try:
+        pids = subprocess.run(["pgrep", "-f", "gui/server.py"], capture_output=True, text=True).stdout.split()
+    except Exception:
+        pids = []
+    for pid in [int(x) for x in pids if x.isdigit() and int(x) != mio]:
+        try:
+            os.kill(pid, signal.SIGTERM)
+            print(f"[gui] chiusa l'istanza vecchia (pid {pid})")
+        except Exception:
+            pass
+    for _ in range(15):
+        if not porta_viva(20200):
+            return True
+        time.sleep(0.5)
+    return not porta_viva(20200)
+
+
 if __name__ == "__main__":
+    if os.environ.get("CENTRALE_NO_POSTINO") != "1":
+        libera_porta_20200()
     postino_bg()
     threading.Thread(target=sveglia_checkin, daemon=True).start()
     print("GUI CENTRALE su http://localhost:20200")
