@@ -1,8 +1,9 @@
-# ✅ Aggiornamento FilippoPC — 20/10/2026 21:37
+# ✅ Aggiornamento FilippoPC — 20/10/2026 21:51
 
-## Novità applicate in questo giro (1)
+## Novità applicate in questo giro (2)
 
   ✓ agent-browser + firecrawl-cli installati
+  ✓ agenti installati: tutti presenti
 
 ## Saltati perché già a posto: 4
 
@@ -11,4 +12,4 @@
 - Goose:  1.55.0
 - Secondhand: interpreter 0.0.56
 - Hermes: presente in ~/.hermes
-- OpenClaw: (node:4484) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+- OpenClaw: (node:22116) ExperimentalWarning: SQLite is an experimental feature and might change at any time
