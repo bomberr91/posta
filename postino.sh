@@ -40,12 +40,12 @@ sync_up(){
 
 gira(){
   sync_down
-  # check-in AgentRouter +25$/gg (1 volta al giorno, solo se BROWSER_AGENTI acceso)
-  ARF="$HOME/.ar_checkin_$(TZ=Asia/Shanghai date +%F)"  # il bonus si azzera a mezzanotte cinese (~18:00 italiane)
-  if [ ! -f "$ARF" ] && [ ! -f "$HOME/.ar_login_manuale" ] && curl -s --max-time 2 http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
-    touch "$ARF"
+  # check-in AgentRouter +25$/gg — SOLO dalle 18:05 italiane (regola anti-ban) e solo se serve.
+  # Le guardie vere (flag del giorno, max 3 tentativi, login manuale) stanno dentro checkin_agentrouter.py
+  FLAG="$HOME/.ar_checkin_$(date +%F)"
+  if [ "$(date +%H%M)" -ge 1805 ] && [ ! -f "$FLAG" ] && [ ! -f "$HOME/.ar_login_manuale" ] \
+     && curl -s --max-time 2 http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
     say "→ check-in agentrouter (+25\$/gg)"
-    # il flag $ARF si tocca PRIMA: un giro al giorno, mai in loop. Se serve il login manuale il wrapper lo annota.
     timeout 300 bash "$DIR/checkin_agentrouter.sh" >/dev/null 2>&1 || say "⚠ check-in agentrouter: vedi dal_pc/agentrouter_checkin.md"
   fi
   for f in da_me/*; do

@@ -30,6 +30,8 @@ BASE = os.environ.get("AR_BASE", "https://agentrouter.org").rstrip("/")
 GH = os.environ.get("AR_GH", "https://github.com")
 GH_NETLOC = re.sub(r"^https?://", "", GH).split("/")[0].lower()
 ATTESA_OAUTH = int(os.environ.get("AR_ATTESA_OAUTH", "70"))   # secondi di pazienza per il giro OAuth
+MAX_GIRI = 3         # tentativi massimi al giorno (oltre = stop, niente logout a vuoto)
+HOME = os.path.expanduser("~")
 FINESTRA = (18, 5)   # ora ITALIANA: prima delle 18:05 NON si fa login/logout (rischio ban, ordine utente)
 
 
@@ -40,6 +42,29 @@ def adesso_it():
         return int(h), int(m)
     t = time.localtime()
     return t.tm_hour, t.tm_min
+
+
+def file_flag():
+    return os.path.join(HOME, ".ar_checkin_" + time.strftime("%Y-%m-%d"))
+
+def file_try():
+    return os.path.join(HOME, ".ar_checkin_try_" + time.strftime("%Y-%m-%d"))
+
+def file_lm():
+    return os.path.join(HOME, ".ar_login_manuale")
+
+def _leggi_int(p):
+    try:
+        return int(open(p).read().strip() or 0)
+    except Exception:
+        return 0
+
+def _scrivi_int(p, n):
+    try:
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(str(n))
+    except Exception:
+        pass
 
 
 def finestra_aperta():
@@ -318,6 +343,19 @@ def attendi_rientro(schede_iniziali, tmax=ATTESA_OAUTH):
 
 
 # ────────────────────────────────── flusso ───────────────────────────────────
+def _success():
+    try:
+        with open(file_flag(), "w", encoding="utf-8") as f:
+            f.write(time.strftime("%H:%M"))
+    except Exception:
+        pass
+    try:
+        os.remove(file_lm())
+    except Exception:
+        pass
+    return 0
+
+
 def main(argv):
     sola_verifica = "--verifica" in argv
     print(f"[checkin] {time.strftime('%d/%m/%Y %H:%M')} · base={BASE} · modo={'VERIFICA' if sola_verifica else 'RISCATTO'}")
@@ -328,6 +366,22 @@ def main(argv):
         print(f"[checkin] ⏳ finestra chiusa: sono le {hh:02d}:{mm:02d} (ora italiana), il bonus si riscatta dalle {et}.")
         print("[checkin] nessun login e nessun logout fatti — si aspetta la finestra (regola anti-ban).")
         return 4
+
+    # 0-bis) guardie giornaliere: un solo giro utile al giorno, mai in loop
+    if not sola_verifica:
+        forzato = os.environ.get("FORZA") == "1"
+        if not forzato:
+            if os.path.exists(file_lm()):
+                print("[checkin] ⏭ salto: c'e' un login manuale da fare (~/.ar_login_manuale)")
+                return 5
+            if os.path.exists(file_flag()):
+                print("[checkin] ⏭ salto: bonus di oggi gia' riscosso alle "
+                      + (open(file_flag()).read().strip() or "?"))
+                return 5
+            if _leggi_int(file_try()) >= MAX_GIRI:
+                print(f"[checkin] ⏭ salto: gia' {MAX_GIRI} tentativi oggi (niente logout a vuoto)")
+                return 5
+        _scrivi_int(file_try(), _leggi_int(file_try()) + 1)
 
     try:
         http_json("/json/version")
@@ -441,11 +495,13 @@ def main(argv):
               + (f" · delta: {'+' if (delta or 0) >= 0 else ''}{delta}$" if delta is not None else ""))
         if delta is not None and delta >= 20:
             print(f"[checkin] ✅ BONUS INCASSATO: +{delta}$ (il +25$ giornaliero)")
+            return _success()
         elif delta is not None and abs(delta) < 0.01:
             print("[checkin] ✅ giro completato, ma nessun accredito: probabile bonus gia' riscattato oggi")
+            return _success()
         else:
             print("[checkin] ✅ giro logout→login completato (accredito non misurabile: saldo non leggibile)")
-        return 0
+        return _success()
     finally:
         for t in tab_da_chiudere:
             chiudi_scheda(t)
