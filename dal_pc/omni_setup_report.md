@@ -12,3 +12,6 @@
 - mistral: già attivo
 - cohere: già attivo
 - morph: ① Database: /home/agenti/.omniroute/storage.sqlite ✖ Provider API key is required. Pass --api-key or OMNIROUTE_API_KEY.   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- ai21: ① Database: /home/agenti/.omniroute/storage.sqlite ✖ Provider API key is required. Pass --api-key or OMNIROUTE_API_KEY.   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- nous-research: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- arcee-ai: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
