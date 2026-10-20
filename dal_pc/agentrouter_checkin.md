@@ -1,12 +1,9 @@
-# 💰 Check-in AgentRouter (GUI) — 20/10/2026 19:07
+# 💰 Check-in AgentRouter (GUI) — 20/10/2026 20:36
 
 ```
-[checkin] 20/10/2026 19:05 · base=https://agentrouter.org · modo=RISCATTO
+[checkin] 20/10/2026 20:34 · base=https://agentrouter.org · modo=RISCATTO
 [checkin] sessione GitHub: bomberr91
 [checkin] AgentRouter: fuori · saldo prima: non letto
-[checkin] ⚠ pagina illeggibile (WAF?): sub 401 {"error":{"message":"未提供令牌 (request id: 20261021010550708667 | self 200 <!doctype html>
-<meta charset="UTF-8">
-<meta name="aliyun_waf_aa" content="ff926
 [checkin] provo il rientro dal login…
 [checkin] bottone GitHub: <BUTTON> «Ggithub_728122» → click vero in (709,32)
 [checkin] ⚠ rientro non riuscito (GitHub loggato ma l'OAuth non e' tornato)
