@@ -830,6 +830,15 @@ class H(BaseHTTPRequestHandler):
                 self._json({"testo": d["choices"][0]["message"]["content"], "modello": d.get("model") or "?"})
             except Exception as e:
                 self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
+        elif self.path == "/api/agenti/prova":
+            svelto = bool(self._body().get("svelto"))
+            argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])
+            try:
+                p = subprocess.run(argomenti, capture_output=True, text=True, timeout=300, cwd=POSTA)
+                testo = ((p.stdout or "") + (p.stderr or ""))
+            except subprocess.TimeoutExpired:
+                testo = "Tempo scaduto: la prova è troppo lunga (usa la versione svelta)."
+            self._json({"stato": "ok", "log": testo[-4000:]})
         elif self.path == "/api/agenti/installa":
             b = self._body()
             quali = b.get("quali") or None
