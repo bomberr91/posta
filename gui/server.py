@@ -234,7 +234,8 @@ def _niente_schede():
     d = "/tmp/omni_senza_schede"
     try:
         os.makedirs(d, exist_ok=True)
-        for nome in ("xdg-open", "wslview", "sensible-browser", "open"):
+        for nome in ("xdg-open", "wslview", "sensible-browser", "x-www-browser",
+                     "open", "powershell.exe", "cmd.exe"):
             f = os.path.join(d, nome)
             if not os.path.exists(f):
                 with open(f, "w") as fh:
@@ -740,7 +741,18 @@ def contatori_chiavi():
         else:
             fuori.append(nome)
 
-    return {"omniroute": len(in_omni), "doppie": len([x for x in in_omni if x in in_scorta]),
+    # i provider già preimpostati in OmniRoute che funzionano senza chiave
+    try:
+        noauth_omni = sum(1 for riga in open(os.path.join(POSTA, "dal_pc", "omni_catalogo.txt"),
+                                             encoding="utf-8", errors="replace")
+                          if " noauth " in riga)
+    except Exception:
+        noauth_omni = 10
+
+    return {"omniroute": len(in_omni), "omniroute_totali": len(in_omni) + noauth_omni,
+            "noauth_omni": noauth_omni,
+            "cervello_totali": len(APP_BASE) + 1,      # + AI Horde (senza chiave)
+            "doppie": len([x for x in in_omni if x in in_scorta]),
             "scorta": len(in_scorta),
             "scorta_solo": len([x for x in in_scorta if x not in in_omni]),
             "fuori": len(fuori), "fuori_nomi": fuori,
@@ -1209,8 +1221,6 @@ def _sorveglianza():
                 continue
             if not porta_viva(20128):
                 omniroute_avvia(attesa=30)
-            if not porta_viva(20129):
-                cervello_avvia()
         except Exception:
             pass
         time.sleep(120)
@@ -1538,14 +1548,14 @@ class H(BaseHTTPRequestHandler):
                             "msg": "🔴 Cervello di scorta spento"})
             else:
                 su = porta_viva(20129)
-                d = {"acceso": su, "porta": 20129, "pronti": 0, "totali": 0}
-                if su:      # il conteggio lo faccio SOLO se è acceso
+                tot = contatori_chiavi().get("cervello_totali", len(APP_BASE) + 1)
+                d = {"acceso": su, "porta": 20129, "totali": tot, "pronti": 0, "nome": "Cervello"}
+                if su:      # le chiamate le fa SOLO se è acceso
                     try:
                         import urllib.request
                         info = json.loads(urllib.request.urlopen(
                             "http://127.0.0.1:20129/cervello", timeout=8).read().decode())
                         d["pronti"] = len(info.get("riserva", []))
-                        d["totali"] = len(info.get("riserva", []))
                         d["motore"] = bool(info.get("motore"))
                     except Exception:
                         pass
@@ -1653,7 +1663,6 @@ def libera_porta_20200():
 if __name__ == "__main__":
     libera_porta_20200()
     postino_bg()
-    cervello_avvia()                                               # il portiere parte subito
     threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
     threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
     if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":

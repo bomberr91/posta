@@ -234,7 +234,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <section class="agCard">
         <h3>💰 Crediti e bonus</h3>
         <div class="agRiga"><span>Saldo</span><b id="agSaldo">—</b></div>
-        <div class="agRiga"><span>Check-in</span><b id="agCheck">—</b> <span id="agFin" class="agDim" style="font-size:11px"></span></div>
+        <div class="agRiga"><span>Check-in</span><b id="agCheck">—</b></div>
         <div class="agBottoni" style="margin-top:6px">
           <button class="agB pri" id="agRiscatta">Riscatta</button>
           <button class="agB" id="agSegna">✔ a mano</button>
@@ -243,7 +243,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 
       <section class="agCard">
         <h3>🧠 Motori</h3>
-        <div class="agRiga"><span><b>OmniRoute</b> <span class="agDim" style="font-size:11px">principale</span></span><b id="agOmni">—</b></div>
+        <div class="agRiga"><span><b>OmniRoute</b></span><b id="agOmni">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">provider attivi</span><b id="agOmniProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB pri" id="agOmniOn">Avvia</button>
@@ -251,11 +251,17 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agOmniDash">Dashboard ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Cervello di scorta</b> <span class="agDim" style="font-size:11px">se il principale cade</span></span><b id="agCer">—</b></div>
+        <div class="agRiga"><span><b>Cervello</b></span><b id="agCer">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">provider disponibili</span><b id="agCerProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB" id="agCerOn">Avvia</button>
           <button class="agB" id="agCerRi">Riavvia</button>
+          <button class="agB" id="agCerDash">Dashboard ↗</button>
+        </div>
+        <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
+        <div class="agRiga"><span><b>Chiavi di scorta</b></span><b id="agScorta">—</b></div>
+        <div class="agBottoni" style="margin-top:5px">
+          <button class="agB" id="agScortaApp">Appello</button>
         </div>
       </section>
 
@@ -2370,7 +2376,7 @@ function aggiornaPilota(){
       const d = await api('/api/cervello', {azione:'stato'});
       mot2 = d || {};
       led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
-      $('agCerProv').textContent = mot2.acceso ? ((mot2.pronti || 0) + ' provider') : '—';
+      $('agCerProv').textContent = (mot2.acceso ? (mot2.pronti || 0) : 0) + '/' + (mot2.totali || '—');
     }catch(e){}
   }
 
@@ -2395,20 +2401,22 @@ function aggiornaPilota(){
       led($('agSaldo'), s.saldo ? ('$' + s.saldo) : '—', 'ok');
       led($('agCheck'), s.checkin_oggi ? ('✅ ' + (s.checkin_ora || 'fatto')) : '⏳ da fare',
           s.checkin_oggi ? 'ok' : 'att');
-      $('agFin').textContent = s.finestra_aperta ? 'finestra aperta'
-          : ('si apre alle ' + (s.finestra || '18:05') + (s.adesso ? ' — ora ' + s.adesso : ''));
+      // niente più "si apre alle 18:05 — ora 00:36": la riga resta pulita
       $('agRiscatta').disabled = !!s.checkin_oggi;
       $('agSegna').disabled = !!s.checkin_oggi;
       // motore
       const mot = s.motore || {};
       led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
       const ap0 = s.appello || {};
-      $('agOmniProv').textContent = ap0.totali ? (ap0.pronti + '/' + ap0.totali) : '—';
-      // motore 2: il conteggio lo chiedo SOLO se è acceso
+      const ct0 = s.contatori || {};
+      // attive / totale (totale = le mie chiavi + quelle già pronte dentro OmniRoute)
+      $('agOmniProv').textContent = (ap0.pronti || 0) + '/' + (ct0.omniroute_totali || ct0.omniroute || 0);
+      $('agScorta').textContent = '0/' + (ct0.fuori || 0);
+      // il Cervello: parte spento, conta solo se lo accendo
       if(!mot2) caricaMotore2();
       else {
         led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
-        $('agCerProv').textContent = mot2.acceso ? ((mot2.pronti || 0) + ' provider') : '—';
+        $('agCerProv').textContent = (mot2.acceso ? (mot2.pronti || 0) : 0) + '/' + (mot2.totali || '—');
       }
       // mentre il motore lavora i tasti restano fermi e lo dico nel riquadro in basso
       if(mot.lavoro){
@@ -2517,7 +2525,14 @@ function aggiornaPilota(){
   $('agAppCompleto').addEventListener('click', async () => { log('🗣️ Appello completo: una domanda vera a ogni chiave (circa 1 minuto)…'); log((await api('/api/appello', {azione:'completo'})).msg || ''); setTimeout(caricaAppello, 12000); setTimeout(caricaAppello, 60000); });
   $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
   $('agOmniRi').addEventListener('click', async () => { log('Riavvio del motore… (10-30 s)'); log((await api('/api/omniroute', {azione:'riavvia'})).msg || ''); setTimeout(() => { aggiorna(); }, 3000); });
-  $('agCerOn').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'avvia'})).msg || 'acceso'); setTimeout(caricaMotore2, 2000); });
+  $('agCerOn').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'avvia'})).msg || 'acceso'); setTimeout(caricaMotore2, 2500); });
+  $('agCerDash').addEventListener('click', () => window.open('http://127.0.0.1:20129/cervello', '_blank'));
+  $('agScortaApp').addEventListener('click', async () => {
+    log('🗣️ Appello delle chiavi di scorta: provo quelle che non sono in nessuno dei due motori (circa 30 secondi)…');
+    log((await api('/api/appello', {azione:'completo'})).msg || '');
+    setTimeout(() => { caricaAppello(); aggiorna(); }, 20000);
+    setTimeout(() => { caricaAppello(); aggiorna(); }, 55000);
+  });
   $('agCerRi').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'riavvia'})).msg || 'riavviato'); setTimeout(caricaMotore2, 3000); });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
   $('agOcOn').addEventListener('click', async () => { log('Accendo OpenClaw… (30-60 s, non premere altro)'); const r = await api('/api/openclaw', {azione:'avvia'}); log(r.msg + (r.log ? '\n\n' + r.log : '')); aggiorna(); });
