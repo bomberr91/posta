@@ -69,6 +69,7 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="primario" onclick="oc('avvia')">▶ Accendi</button>
       <button onclick="oc('apri')">🖥 Interfaccia</button>
+      <button onclick="oc('cartella')">📂 Cartella posta</button>
       <button onclick="oc('doctor')">🩺 Diagnostica</button>
       <button onclick="oc('riavvia')">🔄 Riavvia</button>
     </div>
@@ -177,7 +178,7 @@ async function fusion(){
   toast(r.stato==='avviata'?'🚀 Squadra lanciata! Segui la barra.':'⚠️ '+(r.msg||'errore'));
 }
 async function oc(azione){
-  if(azione==='apri'||azione==='doctor') toast('🦾 Un attimo…',4000);
+  if(azione==='apri'||azione==='doctor'||azione==='cartella') toast('🦾 Un attimo…',4000);
   else if(azione==='prepara') toast('🦾 Apro la configurazione su Windows…',6000);
   else toast('🦾 OpenClaw: '+azione+' in corso… (può volerci 1 minuto)',9000);
   const r=await api('/api/openclaw',{azione:azione});

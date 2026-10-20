@@ -661,6 +661,14 @@ class H(BaseHTTPRequestHandler):
                 except Exception:
                     pass
                 self._json({"stato": "ok", "msg": f"Apro {u} nel browser di Windows.", "url": u})
+            elif az == "cartella":
+                # apre la cartella posta in Esplora Risorse di Windows
+                try:
+                    subprocess.Popen(["explorer.exe", _l2w(POSTA)], cwd="/mnt/c",
+                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    self._json({"stato": "ok", "msg": "Ho aperto la cartella posta in una finestra di Windows."})
+                except Exception as e:
+                    self._json({"stato": "errore", "msg": f"Non riesco ad aprire la cartella ({e})."})
             elif az == "prepara":
                 # uso il .bat che sta nel ponte (verificabile, con dentro "call"): lo copio in una
                 # cartella Windows vera e apro quello. Niente virgolette annidate, niente file generati.
