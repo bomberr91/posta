@@ -1131,6 +1131,27 @@ def chat_riserva(messaggi, esclusi=()):
     return None
 
 
+def omni_spegni_porta(porta):
+    """Chiude il processo che ascolta su una porta (serve per riavviare il portiere)."""
+    try:
+        out = subprocess.run(["pgrep", "-af", "cervello.py"], capture_output=True,
+                             text=True, timeout=8).stdout
+        for riga in out.splitlines():
+            pid, _, cmd = riga.partition(" ")
+            if pid.isdigit() and cmd.strip().endswith("cervello.py") and int(pid) != os.getpid():
+                try:
+                    os.kill(int(pid), 15)
+                except Exception:
+                    pass
+        for _ in range(6):
+            if not porta_viva(porta):
+                return True
+            time.sleep(1)
+    except Exception:
+        pass
+    return not porta_viva(porta)
+
+
 def cervello_avvia():
     """Accende il portiere (cervello.py, porta 20129): è lui che fa continuare gli agenti
     a lavorare se OmniRoute cade. Nessun terminale, nessuna finestra."""
@@ -1498,6 +1519,37 @@ class H(BaseHTTPRequestHandler):
                             "comando": "openclaw onboard"})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
+        elif self.path == "/api/cervello":
+            az = (self._body().get("azione") or "stato").strip()
+            if az == "avvia":
+                su = cervello_avvia()
+                self._json({"stato": "ok" if su else "ko", "acceso": su,
+                            "msg": "🟢 Cervello di scorta acceso (porta 20129)" if su else
+                                   "⚠️ Non sono riuscito ad accenderlo: manca cervello.py"})
+            elif az == "riavvia":
+                omni_spegni_porta(20129)
+                time.sleep(1)
+                su = cervello_avvia()
+                self._json({"stato": "ok" if su else "ko", "acceso": su,
+                            "msg": "🔄 Cervello di scorta riavviato" if su else
+                                   "⚠️ Non è ripartito"})
+            elif az == "spegni":
+                self._json({"stato": "ok", "acceso": not omni_spegni_porta(20129),
+                            "msg": "🔴 Cervello di scorta spento"})
+            else:
+                su = porta_viva(20129)
+                d = {"acceso": su, "porta": 20129, "pronti": 0, "totali": 0}
+                if su:      # il conteggio lo faccio SOLO se è acceso
+                    try:
+                        import urllib.request
+                        info = json.loads(urllib.request.urlopen(
+                            "http://127.0.0.1:20129/cervello", timeout=8).read().decode())
+                        d["pronti"] = len(info.get("riserva", []))
+                        d["totali"] = len(info.get("riserva", []))
+                        d["motore"] = bool(info.get("motore"))
+                    except Exception:
+                        pass
+                self._json(d)
         elif self.path == "/api/browser":
             az = (self._body().get("azione") or "stato").strip()
             if az == "stato":
