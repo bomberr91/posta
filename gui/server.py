@@ -602,6 +602,152 @@ def salute(fresco=False):
     return v
 
 
+# cosa vuol dire ogni controllo rosso, in italiano, e cosa fare
+SPIEGAZIONE = {
+    "Skill": ("le skill degli agenti (le istruzioni che si portano dietro)",
+              "non serve per chattare: si sistema con l'aggiornamento del PC ([8]). "
+              "Se ti serve solo la chat, puoi ignorarlo."),
+    "OpenClaw": ("l'assistente OpenClaw",
+                 "si sistema con ./openclaw_fix.sh oppure col pulsante «Accendi» nella sua scheda."),
+    "Node v22": ("il programma che fa girare l'Hub",
+                 "serve per il motore: si sistema con l'aggiornamento del PC ([8])."),
+    "motore": ("OmniRoute, il cervello degli agenti",
+               "parte da solo: se è spento, aspetta un minuto. Se resta spento, premi Avvia."),
+    "chiavi": ("il portachiavi delle chiavi API",
+               "controlla che ~/CHIAVI_LOCALI.md esista e sia leggibile (chmod 600)."),
+    "postino": ("il postino che porta le novità sul ponte GitHub",
+                "si riaccende da solo; se resta spento, riapri la Centrale."),
+}
+
+
+def salute_chiara():
+    """Il paracadute: ogni problema detto in chiaro, con cosa vuol dire e cosa fare."""
+    v = salute()
+    righe = []
+    for voce in v.get("rossi", []):
+        nome = voce.get("nome", "")
+        cosa, chefare = "", ""
+        for chiave_sp, (c, f) in SPIEGAZIONE.items():
+            if chiave_sp.lower() in nome.lower():
+                cosa, chefare = c, f
+                break
+        righe.append({"tipo": "rosso", "nome": nome.strip(),
+                      "dettaglio": voce.get("dettaglio", ""),
+                      "cosa": cosa or "un pezzo del sistema",
+                      "chefare": chefare or "premi «Ricontrolla»; se resta rosso, mandamelo."})
+    for voce in v.get("gialli", []):
+        righe.append({"tipo": "giallo", "nome": voce.get("nome", "").strip(),
+                      "dettaglio": voce.get("dettaglio", ""),
+                      "cosa": "una cosa da guardare (non blocca niente)",
+                      "chefare": "puoi continuare a usare tutto."})
+    return {"verdetto": v.get("verdetto", ""), "colore": v.get("colore", "grigio"),
+            "rossi": len(v.get("rossi", [])), "gialli": len(v.get("gialli", [])),
+            "voci": righe, "ora": v.get("ora", ""), "secondi": v.get("secondi", 0)}
+
+
+def avvisi_accensione():
+    """All'accensione: se c'è qualcosa che non va, lo dico subito (una volta sola)."""
+    if _avvisi["fatto"]:
+        return _avvisi["lista"]
+    _avvisi["fatto"] = True
+    lista = []
+    try:
+        sc = salute_chiara()
+        for voce in sc["voci"]:
+            if voce["tipo"] != "rosso":
+                continue
+            lista.append(f"🔴 {voce['nome']} — problema con {voce['cosa']}.\n"
+                         f"   {voce['dettaglio']}\n   Cosa fare: {voce['chefare']}")
+    except Exception:
+        pass
+    try:
+        ap = appello_dati()
+        if ap.get("voci"):
+            rotti = [v["nome"] for v in ap["voci"] if v.get("esito") not in ("risponde", "no-chiave")]
+            if rotti:
+                lista.append("🟡 Chiavi che adesso non rispondono: " + ", ".join(rotti) +
+                             ".\n   Non è un guasto tuo: sono limiti o crediti del provider. "
+                             "Le altre chiavi funzionano.")
+    except Exception:
+        pass
+    _avvisi["lista"] = lista
+    return lista
+
+
+_avvisi = {"fatto": False, "lista": []}
+
+
+NOMI_SCORTA = {
+    "groq": "Groq", "gemini": "Google AI Studio", "mistral": "Mistral", "cohere": "Cohere",
+    "openrouter": "OpenRouter", "nvidia": "NVIDIA", "huggingface": "HuggingFace Router",
+    "pollinations": "Pollinations", "githubmodels": "GitHub Models", "agentrouter": "AgentRouter",
+    "opencode": "OpenCode Zen", "aihorde": "AI Horde",
+}
+
+
+def _norm(x):
+    return re.sub(r"[^a-z0-9]", "", (x or "").lower())
+
+
+def contatori_chiavi():
+    """I tre contatori: dove può lavorare ogni chiave.
+    1) dentro OmniRoute (il motore)
+    2) nella scorta (il portiere, se OmniRoute cade) — le doppie restano contate nel primo
+    3) fuori da entrambi
+    """
+    omni_nomi = {}          # nome normalizzato → id omniroute
+    try:
+        for riga in open(os.path.join(POSTA, "mappa_innesto.txt"), encoding="utf-8"):
+            riga = riga.strip()
+            if not riga or riga.startswith("#"):
+                continue
+            pezzi = riga.split("|")
+            if len(pezzi) >= 2:
+                omni_nomi[_norm(pezzi[1])] = pezzi[0]
+    except Exception:
+        pass
+    scorta_nomi = {_norm(v): k for k, v in NOMI_SCORTA.items()}
+
+    nomi = []
+    try:
+        testo = open(os.path.join(HOME, "CHIAVI_LOCALI.md"), encoding="utf-8",
+                     errors="replace").read()
+        a = testo.find("## 4 · PROVIDER LLM")
+        b = testo.find("## 5 · STRUMENTI")
+        sez = testo[a:b if b > a else len(testo)]
+        for riga in sez.splitlines():
+            m = re.match(r"\s*[-*]\s+\*\*(.+?)\*\*", riga)
+            if m:
+                nome = m.group(1).strip()
+                if nome and nome not in nomi:
+                    nomi.append(nome)
+    except Exception:
+        pass
+
+    in_omni, in_scorta, fuori = [], [], []
+    for nome in nomi:
+        n = _norm(nome)
+        preso_omni = any(n == k or (len(n) > 5 and (k.startswith(n[:6]) or n.startswith(k[:6])))
+                         for k in omni_nomi)
+        preso_scorta = any(n == k or (len(n) > 5 and (k.startswith(n[:5]) or n.startswith(k[:5])))
+                           for k in scorta_nomi)
+        if preso_omni:
+            in_omni.append(nome)
+            if preso_scorta:
+                in_scorta.append(nome)      # doppia: conta nel primo, usabile nel secondo
+        elif preso_scorta:
+            in_scorta.append(nome)
+        else:
+            fuori.append(nome)
+
+    return {"omniroute": len(in_omni), "doppie": len([x for x in in_omni if x in in_scorta]),
+            "scorta": len(in_scorta),
+            "scorta_solo": len([x for x in in_scorta if x not in in_omni]),
+            "fuori": len(fuori), "fuori_nomi": fuori,
+            "totali_portachiavi": len(nomi),
+            "omni_nomi": in_omni, "scorta_nomi": in_scorta}
+
+
 _oc_cmd_cache = {"t": 0.0, "cmd": ""}
 
 def openclaw_cmd():
@@ -1085,7 +1231,9 @@ def stato():
                         "totali": len([v for v in ap.get("voci", []) if v.get("esito") != "no-chiave"]),
                         "in_corso": _appello_stato["in_corso"],
                         "portiere": porta_viva(20129)},
-            "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
+            "fusion": fus, "risultati": ultimi, "salute": sl,
+            "salute_chiara": salute_chiara(), "avvisi": avvisi_accensione(),
+            "contatori": contatori_chiavi(), "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
 

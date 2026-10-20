@@ -281,8 +281,11 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 
       <section class="agCard">
         <h3>🔑 Chiavi</h3>
-        <div class="agRiga"><span>Attive / totali</span><b id="agChiavi">—</b></div>
-        <div class="agDim">Nel portachiavi locale (chmod 600, mai sincronizzato).</div>
+        <div class="agRiga"><span>🧠 Lavorano in OmniRoute</span><b id="agC1">—</b></div>
+        <div class="agRiga"><span>🛟 Scorta (se OmniRoute cade)</span><b id="agC2">—</b></div>
+        <div class="agRiga"><span>📦 Fuori da tutti e due</span><b id="agC3">—</b></div>
+        <div class="agDim" id="agCNota">Le chiavi doppie contano in OmniRoute, e se cade passano alla scorta.</div>
+        <div class="agBottoni"><button class="agB" id="agCDett">📋 Dettagli in basso</button></div>
       </section>
 
       <section class="agCard">
@@ -333,7 +336,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
         <div id="agSalute" class="agDim">—</div>
-        <div class="agBottoni"><button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button></div>
+        <div class="agBottoni">
+          <button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button>
+          <button class="agB" id="agSalDett">📋 Dettagli in basso</button>
+        </div>
       </section>
 
       <section class="agCard agLargo" id="agLogSezione" style="display:none">
@@ -2418,9 +2424,27 @@ function aggiornaPilota(){
       // browser
       led($('agBrow'), s.browser_agenti ? '🟢 attivo, nascosto' : 'spento', s.browser_agenti ? 'ok' : 'att');
       // salute
-      const sl = s.salute || {};
-      $('agSalute').innerHTML = (sl.verdetto || '—') +
-        ((sl.rossi || []).length ? '<br>' + sl.rossi.slice(0,4).map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
+      const sc = s.salute_chiara || {};
+      const nr = sc.rossi || 0, ng = sc.gialli || 0;
+      $('agSalute').innerHTML = nr
+        ? '<span class="no">🔴 ' + nr + (nr === 1 ? ' problema' : ' problemi') + '</span>' +
+          (ng ? ' · 🟡 ' + ng + ' da guardare' : '') +
+          '<div class="agDim" style="margin-top:4px">Il riquadro in basso ti dice cosa vuol dire e cosa fare. Non è detto che blocchi qualcosa.</div>'
+        : (ng ? '<span class="att">🟡 ' + ng + ' cose da guardare</span> — niente di rotto'
+              : '<span class="ok">✅ tutto a posto</span>');
+      // i tre contatori delle chiavi
+      const ct = s.contatori || {};
+      $('agC1').textContent = (ct.omniroute ?? '—') + ' chiavi';
+      $('agC2').textContent = (ct.scorta ?? '—') + ' chiavi' +
+          (ct.doppie ? ' (' + ct.doppie + ' sono le stesse)' : '');
+      $('agC3').textContent = (ct.fuori ?? '—') + ' chiavi';
+      window._contatori = ct;
+      // all'accensione: se c'è qualcosa che non va, lo dico subito in chiaro
+      if((s.avvisi || []).length && !window._avvisiMostrati){
+        window._avvisiMostrati = true;
+        const n = s.avvisi.length;
+        log('ALL\'ACCENSIONE HO TROVATO ' + n + (n === 1 ? ' COSA' : ' COSE') + ' DA GUARDARE:\n\n' + s.avvisi.join('\n\n'));
+      }
       // risultati
       const L = $('agRisLista'); const sel = L.value;
       L.innerHTML = (s.risultati || []).map(r => '<option' + (r === sel ? ' selected' : '') + '>' + r + '</option>').join('') || '<option>—</option>';
@@ -2446,6 +2470,26 @@ function aggiornaPilota(){
   $('agSegna').addEventListener('click', async () => {
     const r = await api('/api/checkin/segna', {});
     log(r.msg || 'segnato'); aggiorna();
+  });
+  $('agSalDett').addEventListener('click', () => {
+    const sc = (ultimo && ultimo.salute_chiara) || {};
+    const voci = sc.voci || [];
+    if(!voci.length){ log('🩺 Nessun problema: è tutto a posto.'); return; }
+    log('🩺 SALUTE DEL PC — ' + (sc.verdetto || '') + '\n\n' + voci.map(v =>
+      (v.tipo === 'rosso' ? '🔴 ' : '🟡 ') + v.nome + '\n' +
+      '   cos\'è: ' + v.cosa + '\n' +
+      '   dettaglio: ' + (v.dettaglio || '—') + '\n' +
+      '   cosa fare: ' + v.chefare).join('\n\n'));
+  });
+  $('agCDett').addEventListener('click', () => {
+    const c = window._contatori || {};
+    if(!c.totali_portachiavi){ log('Contatori non ancora letti: premi «Ricontrolla» nella scheda Salute.'); return; }
+    log('🔑 DOVE POSSONO LAVORARE LE TUE ' + c.totali_portachiavi + ' CHIAVI\n\n' +
+        '🧠 IN OMNIROUTE (' + c.omniroute + '): ' + (c.omni_nomi || []).join(', ') + '\n\n' +
+        '🛟 NELLA SCORTA (' + c.scorta + ', di cui ' + c.doppie + ' sono le stesse di sopra): ' +
+        (c.scorta_nomi || []).join(', ') + '\n\n' +
+        '📦 FUORI DA TUTTI E DUE (' + c.fuori + '): ' + (c.fuori_nomi || []).join(', ') +
+        '\n\n(queste non le conosce né OmniRoute né il portiere: per usarle bisogna aggiungerle a mano)');
   });
   $('agAppDett').addEventListener('click', () => {
     const d = window._appello || {};
