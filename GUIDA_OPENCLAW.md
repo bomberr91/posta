@@ -38,6 +38,41 @@ e premi INVIO. **Non chiudere quella finestra**: lavora da sola per 2-5 minuti (
 
 ---
 
+## 1-bis · «Ho già Node 22 per il Free LLM Hub» — va benissimo, anzi
+
+Il tuo Node 22 è quello **di Windows** (lo usa `AVVIA_HUB.bat` → `node dev.js`). Con OpenClaw **non c'è nessun conflitto**, perché sono due mondi separati:
+
+| | Chi lo usa | Lo tocchiamo? |
+|---|---|---|
+| **Node 22 su Windows** | Free LLM Hub (`node dev.js`) | ❌ **No. Resta com'è.** |
+| **Node 22 dentro Ubuntu (WSL)** | agenti, OmniRoute, `[1]`…`[9]` | ❌ **No.** |
+| **Node di OpenClaw** | solo OpenClaw | ✅ se lo gestisce lui, per conto suo |
+
+OpenClaw ha un meccanismo apposta: se il Node che trova non va bene, **si installa un Node suo privato** dentro `~/.openclaw/tools/cli-node` e **lascia intatto il Node di sistema**. È per questo che nel `.bat`, al primo avvio, può comparire:
+
+```
+Update NodeJS: Y/N [N]:
+```
+
+→ **rispondi `Y`**. Fine. Il tuo Node 22 del Hub non viene spostato, aggiornato né disinstallato.
+
+**Cose da NON fare** (per non rompere il Hub):
+- non disinstallare Node 22;
+- non cambiare la variabile PATH a mano;
+- non installare nvm-windows per «fare ordine».
+
+**Se anche l'installer aggiornasse il Node di Windows** (succede solo se lo ritiene troppo vecchio): il Free LLM Hub **continua a funzionare lo stesso**, perché è JavaScript puro senza dipendenze — `node dev.js` gira su Node 22, 24 e 26. Nel caso peggiore reinstalli il 22 da nodejs.org in 2 minuti, e i due Node possono convivere.
+
+Come lo verifichi in un colpo: dalla Centrale `[v]`. Ora mostra **due righe separate**:
+
+```
+✓ Node v22 (Hub/Omni)     v22.22.3 · è quello che fa girare hub e agenti
+✓ Node Windows (Hub)      v22.20.0 · serve al Free LLM Hub, si lascia stare
+✓ OpenClaw (Windows)      installato · si apre con [1]→[e]
+```
+
+---
+
 ## 2 · Come lo usi, da qui in avanti
 
 | Da dove | Come |
@@ -71,6 +106,7 @@ openclaw gateway status
 | «iwr non è riconosciuto» | Manca PowerShell: aggiorna Windows, oppure scegli `[3]` (app grafica, non usa PowerShell). |
 | Download bloccato / lento | Rifai `[1]`: riparte da dove serve. Se continua, scegli `[3]`. |
 | Installato ma `openclaw` non si trova | Chiudi e riapri la finestra (il PATH si aggiorna al nuovo avvio). Se ancora no: riavvia il PC una volta. |
+| Compare `Update NodeJS: Y/N [N]:` | Rispondi **Y**: OpenClaw si mette un Node privato, il tuo resta dov'è. |
 | La salute resta ✗ | Mandami l'output di `./apri_openclaw.sh --trova` e il log. |
 | Vuoi disinstallarlo | Impostazioni → App → «OpenClaw» (o «OpenClaw Companion») → Disinstalla. |
 

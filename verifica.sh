@@ -65,7 +65,18 @@ esac
 DEF=$(ls -d "$HOME/.nvm/versions/node/"* 2>/dev/null | sort -V | tail -1 | xargs -r basename)
 N22=$(ls -d "$HOME/.nvm/versions/node/v22"* 2>/dev/null | sort -V | tail -1 | xargs -r basename)
 N24=$(ls -d "$HOME/.nvm/versions/node/v2"[4-9]* 2>/dev/null | sort -V | tail -1 | xargs -r basename)
-[ -n "$N22" ] && ok "Node da lavoro" "$N22 (v22: è l'unica che gira su WSL1)" || giu "Node v22" "assente: rifai ./aggiorna_tutto.sh"
+[ -n "$N22" ] && ok "Node v22 (Hub/Omni)" "$N22 · è quello che fa girare hub e agenti" \
+              || giu "Node v22 (Hub/Omni)" "assente: rifai ./aggiorna_tutto.sh"
+
+# Node di WINDOWS: è quello del Free LLM Hub (AVVIA_HUB.bat). OpenClaw su Windows usa il suo.
+WR="${WINROOT:-/mnt/c}"
+WINNODE=$(ls "$WR/Program Files/nodejs/node.exe" 2>/dev/null | head -1)
+[ -z "$WINNODE" ] && WINNODE=$(ls "$WR/Program Files (x86)/nodejs/node.exe" 2>/dev/null | head -1)
+if [ -n "$WINNODE" ]; then
+  WV=$(timeout 3 "$WINNODE" -v 2>/dev/null | tr -d '\r')
+  if [ -n "$WV" ]; then ok "Node Windows (Hub)" "$WV · serve al Free LLM Hub, si lascia stare"
+  else att "Node Windows (Hub)" "trovato ma non risponde"; fi
+fi
 if [ -n "$N24" ]; then
   V24BIN=$(ls "$HOME/.nvm/versions/node/$N24/bin/node" 2>/dev/null)
   if "$V24BIN" -v >/dev/null 2>&1; then ok "Node $N24" "$("$V24BIN" -v) · gira"

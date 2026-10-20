@@ -23,9 +23,17 @@ set "PS=powershell -NoProfile -ExecutionPolicy Bypass -Command"
 set "URLHUB=https://github.com/openclaw/openclaw-windows-node/releases/latest/download/OpenClawCompanion-Setup-%ARCH%.exe"
 set "FILEHUB=%USERPROFILE%\Downloads\OpenClawCompanion-Setup-%ARCH%.exe"
 
+REM ── Il Node di WINDOWS (è quello che fa girare il Free LLM Hub): NON lo tocchiamo.
+set "NODEWIN="
+for /f "delims=" %%p in ('where node 2^>nul') do if not defined NODEWIN set "NODEWIN=%%p"
+if not defined NODEWIN if exist "%ProgramFiles%\nodejs\node.exe" set "NODEWIN=%ProgramFiles%\nodejs\node.exe"
+set "NODEWINV="
+if defined NODEWIN for /f "delims=" %%v in ('"%NODEWIN%" -v 2^>nul') do set "NODEWINV=%%v"
+
 >>"%LOG%" echo.
 >>"%LOG%" echo ===================== avvio %DATE% %TIME% =====================
 >>"%LOG%" echo architettura: %ARCH%  utente: %USERNAME%
+>>"%LOG%" echo node windows: %NODEWIN% %NODEWINV%
 
 :MENU
 cls
@@ -36,6 +44,8 @@ echo  ======================================================================
 echo.
 echo    Hai Node 24 su Ubuntu? Non c'entra: dentro WSL1 non parte.
 echo    Qui lo installiamo SU WINDOWS, dove funziona davvero.
+echo.
+if defined NODEWINV echo    Il tuo Node di Windows: %NODEWINV%  -  lo usa il Free LLM Hub, NON lo tocchiamo
 echo.
 echo    [1]  TUTTO AUTOMATICO   (consigliato: prova, controlla, e se serve
 echo                            passa alla versione grafica)
@@ -74,6 +84,8 @@ if defined HUB (
   echo    [--] app grafica:           non installata
 )
 echo.
+if defined NODEWINV echo    Node di Windows:            %NODEWINV%  -  Free LLM Hub: ok, resta cosi'
+if not defined NODEWINV echo    Node di Windows:            assente - l'installer di OpenClaw se lo mette lui
 echo    Windows: %OS%   architettura: %ARCH%
 echo    Log di tutte le prove: %LOG%
 echo.
@@ -124,9 +136,18 @@ echo      - Dal menu Start di Windows: cerca "OpenClaw"
 echo      - Dalla Centrale Ubuntu: [1] poi [e]  (ora funziona)
 echo      - Da solo, doppio clic su APRI_OPENCLAW.bat
 echo.
-echo    Prossimo passo (lo fai quando vuoi, 1 minuto):
-echo      apri il Prompt dei comandi e scrivi:   openclaw onboard
-echo      ti fa le domande di configurazione iniziale (lingua, provider, ecc.)
+echo    Adesso faccio il PRIMO AVVIO in una finestra a parte.
+echo    Se compare la domanda:
+echo         Update NodeJS: Y/N [N]:
+echo    rispondi   Y   e premi INVIO.
+echo    Cosi' OpenClaw si mette un Node SUO (privato) e il tuo Node %NODEWINV%
+echo    del Free LLM Hub resta esattamente com'e'.
+echo.
+start "OpenClaw - primo avvio" cmd /k "openclaw --version"
+echo    (se invece non chiede niente e stampa un numero di versione: era gia' a posto)
+echo.
+echo    Poi, quando vuoi, la configurazione iniziale:
+echo      openclaw onboard
 echo.
 goto FINE_OK
 
