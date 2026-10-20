@@ -670,55 +670,81 @@ class H(BaseHTTPRequestHandler):
                 except Exception as e:
                     self._json({"stato": "errore", "msg": f"Non riesco ad aprire la cartella ({e})."})
             elif az == "prepara":
-                # uso il .bat che sta nel ponte (verificabile, con dentro "call"): lo copio in una
-                # cartella Windows vera e apro quello. Niente virgolette annidate, niente file generati.
-                sorgente = os.path.join(POSTA, "CONFIGURA_OPENCLAW.bat")
-                if not os.path.exists(sorgente):
-                    self._json({"stato": "errore",
-                                "msg": "Manca CONFIGURA_OPENCLAW.bat nel ponte: rifai [8]."}, 400)
-                    return
-                # home di Windows (%USERPROFILE%)
+                # NON dipende da file/cartelle/git: il .bat lo scrivo io, qui, adesso.
+                contenuto = (
+                    "@echo off\r\n"
+                    "chcp 65001 >nul 2>&1\r\n"
+                    "setlocal EnableExtensions\r\n"
+                    "title OpenClaw - configurazione iniziale\r\n"
+                    "color 0B\r\n"
+                    "cd /d \"%USERPROFILE%\" 2>nul\r\n"
+                    "set \"OC=\"\r\n"
+                    "for /f \"delims=\" %%i in ('where openclaw.cmd 2^>nul') do if not defined OC set \"OC=%%i\"\r\n"
+                    "if not defined OC for /f \"delims=\" %%i in ('where openclaw 2^>nul') do if not defined OC set \"OC=%%i\"\r\n"
+                    "if not defined OC if exist \"%APPDATA%\\npm\\openclaw.cmd\" set \"OC=%APPDATA%\\npm\\openclaw.cmd\"\r\n"
+                    "if not defined OC goto NON_TROVATO\r\n"
+                    "echo.\r\n"
+                    "echo   OpenClaw: %OC%\r\n"
+                    "echo.\r\n"
+                    "echo   Rispondi alle domande (lingua, provider, canali).\r\n"
+                    "echo   Se non sai una cosa, premi INVIO e la salti.\r\n"
+                    "echo   ------------------------------------------------------------\r\n"
+                    "call \"%OC%\" onboard\r\n"
+                    "echo   ------------------------------------------------------------\r\n"
+                    "echo   Finito. Torna nella GUI e premi Accendi.\r\n"
+                    "pause\r\n"
+                    "exit /b 0\r\n"
+                    ":NON_TROVATO\r\n"
+                    "echo   OpenClaw non risulta installato su questo PC.\r\n"
+                    "echo   Una volta sola: doppio clic su INSTALLA_OPENCLAW.bat\r\n"
+                    "pause\r\n"
+                    "exit /b 1\r\n"
+                )
+                # dove scriverlo: la home di Windows dell'utente
                 dest_dir = None
+                winroot = os.environ.get("WINROOT", "/mnt/c")
                 try:
                     r = subprocess.run(["cmd.exe", "/c", "echo", "%USERPROFILE%"], capture_output=True,
-                                       text=True, timeout=15, cwd="/mnt/c")
+                                       text=True, timeout=15, cwd=winroot)
                     prof = (r.stdout or "").strip().splitlines()[-1].strip()
-                    if prof and ":" in prof:
-                        lin = _w2l(prof)
-                        if lin and os.path.isdir(lin):
-                            dest_dir = lin
+                    lin = _w2l(prof) if prof and ":" in prof else ""
+                    if lin and os.path.isdir(lin):
+                        dest_dir = lin
                 except Exception:
                     dest_dir = None
                 if not dest_dir:
-                    winroot = os.environ.get("WINROOT", "/mnt/c")
                     for d in sorted(glob.glob(os.path.join(winroot, "Users", "*"))):
                         if os.path.isdir(os.path.join(d, "AppData", "Roaming")):
                             dest_dir = d
                             break
                 if not dest_dir:
                     self._json({"stato": "errore",
-                                "msg": "Non riesco a trovare la tua cartella utente di Windows. "
-                                       "Fai doppio clic a mano su CONFIGURA_OPENCLAW.bat nella cartella posta."}, 400)
+                                "msg": "Non trovo la cartella utente di Windows. Usa il comando a mano: "
+                                       "apri il Prompt dei comandi e scrivi  openclaw onboard"}, 400)
                     return
                 dest = os.path.join(dest_dir, "CONFIGURA_OPENCLAW.bat")
                 try:
-                    with open(sorgente, "rb") as fi, open(dest, "wb") as fo:
-                        fo.write(fi.read())
+                    with open(dest, "w", encoding="utf-8", newline="") as f:
+                        f.write(contenuto)
                 except Exception as e:
-                    self._json({"stato": "errore", "msg": f"Non riesco a copiare il file: {e}"}, 500)
+                    self._json({"stato": "errore", "msg": f"Non riesco a scrivere il file: {e}"}, 500)
                     return
                 dest_win = _l2w(dest)
+                aperto = False
                 try:
-                    subprocess.Popen(["cmd.exe", "/c", "start", "", dest_win],
-                                     cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA,
+                    subprocess.Popen(["cmd.exe", "/c", "start", "", dest_win], cwd=winroot,
                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    msg = ("Si sta aprendo una finestra su Windows con le domande di OpenClaw. "
-                           "Rispondi, poi chiudila e torna qui: la scheda si aggiorna da sola. "
-                           f"Se non si apre: doppio clic su {dest_win}")
-                except Exception as e:
-                    msg = (f"Non riesco ad aprire la finestra ({e}). "
-                           f"Doppio clic a mano su: {dest_win}")
-                self._json({"stato": "ok", "msg": msg, "bat": dest_win})
+                    aperto = True
+                except Exception:
+                    aperto = False
+                if aperto:
+                    msg = ("Si è aperta una finestra su Windows con le domande di OpenClaw. "
+                           "Rispondi, poi chiudila e torna qui.")
+                else:
+                    msg = ("Non sono riuscito ad aprirla da qui. Il file però È SCRITTO: "
+                           f"apri il Prompt dei comandi e incolla questa riga:  {dest_win}")
+                self._json({"stato": "ok", "msg": msg, "bat": dest_win,
+                            "comando": "openclaw onboard"})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/omniroute":
