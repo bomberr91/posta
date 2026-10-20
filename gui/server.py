@@ -890,6 +890,128 @@ def aggiorna_pc():
     return {"stato": "avviato", "msg": "Aggiornamento partito: 1-3 minuti. Puoi continuare a usare l'Hub.",
             "log": _aggiorna["log"]}
 
+# ─────────────────────── appello delle chiavi (riserva) ────────────────────
+APPELLO_JSON = os.path.join(HOME, ".posta_appello.json")
+
+APP_BASE = {
+    "groq": ("https://api.groq.com/openai/v1", "llama-3.3-70b-versatile"),
+    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai", "gemma-4-31b-it"),
+    "mistral": ("https://api.mistral.ai/v1", "mistral-small-latest"),
+    "cohere": ("https://api.cohere.ai/compatibility/v1", "command-r-plus-08-2024"),
+    "openrouter": ("https://openrouter.ai/api/v1", "openrouter/auto"),
+    "nvidia": ("https://integrate.api.nvidia.com/v1", "z-ai/glm-5.3"),
+    "huggingface": ("https://router.huggingface.co/v1", "Qwen/Qwen3-8B"),
+    "pollinations": ("https://text.pollinations.ai/openai", "openai-fast"),
+    "githubmodels": ("https://models.github.ai/inference", "openai/gpt-4o-mini"),
+    "agentrouter": ("https://agentrouter.org/v1", "auto"),
+    "opencode": ("https://opencode.ai/zen/v1", "glm-5.3"),
+}
+
+
+def appello_dati():
+    """L'ultimo appello: chi risponde e in che ordine usarlo."""
+    try:
+        d = json.loads(open(APPELLO_JSON, encoding="utf-8").read())
+        if isinstance(d, dict) and "voci" in d:
+            return d
+    except Exception:
+        pass
+    return {"quando": "", "riserva": [], "voci": []}
+
+
+def appello_lancia(svelto=True):
+    """Appello delle chiavi in sottofondo (silenzioso, nessun terminale)."""
+    if _appello_stato["in_corso"]:
+        return {"stato": "in_corso", "msg": "⏳ Appello già in corso: 20-60 secondi."}
+    _appello_stato["in_corso"] = True
+    _appello_stato["quando"] = time.time()
+
+    def _lavoro():
+        try:
+            argomenti = ["bash", os.path.join(POSTA, "appello_chiavi.sh")]
+            if svelto:
+                argomenti.append("--svelto")
+            subprocess.run(argomenti, capture_output=True, text=True, timeout=600,
+                           cwd=POSTA, start_new_session=True)
+        except Exception:
+            pass
+        finally:
+            _appello_stato["in_corso"] = False
+    threading.Thread(target=_lavoro, daemon=True).start()
+    return {"stato": "avviato",
+            "msg": "🗣️ Appello delle chiavi partito: 20-60 secondi, te lo dico io chi risponde."}
+
+
+_appello_stato = {"in_corso": False, "quando": 0.0}
+
+
+def chiave_provider(pid):
+    """La chiave di un provider, presa dal portachiavi (una sola fonte)."""
+    try:
+        p = subprocess.run(["bash", os.path.join(POSTA, "appello_chiavi.sh"), "--chiave", pid],
+                           capture_output=True, text=True, timeout=20)
+        return (p.stdout or "").strip()
+    except Exception:
+        return ""
+
+
+def chat_riserva(messaggi, esclusi=()):
+    """Se il motore è caduto: gli agenti non restano fermi, si passa alle chiavi
+    che hanno risposto all'appello. Ritorna (testo, nome, modello) o None."""
+    import urllib.request
+    for v in appello_dati().get("voci", []):
+        if v.get("esito") != "risponde" or v.get("id") in esclusi:
+            continue
+        pid = v.get("id")
+        if pid not in APP_BASE:
+            continue
+        base, modello = APP_BASE[pid]
+        modello = v.get("modello") or modello
+        k = chiave_provider(pid)
+        if not k:
+            continue
+        try:
+            req = urllib.request.Request(
+                base + "/chat/completions",
+                data=json.dumps({"model": modello, "messages": messaggi[-12:],
+                                 "max_tokens": 1200}).encode(),
+                headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
+            d = json.loads(urllib.request.urlopen(req, timeout=90).read().decode())
+            testo = (d.get("choices") or [{}])[0].get("message", {}).get("content", "")
+            if testo:
+                return testo, v.get("nome") or pid, modello
+        except Exception:
+            continue
+    return None
+
+
+def _avvio_automatico():
+    """All'accensione, senza che tu prema niente:
+    1) se il motore è su ma ha 0 modelli, gli innesto io le chiavi (una volta per avvio);
+    2) faccio l'appello delle chiavi, così la riserva è pronta da subito."""
+    time.sleep(8)
+    try:
+        if omni_bin() and porta_viva(20128) and (modelli_omni().get("modelli") or 0) == 0:
+            flag = os.path.join(HOME, ".stato_appello", "chiavi_innestate_" + time.strftime("%Y%m%d"))
+            os.makedirs(os.path.dirname(flag), exist_ok=True)
+            if not os.path.exists(flag):
+                scrivi(flag, time.strftime("%H:%M"))
+                log = "/tmp/omni_lav_chiavi.log"
+                subprocess.Popen(["bash", os.path.join(POSTA, "omni_chiavi.sh")],
+                                 stdout=open(log, "w"), stderr=subprocess.STDOUT,
+                                 start_new_session=True)
+    except Exception:
+        pass
+    try:
+        vecchio = True
+        if os.path.exists(APPELLO_JSON):
+            vecchio = (time.time() - os.path.getmtime(APPELLO_JSON)) > 3 * 3600
+        if vecchio:
+            appello_lancia(svelto=True)
+    except Exception:
+        pass
+
+
 def _sorveglianza():
     """In sottofondo: se il motore è spento lo riaccende (come faceva prima)."""
     time.sleep(5)
@@ -920,6 +1042,7 @@ def stato():
     sv = saldo_istantaneo()
     mo = modelli_omni()
     lo = lavoro_omni()
+    ap = appello_dati()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
             "checkin_oggi": os.path.exists(flag_checkin()),
             "checkin_ora": leggi(flag_checkin(), "").strip(),
@@ -934,6 +1057,11 @@ def stato():
                        "installato": bool(omni_bin()), "nome": "OmniRoute",
                        "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
                        "lavoro_log": lo["log"]},
+            "appello": {"quando": ap.get("quando", ""),
+                        "riserva": ap.get("riserva", []),
+                        "pronti": sum(1 for v in ap.get("voci", []) if v.get("esito") == "risponde"),
+                        "totali": len([v for v in ap.get("voci", []) if v.get("esito") != "no-chiave"]),
+                        "in_corso": _appello_stato["in_corso"]},
             "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
@@ -1040,9 +1168,18 @@ class H(BaseHTTPRequestHandler):
                                              headers={"Authorization": "Bearer " + key,
                                                       "Content-Type": "application/json"})
                 d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
-                self._json({"testo": d["choices"][0]["message"]["content"], "modello": d.get("model") or "?"})
+                self._json({"testo": d["choices"][0]["message"]["content"],
+                            "modello": d.get("model") or "?", "via": "OmniRoute"})
             except Exception as e:
-                self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
+                # il motore non risponde (o è caduto): provo le chiavi dell'appello
+                r = chat_riserva(msgs)
+                if r:
+                    self._json({"testo": r[0], "modello": f"{r[2]} · riserva {r[1]}",
+                                "via": "riserva " + r[1]})
+                else:
+                    self._json({"testo": f"⚠️ Il motore non risponde ({type(e).__name__}) e nessuna "
+                                         f"chiave di riserva ha risposto. Apri 🤖 Agenti → 🗣️ Appello "
+                                         f"e guarda chi è rosso.", "modello": "-"})
         elif self.path == "/api/agenti/prova":
             svelto = bool(self._body().get("svelto"))
             argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])
@@ -1201,6 +1338,16 @@ class H(BaseHTTPRequestHandler):
                         "msg": ("👁 Browser degli agenti in primo piano (porta 9222)"
                                 if visibile else "🙈 Browser di nuovo dietro le quinte: continua a lavorare")
                                if su else "⚠️ Non sono riuscito ad aprire il browser: serve Chrome o Edge installato"})
+        elif self.path == "/api/appello":
+            az = (self._body().get("azione") or "stato").strip()
+            if az == "fai":
+                self._json(appello_lancia(svelto=bool(self._body().get("svelto", True))))
+            elif az == "completo":
+                self._json(appello_lancia(svelto=False))
+            else:
+                d = appello_dati()
+                d["in_corso"] = _appello_stato["in_corso"]
+                self._json(d)
         elif self.path == "/api/omniroute":
             az = self._body().get("azione")
             if az in ("avvia", "riavvia") and not omni_bin():
@@ -1284,6 +1431,7 @@ if __name__ == "__main__":
     libera_porta_20200()
     postino_bg()
     threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
+    threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
     if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":
         threading.Thread(target=sveglia_checkin, daemon=True).start()
     else:
