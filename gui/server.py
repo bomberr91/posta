@@ -512,6 +512,19 @@ def _oc_bat(cmd, argomenti, pausa=False, nome="_posta_openclaw.bat"):
     return _l2w(bat_lin)
 
 
+_oc_in_corso = {"quando": 0.0, "azione": ""}
+
+
+def _oc_libero(azione):
+    """True se possiamo partire: evita che dieci clic aprano dieci terminali."""
+    ora = time.time()
+    if _oc_in_corso["azione"] and ora - _oc_in_corso["quando"] < 90:
+        return False
+    _oc_in_corso["azione"] = azione
+    _oc_in_corso["quando"] = ora
+    return True
+
+
 def _oc_win(argomenti, attesa=45, titolo="OpenClaw"):
     """Lancia un comando OpenClaw su Windows in modo pulito.
 
@@ -540,7 +553,10 @@ def _oc_win(argomenti, attesa=45, titolo="OpenClaw"):
     except Exception as e:
         return 1, f"Non riesco a scrivere il comando su Windows: {e}"
     try:
-        subprocess.Popen(["cmd.exe", "/c", "start", titolo, bat_win],
+        # start "" /min = titolo vuoto e finestra ridotta a icona.
+        # (con un titolo contenente spazi Windows cercava un programma chiamato cosi'
+        #  e apriva/chIudeva terminali a raffica)
+        subprocess.Popen(["cmd.exe", "/c", "start", "", "/min", bat_win],
                          cwd=os.environ.get("WINROOT", "/mnt/c"),
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception as e:
@@ -710,26 +726,30 @@ class H(BaseHTTPRequestHandler):
             if az == "stato":
                 self._json(openclaw_stato())
             elif az == "avvia":
+                if not _oc_libero("avvia"):
+                    self._json({"stato": "in_corso",
+                                "msg": "⏳ Sto già accendendo OpenClaw: aspetta una trentina di secondi "
+                                       "senza premere altro.", "gateway": porta_viva(18789)})
+                    return
                 porta = openclaw_stato().get("porta", 18789)
-                esito = {}
-                # 1) registra il servizio (parte da solo all'accensione del PC)
-                rc, log1 = _oc_win(["gateway", "install"], attesa=45, titolo="OpenClaw - accendo")
+                rc, log = _oc_win(["gateway", "install"], attesa=45, titolo="accendo")
                 acceso = porta_viva(porta)
-                # 2) se non è ancora su, prova ad avviarlo subito
-                if not acceso:
-                    rc2, log2 = _oc_win(["gateway", "restart"], attesa=45, titolo="OpenClaw - avvio")
-                    for _ in range(20):
+                if not acceso:                      # aspetto che parta, senza lanciare altro
+                    for _ in range(25):
                         if porta_viva(porta):
                             acceso = True
                             break
                         time.sleep(1)
-                    log1 = log1 + "\n" + log2
-                msg = ("🟢 Gateway acceso su :%d — da adesso parte da solo col PC" % porta) if acceso else \
-                      ("⚠️ Il servizio è stato registrato ma il gateway non risponde ancora. "
-                       "Guarda il log qui sotto: se serve, premi di nuovo Accendi tra 30 secondi.")
+                msg = (f"🟢 Gateway acceso su :{porta} — da adesso parte da solo col PC") if acceso else \
+                      ("⚠️ Servizio registrato ma non risponde ancora: aspetta 30 secondi e premi "
+                       "«Ricontrolla», non «Accendi».")
                 self._json({"stato": "ok" if acceso else "attenzione", "msg": msg,
-                            "gateway": acceso, "log": (log1 or "")[-2000:]})
+                            "gateway": acceso, "log": (log or "")[-2000:]})
             elif az == "riavvia":
+                if not _oc_libero("riavvia"):
+                    self._json({"stato": "in_corso", "msg": "⏳ Già un comando in corso: aspetta.",
+                                "gateway": porta_viva(18789)})
+                    return
                 porta = openclaw_stato().get("porta", 18789)
                 rc, log = _oc_win(["gateway", "restart"], attesa=45, titolo="OpenClaw - riavvio")
                 for _ in range(15):
@@ -739,7 +759,11 @@ class H(BaseHTTPRequestHandler):
                 self._json({"stato": "ok", "msg": "Riavvio fatto.", "log": (log or "")[-2000:],
                             "gateway": porta_viva(porta)})
             elif az == "doctor":
-                rc, log = _oc_win(["doctor"], attesa=60, titolo="OpenClaw - diagnostica")
+                if not _oc_libero("doctor"):
+                    self._json({"stato": "in_corso", "msg": "⏳ Già un comando in corso: aspetta.",
+                                "gateway": porta_viva(18789)})
+                    return
+                rc, log = _oc_win(["doctor"], attesa=60, titolo="diagnostica")
                 self._json({"stato": "ok", "msg": "Diagnostica completata (vedi sotto).",
                             "log": (log or "")[-3000:]})
             elif az == "cartella":
