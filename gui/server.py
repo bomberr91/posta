@@ -33,31 +33,16 @@ def leggi(path, default=""):
         return default
 
 def giorno_cina():
-    # tenuto per compatibilita' con i file/flag gia' sul PC
+    # AgentRouter azzera il bonus a mezzanotte cinese (UTC+8) = 18:00 italiane (ora legale)
     return time.strftime("%Y-%m-%d", time.gmtime(time.time() + 8 * 3600))
 
-def giorno_bonus():
-    # il bonus si riscatta una volta al giorno a partire dalle 18:05 ITALIANE: il giorno e' quello locale
-    return time.strftime("%Y-%m-%d")
-
 def flag_checkin():
-    return os.path.join(HOME, f".ar_checkin_{giorno_bonus()}")
-
-FINESTRA = (18, 5)   # ora italiana: PRIMA non si fa login/logout (rischio ban — ordine utente)
-
-def finestra_aperta():
-    if os.environ.get("AR_IGNORA_FINESTRA") == "1":
-        return True
-    t = time.localtime()
-    return (t.tm_hour, t.tm_min) >= FINESTRA
-
-def adesso_hhmm():
-    return time.strftime("%H:%M")
+    return os.path.join(HOME, f".ar_checkin_{giorno_cina()}")
 
 MAX_TENTATIVI = 3          # al giorno: dopo 3 giri falliti ci si ferma (niente spam di logout)
 
 def file_tentativi():
-    return os.path.join(HOME, f".ar_checkin_try_{giorno_bonus()}")
+    return os.path.join(HOME, f".ar_checkin_try_{giorno_cina()}")
 
 def tentativi_oggi():
     try:
@@ -67,9 +52,7 @@ def tentativi_oggi():
 
 def segna_tentativo():
     try:
-        n = tentativi_oggi() + 1        # prima si legge, poi si apre in scrittura (aprire "w" azzera!)
-        with open(file_tentativi(), "w", encoding="utf-8") as f:
-            f.write(str(n))
+        open(file_tentativi(), "w").write(str(tentativi_oggi() + 1))
     except Exception:
         pass
 
@@ -187,7 +170,8 @@ def sveglia_checkin():
     Riprova ogni 30 min finche' non riesce."""
     while True:
         try:
-            if (finestra_aperta() and not os.path.exists(flag_checkin())
+            sh = time.gmtime(time.time() + 8 * 3600)
+            if ((sh.tm_hour, sh.tm_min) >= (0, 5) and not os.path.exists(flag_checkin())
                     and not serve_login_manuale() and tentativi_oggi() < MAX_TENTATIVI
                     and time.time() - _ultimo_tentativo[0] > 1800):
                 _ultimo_tentativo[0] = time.time()
@@ -205,10 +189,6 @@ def fai_checkin(forza=False):
         _chk_lock.release()
 
 def _fai_checkin(forza=False):
-    if not finestra_aperta():
-        return {"stato": "finestra_chiusa", "saldo": saldo_ultimo(), "finestra": "18:05",
-                "msg": f"⏳ Sono le {adesso_hhmm()}: il bonus si riscatta dalle 18:05 (ora italiana). "
-                       f"Nessun login/logout fatto — regola anti-ban."}
     if os.path.exists(flag_checkin()) and not forza:
         return {"stato": "gia_fatto", "saldo": saldo_ultimo(),
                 "msg": "💰 Check-in di oggi già riscattato."}
@@ -278,7 +258,6 @@ def stato():
             "checkin_oggi": os.path.exists(flag_checkin()), "checkin_ora": leggi(flag_checkin(), "").strip(),
             "login_manuale": serve_login_manuale(), "login_motivo": leggi(file_login_manuale(), "").strip(),
             "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI, "saldo": sv or saldo_ultimo(),
-            "finestra_aperta": finestra_aperta(), "finestra": "18:05", "adesso": adesso_hhmm(),
             "saldo_vivo": bool(sv), "modelli": mo["modelli"], "linee": mo["linee"],
             "fusion": fus, "risultati": ultimi, "ora": time.strftime("%H:%M:%S")}
 
@@ -353,38 +332,11 @@ class H(BaseHTTPRequestHandler):
             self._json({"err": "not found"}, 404)
 
 def postino_bg():
-    # in collaudo (sandbox/CI) il postino NON parte: non deve committare/pushare nulla
-    if os.environ.get("CENTRALE_NO_POSTINO") == "1" or os.environ.get("AR_IGNORA_FINESTRA") == "1":
-        return
     if subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True).returncode != 0:
         subprocess.Popen(["bash", os.path.join(POSTA, "postino.sh"), "--loop"],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-def libera_porta_20200():
-    """Se gira ancora una GUI vecchia (dal giro di stamattina), la chiudo: altrimenti la nuova
-    non riesce ad aprire la porta e tu vedresti la pagina VECCHIA (quella col check-in all'apertura)."""
-    import signal
-    mio = os.getpid()
-    try:
-        pids = subprocess.run(["pgrep", "-f", "gui/server.py"], capture_output=True, text=True).stdout.split()
-    except Exception:
-        pids = []
-    for pid in [int(x) for x in pids if x.isdigit() and int(x) != mio]:
-        try:
-            os.kill(pid, signal.SIGTERM)
-            print(f"[gui] chiusa l'istanza vecchia (pid {pid})")
-        except Exception:
-            pass
-    for _ in range(15):
-        if not porta_viva(20200):
-            return True
-        time.sleep(0.5)
-    return not porta_viva(20200)
-
-
 if __name__ == "__main__":
-    if os.environ.get("CENTRALE_NO_POSTINO") != "1":
-        libera_porta_20200()
     postino_bg()
     threading.Thread(target=sveglia_checkin, daemon=True).start()
     print("GUI CENTRALE su http://localhost:20200")
