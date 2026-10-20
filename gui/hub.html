@@ -140,6 +140,31 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 .dots i:nth-child(2){animation-delay:.16s}
 .dots i:nth-child(3){animation-delay:.32s}
 @keyframes dotb{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+
+/* ─── menu 🤖 Agenti ─── */
+#agentiPanel{position:fixed;inset:0;background:#000a;backdrop-filter:blur(3px);display:none;z-index:900}
+#agentiPanel.on{display:block}
+#agentiBox{position:absolute;top:0;right:0;bottom:0;width:min(560px,96vw);background:var(--bg2,#141821);border-left:1px solid var(--border,#2a2f3a);display:flex;flex-direction:column;box-shadow:-20px 0 50px #000a}
+.agHead{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border,#2a2f3a)}
+.agHead b{font-size:16px}
+.agNota{font-size:11.5px;color:var(--mut,#8b949e);flex:1}
+#agChiudi{background:none;border:1px solid var(--border,#2a2f3a);color:inherit;border-radius:8px;padding:4px 10px;cursor:pointer}
+#agCorpo{padding:14px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.agCard{border:1px solid var(--border,#2a2f3a);border-radius:12px;padding:12px;background:#0f131a}
+.agCard h3{font-size:12.5px;margin:0 0 8px;letter-spacing:.3px;color:var(--mut,#8b949e);text-transform:uppercase}
+.agLargo{grid-column:1/-1}
+.agRiga{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:3px 0}
+.agRiga b{font-weight:600}
+.agDim{font-size:11.5px;color:var(--mut,#8b949e)}
+.agBottoni{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.agB{background:#1b2130;color:inherit;border:1px solid var(--border,#2a2f3a);border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+.agB:hover{border-color:#3d8bfd}
+.agB.pri{background:#1f6feb;border-color:#1f6feb;font-weight:600}
+.agB[disabled]{opacity:.45;cursor:not-allowed}
+.ok{color:#3fb950}.no{color:#f85149}.att{color:#d29922}
+#agLog{font-size:12px}
+#agLog pre{background:#0b0e14;border:1px solid var(--border,#2a2f3a);border-radius:8px;padding:10px;white-space:pre-wrap;max-height:200px;overflow:auto;margin-top:8px}
+@media(max-width:620px){#agCorpo{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -159,6 +184,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <h1>⚡ Free LLM Hub</h1>
         <label class="webt" id="godl" title="Godmode: risposte dirette senza prediche, disclaimer o rifiuti da eccesso di zelo. Vale per il modello, la fusion e la code. (I filtri DURI dei provider restano: non sono nei nostri computer)"><input type="checkbox" id="god">😈 senza filtri</label>
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
+        <button class="icobtn" id="btnAgenti" title="Le funzioni che servono agli AGENTI (non alla chat): crediti, motore, browser, chiavi, risultati, aggiornamento PC, postino" style="font-weight:700">🤖 Agenti</button>
         <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
@@ -195,6 +221,90 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
   </div>
   <footer>Free LLM Hub · gira sul TUO PC (node dev.js) · chat e chiavi solo nel browser (localStorage) · endpoint agenti: <b>/v1/chat/completions</b> (formato OpenAI) · questo tool NON è un prodotto Google/OpenAI/ecc.</footer>
 </div>
+<div id="agentiPanel" aria-hidden="true">
+  <div id="agentiBox">
+    <div class="agHead">
+      <b>🤖 Agenti</b>
+      <span class="agNota">solo le cose che servono agli agenti — la chat resta a sinistra</span>
+      <button id="agChiudi" title="Chiudi">✕</button>
+    </div>
+    <div id="agCorpo">
+
+      <section class="agCard">
+        <h3>💰 Crediti e bonus</h3>
+        <div class="agRiga"><span>Saldo AgentRouter</span><b id="agSaldo">—</b></div>
+        <div class="agRiga"><span>Check-in di oggi</span><b id="agCheck">—</b></div>
+        <div class="agRiga"><span>Finestra</span><span id="agFin" class="agDim">dalle 18:05</span></div>
+        <div class="agBottoni">
+          <button class="agB pri" id="agRiscatta">Riscatta ora</button>
+          <button class="agB" id="agSegna">✔ già fatto a mano</button>
+        </div>
+      </section>
+
+      <section class="agCard">
+        <h3>🧠 Motore (OmniRoute)</h3>
+        <div class="agRiga"><span>Stato</span><b id="agOmni">—</b></div>
+        <div class="agRiga"><span>Modelli disponibili</span><span id="agModelli" class="agDim">—</span></div>
+        <div class="agBottoni">
+          <button class="agB" id="agOmniOn">Accendi</button>
+          <button class="agB" id="agOmniOff">Spegni</button>
+          <button class="agB" id="agOmniDash">Dashboard ↗</button>
+        </div>
+      </section>
+
+      <section class="agCard">
+        <h3>🦾 OpenClaw</h3>
+        <div class="agRiga"><span>Stato</span><b id="agOc">—</b></div>
+        <div class="agRiga"><span>Gateway</span><b id="agOcGw">—</b></div>
+        <div class="agBottoni">
+          <button class="agB pri" id="agOcOn">▶ Accendi</button>
+          <button class="agB" id="agOcApri">🖥 Interfaccia</button>
+          <button class="agB" id="agOcDoc">🩺 Diagnostica</button>
+        </div>
+      </section>
+
+      <section class="agCard">
+        <h3>🌐 Browser agenti</h3>
+        <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
+        <div class="agBottoni"><button class="agB" id="agBrowApri">Apri / mostra</button></div>
+        <div class="agDim" style="margin-top:6px">Serve solo per il check-in: resta nascosto se non serve.</div>
+      </section>
+
+      <section class="agCard">
+        <h3>🔑 Chiavi</h3>
+        <div class="agRiga"><span>Attive / totali</span><b id="agChiavi">—</b></div>
+        <div class="agDim">Nel portachiavi locale (chmod 600, mai sincronizzato).</div>
+      </section>
+
+      <section class="agCard">
+        <h3>📮 Postino e ponte</h3>
+        <div class="agRiga"><span>Postino (ponte GitHub)</span><b id="agPostino">—</b></div>
+        <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
+        <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
+      </section>
+
+      <section class="agCard">
+        <h3>📬 Risultati</h3>
+        <select id="agRisLista" style="width:100%"><option>—</option></select>
+        <pre id="agRisTesto" style="max-height:150px;overflow:auto;white-space:pre-wrap;font-size:11.5px;margin-top:6px">(scegli un risultato)</pre>
+      </section>
+
+      <section class="agCard">
+        <h3>🔄 Computer</h3>
+        <div class="agBottoni"><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
+        <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
+      </section>
+
+      <section class="agCard agLargo">
+        <h3>🩺 Salute del PC</h3>
+        <div id="agSalute" class="agDim">—</div>
+        <div class="agBottoni"><button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button></div>
+      </section>
+
+      <div id="agLog" class="agLargo"></div>
+    </div>
+  </div>
+</div>
 <div id="ctxmenu"></div>
 
 <script>
@@ -217,6 +327,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
   window.__LIVE = LIVE;
   window.fetch = async function(url,opt){
     const u=String(url);
+    // le chiamate alle API della Centrale NON si toccano: passano dirette al server
+    if (LIVE && u.startsWith('/api/') && !u.includes('/api/chat')) {
+      return __REAL_FETCH(url, opt);
+    }
     try{
       if(u.includes('/api/chat')||u.includes('/chat/completions')){
         let b={}; try{b=JSON.parse((opt&&opt.body)||'{}')}catch(e){}
@@ -2042,38 +2156,23 @@ sysEl.value = lsGet('fh_sys') || '';
 sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 </script>
 <script>
-/* ===== INNESTO ANTEPRIMA: menu Agenti in alto + avvisi ===== */
+/* ===== INNESTO: senza filtri sempre attivo + chiave locale ===== */
 (function(){
-  try{ var _g=document.getElementById('god'); if(_g) _g.checked=true; lsSet('fh_god','1'); var _gl=document.getElementById('godl'); if(_gl) _gl.style.display='none'; }catch(e){}
+  try{ var _g=document.getElementById('god'); if(_g) _g.checked=true; lsSet('fh_god','1');
+       var _gl=document.getElementById('godl'); if(_gl) _gl.style.display='none'; }catch(e){}
   try{ lsSet('fh_key_agenti','locale'); if(!getKey('freellmapi')) lsSet('fh_key_freellmapi','freellmapi-anteprima'); }catch(e){}
-  const tst=document.createElement('div');
-  tst.style.cssText='position:fixed;bottom:52px;right:14px;background:#161b22;border:1px solid #d29922;border-radius:10px;padding:11px 14px;font:13px system-ui;color:#e6edf3;max-width:360px;display:none;z-index:10000;box-shadow:0 10px 36px #000a';
-  document.body.appendChild(tst);
-  window.agT=function(m){tst.textContent=m;tst.style.display='block';clearTimeout(tst._x);tst._x=setTimeout(()=>tst.style.display='none',6000)};
-  const bn=document.createElement('div');
-  bn.textContent='🔍 ANTEPRIMA — il tuo Hub + innesto agenti · motore finto · dimmi cosa cambiare';
-  bn.style.cssText='position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#3d2e00;color:#f0d060;border:1px solid #d29922;border-radius:16px;padding:4px 14px;font:12px system-ui;z-index:9999;pointer-events:none;opacity:.95;white-space:nowrap';
-  document.body.appendChild(bn);
-  const anc=document.getElementById('usage')||document.getElementById('gear'); if(!anc) return;
-  const b=document.createElement('button');
-  b.textContent='🤖 Agenti'; b.title='Gli EXTRA degli agenti: tutto quello che non è chat';
-  b.style.cssText='background:#1f6feb;border:1px solid #1f6feb;color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font:600 13px system-ui;margin-right:6px';
-  anc.parentNode.insertBefore(b,anc);
-  const p=document.createElement('div');
-  p.style.cssText='position:fixed;top:52px;right:12px;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:10px;z-index:9998;display:none;width:330px;font:13px system-ui;color:#e6edf3;box-shadow:0 10px 36px #000a';
-  function riga(tit,sotto,bt){return '<div style="padding:8px 6px;border-bottom:1px solid #21262d"><div style="display:flex;justify-content:space-between;align-items:center"><b>'+tit+'</b><span>'+bt+'</span></div><div style="color:#8b949e;font-size:12px;margin-top:2px">'+sotto+'</div></div>'}
-  function mb(et,msg){return '<button onclick="agT(\''+msg+'\')" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:7px;padding:2px 9px;font-size:12px;cursor:pointer;margin-left:4px">'+et+'</button>'}
-  p.innerHTML='<div style="color:#8b949e;font-size:11.5px;padding:0 6px 6px">EXTRA AGENTI — vivono qui, fuori dalle chat</div>'
-   +riga('💰 AgentRouter','saldo <b style=\'color:#d29922\'>$148.75</b> · oggi ✅ · si rinnova alle 18:00 da solo',mb('Riscatta ora','💰 Forza il riscatto +25$ col browser invisibile (di solito fa tutto da solo alle 18)'))
-   +riga('🧠 OmniRoute','🟢 acceso (parte da solo all\'avvio) · 142 modelli · 17 linee',mb('Riavvia','🧠 Riavvia il motore')+mb('Spegni','🔴 Solo per emergenza: all\'avvio si riaccende da solo'))
-   +riga('🌐 Browser agenti','🟢 attivo, nascosto · GitHub ✅ AgentRouter ✅',mb('👁 Mostra','🌐 Porta la finestra del browser in primo piano per vederla o usarla tu')+mb('Nascondi','🙈 Torna dietro le quinte, continua a lavorare'))
-   +riga('🔑 Chiavi &amp; linee','ultimo giro: <b>12/17</b> superano il test · 142 modelli usabili',mb('Rifai il giro','🔑 Innesta le chiavi e rifà il conteggio x/y')+mb('Rapporto','📄 Apre il rapporto completo'))
-   +riga('📬 Risultati agenti','3 nuovi: FUSION_skill.md · checkin.md · chiavi.md',mb('Apri','📬 Archivio RISPOSTE_AGENTI, leggibili qui dentro'))
-   +riga('🔄 Aggiorna PC','ponte: c2b9c99 · ultimo giro 11:40',mb('Aggiorna','🔄 git pull dal ponte + icone Desktop (il tasto [8] del terminale)'))
-   +riga('😈 Senza filtri','SEMPRE attivo dietro le quinte quando gli agenti parlano coi modelli — tolto dall\'interfaccia come chiesto',mb('Info','😈 GOD_SYS iniettato in ogni chiamata agente→modello. I filtri DURI dei provider restano: si aggirano solo scegliendo modelli aperti più liberi'))+riga('📜 Postino','🟢 in servizio · ultimo giro 2 min fa',mb('Log','📜 Il giornale di bordo del postino'));
-  document.body.appendChild(p);
-  b.onclick=()=>{p.style.display=p.style.display==='none'?'block':'none'};
-  document.addEventListener('click',e=>{if(!p.contains(e.target)&&e.target!==b)p.style.display='none'});
+})();
+</script>
+
+<script>
+// avviso in basso: rosso/giallo solo se NON stiamo girando sul PC vero
+(function(){
+  if (window.__LIVE) return;
+  const bn = document.createElement('div');
+  bn.textContent = '🔍 ANTEPRIMA (dimostrativa) — sul PC questo pannello comanda davvero';
+  bn.style.cssText = 'position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#3d2e00;color:#f0d060;border:1px solid #d29922;border-radius:16px;padding:4px 14px;font:12px system-ui;z-index:9999;pointer-events:none;opacity:.95;white-space:nowrap';
+  const metti = () => document.body && document.body.appendChild(bn);
+  if (document.body) metti(); else document.addEventListener('DOMContentLoaded', metti);
 })();
 </script>
 
@@ -2112,6 +2211,124 @@ function aggiornaPilota(){
   const sel=document.getElementById('model');
   if(sel) sel.addEventListener('change',aggiornaPilota);
   aggiornaPilota(); setTimeout(aggiornaPilota,400); setTimeout(aggiornaPilota,1500);
+})();
+</script>
+
+<script>
+// ═══════════════════════ 🤖 AGENTI — pannello ═══════════════════════
+// In locale (porta 20200) parla con la GUI: dati veri, comandi veri.
+// Aperto come file, mostra solo lo stato "anteprima" senza inventare numeri.
+(function(){
+  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
+  const $ = id => document.getElementById(id);
+  const pan = $('agentiPanel');
+  if(!pan) return;
+
+  let ultimo = null;
+  function apri(){ pan.classList.add('on'); pan.setAttribute('aria-hidden','false'); aggiorna(); }
+  function chiudi(){ pan.classList.remove('on'); pan.setAttribute('aria-hidden','true'); }
+  $('btnAgenti').addEventListener('click', apri);
+  $('agChiudi').addEventListener('click', chiudi);
+  pan.addEventListener('click', e => { if(e.target === pan) chiudi(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') chiudi(); });
+
+  const led = (el, testo, cls) => { el.textContent = testo; el.className = cls || ''; };
+
+  async function api(percorso, corpo){
+    const r = await fetch(percorso, corpo ? {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo)} : {});
+    return r.json();
+  }
+  function log(t){
+    const c = $('agLog');
+    c.innerHTML = '<pre>' + String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
+  }
+
+  async function aggiorna(){
+    if(!VIVO){
+      led($('agSaldo'), 'anteprima', 'agDim');
+      led($('agCheck'), 'anteprima', 'agDim');
+      led($('agOmni'), 'anteprima', 'agDim');
+      led($('agOc'), 'anteprima', 'agDim');
+      led($('agOcGw'), 'anteprima', 'agDim');
+      led($('agBrow'), 'anteprima', 'agDim');
+      led($('agChiavi'), 'anteprima', 'agDim');
+      led($('agPostino'), 'anteprima', 'agDim');
+      $('agSalute').textContent = 'Questa è l\'anteprima nel workspace: i comandi veri si attivano quando è aperta dal PC (porta 20200).';
+      document.querySelectorAll('.agB').forEach(b => b.disabled = true);
+      return;
+    }
+    try{
+      const s = await api('/api/stato');
+      ultimo = s;
+      // crediti
+      led($('agSaldo'), s.saldo ? ('$' + s.saldo) : '—', 'ok');
+      led($('agCheck'), s.checkin_oggi ? ('✅ fatto' + (s.checkin_ora ? ' alle ' + s.checkin_ora : '')) : '⏳ da fare',
+          s.checkin_oggi ? 'ok' : 'att');
+      $('agFin').textContent = s.finestra_aperta ? 'aperta adesso'
+          : ('si apre alle ' + (s.finestra || '18:05') + (s.adesso ? ' — ora ' + s.adesso : ''));
+      $('agRiscatta').disabled = !!s.checkin_oggi;
+      $('agSegna').disabled = !!s.checkin_oggi;
+      // motore
+      led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
+      $('agModelli').textContent = (s.modelli || '—') + ' modelli · ' + (s.linee || '—') + ' linee';
+      // openclaw
+      const oc = s.openclaw || {};
+      led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
+      led($('agOcGw'), oc.gateway ? ('🟢 acceso — ' + oc.url) : '🔴 spento', oc.gateway ? 'ok' : 'att');
+      // browser
+      led($('agBrow'), s.browser_agenti ? '🟢 acceso' : 'spento', s.browser_agenti ? 'ok' : 'att');
+      // salute
+      const sl = s.salute || {};
+      $('agSalute').innerHTML = (sl.verdetto || '—') +
+        ((sl.rossi || []).length ? '<br>' + sl.rossi.slice(0,4).map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
+      // risultati
+      const L = $('agRisLista'); const sel = L.value;
+      L.innerHTML = (s.risultati || []).map(r => '<option' + (r === sel ? ' selected' : '') + '>' + r + '</option>').join('') || '<option>—</option>';
+    }catch(e){ log('Non riesco a leggere lo stato: ' + e); }
+    try{
+      const c = await api('/api/chiavi');
+      led($('agChiavi'), (c.attive ?? 0) + ' / ' + (c.totali ?? 0), 'ok');
+    }catch(e){}
+    try{
+      const p = await api('/api/ponte');
+      led($('agPostino'), p.postino ? '🟢 attivo' : '🔴 spento', p.postino ? 'ok' : 'att');
+      $('agCommit').textContent = (p.commit || '—') + (p.data ? ' · ' + p.data : '');
+      $('agMod').textContent = (p.modifiche || 0) + ' file' + (p.avanti ? (' · ' + p.avanti + ' da spedire') : '');
+    }catch(e){}
+  }
+
+  // ── azioni
+  $('agRiscatta').addEventListener('click', async () => {
+    log('Riscatto in corso… (browser invisibile, ~1 minuto)');
+    const r = await api('/api/checkin', {forza:false});
+    log(r.msg || 'fatto'); aggiorna();
+  });
+  $('agSegna').addEventListener('click', async () => {
+    const r = await api('/api/checkin/segna', {});
+    log(r.msg || 'segnato'); aggiorna();
+  });
+  $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
+  $('agOmniOff').addEventListener('click', async () => { log((await api('/api/omniroute', {azione:'spegni'})).msg || 'spento'); setTimeout(aggiorna, 2000); });
+  $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
+  $('agOcOn').addEventListener('click', async () => { log('Accendo OpenClaw… (30-60 s, non premere altro)'); const r = await api('/api/openclaw', {azione:'avvia'}); log(r.msg + (r.log ? '\n\n' + r.log : '')); aggiorna(); });
+  $('agOcApri').addEventListener('click', async () => { const r = await api('/api/openclaw', {azione:'apri'}); log(r.msg || ''); });
+  $('agOcDoc').addEventListener('click', async () => { log('Diagnostica in corso…'); const r = await api('/api/openclaw', {azione:'doctor'}); log(r.msg + '\n\n' + (r.log || '')); });
+  $('agBrowApri').addEventListener('click', async () => { const r = await api('/api/openclaw', {azione:'cartella'}); log(r.msg || ''); });
+  $('agRisLista').addEventListener('change', async e => {
+    const n = e.target.value; if(!n || n === '—') return;
+    const r = await api('/api/risultato?f=' + encodeURIComponent(n));
+    $('agRisTesto').textContent = (r.testo || '').slice(0, 4000) || '(vuoto)';
+  });
+  $('agAggiorna').addEventListener('click', async () => {
+    $('agAggNota').textContent = 'Aggiornamento in corso… puoi continuare a chattare.';
+    const r = await api('/api/pc/aggiorna', {});
+    log(r.msg || 'avviato');
+    setTimeout(async () => { const p = await api('/api/ponte'); log('Fatto. Ultimo commit: ' + (p.commit || '—')); aggiorna(); }, 8000);
+  });
+  $('agRicontrolla').addEventListener('click', async () => {
+    const r = await api('/api/salute');
+    $('agSalute').innerHTML = (r.verdetto || '—') + ((r.rossi || []).length ? '<br>' + r.rossi.map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
+  });
 })();
 </script>
 </body>

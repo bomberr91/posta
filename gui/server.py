@@ -596,6 +596,70 @@ def _oc_esegui(argomenti, attesa=90):
         return 1, str(e)
 
 
+def chiavi_conteggio():
+    """Quante chiavi ci sono nel portachiavi (attive / totali) — senza mostrarle."""
+    f = os.path.join(HOME, "CHIAVI_LOCALI.md")
+    tot = att = 0
+    try:
+        for riga in open(f, encoding="utf-8", errors="replace"):
+            # righe del tipo:  - **Nome** — chiave... — [data] — ✅ ...
+            if not riga.lstrip().startswith(("-", "*", "|")):
+                continue
+            if re.search(r"(sk-|gsk_|ghp_|xai-|AIza|jina_|sk-or-|sk-orca|thk_|blaze-|auray_sk|cfut_|hf_)", riga) \
+               or re.search(r"\b[0-9a-f]{32}\b", riga):
+                tot += 1
+                if "❌" not in riga and "morto" not in riga.lower() and "RITIRATO" not in riga:
+                    att += 1
+    except Exception:
+        return {"attive": 0, "totali": 0}
+    return {"attive": att, "totali": tot}
+
+
+def ponte_stato():
+    """Il ponte GitHub: ultimo commit, quante modifiche aperte, se il postino gira."""
+    d = {"commit": "", "data": "", "modifiche": 0, "postino": False, "avanti": 0}
+    try:
+        d["commit"] = subprocess.run(["git", "-C", POSTA, "rev-parse", "--short", "HEAD"],
+                                     capture_output=True, text=True, timeout=10).stdout.strip()
+        d["data"] = subprocess.run(["git", "-C", POSTA, "log", "-1", "--date=format:%d/%m %H:%M", "--format=%cd"],
+                                   capture_output=True, text=True, timeout=10).stdout.strip()
+        d["modifiche"] = len([r for r in subprocess.run(["git", "-C", POSTA, "status", "--porcelain"],
+                                                        capture_output=True, text=True, timeout=15).stdout.splitlines() if r.strip()])
+        rami = subprocess.run(["git", "-C", POSTA, "log", "--oneline", "@{u}..HEAD"],
+                              capture_output=True, text=True, timeout=15)
+        if rami.returncode == 0:
+            d["avanti"] = len([r for r in rami.stdout.splitlines() if r.strip()])
+    except Exception:
+        pass
+    try:
+        d["postino"] = subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True, timeout=5).returncode == 0
+    except Exception:
+        d["postino"] = False
+    return d
+
+
+_aggiorna = {"in_corso": False, "log": "", "quando": ""}
+
+
+def aggiorna_pc():
+    """Lancia aggiorna_tutto.sh in sottofondo (una volta per volta)."""
+    if _aggiorna["in_corso"]:
+        return {"stato": "in_corso", "msg": "Sto già aggiornando: aspetta.", "log": _aggiorna["log"][-2000:]}
+    _aggiorna.update({"in_corso": True, "log": "", "quando": time.strftime("%H:%M")})
+
+    def _lavoro():
+        try:
+            p = subprocess.run(["bash", os.path.join(POSTA, "aggiorna_tutto.sh")],
+                               capture_output=True, text=True, timeout=900, cwd=POSTA)
+            _aggiorna["log"] = ((p.stdout or "") + (p.stderr or ""))[-3000:]
+        except Exception as e:
+            _aggiorna["log"] = f"Errore: {e}"
+        finally:
+            _aggiorna["in_corso"] = False
+    threading.Thread(target=_lavoro, daemon=True).start()
+    return {"stato": "avviato", "msg": "Aggiornamento partito: 1-3 minuti. Puoi continuare a usare l'Hub.",
+            "log": _aggiorna["log"]}
+
 def stato():
     fus = {}
     try:
@@ -661,6 +725,10 @@ class H(BaseHTTPRequestHandler):
             self.wfile.write(b)
         elif self.path.startswith("/api/salute"):
             self._json(salute(fresco=True))
+        elif self.path.startswith("/api/chiavi"):
+            self._json(chiavi_conteggio())
+        elif self.path.startswith("/api/ponte"):
+            self._json(ponte_stato())
         elif self.path == "/api/stato":
             self._json(stato())
         elif self.path.startswith("/api/risultato"):
@@ -720,6 +788,8 @@ class H(BaseHTTPRequestHandler):
                 self._json({"testo": d["choices"][0]["message"]["content"], "modello": d.get("model") or "?"})
             except Exception as e:
                 self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
+        elif self.path == "/api/pc/aggiorna":
+            self._json(aggiorna_pc())
         elif self.path == "/api/openclaw":
             b = self._body()
             az = (b.get("azione") or "stato").strip()
