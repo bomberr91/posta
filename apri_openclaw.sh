@@ -7,6 +7,7 @@
 #   ./apri_openclaw.sh            apre OpenClaw
 #   ./apri_openclaw.sh --trova    dice dov'è (senza aprirlo)
 #   ./apri_openclaw.sh --stato    solo una parola: wsl | bun | windows-exe | windows-app | no
+#   ./apri_openclaw.sh --finestra apre la versione Windows in una finestra sua (se il terminale fa i capricci)
 set -u
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
@@ -60,13 +61,20 @@ case "$TIPO" in
     exec "$DOVE" "$@"
     ;;
   windows-exe)
-    echo "▸ Apro OpenClaw installato su Windows… (se non parte niente, guarda la finestra di Windows)"
+    W=$(wslpath -w "$DOVE" 2>/dev/null || echo "$DOVE")
     case "$DOVE" in
       *.cmd|*.bat)
-        cmd.exe /c "$(wslpath -w "$DOVE" 2>/dev/null || echo "$DOVE")" ;;
+        if [ "${1:-}" = "--finestra" ]; then
+          echo "▸ Apro OpenClaw in una finestra di Windows…"
+          cmd.exe /c start "OpenClaw" "$W"
+        else
+          echo "▸ Apro OpenClaw (versione Windows) qui nel terminale…"
+          # cmd.exe non digerisce i percorsi di rete di WSL: parto da C: cosi' non avvisa
+          ( cd /mnt/c 2>/dev/null || cd "$WINROOT" 2>/dev/null || cd "$HOME"; cmd.exe /c "$W" )
+        fi ;;
       *)
-        cd "$HOME" 2>/dev/null || true
-        "$DOVE" & ;;
+        echo "▸ Apro OpenClaw (versione Windows)…"
+        ( cd "$WINROOT" 2>/dev/null || cd "$HOME"; "$DOVE" "$@" & ) ;;
     esac
     ;;
   windows-app)
