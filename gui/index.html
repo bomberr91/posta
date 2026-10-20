@@ -227,5 +227,5 @@ function chatPulisci(){STORIA=[];$('chatlog').innerHTML=''}
 $('chatmsg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chat()}});
 api('/api/salute').then(disegnaSalute).catch(()=>{});   // la scheda salute non aspetta il resto
 aggiorna();setInterval(aggiorna,3000);
-setTimeout(()=>checkin(false),1500); // riscatto automatico all'apertura
+setTimeout(()=>{ if(!(window._ultimoStato||{}).checkin_oggi) checkin(false); },2500); // riscatto automatico, solo se serve
 </script></body></html>

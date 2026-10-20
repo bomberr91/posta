@@ -99,6 +99,7 @@ _ultima_verifica = [0.0]
 
 
 def verifica_sessione(bloccante=False):
+    """(se il bonus di oggi è già preso, questa non deve far ricomparire l'avviso)"""
     """Chiede a checkin_agentrouter.py --verifica se la sessione agentrouter e' valida.
     Se lo e' e c'era il flag "serve login manuale", lo toglie (cosi' non resta appeso per sempre)."""
     if not porta_viva(9222):
@@ -130,6 +131,9 @@ def serve_login_manuale():
 
 
 def segna_login_manuale(motivo):
+    # se il bonus di oggi è già stato riscosso (anche a mano), non c'è niente da segnalare
+    if os.path.exists(flag_checkin()):
+        return
     scrivi(file_login_manuale(), time.strftime("%d/%m/%Y %H:%M") + " · " + (motivo or "")[:300])
 
 
@@ -290,9 +294,10 @@ def _fai_checkin(forza=False):
         return {"stato": "finestra_chiusa", "saldo": saldo_ultimo(), "finestra": "18:05",
                 "msg": f"⏳ Sono le {adesso_hhmm()}: il bonus si riscatta dalle 18:05 (ora italiana). "
                        f"Nessun login/logout fatto — regola anti-ban."}
-    if os.path.exists(flag_checkin()) and not forza:
+    if os.path.exists(flag_checkin()):
+        # oggi è chiuso: inutile aprire il browser un'altra volta
         return {"stato": "gia_fatto", "saldo": saldo_ultimo(),
-                "msg": "💰 Check-in di oggi già riscattato."}
+                "msg": "💰 Il bonus di oggi è già preso: ci rivediamo domani dopo le 18:05."}
     if not forza and serve_login_manuale():
         return {"stato": "serve_login_manuale", "saldo": saldo_ultimo(), "login_manuale": True,
                 "msg": "⚠️ Serve un login a mano nel BROWSER_AGENTI (GitHub): fallo, poi premi «Riscatta ora»."}
@@ -356,7 +361,7 @@ def _fai_checkin(forza=False):
     return {"stato": "ok" if ok else ("serve_login_manuale" if rc == 3 else "fallito"),
             "saldo": m.group(1) if m else saldo_ultimo(), "msg": msg,
             "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI,
-            "login_manuale": serve_login_manuale(), "log": out[-1800:]}
+            "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()), "log": out[-1800:]}
 
 
 _salute_cache = {"t": 0.0, "v": None}
@@ -448,6 +453,24 @@ def openclaw_stato():
     return v
 
 
+def _utente_windows(cmd_in_corso=None):
+    """Cartella utente di Windows in forma Linux (/mnt/c/Users/xxx)."""
+    winroot = os.environ.get("WINROOT", "/mnt/c")
+    try:
+        r = subprocess.run(["cmd.exe", "/c", "echo", "%USERPROFILE%"], capture_output=True,
+                           text=True, timeout=15, cwd=winroot)
+        prof = (r.stdout or "").strip().splitlines()[-1].strip()
+        lin = _w2l(prof) if prof and ":" in prof else ""
+        if lin and os.path.isdir(lin):
+            return lin
+    except Exception:
+        pass
+    for d in sorted(glob.glob(os.path.join(winroot, "Users", "*"))):
+        if os.path.isdir(os.path.join(d, "AppData", "Roaming")):
+            return d
+    return None
+
+
 def _l2w(percorso):
     """percorso Linux -> percorso Windows (se wslpath non c'è, restituisce l'originale)."""
     if not percorso or not percorso.startswith("/mnt/"):
@@ -489,23 +512,67 @@ def _oc_bat(cmd, argomenti, pausa=False, nome="_posta_openclaw.bat"):
     return _l2w(bat_lin)
 
 
+def _oc_win(argomenti, attesa=45, titolo="OpenClaw"):
+    """Lancia un comando OpenClaw su Windows in modo pulito.
+
+    Perché così: se gli passiamo stdout/stderr di Linux, il node di Windows muore con
+    "Error: open EISDIR" (si porta dietro le nostre prese). Allora scriviamo un .bat che
+    manda tutto in un file di log e lo lanciamo con 'start': il processo nasce con le sue
+    prese di Windows, e l'output ce lo leggiamo dal log.
+    """
+    cmd = openclaw_cmd()
+    if not cmd:
+        return 127, "OpenClaw non risulta installato."
+    base = _utente_windows()
+    if not base:
+        return 1, "Non trovo la cartella utente di Windows."
+    log_lin = os.path.join(base, "openclaw_gui.log")
+    bat_lin = os.path.join(base, "_posta_openclaw_run.bat")
+    cmd_win, log_win, bat_win = _l2w(cmd), _l2w(log_lin), _l2w(bat_lin)
+    arg = " ".join(argomenti)
+    righe = ["@echo off", "chcp 65001 >nul", f"title {titolo}",
+             f'echo ==== {arg} ==== > "{log_win}"',
+             f'call "{cmd_win}" {arg} >> "{log_win}" 2>&1',
+             f'echo EXIT=%ERRORLEVEL% >> "{log_win}"']
+    try:
+        with open(bat_lin, "w", encoding="utf-8", newline="") as f:
+            f.write("\r\n".join(righe) + "\r\n")
+    except Exception as e:
+        return 1, f"Non riesco a scrivere il comando su Windows: {e}"
+    try:
+        subprocess.Popen(["cmd.exe", "/c", "start", titolo, bat_win],
+                         cwd=os.environ.get("WINROOT", "/mnt/c"),
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception as e:
+        return 1, f"Windows non ha accettato il comando: {e}"
+    # aspetto che finiscano e leggo il log
+    finito = False
+    for _ in range(int(attesa)):
+        time.sleep(1)
+        try:
+            testo = open(log_lin, encoding="utf-8", errors="replace").read()
+        except Exception:
+            testo = ""
+        if "EXIT=" in testo:
+            finito = True
+            break
+    try:
+        testo = open(log_lin, encoding="utf-8", errors="replace").read()
+    except Exception:
+        testo = "(nessun log)"
+    return (0 if finito else 2), testo[-2500:]
+
+
 def _oc_esegui(argomenti, attesa=90):
-    """Lancia il comando openclaw (anche .cmd di Windows) e restituisce l'output."""
+    """Esegue un comando openclaw: su Windows passa da _oc_win, dentro Ubuntu usa i pipe normali."""
     cmd = openclaw_cmd()
     if not cmd:
         return 127, "OpenClaw non risulta installato."
     if cmd.startswith("/mnt/") or (len(cmd) > 2 and cmd[1] == ":" and cmd[2] in "\\/"):
-        # comando di Windows: passo SEMPRE da un .bat, così le virgolette non si incastrano
-        bat = _oc_bat(cmd, list(argomenti))
-        if not bat:
-            return 1, "Non riesco a preparare il comando su Windows."
-        riga = ["cmd.exe", "/c", bat]
-        cwd = "/mnt/c" if os.path.isdir("/mnt/c") else POSTA
-    else:
-        riga = [cmd] + list(argomenti)
-        cwd = POSTA
+        return _oc_win(argomenti, attesa=min(attesa, 60))
     try:
-        p = subprocess.run(riga, capture_output=True, text=True, timeout=attesa, cwd=cwd)
+        p = subprocess.run([cmd] + list(argomenti), capture_output=True, text=True,
+                           timeout=attesa, cwd=POSTA)
         return p.returncode, (p.stdout or "") + (p.stderr or "")
     except subprocess.TimeoutExpired:
         return 124, f"Tempo scaduto dopo {attesa}s."
@@ -521,7 +588,8 @@ def stato():
         pass
     ris_dir = os.path.join(POSTA, "RISPOSTE_AGENTI")
     ultimi = sorted(os.listdir(ris_dir), reverse=True)[:5] if os.path.isdir(ris_dir) else []
-    if serve_login_manuale() and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
+    if serve_login_manuale() and not os.path.exists(flag_checkin()) \
+            and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
         threading.Thread(target=verifica_sessione, daemon=True).start()
     sl = salute()             # 0,1 s: il verdetto deve arrivare prima di tutto il resto
     sv = saldo_istantaneo()
@@ -529,7 +597,7 @@ def stato():
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
             "checkin_oggi": os.path.exists(flag_checkin()),
             "checkin_ora": leggi(flag_checkin(), "").strip(),
-            "login_manuale": serve_login_manuale(),
+            "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()),
             "login_motivo": leggi(file_login_manuale(), "").strip(),
             "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI,
             "finestra_aperta": finestra_aperta(), "finestra": f"{FINESTRA[0]:02d}:{FINESTRA[1]:02d}",
@@ -596,11 +664,16 @@ class H(BaseHTTPRequestHandler):
                 return
             scrivi(flag_checkin(), time.strftime("%H:%M") + "-manuale")
             pulisci_login_manuale()
+            # azzero anche i tentativi: la giornata è chiusa, non deve più riprovare
+            try:
+                os.remove(file_tentativi())
+            except Exception:
+                pass
             self._json({"stato": "ok",
                         "msg": "✅ Segnato: bonus di oggi già preso a mano. Stasera nessun logout."})
         elif self.path == "/api/checkin/verifica":
             v = verifica_sessione(bloccante=True)
-            self._json({"valida": bool(v), "login_manuale": serve_login_manuale(),
+            self._json({"valida": bool(v), "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()),
                         "msg": ("✅ Sessione valida: ho tolto l'avviso. Ora puoi premere «Riscatta ora»."
                                 if v else ("⚠️ Sessione non valida: fai il login in BROWSER_AGENTI."
                                            if v is False else "Apri prima il BROWSER_AGENTI."))})
@@ -637,30 +710,38 @@ class H(BaseHTTPRequestHandler):
             if az == "stato":
                 self._json(openclaw_stato())
             elif az == "avvia":
-                # prima prova a installare il servizio (parte da solo col PC), poi riavvia
-                rc, out = _oc_esegui(["gateway", "install"], attesa=120)
-                rc2, out2 = _oc_esegui(["gateway", "status"], attesa=60)
-                vivo = porta_viva(18789)
-                self._json({"stato": "ok" if vivo else "avviato_forse",
-                            "msg": ("🟢 Gateway acceso su :18789" if vivo else
-                                    "⚠️ Non risulta ancora acceso: guarda il log qui sotto (a volte serve 'gateway restart')"),
-                            "log": (out + "\n" + out2)[-1500:], "gateway": vivo})
+                porta = openclaw_stato().get("porta", 18789)
+                esito = {}
+                # 1) registra il servizio (parte da solo all'accensione del PC)
+                rc, log1 = _oc_win(["gateway", "install"], attesa=45, titolo="OpenClaw - accendo")
+                acceso = porta_viva(porta)
+                # 2) se non è ancora su, prova ad avviarlo subito
+                if not acceso:
+                    rc2, log2 = _oc_win(["gateway", "restart"], attesa=45, titolo="OpenClaw - avvio")
+                    for _ in range(20):
+                        if porta_viva(porta):
+                            acceso = True
+                            break
+                        time.sleep(1)
+                    log1 = log1 + "\n" + log2
+                msg = ("🟢 Gateway acceso su :%d — da adesso parte da solo col PC" % porta) if acceso else \
+                      ("⚠️ Il servizio è stato registrato ma il gateway non risponde ancora. "
+                       "Guarda il log qui sotto: se serve, premi di nuovo Accendi tra 30 secondi.")
+                self._json({"stato": "ok" if acceso else "attenzione", "msg": msg,
+                            "gateway": acceso, "log": (log1 or "")[-2000:]})
             elif az == "riavvia":
-                rc, out = _oc_esegui(["gateway", "restart"], attesa=90)
-                self._json({"stato": "ok", "msg": "Riavvio richiesto.", "log": out[-1200:],
-                            "gateway": porta_viva(18789)})
+                porta = openclaw_stato().get("porta", 18789)
+                rc, log = _oc_win(["gateway", "restart"], attesa=45, titolo="OpenClaw - riavvio")
+                for _ in range(15):
+                    if porta_viva(porta):
+                        break
+                    time.sleep(1)
+                self._json({"stato": "ok", "msg": "Riavvio fatto.", "log": (log or "")[-2000:],
+                            "gateway": porta_viva(porta)})
             elif az == "doctor":
-                rc, out = _oc_esegui(["doctor"], attesa=120)
-                self._json({"stato": "ok", "msg": "Diagnostica completata.", "log": out[-2500:]})
-            elif az == "apri":
-                # apre l'interfaccia di OpenClaw nel browser di Windows
-                u = f"http://localhost:{openclaw_stato()['porta']}"
-                try:
-                    subprocess.run(["cmd.exe", "/c", "start", "", u], timeout=20,
-                                   cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA)
-                except Exception:
-                    pass
-                self._json({"stato": "ok", "msg": f"Apro {u} nel browser di Windows.", "url": u})
+                rc, log = _oc_win(["doctor"], attesa=60, titolo="OpenClaw - diagnostica")
+                self._json({"stato": "ok", "msg": "Diagnostica completata (vedi sotto).",
+                            "log": (log or "")[-3000:]})
             elif az == "cartella":
                 # apre la cartella posta in Esplora Risorse di Windows
                 try:
