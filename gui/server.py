@@ -447,19 +447,54 @@ def openclaw_stato():
     return v
 
 
+def _oc_bat(cmd, argomenti, pausa=False, nome="_posta_openclaw.bat"):
+    """Scrive un .bat con dentro la riga giusta e restituisce il suo percorso WINDOWS.
+    Serve perché cmd.exe sbaglia sempre con le virgolette annidate passate da Linux."""
+    def _l2w(p):
+        if not p.startswith("/mnt/"):
+            return p
+        try:
+            r = subprocess.run(["wslpath", "-w", p], capture_output=True, text=True, timeout=5).stdout.strip()
+            return r or p
+        except Exception:
+            return p
+
+    def _w2l(p):
+        if p.startswith("/mnt/"):
+            return p
+        try:
+            r = subprocess.run(["wslpath", "-u", p], capture_output=True, text=True, timeout=5).stdout.strip()
+            return r or p
+        except Exception:
+            return p
+
+    cmd_lin = _w2l(cmd)                       # il comando in forma Linux (per copiarne la cartella)
+    cmd_win = _l2w(cmd_lin)                   # ... e in forma Windows (per scriverlo dentro il .bat)
+    cartella = os.environ.get("OC_BAT_DIR") or os.path.dirname(cmd_lin) or "/mnt/c/Windows/Temp"
+    bat_lin = os.path.join(cartella, nome)
+    righe = ["@echo off", "chcp 65001 >nul", "title OpenClaw",
+             f'"{cmd_win}" {" ".join(argomenti)}']
+    if pausa:
+        righe += ["echo.", "echo  Fatto. Puoi chiudere questa finestra.", "pause"]
+    try:
+        with open(bat_lin, "w", encoding="utf-8", newline="\r\n") as f:
+            f.write("\n".join(righe) + "\n")
+    except Exception:
+        return None
+    return _l2w(bat_lin)
+
+
 def _oc_esegui(argomenti, attesa=90):
     """Lancia il comando openclaw (anche .cmd di Windows) e restituisce l'output."""
     cmd = openclaw_cmd()
     if not cmd:
         return 127, "OpenClaw non risulta installato."
     if cmd.startswith("/mnt/") or (len(cmd) > 2 and cmd[1] == ":" and cmd[2] in "\\/"):
-        # percorso di Windows (eventualmente senza estensione: cmd.exe risolve .cmd/.exe da solo)
-        w = cmd
-        try:
-            w = subprocess.run(["wslpath", "-w", cmd], capture_output=True, text=True, timeout=5).stdout.strip() or cmd
-        except Exception:
-            pass
-        riga = ["cmd.exe", "/c", w] + list(argomenti)
+        # comando di Windows: passo SEMPRE da un .bat, così le virgolette non si incastrano
+        bat = _oc_bat(cmd, list(argomenti))
+        if not bat:
+            return 1, "Non riesco a preparare il comando su Windows."
+        riga = ["cmd.exe", "/c", bat]
         cwd = "/mnt/c" if os.path.isdir("/mnt/c") else POSTA
     else:
         riga = [cmd] + list(argomenti)
@@ -622,22 +657,25 @@ class H(BaseHTTPRequestHandler):
                     pass
                 self._json({"stato": "ok", "msg": f"Apro {u} nel browser di Windows.", "url": u})
             elif az == "prepara":
-                # configurazione iniziale: si apre una finestra Windows dove rispondere alle domande
-                cmd = openclaw_cmd() or "openclaw"
+                # configurazione iniziale: finestra Windows con dentro la riga giusta già scritta
+                cmd = openclaw_cmd()
+                if not cmd:
+                    self._json({"stato": "errore", "msg": "OpenClaw non risulta installato."}, 400)
+                    return
+                bat = _oc_bat(cmd, ["onboard"], pausa=True, nome="_posta_openclaw_config.bat")
+                if not bat:
+                    self._json({"stato": "errore", "msg": "Non riesco a scrivere il file su Windows."}, 500)
+                    return
                 try:
-                    w = subprocess.run(["wslpath", "-w", cmd], capture_output=True, text=True, timeout=5).stdout.strip() or cmd
-                except Exception:
-                    w = cmd
-                try:
-                    subprocess.Popen(["cmd.exe", "/c", "start", "OpenClaw - configurazione iniziale", "cmd", "/k",
-                                      f'"{w}"', "onboard"],
+                    subprocess.Popen(["cmd.exe", "/c", "start", "OpenClaw", bat],
                                      cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA,
                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    msg = ("Si è aperta una finestra su Windows: rispondi alle domande (lingua, provider, canali). "
-                           "Alla fine torna qui e premi «Controlla».")
+                    msg = ("Si sta aprendo una finestra su Windows: rispondi alle domande (lingua, provider, canali). "
+                           "Alla fine chiudila e torna qui: la scheda si aggiorna da sola. "
+                           f"Se non si apre, fai doppio clic su: {bat}")
                 except Exception as e:
-                    msg = f"Non riesco ad aprire la finestra di Windows: {e}. Fallo a mano: openclaw onboard"
-                self._json({"stato": "ok", "msg": msg})
+                    msg = f"Non riesco ad aprire la finestra di Windows ({e}). A mano: openclaw onboard"
+                self._json({"stato": "ok", "msg": msg, "bat": bat})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/omniroute":

@@ -45,11 +45,12 @@ else
 fi
 
 # ── 3 · AGENTI
-A_ok=""
+A_ok=""; A_manca=""
 for a in opencode goose interpreter hermes gemini; do
-  if c_e "$a"; then A_ok="$A_ok $a"; else giu "Agente: $a" "NON trovato"; fi
+  if c_e "$a"; then A_ok="$A_ok $a"; else A_manca="$A_manca $a"; fi
 done
 [ -n "$A_ok" ] && ok "Agenti presenti" "$A_ok"
+[ -n "$A_manca" ] && att "Agenti facoltativi" "non installati:$A_manca (li aggiunge il [8], non bloccano niente)"
 # openclaw merita un rigo suo (può stare in Ubuntu, con Bun, o su Windows)
 QUI=$(cd "$(dirname "$0")" && pwd)
 OC_TIPO=$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null); OC_TIPO=${OC_TIPO:-no}
@@ -80,7 +81,7 @@ fi
 if [ -n "$N24" ]; then
   V24BIN=$(ls "$HOME/.nvm/versions/node/$N24/bin/node" 2>/dev/null)
   if "$V24BIN" -v >/dev/null 2>&1; then ok "Node $N24" "$("$V24BIN" -v) · gira"
-  else att "Node $N24" "installato ma NON eseguibile su WSL1 (bug noto node#63735: usa Windows o Bun)"; fi
+  else att "Node $N24 (non usato)" "su WSL1 non parte (bug node#63735) — non serve: OpenClaw gira su Windows"; fi
 fi
 
 # ── 5 · MOTORI E PORTE
@@ -93,7 +94,14 @@ D=$(date +%F); HH=$((10#$(date +%H%M)))
 if [ -f "$HOME/.ar_checkin_$D" ]; then ok "Bonus AgentRouter" "fatto oggi alle $(cat "$HOME/.ar_checkin_$D" 2>/dev/null)"
 elif [ "$HH" -ge 1805 ]; then att "Bonus AgentRouter" "finestra aperta e non ancora riscosso"
 else att "Bonus AgentRouter" "si riscatta dalle 18:05 (ora $(date +%H:%M))"; fi
-[ -f "$HOME/.ar_login_manuale" ] && giu "Login AgentRouter" "serve un login a mano: $(cat "$HOME/.ar_login_manuale" 2>/dev/null | cut -c1-60)"
+if [ -f "$HOME/.ar_login_manuale" ]; then
+  RIGA_LOGIN=$(cat "$HOME/.ar_login_manuale" 2>/dev/null | cut -c1-60)
+  if [ -f "$HOME/.ar_checkin_$D" ]; then
+    att "Login AgentRouter" "da rifare per domani ($RIGA_LOGIN) — oggi il bonus è già preso"
+  else
+    giu "Login AgentRouter" "serve un login a mano: $RIGA_LOGIN"
+  fi
+fi
 T=$(cat "$HOME/.ar_checkin_try_$D" 2>/dev/null | tr -cd "0-9"); T=${T:-0}
 [ "$T" -ge 3 ] && att "Tentativi oggi" "$T/3 (fermo fino a domani)"
 
