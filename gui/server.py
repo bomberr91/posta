@@ -93,6 +93,33 @@ def segna_tentativo():
     scrivi(file_tentativi(), str(n))
 
 
+_verifica_lock = threading.Lock()
+_ultima_verifica = [0.0]
+
+
+def verifica_sessione(bloccante=False):
+    """Chiede a checkin_agentrouter.py --verifica se la sessione agentrouter e' valida.
+    Se lo e' e c'era il flag "serve login manuale", lo toglie (cosi' non resta appeso per sempre)."""
+    if not porta_viva(9222):
+        return None
+    if not _verifica_lock.acquire(blocking=bloccante):
+        return None
+    try:
+        p = subprocess.run(["python3", os.path.join(POSTA, "checkin_agentrouter.py"), "--verifica"],
+                           capture_output=True, text=True, timeout=120)
+        out = (p.stdout or "") + (p.stderr or "")
+        _ultima_verifica[0] = time.time()
+        valida = (p.returncode == 0) and ("sessione valida" in out or "dentro" in out)
+        if valida and serve_login_manuale():
+            pulisci_login_manuale()
+            print("[gui] sessione di nuovo valida: tolto il flag di login manuale")
+        return valida
+    except Exception:
+        return None
+    finally:
+        _verifica_lock.release()
+
+
 def file_login_manuale():
     return os.path.join(HOME, ".ar_login_manuale")
 
@@ -320,6 +347,8 @@ def stato():
         pass
     ris_dir = os.path.join(POSTA, "RISPOSTE_AGENTI")
     ultimi = sorted(os.listdir(ris_dir), reverse=True)[:5] if os.path.isdir(ris_dir) else []
+    if serve_login_manuale() and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
+        threading.Thread(target=verifica_sessione, daemon=True).start()
     sv = saldo_live()
     mo = modelli_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
@@ -384,6 +413,12 @@ class H(BaseHTTPRequestHandler):
             pulisci_login_manuale()
             self._json({"stato": "ok",
                         "msg": "✅ Segnato: bonus di oggi già preso a mano. Stasera nessun logout."})
+        elif self.path == "/api/checkin/verifica":
+            v = verifica_sessione(bloccante=True)
+            self._json({"valida": bool(v), "login_manuale": serve_login_manuale(),
+                        "msg": ("✅ Sessione valida: ho tolto l'avviso. Ora puoi premere «Riscatta ora»."
+                                if v else ("⚠️ Sessione non valida: fai il login in BROWSER_AGENTI."
+                                           if v is False else "Apri prima il BROWSER_AGENTI."))})
         elif self.path == "/api/fusion":
             missione = (self._body().get("missione") or "").strip()
             if len(missione) < 5:

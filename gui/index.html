@@ -79,9 +79,13 @@ async function aggiorna(){try{
   const av=$('avviso');
   if(s.login_manuale){
     av.style.display='block';
-    av.innerHTML='<b>⚠️ Serve un login a mano</b><br>Apri <b>BROWSER_AGENTI</b> → accedi a <b>github.com</b> (bomberr91) → poi torna qui e premi <b>Riscatta ora</b>.<br>'+
+    av.innerHTML='<b>⚠️ Serve un login a mano</b><br>Apri <b>BROWSER_AGENTI</b> → accedi a <b>github.com</b> (bomberr91) → poi torna qui.<br>'+
       '<span class="fase">'+(s.login_motivo||'')+'</span>'+
-      '<br><span class="fase">Il riscatto automatico resta fermo finché non sistemo il login (niente logout a vuoto).</span>';
+      '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">'+
+      '<button onclick="ricontrolla()">🔁 Ricontrolla la sessione</button>'+
+      '<button onclick="segnaManuale()">✔ Ho già riscattato a mano</button>'+
+      '<button onclick="checkin()">💰 Riscatta ora</button></div>'+
+      '<br><span class="fase">Il riscatto automatico resta fermo finché la sessione non torna valida (niente logout a vuoto).</span>';
     if(window._lmPrev!==true){toast('⚠️ <b>Check-in fermo</b>: serve un login a mano nel BROWSER_AGENTI.',12000)}
     window._lmPrev=true;
   } else { av.style.display='none'; window._lmPrev=false; }
@@ -100,6 +104,11 @@ async function checkin(){
   const r=await api('/api/checkin',{forza:true});   // il tasto è una tua richiesta esplicita
   toast(r.msg+(r.saldo?(' · saldo: $'+r.saldo):''),9000);
   aggiorna();
+}
+async function ricontrolla(){
+  toast('🔎 Controllo la sessione nel BROWSER_AGENTI...');
+  const r=await api('/api/checkin/verifica',{});
+  toast(r.msg,9000); aggiorna();
 }
 async function segnaManuale(){
   const r=await api('/api/checkin/segna',{});

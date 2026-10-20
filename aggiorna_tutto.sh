@@ -14,6 +14,24 @@ V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail 
 export PATH="$V22BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
 
 FORZA="${FORZA:-0}"; DRY="${DRY:-0}"
+
+# trova un comando anche se non è nel PATH della shell corrente (nvm, ~/.local/bin, npm global)
+c_e(){
+  local n="$1"
+  command -v "$n" >/dev/null 2>&1 && return 0
+  local c
+  for c in "$HOME/.nvm/versions/node/"*/bin/"$n" "$HOME/.local/bin/$n" "$HOME/.opencode/bin/$n" \
+           "$HOME/.hermes/hermes-agent/bin/$n" "$HOME/.hermes/hermes-agent/venv/bin/$n" "$HOME/bin/$n"; do
+    [ -x "$c" ] && return 0
+  done
+  return 1
+}
+ver(){
+  local n="$1"
+  ( command -v "$n" >/dev/null 2>&1 && "$n" --version 2>&1 | head -1 ) \
+    || ( ls "$HOME/.nvm/versions/node/"*/bin/"$n" 2>/dev/null | head -1 | xargs -r -I{} sh -c '{} --version 2>&1 | head -1' ) \
+    || echo "?"
+}
 ST="$HOME/.stato_aggiorna"; mkdir -p "$ST"
 SALTATI=0; FATTI=0; DAFARE=0; NOVITA=""
 
@@ -63,7 +81,7 @@ fi
 
 # ── 2 · SKILL (solo se il pacchetto è cambiato) ────────────────────────────────
 echo ""
-echo "── 2/6 · Skill (26 pacchetti A+B+C+D)..."
+echo "── 2/6 · Skill (pacchetti A+B+C+D)..."
 PACK="$HOME/posta/skills_pack.tar.gz"
 if [ -f "$PACK" ]; then
   IMP="$(md5sum "$PACK" 2>/dev/null | cut -d' ' -f1)"
@@ -77,7 +95,7 @@ if [ -f "$PACK" ]; then
       nota "[DRY] installerei/aggiornerei le skill dal pacchetto nuovo"
     else
       date -Is > "$HOME/.skills_v2_installed"; marca skills "$IMP"
-      ok "Skill installate/aggiornate ($(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l) attive) — pacchetto nuovo"
+      ok "Skill installate/aggiornate ($(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l) cartelle attive · 4 destinazioni) — pacchetto nuovo"
     fi
   else
     salto "Skill: $N_SKILL attive · pacchetto identico a quello già installato"
@@ -91,8 +109,8 @@ echo ""
 echo "── 3/6 · Strumenti Browser & Web (agent-browser + firecrawl-cli)..."
 NPM22=$(ls "$HOME/.nvm/versions/node/v22"*/bin/npm 2>/dev/null | sort -V | tail -1)
 [ -z "$NPM22" ] && command -v npm >/dev/null 2>&1 && NPM22=$(command -v npm)
-if command -v agent-browser >/dev/null 2>&1 && command -v firecrawl-cli >/dev/null 2>&1; then
-  salto "agent-browser $(agent-browser --version 2>&1 | head -1) + firecrawl-cli già presenti"
+if c_e agent-browser && c_e firecrawl-cli; then
+  salto "agent-browser $(ver agent-browser) + firecrawl-cli già presenti"
 elif [ -n "$NPM22" ]; then
   esegui "$NPM22" i -g agent-browser firecrawl-cli >/dev/null 2>&1 \
     && { marca browser_tools; ok "agent-browser + firecrawl-cli installati"; } \
@@ -110,29 +128,36 @@ fi
 # ── 4 · SECONDHAND ────────────────────────────────────────────────────────────
 echo ""
 echo "── 4/6 · Secondhand (OpenInterpreter Rust)..."
-if command -v interpreter >/dev/null 2>&1; then
-  salto "Secondhand $(interpreter --version 2>&1 | head -1)"
+if c_e interpreter; then
+  salto "Secondhand $(ver interpreter)"
 else
   esegui bash -c "OPEN_INTERPRETER_NONINTERACTIVE=1 curl -fsSL https://www.openinterpreter.com/install | OPEN_INTERPRETER_NONINTERACTIVE=1 sh >/dev/null 2>&1 || true"
   export PATH="$HOME/.local/bin:$PATH"
-  command -v interpreter >/dev/null 2>&1 && ok "Secondhand installato" || nota "Secondhand: non compatibile WSL1 (salto)"
+  c_e interpreter && ok "Secondhand installato" || nota "Secondhand: non compatibile WSL1 (salto)"
 fi
 
 # ── 5 · HERMES ────────────────────────────────────────────────────────────────
 echo ""
 echo "── 5/6 · Hermes Agent (NousResearch)..."
-if command -v hermes >/dev/null 2>&1 || [ -x "$HOME/.hermes/hermes-agent/venv/bin/hermes" ]; then
+if c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; then
   salto "Hermes già installato"
 else
   esegui bash -c "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1 || true"
-  { command -v hermes >/dev/null 2>&1 || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || nota "Hermes: installazione saltata"
+  { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || nota "Hermes: installazione saltata"
 fi
 
 # ── 6 · OPENCLAW (richiede Node ≥24: su WSL1 non parte → un tentativo ogni 7 giorni) ──
 echo ""
 echo "── 6/6 · OpenClaw..."
-if command -v openclaw >/dev/null 2>&1; then
-  salto "OpenClaw $(openclaw --version 2>&1 | head -1)"
+NODE24_OK=0
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
+  ls -d "$HOME/.nvm/versions/node/v"2[4-9]* >/dev/null 2>&1 && NODE24_OK=1
+fi
+if c_e openclaw; then
+  salto "OpenClaw $(ver openclaw)"
+elif [ "$NODE24_OK" = "0" ] && [ "$FORZA" != "1" ]; then
+  salto "OpenClaw: serve Node ≥24 e sul PC non c'è (WSL1 non lo fa partire) → non tento nemmeno"
 else
   ULTIMO="$ST/openclaw_ultimo_tentativo"
   TENTA=1
@@ -174,8 +199,9 @@ fi
 for d in /mnt/c/Users/*/Desktop /mnt/c/Users/*/OneDrive*/Desktop; do
   if [ -d "$d" ]; then
     cp -f "$HOME/posta/CENTRALE_AGENTI.bat" "$d/CENTRALE_AGENTI.bat" 2>/dev/null || true
-    cp -f "$HOME/posta/8_CENTRALE_GUI.bat" "$d/CENTRALE_GUI.bat" 2>/dev/null || true
-    rm -f "$d/BROWSER_AGENTI.bat" "$d/SQUADRA_FUSION.bat" "$d/APRI_AGENTE.lnk" "$d/AVVIA_POSTINO.lnk" "$d/COMPITI.lnk" "$d/AGGIORNA_TUTTO_PC.bat" 2>/dev/null || true
+    # UNA SOLA icona sul Desktop: la GUI si apre dal menu con [g]. Rimuovo le icone in più.
+    rm -f "$d/CENTRALE_GUI.bat" "$d/BROWSER_AGENTI.bat" "$d/SQUADRA_FUSION.bat" "$d/APRI_AGENTE.lnk" \
+          "$d/AVVIA_POSTINO.lnk" "$d/COMPITI.lnk" "$d/AGGIORNA_TUTTO_PC.bat" 2>/dev/null || true
   fi
 done
 chmod +x "$HOME/posta/centrale.sh" "$HOME/posta/leggi_video.py" "$HOME/posta/squadra.sh" "$HOME/posta/postino.sh" 2>/dev/null || true
@@ -194,9 +220,9 @@ if [ "$FATTI" -gt 0 ] && [ "$DRY" != "1" ]; then
     echo "- Skill: $(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)"
     echo "- OpenCode: $(opencode --version 2>&1 | head -1)"
     echo "- Goose: $(goose --version 2>&1 | head -1)"
-    echo "- Secondhand: $(interpreter --version 2>&1 | head -1 || echo non presente)"
-    echo "- Hermes: $(command -v hermes >/dev/null 2>&1 && hermes --version 2>&1 | head -1 || echo 'presente ma fuori PATH')"
-    echo "- OpenClaw: $(command -v openclaw >/dev/null 2>&1 && openclaw --version 2>&1 | head -1 || echo 'non installato (Node 24 su WSL1)')"
+    echo "- Secondhand: $(c_e interpreter && ver interpreter || echo non presente)"
+    echo "- Hermes: $(c_e hermes && ver hermes || echo 'presente in ~/.hermes')"
+    echo "- OpenClaw: $(c_e openclaw && ver openclaw || echo 'non installabile su WSL1 (serve Node 24)')"
   } > "$HOME/posta/dal_pc/stato_aggiornamento.md"
   cd "$HOME/posta" || exit 0
   git add -A >/dev/null 2>&1 || true
