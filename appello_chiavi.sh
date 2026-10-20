@@ -91,7 +91,8 @@ PY
 # prova <id> <etichetta> <riga-portachiavi> <pattern> <base_url> <modello-suggerito> <chat|modelli>
 prova(){
   local id="$1" eti="$2" riga="$3" pat="$4" base="$5" mod="$6" modo="$7"
-  local key; key=$(chiave_di "$riga" "$pat")
+  local key
+  if [ "$pat" = "SENZA" ]; then key="free"; else key=$(chiave_di "$riga" "$pat"); fi
   if [ -z "$key" ]; then
     printf '%s\t%s\tno-chiave\t0\tnessuna chiave nel portachiavi\t\n' "$id" "$eti" > "$TMP/$id.res"; return
   fi
@@ -170,7 +171,9 @@ huggingface|HuggingFace|huggingface|hf_[A-Za-z0-9]+|https://router.huggingface.c
 pollinations|Pollinations|pollinations|sk_[A-Za-z0-9]+|https://text.pollinations.ai/openai|openai|chat
 githubmodels|GitHub Models|github models|ghp_[A-Za-z0-9]+|https://models.github.ai/inference|openai/gpt-4o-mini|chat
 agentrouter|AgentRouter|agentrouter|sk-[A-Za-z0-9]{30,}|https://agentrouter.org/v1|auto|modelli
-opencode|OpenCode Zen|opencode zen|oc_sk_[A-Za-z0-9_]+|https://opencode.ai/zen/v1|auto|modelli
+opencode|OpenCode Zen|opencode zen|oc_sk_[A-Za-z0-9_]+|https://opencode.ai/zen/v1|glm-5.3|chat
+pollinationsfree|Pollinations (senza chiave)|pollinations senza|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
+aihorde|AI Horde (senza chiave)|ai horde|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
 REGISTRO
 wait
 

@@ -54,7 +54,19 @@ mistral;mistral;mstrl_[A-Za-z0-9_-]+
 cohere;cohere;[A-Za-z0-9]{40}
 openrouter;openrouter;sk-or-[A-Za-z0-9_-]+
 nvidia;nvidia;nvapi-[A-Za-z0-9_-]+
-agentrouter;^agentrouter ;sk-[A-Za-z0-9]{30,}
+agentrouter;agentrouter;sk-[A-Za-z0-9]{30,}
+huggingface;huggingface;hf_[A-Za-z0-9]+
+pollinations;pollinations;sk_[A-Za-z0-9]+
+api-airforce;airforce;sk-air-[A-Za-z0-9_-]+
+bazaarlink;bazaarlink;sk-bl-[A-Za-z0-9_-]+
+longcat;longcat;ak_[A-Za-z0-9]+
+llm7;llm7;[A-Za-z0-9+/=]{40,}
+requesty;requesty;rqsty-sk-[A-Za-z0-9+/=_-]+
+routeway;routeway;sk-[A-Za-z0-9]{30,}
+nara;nara;sk-nry-[A-Za-z0-9_-]+
+electronhub;electronhub;ek-[A-Za-z0-9]+
+anyapi;anyapi;sk-[A-Za-z0-9_-]{20,}
+opencode;opencode zen;oc_sk_[A-Za-z0-9_]+
 MAPPA
   echo
   echo "## Connessioni configurate adesso"

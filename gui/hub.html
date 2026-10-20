@@ -306,22 +306,24 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 
       <section class="agCard agLargo" id="agAppelloCard">
         <h3>🗣️ Appello delle chiavi — la riserva</h3>
-        <div class="agRiga"><span>Chiavi che rispondono</span><b id="agAppOk">—</b></div>
+        <div class="agRiga"><span>Provider attivi</span><b id="agAppOk" style="font-size:16px">—</b></div>
         <div class="agRiga"><span>Ultimo appello</span><span id="agAppQuando" class="agDim">—</span></div>
         <div class="agRiga"><span>Portiere degli agenti (20129)</span><b id="agAppPortiere">—</b></div>
-        <div class="agDim" id="agAppNota" style="margin-top:4px">All'accensione provo ogni chiave del portachiavi. Se OmniRoute cade, gli agenti usano queste.</div>
-        <div id="agAppLista" style="display:grid;gap:3px;margin-top:8px"></div>
+        <div class="agDim" id="agAppNota" style="margin-top:4px">All'accensione provo ogni chiave. Se OmniRoute cade, gli agenti usano queste.</div>
         <div class="agBottoni">
           <button class="agB pri" id="agAppSvelto">Rifai l'appello (20 s)</button>
           <button class="agB" id="agAppCompleto">Prova vera (1 min)</button>
+          <button class="agB" id="agAppDett">📋 Dettagli in basso</button>
         </div>
       </section>
 
       <section class="agCard agLargo" id="agAgentiCard">
         <h3>🤖 Agenti — tutti dentro, tutti pronti</h3>
-        <div id="agListaAgenti" style="display:grid;gap:4px"></div>
+        <div class="agRiga"><span>Agenti pronti</span><b id="agAgentiNum" style="font-size:16px">—</b></div>
+        <div id="agListaAgenti" style="display:none"></div>
         <div class="agBottoni">
           <button class="agB pri" id="agInstalla">Installa / sistema i mancanti</button>
+          <button class="agB" id="agAgentiDett">📋 Dettagli in basso</button>
           <button class="agB" id="agProva">🧪 Prova che rispondano</button>
           <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
         </div>
@@ -2282,14 +2284,9 @@ function aggiornaPilota(){
       const voci = d.voci || [];
       const pronti = voci.filter(v => v.esito === 'risponde');
       const provati = voci.filter(v => v.esito !== 'no-chiave');
-      $('agAppOk').textContent = pronti.length + ' su ' + provati.length;
+      $('agAppOk').textContent = pronti.length + '/' + provati.length;
       $('agAppQuando').textContent = d.quando || '—';
-      $('agAppLista').innerHTML = provati.map(v => {
-        const icona = v.esito === 'risponde' ? '✅' : (v.esito === 'occupato' ? '🟡' : '🔴');
-        const nota = v.esito === 'risponde' ? (v.modello || '') : (v.nota || v.esito);
-        return '<div class="agRiga"><span>' + icona + ' ' + v.nome + '</span>' +
-               '<span class="agDim">' + nota + '</span></div>';
-      }).join('') || '<div class="agDim">appello non ancora fatto</div>';
+      window._appello = d;
       if(d.in_corso) $('agAppNota').textContent = '⏳ Appello in corso: 20-60 secondi…';
       else if(pronti.length) $('agAppNota').textContent = 'Riserva pronta: se OmniRoute cade, gli agenti usano queste chiavi (prima le più veloci).';
       else if(provati.length) $('agAppNota').textContent = 'Nessuna chiave ha risposto: il motore resta l\'unica strada.';
@@ -2390,6 +2387,15 @@ function aggiornaPilota(){
     const r = await api('/api/checkin/segna', {});
     log(r.msg || 'segnato'); aggiorna();
   });
+  $('agAppDett').addEventListener('click', () => {
+    const d = window._appello || {};
+    const voci = (d.voci || []).filter(v => v.esito !== 'no-chiave');
+    if(!voci.length){ log('🗣️ appello non ancora fatto: premi «Rifai l\'appello».'); return; }
+    log('🗣️ APPELLO — ' + (d.quando || '') + '\n' + voci.map(v => {
+      const icona = v.esito === 'risponde' ? '✅' : (v.esito === 'occupato' ? '🟡' : '🔴');
+      return icona + ' ' + v.nome + ' · ' + (v.esito === 'risponde' ? (v.modello || 'ok') : (v.nota || v.esito));
+    }).join('\n') + '\n\n(copia questo e mandalo in chat)');
+  });
   $('agAppSvelto').addEventListener('click', async () => { log('🗣️ Appello delle chiavi (20 secondi)…'); log((await api('/api/appello', {azione:'fai'})).msg || ''); setTimeout(caricaAppello, 6000); setTimeout(caricaAppello, 15000); });
   $('agAppCompleto').addEventListener('click', async () => { log('🗣️ Appello completo: una domanda vera a ogni chiave (circa 1 minuto)…'); log((await api('/api/appello', {azione:'completo'})).msg || ''); setTimeout(caricaAppello, 12000); setTimeout(caricaAppello, 60000); });
   $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
@@ -2446,6 +2452,9 @@ function aggiornaPilota(){
         : (vecchio && vecchio.indexOf('nessun dato') < 0 ? vecchio : '<div class="agDim">nessun dato</div>');
       const mancano = lista.filter(a => !a.installato).length;
       const pronti = lista.filter(a => a.pronto).length;
+      const num = document.getElementById('agAgentiNum');
+      if(num) num.textContent = pronti + '/' + lista.length;
+      window._agenti = lista;
       $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
         (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
         (d.cervello ? ' · cervello: ' + d.cervello : '');
@@ -2456,6 +2465,15 @@ function aggiornaPilota(){
     }
   }
 
+  const bDett = document.getElementById('agAgentiDett');
+  if(bDett) bDett.addEventListener('click', async () => {
+    const lista = window._agenti || [];
+    const c = document.getElementById('agLog');
+    if(!lista.length){ c.innerHTML = '<pre>premi «Ricontrolla» per leggere gli agenti</pre>'; return; }
+    c.innerHTML = '<pre>' + lista.map(a => (!a.installato ? '✗' : (a.pronto ? '✅' : '⚠')) + ' ' + a.nome +
+      ' · ' + (!a.installato ? 'manca' : (a.pronto ? 'pronto' : (a.nota || 'da sistemare'))) +
+      (a.versione ? ' · ' + a.versione : '')).join('\n') + '\n\n(copia questo e mandalo in chat)</pre>';
+  });
   $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', carica);
   $('agProva') && $('agProva').addEventListener('click', async () => {
     const log = document.getElementById('agLog');
