@@ -27,11 +27,25 @@ pre{background:#0d1117;border:1px solid var(--bordo);border-radius:8px;padding:1
 a{color:var(--blu);text-decoration:none}
 select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);border-radius:8px;padding:6px;font-size:13px;max-width:100%}
 .largo{grid-column:1/-1}
+#salute{margin:0 0 16px;border-radius:12px;padding:14px 18px;border:1px solid var(--bordo);background:var(--card);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+#salute .ver{font-size:16px;font-weight:700}
+#salute.verde{border-color:var(--verde)} #salute.giallo{border-color:var(--oro)} #salute.rosso{border-color:var(--rosso);background:#2d1416}
+#salute .elenco{margin-top:6px;font-size:13px;line-height:1.5;color:var(--dim);max-width:640px}
+#salute .elenco b{color:var(--testo)}
+#salute .elenco .r{color:#ff9c96} #salute .elenco .g{color:#f0c145} #salute .elenco .ok{color:#7ee787}
+.agg{font-size:12px;color:var(--dim);margin-left:auto;text-align:right}
 </style></head><body>
 <h1>🧠 CENTRALE — Hub &amp; Agenti</h1>
 <div style="margin-bottom:10px"><a href="/hub" target="_blank" style="display:inline-block;padding:8px 14px;border-radius:8px;background:#1f6feb;color:#fff;font-weight:600;text-decoration:none">🎨 Apri l'anteprima del NUOVO Hub (agenti in tendina) ↗</a></div>
 <div class="sub">FilippoPC · tutto in una pagina, niente terminale nero · <span id="ora">—</span></div>
 <div class="toast" id="toast"></div>
+<div id="salute" class="verde">
+  <div>
+    <div class="ver" id="sal_ver">🩺 Controllo salute…</div>
+    <div class="elenco" id="sal_el"></div>
+  </div>
+  <div class="agg"><button onclick="saluteOra()">🩺 Ricontrolla (2 s)</button><br><span id="sal_quando"></span></div>
+</div>
 <div class="griglia">
   <div class="card"><h2>🚦 Semafori</h2>
     <div class="riga"><span><span id="l_omni" class="led off"></span>OmniRoute <span class="fase" id="contam"></span></span>
@@ -68,8 +82,35 @@ const $=id=>document.getElementById(id);
 function toast(msg,ms){const t=$('toast');t.innerHTML=msg;t.style.display='block';clearTimeout(t._x);t._x=setTimeout(()=>t.style.display='none',ms||6000)}
 async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json()}
 let note=false;
+function disegnaSalute(sl){
+  if(!sl) return;
+  const c=$('salute'); c.className=sl.colore||'grigio';
+  $('sal_ver').textContent=sl.verdetto||'🩺 —';
+  const brutti=[...(sl.rossi||[]),...(sl.gialli||[])];
+  const buoni=(sl.righe||[]).filter(v=>v.esito==='ok').length;
+  if(!brutti.length){
+    $('sal_el').innerHTML = `<div class="ok">nessun problema: ${buoni} controlli a posto (ponte, agenti, porte, check-in, spazio).</div>`;
+  } else {
+    const mostrati=brutti.slice(0,7);
+    $('sal_el').innerHTML = mostrati.map(v=>`<div class="${v.esito==='no'?'r':'g'}">${v.esito==='no'?'✗':'·'} <b>${v.nome}</b> — ${v.dettaglio}</div>`).join('')
+      + (brutti.length>mostrati.length?`<div class="g">… e altri ${brutti.length-mostrati.length} avvisi (dettaglio col [v] nella Centrale)</div>`:'')
+      + `<div class="ok" style="margin-top:4px">✓ ${buoni} controlli già a posto</div>`;
+  }
+  $('sal_quando').textContent='controllato alle '+(sl.ora||'')+(sl.secondi?` (${sl.secondi}s)`:'');
+}
+async function saluteOra(){
+  toast('🩺 Controllo in corso (2 secondi)…',3000);
+  const sl=await api('/api/salute'); disegnaSalute(sl);
+  toast(sl.colore==='verde'?'🟢 Tutto a posto.':(sl.colore==='giallo'?'🟡 Qualche avviso, vedi la scheda.':'🔴 Ci sono problemi: leggi la scheda in alto.'),6000);
+}
+function promemoria(){
+  if(window._salRicordato) return; window._salRicordato=true;
+  const sl=(window._ultimoStato||{}).salute||{};
+  if((sl.rossi||[]).length) toast('🔴 <b>Controllo salute: '+(sl.rossi.length)+' problemi</b><br>Guarda la scheda in alto: si risolve senza rifare tutto.',15000);
+}
 async function aggiorna(){try{
   const s=await api('/api/stato');
+  window._ultimoStato=s; disegnaSalute(s.salute); promemoria();
   $('ora').textContent=s.ora;
   $('l_omni').className='led '+(s.omniroute?'on':'off');
   $('l_brow').className='led '+(s.browser_agenti?'on':'off');
@@ -141,6 +182,7 @@ async function chat(){
 }
 function chatPulisci(){STORIA=[];$('chatlog').innerHTML=''}
 $('chatmsg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chat()}});
+api('/api/salute').then(disegnaSalute).catch(()=>{});   // la scheda salute non aspetta il resto
 aggiorna();setInterval(aggiorna,3000);
 setTimeout(()=>checkin(false),1500); // riscatto automatico all'apertura
 </script></body></html>

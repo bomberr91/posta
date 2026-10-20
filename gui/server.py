@@ -167,7 +167,7 @@ def saldo_live():
                 "Authorization": "Bearer " + key,
                 "User-Agent": "codex_cli_rs/0.149.1",
                 "Accept": "application/json"})
-            raw = urllib.request.urlopen(req, timeout=15).read().decode("utf-8", "ignore")
+            raw = urllib.request.urlopen(req, timeout=8).read().decode("utf-8", "ignore")
             if not raw.lstrip().startswith("{"):
                 raise ValueError("risposta non-JSON (WAF)")
             return json.loads(raw)
@@ -184,6 +184,25 @@ def saldo_live():
             saldo = None
     _cache["saldo"] = (time.time(), saldo)
     return saldo
+
+
+_saldo_bg = {"in_corso": False}
+
+def saldo_istantaneo():
+    """Non blocca MAI la pagina: se il saldo è vecchio lo aggiorna in sottofondo e intanto mostra l'ultimo noto."""
+    v = _cache.get("saldo")
+    if v and time.time() - v[0] < 600:
+        return v[1]
+    if not _saldo_bg["in_corso"]:
+        _saldo_bg["in_corso"] = True
+
+        def _lavoro():
+            try:
+                saldo_live()
+            finally:
+                _saldo_bg["in_corso"] = False
+        threading.Thread(target=_lavoro, daemon=True).start()
+    return v[1] if v else None
 
 
 def saldo_ultimo():
@@ -339,6 +358,51 @@ def _fai_checkin(forza=False):
             "login_manuale": serve_login_manuale(), "log": out[-1800:]}
 
 
+_salute_cache = {"t": 0.0, "v": None}
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+def salute(fresco=False):
+    """Gira verifica.sh (0,1 s, sola lettura) e traduce l'output in un verdetto per la GUI."""
+    if not fresco and _salute_cache["v"] and time.time() - _salute_cache["t"] < 60:
+        return _salute_cache["v"]
+    v = {"verdetto": "🩺 verifica non disponibile", "colore": "grigio", "rossi": [], "gialli": [],
+         "righe": [], "secondi": 0, "ora": time.strftime("%H:%M:%S")}
+    script = os.path.join(POSTA, "verifica.sh")
+    if os.path.exists(script):
+        t0 = time.time()
+        try:
+            out = subprocess.run(["bash", script], capture_output=True, text=True, timeout=25).stdout or ""
+        except Exception as e:
+            out = ""
+            v["errore"] = str(e)
+        v["secondi"] = round(time.time() - t0, 2)
+        pulito = _ANSI.sub("", out)
+        for riga in pulito.splitlines():
+            r = riga.strip()
+            if "TUTTO A POSTO" in r or "PROBLEMI" in r or "cose da guardare" in r:
+                v["verdetto"] = r          # è la riga del verdetto finale: l'ultima vince
+            if r[:1] in ("✓", "✗", "·"):
+                esito = {"✓": "ok", "✗": "no", "·": "att"}[r[0]]
+                resto = r[1:].strip()
+                nome = resto[:26].strip()
+                dettaglio = resto[26:].strip() if len(resto) > 26 else ""
+                voce = {"esito": esito, "nome": nome, "dettaglio": dettaglio}
+                v["righe"].append(voce)
+                if esito == "no":
+                    v["rossi"].append(voce)
+                elif esito == "att":
+                    v["gialli"].append(voce)
+        if "TUTTO A POSTO" in v["verdetto"]:
+            v["colore"] = "verde"
+        elif "PROBLEMI" in v["verdetto"]:
+            v["colore"] = "rosso"
+        elif "da guardare" in v["verdetto"]:
+            v["colore"] = "giallo"
+    _salute_cache["t"] = time.time()
+    _salute_cache["v"] = v
+    return v
+
+
 def stato():
     fus = {}
     try:
@@ -349,7 +413,8 @@ def stato():
     ultimi = sorted(os.listdir(ris_dir), reverse=True)[:5] if os.path.isdir(ris_dir) else []
     if serve_login_manuale() and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
         threading.Thread(target=verifica_sessione, daemon=True).start()
-    sv = saldo_live()
+    sl = salute()             # 0,1 s: il verdetto deve arrivare prima di tutto il resto
+    sv = saldo_istantaneo()
     mo = modelli_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
             "checkin_oggi": os.path.exists(flag_checkin()),
@@ -361,7 +426,8 @@ def stato():
             "adesso": adesso_hhmm(),
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
-            "fusion": fus, "risultati": ultimi, "ora": time.strftime("%H:%M:%S")}
+            "fusion": fus, "risultati": ultimi, "salute": sl,
+            "ora": time.strftime("%H:%M:%S")}
 
 
 # ─────────────────────────────── HTTP ───────────────────────────────────────
@@ -399,6 +465,8 @@ class H(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(b)))
             self.end_headers()
             self.wfile.write(b)
+        elif self.path.startswith("/api/salute"):
+            self._json(salute(fresco=True))
         elif self.path == "/api/stato":
             self._json(stato())
         elif self.path.startswith("/api/risultato"):
