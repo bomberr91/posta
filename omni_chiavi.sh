@@ -4,6 +4,13 @@ set -u
 export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
 V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
 [ -n "$V22BIN" ] && export PATH="$V22BIN:$PATH"
+# OmniRoute, quando parte, apre la sua Dashboard nel browser (2 avvii = 2 schede).
+# Gli metto davanti un "apri browser" finto: la scheda la apre la GUI solo se la chiedi tu.
+ND=/tmp/omni_senza_schede; mkdir -p "$ND"
+for n in xdg-open wslview sensible-browser open; do
+  [ -x "$ND/$n" ] || { printf '#!/bin/sh\nexit 0\n' > "$ND/$n"; chmod +x "$ND/$n"; }
+done
+export PATH="$ND:$PATH"
 OMNI=$(command -v omniroute || echo "$V22BIN/omniroute")
 [ -x "$OMNI" ] || { echo "  ❌ omniroute non trovato"; exit 0; }
 K="$HOME/CHIAVI_LOCALI.md"

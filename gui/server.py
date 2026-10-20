@@ -227,11 +227,34 @@ def omni_bin():
     return ""
 
 
+def _niente_schede():
+    """OmniRoute, quando parte, apre la sua Dashboard nel browser: due avvii = due schede
+    (il fastidio che si è visto). Qui gli mettiamo davanti un «apri browser» finto, così
+    la scheda la apre solo la GUI quando la chiedi tu."""
+    d = "/tmp/omni_senza_schede"
+    try:
+        os.makedirs(d, exist_ok=True)
+        for nome in ("xdg-open", "wslview", "sensible-browser", "open"):
+            f = os.path.join(d, nome)
+            if not os.path.exists(f):
+                with open(f, "w") as fh:
+                    fh.write("#!/bin/sh\nexit 0\n")
+                os.chmod(f, 0o755)
+        return d
+    except Exception:
+        return ""
+
+
+_PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
+                          if _niente_schede() else "")
+
+
 def omniroute_avvia(attesa=25):
     """Accende OmniRoute se è spento e aspetta che risponda (era il comportamento di prima)."""
     if porta_viva(20128):
         return True
-    script = ("export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
+    script = (_PREFISSO_SENZA_SCHEDE +
+              "export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
               "B=$(ls -d $HOME/.nvm/versions/node/v22*/bin 2>/dev/null | sort -V | tail -1); "
               "[ -x \"$B/omniroute\" ] || B=$(dirname \"$(command -v omniroute)\") ; "
               "cd \"$HOME\" ; nohup \"$B/omniroute\" >/tmp/omniroute.log 2>&1 &")
@@ -247,6 +270,39 @@ def omniroute_avvia(attesa=25):
 
 
 _omni_lav = {"quando": 0.0, "cosa": ""}
+
+
+def lavoro_omni():
+    """Cosa sta facendo il motore ADESSO. Guardo i processi veri e il registro,
+    così anche se la GUI si riavvia non si perde il conto."""
+    r = {"cosa": "", "secondi": 0, "log": ""}
+    for nome, etichetta in (("omni_free.sh", "provider gratis"), ("omni_chiavi.sh", "chiavi")):
+        try:
+            out = subprocess.run(["pgrep", "-af", nome], capture_output=True,
+                                 text=True, timeout=8).stdout
+        except Exception:
+            out = ""
+        trovato = False
+        for riga in out.splitlines():
+            pid, _, cmd = riga.partition(" ")
+            if not pid.isdigit():
+                continue
+            # deve essere proprio «... /omni_free.sh» (non una shell che lo nomina)
+            if cmd.strip().endswith(nome):
+                trovato = True
+                break
+        if not trovato:
+            continue
+        r["cosa"] = etichetta
+        log = "/tmp/omni_lav_" + ("free" if nome == "omni_free.sh" else "chiavi") + ".log"
+        try:
+            r["secondi"] = int(time.time() - os.path.getmtime(log))
+            righe = [l.strip() for l in open(log, encoding="utf-8", errors="replace").read().splitlines() if l.strip()]
+            r["log"] = " · ".join(righe[-2:])[-220:]
+        except Exception:
+            pass
+        return r
+    return r
 
 
 def omni_pids():
@@ -863,6 +919,7 @@ def stato():
     sl = salute()             # 0,1 s: il verdetto deve arrivare prima di tutto il resto
     sv = saldo_istantaneo()
     mo = modelli_omni()
+    lo = lavoro_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
             "checkin_oggi": os.path.exists(flag_checkin()),
             "checkin_ora": leggi(flag_checkin(), "").strip(),
@@ -875,8 +932,8 @@ def stato():
             "modelli": mo["modelli"], "linee": mo["linee"],
             "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
                        "installato": bool(omni_bin()), "nome": "OmniRoute",
-                       "lavoro": (_omni_lav["cosa"] if _omni_lav["quando"] and
-                                  time.time() - _omni_lav["quando"] < 420 else "")},
+                       "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
+                       "lavoro_log": lo["log"]},
             "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 

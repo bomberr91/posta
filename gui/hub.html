@@ -243,10 +243,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
 
       <section class="agCard">
-        <h3>🧠 MOTORE — OmniRoute (non è un agente: è il cervello di tutti)</h3>
+        <h3>🧠 OmniRoute</h3>
         <div class="agRiga"><span>Stato</span><b id="agOmni">—</b></div>
         <div class="agRiga"><span>Modelli disponibili</span><span id="agModelli" class="agDim">—</span></div>
-        <div class="agDim" id="agMotoreNota" style="margin-top:4px">Il motore è il cervello di TUTTI gli agenti: parte da solo con la Centrale.</div>
+        <div class="agDim" id="agMotoreNota" style="margin-top:4px">È il cervello di tutti gli agenti: parte da solo con la Centrale.</div>
         <div class="agBottoni">
           <button class="agB pri" id="agOmniOn">Avvia</button>
           <button class="agB" id="agOmniRi">Riavvia</button>
@@ -2294,16 +2294,27 @@ function aggiornaPilota(){
       $('agModelli').textContent = s.omniroute
           ? ((s.modelli || 0) + ' modelli · ' + (s.linee || 0) + ' linee')
           : '—';
-      if(mot.lavoro) $('agMotoreNota').textContent = '⏳ Sto lavorando sui ' + mot.lavoro + '… (2-5 minuti, non premere altro: il motore si riaccende da solo)';
+      if(mot.lavoro){
+        const sec = mot.lavoro_secondi || 0;
+        const quando = sec < 90 ? (sec + ' secondi') : (Math.round(sec/60) + ' minuti');
+        $('agMotoreNota').textContent = '⏳ Sto lavorando sui ' + mot.lavoro + ' da ' + quando +
+            ' — non premere altro, lo riaccendo io alla fine.' +
+            (mot.lavoro_log ? '  ·  ultima riga: ' + mot.lavoro_log : '');
+        if(!window._tLav) window._tLav = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) aggiorna(); }, 8000);
+      }
+      else if(window._tLav){ clearInterval(window._tLav); window._tLav = null;
+        log('✅ Lavoro finito. Modelli disponibili adesso: ' + (s.modelli || 0) + (s.modelli ? ' — gli agenti possono rispondere.' : ' — se resta 0, premi «🔑 Innesta le mie chiavi».')); }
       else if(s.omniroute && !s.modelli) $('agMotoreNota').textContent = '🟡 Acceso ma con 0 modelli: premi «⚡ Attiva provider gratis» (una volta sola, 2-5 minuti). Se resta 0, premi «🔑 Innesta le mie chiavi».';
       else if(mot.installato === false) $('agMotoreNota').textContent = '⚪ OmniRoute non è ancora installato su questo PC: si installa una volta col [9] → Motore. Dopo parte da solo.';
       else if(!s.omniroute) $('agMotoreNota').textContent = '🔴 spento: lo riaccendo da solo tra poco (sorveglianza ogni 2 minuti).';
       else $('agMotoreNota').textContent = 'Cervello di TUTTI gli agenti. Parte da solo con la Centrale.';
       const inst = mot.installato !== false;
-      $('agOmniOn').disabled = !!s.omniroute || !inst;
-      $('agOmniFree').disabled = !inst; $('agOmniChiavi').disabled = !inst;
-      $('agOmniOff').disabled = !inst;
-      $('agOmniRi').disabled = !s.omniroute;
+      const occupato = !!mot.lavoro;          // mentre lavora non si preme niente
+      $('agOmniOn').disabled = !!s.omniroute || !inst || occupato;
+      $('agOmniFree').disabled = !inst || occupato;
+      $('agOmniChiavi').disabled = !inst || occupato;
+      $('agOmniOff').disabled = !inst || occupato;
+      $('agOmniRi').disabled = occupato || !inst || !s.omniroute;
       // openclaw
       const oc = s.openclaw || {};
       led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
