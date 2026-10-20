@@ -43,7 +43,8 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
     <div class="riga"><span>Check-in di oggi</span><span id="chk">—</span></div>
     <div class="riga"><span>Tentativi</span><span id="tent" class="fase">—</span></div>
     <div id="avviso" style="display:none;margin:10px 0;padding:10px 12px;border-radius:8px;background:#3d1d1d;border:1px solid #f85149;font-size:13px;line-height:1.45"></div>
-    <button class="primario" onclick="checkin(true)">Riscatta ora</button>
+    <button class="primario" id="btnchk" onclick="checkin()">Riscatta ora</button>
+    <div class="riga" style="margin-top:8px"><span>Finestra bonus</span><span id="fin" class="fase">—</span></div>
     <div class="fase" style="margin-top:8px">⏰ <b>Sveglia automatica</b>: riscatto da solo appena scatta il giorno cinese (≈18:05 italiane; con l'ora solare ≈17:05). PC spento a quell'ora? Riscatto all'accensione. Popup verde a successo avvenuto.</div>
   </div>
   <div class="card largo"><h2>💬 Chat Hub <span class="fase">— modelli gratis via OmniRoute, risponde il migliore (model: auto)</span></h2>
@@ -76,6 +77,10 @@ async function aggiorna(){try{
   $('contam').textContent=s.modelli?('— '+s.modelli+' modelli · '+s.linee+' linee'):'';
   $('chk').textContent=s.checkin_oggi?('✅ fatto'+(s.checkin_ora?(' alle '+s.checkin_ora):'')):'⏳ da fare';
   $('tent').textContent=(s.tentativi||0)+'/'+(s.max_tentativi||3);
+  const ap=!!s.finestra_aperta, b=$('btnchk');
+  b.disabled=!ap; b.style.opacity=ap?1:.45; b.style.cursor=ap?'pointer':'not-allowed';
+  b.title=ap?'Riscatta il bonus di oggi':'Si sblocca alle 18:05 (prima non si fa login/logout: rischio ban)';
+  $('fin').textContent=ap?('🟢 aperta — sono le '+(s.adesso||'')):('🔒 chiusa — si apre alle 18:05 · ora '+(s.adesso||''));
   const av=$('avviso');
   if(s.login_manuale){
     av.style.display='block';
@@ -95,9 +100,9 @@ async function aggiorna(){try{
   L.innerHTML=(s.risultati||[]).map(r=>`<option ${r===sel?'selected':''}>${r}</option>`).join('')||'<option>—</option>';
 }catch(e){}}
 async function apri(n){if(!n||n==='—')return;const r=await api('/api/risultato?f='+encodeURIComponent(n));$('testo').textContent=r.testo}
-async function checkin(forza){
+async function checkin(){
   toast('💰 Riscatto in corso... (browser invisibile, ~1 min)');
-  const r=await api('/api/checkin',{forza:!!forza});
+  const r=await api('/api/checkin',{});
   toast(r.msg+(r.saldo?(' · saldo: $'+r.saldo):''),9000);
   aggiorna();
 }
@@ -128,5 +133,5 @@ async function chat(){
 function chatPulisci(){STORIA=[];$('chatlog').innerHTML=''}
 $('chatmsg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chat()}});
 aggiorna();setInterval(aggiorna,3000);
-setTimeout(()=>checkin(false),1500); // riscatto automatico all'apertura
+// il riscatto NON parte all'apertura: la sveglia del server lo fa dalle 18:05 (regola anti-ban)
 </script></body></html>

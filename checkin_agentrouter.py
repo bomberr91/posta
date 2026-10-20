@@ -30,6 +30,23 @@ BASE = os.environ.get("AR_BASE", "https://agentrouter.org").rstrip("/")
 GH = os.environ.get("AR_GH", "https://github.com")
 GH_NETLOC = re.sub(r"^https?://", "", GH).split("/")[0].lower()
 ATTESA_OAUTH = int(os.environ.get("AR_ATTESA_OAUTH", "70"))   # secondi di pazienza per il giro OAuth
+FINESTRA = (18, 5)   # ora ITALIANA: prima delle 18:05 NON si fa login/logout (rischio ban, ordine utente)
+
+
+def adesso_it():
+    fake = os.environ.get("AR_ORA_FAKE")          # "HH:MM" — usato SOLO dai collaudi
+    if fake and ":" in fake:
+        h, m = fake.split(":")[:2]
+        return int(h), int(m)
+    t = time.localtime()
+    return t.tm_hour, t.tm_min
+
+
+def finestra_aperta():
+    if os.environ.get("AR_IGNORA_FINESTRA") == "1":
+        return True, "override di collaudo"
+    hh, mm = adesso_it()
+    return (hh, mm) >= FINESTRA, f"{FINESTRA[0]:02d}:{FINESTRA[1]:02d}"
 
 
 # ─────────────────────────────── CDP minimale ────────────────────────────────
@@ -304,6 +321,14 @@ def attendi_rientro(schede_iniziali, tmax=ATTESA_OAUTH):
 def main(argv):
     sola_verifica = "--verifica" in argv
     print(f"[checkin] {time.strftime('%d/%m/%Y %H:%M')} · base={BASE} · modo={'VERIFICA' if sola_verifica else 'RISCATTO'}")
+    # 0) CANCELLO ORARIO: prima delle 18:05 italiane non si fa NIENTE su agentrouter (anti-ban)
+    aperta, et = finestra_aperta()
+    if not aperta and not sola_verifica:
+        hh, mm = adesso_it()
+        print(f"[checkin] ⏳ finestra chiusa: sono le {hh:02d}:{mm:02d} (ora italiana), il bonus si riscatta dalle {et}.")
+        print("[checkin] nessun login e nessun logout fatti — si aspetta la finestra (regola anti-ban).")
+        return 4
+
     try:
         http_json("/json/version")
     except Exception:
