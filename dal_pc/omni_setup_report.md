@@ -15,3 +15,8 @@
 - ai21: ① Database: /home/agenti/.omniroute/storage.sqlite ✖ Provider API key is required. Pass --api-key or OMNIROUTE_API_KEY.   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
 - nous-research: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
 - arcee-ai: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- liquid: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- inception: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- freebuff: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- charm-hyper: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- agentrouter: già attivo
