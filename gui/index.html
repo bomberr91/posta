@@ -41,6 +41,8 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
   <div class="card"><h2>💰 AgentRouter</h2>
     <div class="riga"><span>Saldo letto</span><span class="saldo" id="saldo">—</span></div>
     <div class="riga"><span>Check-in di oggi</span><span id="chk">—</span></div>
+    <div class="riga"><span>Tentativi</span><span id="tent" class="fase">—</span></div>
+    <div id="avviso" style="display:none;margin:10px 0;padding:10px 12px;border-radius:8px;background:#3d1d1d;border:1px solid #f85149;font-size:13px;line-height:1.45"></div>
     <button class="primario" onclick="checkin(true)">Riscatta ora</button>
     <div class="fase" style="margin-top:8px">⏰ <b>Sveglia automatica</b>: riscatto da solo appena scatta il giorno cinese (≈18:05 italiane; con l'ora solare ≈17:05). PC spento a quell'ora? Riscatto all'accensione. Popup verde a successo avvenuto.</div>
   </div>
@@ -73,6 +75,16 @@ async function aggiorna(){try{
   $('saldo').textContent=s.saldo?('$'+s.saldo):'—';$('saldo').title=s.saldo_vivo?'saldo vivo dal sito':'ultimo saldo noto';
   $('contam').textContent=s.modelli?('— '+s.modelli+' modelli · '+s.linee+' linee'):'';
   $('chk').textContent=s.checkin_oggi?('✅ fatto'+(s.checkin_ora?(' alle '+s.checkin_ora):'')):'⏳ da fare';
+  $('tent').textContent=(s.tentativi||0)+'/'+(s.max_tentativi||3);
+  const av=$('avviso');
+  if(s.login_manuale){
+    av.style.display='block';
+    av.innerHTML='<b>⚠️ Serve un login a mano</b><br>Apri <b>BROWSER_AGENTI</b> → accedi a <b>github.com</b> (bomberr91) → poi torna qui e premi <b>Riscatta ora</b>.<br>'+
+      '<span class="fase">'+(s.login_motivo||'')+'</span>'+
+      '<br><span class="fase">Il riscatto automatico resta fermo finché non sistemo il login (niente logout a vuoto).</span>';
+    if(window._lmPrev!==true){toast('⚠️ <b>Check-in fermo</b>: serve un login a mano nel BROWSER_AGENTI.',12000)}
+    window._lmPrev=true;
+  } else { av.style.display='none'; window._lmPrev=false; }
   if(s.checkin_oggi && window._chkPrev===false){toast('🎉 <b>+25$ riscattati automaticamente!</b>'+(s.checkin_ora?(' ('+s.checkin_ora+')'):'')+(s.saldo?('<br>saldo: $'+s.saldo):''),12000)}
   window._chkPrev=s.checkin_oggi;
   const f=s.fusion||{};

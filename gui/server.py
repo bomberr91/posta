@@ -39,6 +39,44 @@ def giorno_cina():
 def flag_checkin():
     return os.path.join(HOME, f".ar_checkin_{giorno_cina()}")
 
+MAX_TENTATIVI = 3          # al giorno: dopo 3 giri falliti ci si ferma (niente spam di logout)
+
+def file_tentativi():
+    return os.path.join(HOME, f".ar_checkin_try_{giorno_cina()}")
+
+def tentativi_oggi():
+    try:
+        return int((leggi(file_tentativi(), "0").strip() or "0"))
+    except Exception:
+        return 0
+
+def segna_tentativo():
+    try:
+        n = tentativi_oggi() + 1        # prima si legge, poi si apre in scrittura (aprire "w" azzera!)
+        with open(file_tentativi(), "w", encoding="utf-8") as f:
+            f.write(str(n))
+    except Exception:
+        pass
+
+def file_login_manuale():
+    return os.path.join(HOME, ".ar_login_manuale")
+
+def serve_login_manuale():
+    return os.path.exists(file_login_manuale())
+
+def segna_login_manuale(motivo):
+    try:
+        open(file_login_manuale(), "w", encoding="utf-8").write(
+            time.strftime("%d/%m/%Y %H:%M") + " · " + (motivo or "")[:300])
+    except Exception:
+        pass
+
+def pulisci_login_manuale():
+    try:
+        os.remove(file_login_manuale())
+    except Exception:
+        pass
+
 _cache = {}
 
 def chiave(riga_pat, key_pat):
@@ -52,7 +90,7 @@ def chiave(riga_pat, key_pat):
 def saldo_live():
     """Saldo vero da agentrouter.org (API billing con la chiave sk-), cache 5 minuti."""
     v = _cache.get("saldo")
-    if v and time.time() - v[0] < 300:
+    if v and time.time() - v[0] < 600:      # 10 min: e' un'informazione, non un orologio
         return v[1]
     saldo = None
     key = chiave(r"agentrouter", r"sk-[A-Za-z0-9]{30,}")
@@ -61,8 +99,12 @@ def saldo_live():
         try:
             def gj(p):
                 req = urllib.request.Request("https://agentrouter.org" + p, headers={
-                    "Authorization": "Bearer " + key, "User-Agent": "codex_cli_rs/0.149.1"})
-                return json.loads(urllib.request.urlopen(req, timeout=15).read().decode())
+                    "Authorization": "Bearer " + key, "User-Agent": "codex_cli_rs/0.149.1",
+                    "Accept": "application/json"})
+                raw = urllib.request.urlopen(req, timeout=15).read().decode("utf-8", "ignore")
+                if not raw.lstrip().startswith("{"):
+                    raise ValueError("risposta non-JSON (WAF Aliyun): il saldo si legge dal browser")
+                return json.loads(raw)
             tot = float(gj("/dashboard/billing/subscription").get("hard_limit_usd") or 0)
             usato = float(gj("/dashboard/billing/usage").get("total_usage") or 0) / 100.0
             s_ = tot - usato
@@ -131,8 +173,9 @@ def sveglia_checkin():
     while True:
         try:
             sh = time.gmtime(time.time() + 8 * 3600)
-            if (sh.tm_hour, sh.tm_min) >= (0, 5) and not os.path.exists(flag_checkin()) \
-               and time.time() - _ultimo_tentativo[0] > 1800:
+            if ((sh.tm_hour, sh.tm_min) >= (0, 5) and not os.path.exists(flag_checkin())
+                    and not serve_login_manuale() and tentativi_oggi() < MAX_TENTATIVI
+                    and time.time() - _ultimo_tentativo[0] > 1800):
                 _ultimo_tentativo[0] = time.time()
                 fai_checkin(forza=False)
         except Exception:
@@ -151,6 +194,13 @@ def _fai_checkin(forza=False):
     if os.path.exists(flag_checkin()) and not forza:
         return {"stato": "gia_fatto", "saldo": saldo_ultimo(),
                 "msg": "💰 Check-in di oggi già riscattato."}
+    if not forza and serve_login_manuale():
+        return {"stato": "serve_login_manuale", "saldo": saldo_ultimo(),
+                "msg": "⚠️ Serve un login a mano nel BROWSER_AGENTI (GitHub): poi premi «Riscatta ora».",
+                "login_manuale": True}
+    if not forza and tentativi_oggi() >= MAX_TENTATIVI:
+        return {"stato": "stop", "saldo": saldo_ultimo(),
+                "msg": f"🛑 Già {MAX_TENTATIVI} tentativi oggi: mi fermo (niente logout a vuoto). Riprovo domani."}
     avviato_da_noi = False
     if not porta_viva(9222):
         if not chrome_headless_avvia():
@@ -159,24 +209,42 @@ def _fai_checkin(forza=False):
         time.sleep(3)
     try:
         p = subprocess.run(["python3", os.path.join(POSTA, "checkin_agentrouter.py")],
-                           capture_output=True, text=True, timeout=240)
+                           capture_output=True, text=True, timeout=300)
         out = (p.stdout or "") + (p.stderr or "")
-        ok = p.returncode == 0
+        rc = p.returncode
     except Exception as e:
-        out, ok = f"ERRORE: {e}", False
-    finally:
-        if avviato_da_noi:
-            chrome_headless_chiudi()
+        out, rc = f"ERRORE: {e}", 1
+    ok = (rc == 0)
+    if avviato_da_noi:
+        chrome_headless_chiudi()
     with open(os.path.join(POSTA, "dal_pc", "agentrouter_checkin.md"), "w", encoding="utf-8") as f:
         f.write(f"# 💰 Check-in AgentRouter (GUI) — {time.strftime('%d/%m/%Y %H:%M')}\n\n```\n{out}\n```\n")
+    segna_tentativo()
     if ok:
         open(flag_checkin(), "w").write(time.strftime("%H:%M"))
-    subprocess.Popen(["bash", "-c", f"cd '{POSTA}' && git add -A && git commit -qm 'checkin gui' && git push -q origin main"],
-                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        pulisci_login_manuale()
+    elif rc == 3:
+        riga = next((r for r in out.splitlines() if r.startswith("[login_manuale]")), "serve login manuale")
+        segna_login_manuale(riga.replace("[login_manuale]", "").strip())
+    # sul ponte si scrive solo quando c'e' qualcosa da dire: niente un commit ogni 30 minuti
+    if ok or rc == 3 or tentativi_oggi() >= MAX_TENTATIVI:
+        subprocess.Popen(["bash", "-c", f"cd '{POSTA}' && git add -A && git commit -qm 'checkin: esito {rc}' && git push -q origin main"],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     m = re.search(r"saldo dopo: \$?([0-9][0-9.,]*)", out)
-    return {"stato": "ok" if ok else "fallito", "saldo": m.group(1) if m else saldo_ultimo(),
-            "msg": ("✅ +25$ riscattati! Browser richiuso." if ok else "⚠️ Giro non completato — vedi log."),
-            "log": out[-1500:]}
+    d = re.search(r"delta:\s*([+-]?[0-9.]+)", out)
+    if ok:
+        msg = (f"✅ +{d.group(1)}$ riscattati!" if (d and float(d.group(1)) >= 20)
+               else "✅ Giro completato (bonus già preso oggi o accredito in arrivo).")
+    elif rc == 3:
+        msg = "⚠️ Serve un login a mano nel BROWSER_AGENTI (GitHub) → poi «Riscatta ora»."
+    elif rc == 2:
+        msg = "⚠️ BROWSER_AGENTI spento: apri l'icona e riprova."
+    else:
+        msg = "⚠️ Giro non completato — vedi log."
+    return {"stato": "ok" if ok else ("serve_login_manuale" if rc == 3 else "fallito"),
+            "saldo": m.group(1) if m else saldo_ultimo(), "msg": msg,
+            "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI,
+            "login_manuale": serve_login_manuale(), "log": out[-1800:]}
 
 def stato():
     fus = {}
@@ -189,7 +257,9 @@ def stato():
     sv = saldo_live()
     mo = modelli_omni()
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
-            "checkin_oggi": os.path.exists(flag_checkin()), "checkin_ora": leggi(flag_checkin(), "").strip(), "saldo": sv or saldo_ultimo(),
+            "checkin_oggi": os.path.exists(flag_checkin()), "checkin_ora": leggi(flag_checkin(), "").strip(),
+            "login_manuale": serve_login_manuale(), "login_motivo": leggi(file_login_manuale(), "").strip(),
+            "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI, "saldo": sv or saldo_ultimo(),
             "saldo_vivo": bool(sv), "modelli": mo["modelli"], "linee": mo["linee"],
             "fusion": fus, "risultati": ultimi, "ora": time.strftime("%H:%M:%S")}
 
