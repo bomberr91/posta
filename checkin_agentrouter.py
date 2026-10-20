@@ -246,6 +246,54 @@ def sessione_github_viva(ws):
     return utente
 
 
+MIRA_JS = r"""(() => {
+  const cands=[...document.querySelectorAll('a[href],button,[role=button],input[type=submit]')]
+    .filter(e=>e.offsetParent!==null||e.getClientRects().length);
+  const t=cands.find(e=>/github/i.test((e.textContent||'')+' '+(e.innerHTML||'')+' '+
+        ((e.getAttribute&&e.getAttribute('alt'))||'')));
+  if(!t) return {ok:false};
+  t.scrollIntoView({block:'center'});
+  const a=t.closest('a[href]');
+  const href=a&&a.getAttribute('href');
+  const r=t.getBoundingClientRect();
+  return {ok:true, href:(href&&!/^#|^javascript:/i.test(href))?href:null,
+          x:Math.round(r.left+r.width/2), y:Math.round(r.top+r.height/2),
+          tag:t.tagName, testo:(t.textContent||'').trim().slice(0,40)};
+})()"""
+
+
+def click_github(ws):
+    """Trova il bottone GitHub e lo preme DAVVERO (mouse events via CDP).
+    Su agentrouter.org il bottone e' un <button> con gestore JS: un .click() da script
+    a volte non fa partire il giro OAuth (successo il 20/10 alle 18:22)."""
+    mira = js(ws, MIRA_JS)
+    if not mira or not mira.get("ok"):
+        return "NON-TROVATO"
+    if mira.get("href"):
+        print(f"[checkin] bottone GitHub: link → {mira['href'][:70]}")
+        nav(ws, mira["href"], 2)
+        return "nav-href"
+    x, y = mira.get("x") or 0, mira.get("y") or 0
+    print(f"[checkin] bottone GitHub: <{mira.get('tag','?')}> «{mira.get('testo','')}» → click vero in ({x},{y})")
+    for passata in range(2):
+        try:
+            ws.call("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+            ws.call("Input.dispatchMouseEvent", {"type": "mousePressed", "x": x, "y": y,
+                                                 "button": "left", "clickCount": 1})
+            time.sleep(0.12)
+            ws.call("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": x, "y": y,
+                                                 "button": "left", "clickCount": 1})
+        except Exception as e:
+            print(f"[checkin] click vero non riuscito: {e}")
+            break
+        time.sleep(3)
+        if len(target_pagine()) > 1:
+            return "click-vero"
+        if passata == 0:
+            print("[checkin] nessuna reazione al primo click: riprovo")
+    return "click-vero"
+
+
 def probabile_pagina_autorizzazione(ws):
     """Se GitHub mostra 'Authorize', lo preme (l'app e' gia' nostra, nessun rischio)."""
     try:
@@ -325,6 +373,13 @@ def main(argv):
         dentro = loggato_su_agentrouter(ws_ar)
         print(f"[checkin] AgentRouter: {'dentro' if dentro else 'fuori'} · saldo prima: "
               f"{saldo_prima if saldo_prima is not None else 'non letto'}")
+        if dentro is True:
+            try:
+                if os.path.exists(file_lm()):
+                    os.remove(file_lm())
+                    print("[checkin] tolto il flag ~/.ar_login_manuale (sessione di nuovo valida)")
+            except Exception:
+                pass
         if dentro is None:
             print("[checkin] ⚠ pagina illeggibile (WAF?): " + " | ".join(stato.get("debug", [])[:3]))
 
@@ -332,17 +387,7 @@ def main(argv):
         if dentro is not True:
             print("[checkin] provo il rientro dal login…")
             nav(ws_ar, BASE + "/login", 3)
-            click = js(ws_ar, """(()=>{
- const cands=[...document.querySelectorAll('a[href],button,[role=button],input[type=submit]')]
-   .filter(e=>e.offsetParent!==null||e.getClientRects().length);
- const t=cands.find(e=>/github/i.test((e.textContent||'')+' '+(e.innerHTML||'')));
- if(!t) return 'NON-TROVATO';
- const a=t.closest('a[href]');
- const href=a&&a.getAttribute('href');
- if(href && !href.startsWith('#') && !/^javascript:/i.test(href)){location.href=href;return 'nav-href:'+href.slice(0,60);}
- (t.closest('a,button')||t).click(); return 'click-github';
-})()""")
-            print(f"[checkin] bottone GitHub: {click}")
+            click = click_github(ws_ar)
             ws2, _ = attendi_rientro(schede0)
             if ws2:
                 ws_ar.close()
@@ -370,17 +415,7 @@ def main(argv):
         print(f"[checkin] logout http: {code}")
         time.sleep(2)
         nav(ws_ar, BASE + "/login", 3)
-        click = js(ws_ar, """(()=>{
- const cands=[...document.querySelectorAll('a[href],button,[role=button],input[type=submit]')]
-   .filter(e=>e.offsetParent!==null||e.getClientRects().length);
- const t=cands.find(e=>/github/i.test((e.textContent||'')+' '+(e.innerHTML||'')));
- if(!t) return 'NON-TROVATO';
- const a=t.closest('a[href]');
- const href=a&&a.getAttribute('href');
- if(href && !href.startsWith('#') && !/^javascript:/i.test(href)){location.href=href;return 'nav-href:'+href.slice(0,60);}
- (t.closest('a,button')||t).click(); return 'click-github';
-})()""")
-        print(f"[checkin] bottone GitHub: {click}")
+        click = click_github(ws_ar)
         if click == "NON-TROVATO":
             print("[checkin] ⚠ la pagina di login non mostra il bottone GitHub (layout cambiato?)")
             print("[login_manuale] bottone GitHub non trovato")
@@ -389,6 +424,11 @@ def main(argv):
         ws2, _ = attendi_rientro(schede0)
         if not ws2:
             print("[checkin] ⚠ il giro logout→login non e' tornato entro " + str(ATTESA_OAUTH) + "s")
+            mostra_schede("al momento del fallimento")
+            try:
+                print("[checkin] pagina corrente: " + (js(ws_ar, "location.href") or "?"))
+            except Exception:
+                pass
             print("[login_manuale] logout fatto, rientro non riuscito")
             return 3
         ws_ar.close()
