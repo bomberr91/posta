@@ -217,7 +217,8 @@ def _fai_checkin(forza=False):
         chrome_headless_chiudi()
     with open(os.path.join(POSTA, "dal_pc", "agentrouter_checkin.md"), "w", encoding="utf-8") as f:
         f.write(f"# 💰 Check-in AgentRouter (GUI) — {time.strftime('%d/%m/%Y %H:%M')}\n\n```\n{out}\n```\n")
-    segna_tentativo()
+    if rc != 2:                      # browser spento = non è un tentativo vero
+        segna_tentativo()
     if ok:
         open(flag_checkin(), "w").write(time.strftime("%H:%M"))
         pulisci_login_manuale()
@@ -290,6 +291,17 @@ class H(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/api/checkin":
             self._json(fai_checkin(forza=bool(self._body().get("forza"))))
+        elif self.path == "/api/checkin/segna":
+            if os.path.exists(flag_checkin()):
+                self._json({"stato": "gia_fatto", "msg": "Già segnato come fatto per oggi."})
+                return
+            try:
+                with open(flag_checkin(), "w", encoding="utf-8") as f:
+                    f.write(time.strftime("%H:%M") + "-manuale")
+                pulisci_login_manuale()
+            except Exception:
+                pass
+            self._json({"stato": "ok", "msg": "✅ Segnato: bonus di oggi già preso a mano. Stasera non faccio nessun logout."})
         elif self.path == "/api/fusion":
             missione = (self._body().get("missione") or "").strip()
             if len(missione) < 5:
@@ -338,6 +350,9 @@ def postino_bg():
 
 if __name__ == "__main__":
     postino_bg()
-    threading.Thread(target=sveglia_checkin, daemon=True).start()
+    if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":
+        threading.Thread(target=sveglia_checkin, daemon=True).start()
+    else:
+        print("[gui] sveglia disattivata (CENTRALE_NO_SVEGLIA=1)")
     print("GUI CENTRALE su http://localhost:20200")
     ThreadingHTTPServer(("0.0.0.0", 20200), H).serve_forever()

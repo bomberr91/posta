@@ -95,11 +95,15 @@ async function aggiorna(){try{
   L.innerHTML=(s.risultati||[]).map(r=>`<option ${r===sel?'selected':''}>${r}</option>`).join('')||'<option>—</option>';
 }catch(e){}}
 async function apri(n){if(!n||n==='—')return;const r=await api('/api/risultato?f='+encodeURIComponent(n));$('testo').textContent=r.testo}
-async function checkin(forza){
+async function checkin(){
   toast('💰 Riscatto in corso... (browser invisibile, ~1 min)');
-  const r=await api('/api/checkin',{forza:!!forza});
+  const r=await api('/api/checkin',{forza:true});   // il tasto è una tua richiesta esplicita
   toast(r.msg+(r.saldo?(' · saldo: $'+r.saldo):''),9000);
   aggiorna();
+}
+async function segnaManuale(){
+  const r=await api('/api/checkin/segna',{});
+  toast(r.msg||'segnato',9000); aggiorna();
 }
 async function fusion(){
   const m=$('missione').value.trim();
