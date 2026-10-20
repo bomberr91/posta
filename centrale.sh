@@ -122,26 +122,21 @@ while :; do
       explorer.exe "$(wslpath -w "$HOME/posta")" 2>/dev/null || true
       ;;
     7)
-      echo "── Squadra Agenti su FilippoPC ──"
-      echo "  • OpenCode   : $(opencode --version 2>&1 | head -1)"
-      echo "  • Goose      : $(goose --version 2>&1 | head -1)"
-      echo "  • Secondhand : $(interpreter --version 2>&1 | head -1 || echo non presente)"
-      echo "  • Hermes     : $(hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo installato in ~/.hermes || echo non presente))"
-      echo "  • OpenClaw   : $(bash "$HOME/posta/apri_openclaw.sh" --trova 2>/dev/null || echo 'non ancora installato — INSTALLA_OPENCLAW.bat')"
-      echo "  • Gemini CLI : $(gemini --version 2>&1 | head -1 || "$NODE22_BIN/gemini" --version 2>&1 | head -1 || echo in installazione)"
+      bash "$HOME/posta/agenti_stato.sh" 2>/dev/null || echo "  (agenti_stato.sh non trovato: rifai [8])"
       echo ""
       echo "── Super-Poteri & Innesti Attivi ──"
       echo "  • Headroom   : $(headroom --version 2>&1 | head -1 || echo non presente)"
       echo "  • XERJ (Rust): $(xerj --version 2>&1 | head -1 || echo non presente)"
-      echo "  • Beads (Mem): $(bd version 2>&1 | head -1 || bd --version 2>&1 | head -1 || echo in installazione)"
-      echo "  • MarkItDown : $(markitdown --version 2>&1 | head -1 || ([ -x ~/.local/bin/markitdown ] && echo attivo) || echo in installazione)"
-      echo "  • OmniRoute  : $(omniroute --version 2>&1 | head -1 || (pgrep -f omniroute >/dev/null && echo ATTIVO) || echo non ancora installato — menu [9])"
-      echo "  • Skill ($SKILLS_N) : $(ls "$HOME/.agents/skills" 2>/dev/null | tr '\n' ' ')"
+      echo "  • Beads (Mem): $(bd version 2>&1 | head -1 || echo non presente)"
+      echo "  • OmniRoute  : $( (exec 3<>/dev/tcp/127.0.0.1/20128) 2>/dev/null && echo "🟢 acceso" || echo "🔴 spento — menu [9]")"
+      echo "  • Skill ($SKILLS_N) : $(ls "$HOME/.agents/skills" 2>/dev/null | tr '\n' ' ' | cut -c1-160)"
       echo ""
-      echo "── Stato Quote Magpie ──"
-      magpie quota 2>/dev/null || true
-      echo ""
-      read -r -p "Premi INVIO per tornare al menu..." _
+      echo "  [a] installa/sistema gli agenti mancanti"
+      read -r -p "Invio per tornare al menu (oppure 'a'): " AZ7
+      if [ "${AZ7:-}" = "a" ] || [ "${AZ7:-}" = "A" ]; then
+        bash "$HOME/posta/installa_agenti.sh"
+        read -r -p "Premi INVIO per tornare al menu..." _
+      fi
       ;;
     8)
       cd "$HOME/posta" && git fetch origin main && git reset --hard origin/main && bash "$HOME/posta/aggiorna_tutto.sh"

@@ -295,6 +295,16 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
       </section>
 
+      <section class="agCard agLargo" id="agAgentiCard">
+        <h3>🤖 Agenti — tutti dentro, tutti pronti</h3>
+        <div id="agListaAgenti" style="display:grid;gap:4px"></div>
+        <div class="agBottoni">
+          <button class="agB pri" id="agInstalla">Installa / sistema i mancanti</button>
+          <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
+        </div>
+        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa lo stesso cervello (OmniRoute): se il motore è spento, non rispondono.</div>
+      </section>
+
       <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
         <div id="agSalute" class="agDim">—</div>
@@ -2329,6 +2339,56 @@ function aggiornaPilota(){
     const r = await api('/api/salute');
     $('agSalute').innerHTML = (r.verdetto || '—') + ((r.rossi || []).length ? '<br>' + r.rossi.map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
   });
+})();
+</script>
+<script>
+// ─── scheda AGENTI (dentro il pannello 🤖) ───
+(function(){
+  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
+  const $ = id => document.getElementById(id);
+  if(!$('agListaAgenti')) return;
+
+  function rigaAgente(a){
+    const col = !a.installato ? 'no' : (a.pronto ? 'ok' : 'att');
+    const icona = !a.installato ? '✗' : (a.pronto ? '🟢' : '⚠');
+    const testo = !a.installato ? 'manca' : (a.pronto ? 'pronto' : (a.nota || 'da sistemare'));
+    return '<div class="agRiga"><span>' + icona + ' <b>' + a.nome + '</b>' +
+           (a.versione ? ' <span class="agDim">' + a.versione + '</span>' : '') + '</span>' +
+           '<span class="' + col + '" style="font-size:12px">' + testo + '</span></div>';
+  }
+
+  async function carica(){
+    try{
+      const r = await fetch('/api/agenti');
+      const d = await r.json();
+      const lista = d.agenti || [];
+      $('agListaAgenti').innerHTML = lista.map(rigaAgente).join('') || '<div class="agDim">nessun dato</div>';
+      const mancano = lista.filter(a => !a.installato).length;
+      const pronti = lista.filter(a => a.pronto).length;
+      $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
+        (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
+        (d.cervello ? ' · cervello: ' + d.cervello : '');
+    }catch(e){ $('agListaAgenti').innerHTML = '<div class="agDim">non riesco a leggere lo stato</div>'; }
+  }
+
+  $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', carica);
+  $('agInstalla') && $('agInstalla').addEventListener('click', async () => {
+    $('agAgentiNota').textContent = 'Installazione in corso… non chiudere questa pagina.';
+    const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
+    const d = await r.json();
+    const log = document.getElementById('agLog');
+    if(log) log.innerHTML = '<pre>' + String(d.msg || '') + '</pre>';
+    const gira = setInterval(async () => {
+      const a = await (await fetch('/api/agenti/andamento')).json();
+      if(log) log.innerHTML = '<pre>' + String(a.log || 'sto lavorando…').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
+      if(!a.in_corso){ clearInterval(gira); carica(); }
+    }, 4000);
+  });
+
+  // primo caricamento quando si apre il pannello
+  const b = $('btnAgenti');
+  if(b) b.addEventListener('click', () => setTimeout(carica, 300));
+  setTimeout(carica, 1200);
 })();
 </script>
 </body>

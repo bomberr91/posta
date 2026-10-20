@@ -165,6 +165,25 @@ else
   nota "OpenClaw: manca openclaw_fix.sh nel ponte (sincronizza e riprova)"
 fi
 
+# ── 7 · AGENTI: se ne manca uno lo installo adesso (così ci sono sempre tutti) ──
+echo ""
+echo "── 7/7 · Agenti (tutti devono esserci)..."
+if [ -x "$HOME/posta/installa_agenti.sh" ]; then
+  MANCA=$(bash "$HOME/posta/agenti_stato.sh" --json 2>/dev/null | grep -o '"installato":false' | wc -l)
+  if [ "${MANCA:-0}" -eq 0 ]; then
+    salto "tutti gli agenti presenti"
+  elif [ "$DRY" = "1" ]; then
+    nota "[DRY] installerei $MANCA agenti mancanti (installa_agenti.sh)"
+  else
+    bash "$HOME/posta/installa_agenti.sh" >/dev/null 2>&1 || true
+    RESTA=$(bash "$HOME/posta/agenti_stato.sh" --json 2>/dev/null | grep -o '"installato":false' | wc -l)
+    [ "${RESTA:-0}" -eq 0 ] && ok "agenti installati: tutti presenti" \
+      || nota "restano $RESTA agenti da sistemare (vedi [7] nella Centrale)"
+  fi
+else
+  nota "installa_agenti.sh non trovato nel ponte"
+fi
+
 # ── Extra: innesti Scaglione 1 + skill di marketing (con timbro) ──────────────
 if [ -f "$HOME/posta/da_me/scaglione1_applica_innesti.sh" ] && [ ! -f "$HOME/.scaglione1_innesti_done" ] && [ "$DRY" != "1" ]; then
   bash "$HOME/posta/da_me/scaglione1_applica_innesti.sh" && touch "$HOME/.scaglione1_innesti_done" && ok "Innesti Scaglione 1 applicati"

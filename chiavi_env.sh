@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# chiavi_env.sh — UN SOLO POSTO dove si prendono le chiavi dal portachiavi.
+# Lo usano: centrale.sh, la GUI, installa_agenti.sh, aggiorna_tutto.sh, lo stato agenti.
+# Regola: le chiavi NON si scrivono mai dentro i file del ponte, si leggono da ~/CHIAVI_LOCALI.md.
+#         Questo file stampa solo comandi "export", non salva niente.
+#
+#   . ./chiavi_env.sh          (dentro un altro script: esporta tutto nel proprio ambiente)
+#   ./chiavi_env.sh --elenco   (mostra QUALI chiavi sono state trovate, senza mostrarle)
+set -u
+KF="${CHIAVI_FILE:-$HOME/CHIAVI_LOCALI.md}"
+
+t() { [ -f "$KF" ] || return 1; }
+
+# estrae la prima chiave che corrisponde a un nome di provider + un formato
+chiave_di(){  # $1 = nome/riga, $2 = regex della chiave
+  t || return 1
+  grep -iE "$1" "$KF" 2>/dev/null | grep -oE "$2" 2>/dev/null | head -1
+}
+
+# ── le chiavi che servono agli agenti ─────────────────────────────────────────
+OC_KEY=$(chiave_di 'opencode' 'oc_sk_[A-Za-z0-9_-]+')                # OpenCode Zen
+GQ_KEY=$(chiave_di 'groq' 'gsk_[A-Za-z0-9_-]+')                      # Groq
+GM_KEY=$(chiave_di 'Google AI Studio' 'AQ\.[A-Za-z0-9_.-]{20,}')     # Google AI Studio (nuovo formato)
+[ -z "${GM_KEY:-}" ] && GM_KEY=$(chiave_di 'Google AI Studio|gemini' 'AIza[A-Za-z0-9_-]{30,}')
+OM_KEY=$(chiave_di '^[[:space:]]*[-*].*[Oo]mniroute|omniroute' 'sk-[A-Za-z0-9-]{16,}')  # OmniRoute (centralino locale)
+AN_KEY=$(chiave_di 'agentrouter' 'sk-[A-Za-z0-9]{30,}')              # AgentRouter
+AR_KEY="$AN_KEY"
+
+# OmniRoute parla il formato OpenAI: se c'è, TUTTI gli agenti possono usarlo come cervello
+OMNI_URL="http://127.0.0.1:20128/v1"
+
+export OPENCODE_API_KEY="${OC_KEY:-}"
+export GROQ_API_KEY="${GQ_KEY:-}"
+export GEMINI_API_KEY="${GM_KEY:-}"
+export GOOGLE_API_KEY="${GM_KEY:-}"
+export AGENTROUTER_API_KEY="${AR_KEY:-}"
+
+# "il cervello di default" per gli agenti compatibili OpenAI (OmniRoute se c'è la chiave)
+if [ -n "${OM_KEY:-}" ]; then
+  export OPENAI_BASE_URL="$OMNI_URL"
+  export OPENAI_API_BASE="$OMNI_URL"
+  export OPENAI_API_KEY="$OM_KEY"
+  export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
+  export OMNIROUTE_API_KEY="$OM_KEY"
+else
+  export OPENAI_BASE_URL="${OPENAI_BASE_URL:-$OMNI_URL}"
+  export OPENAI_API_BASE="${OPENAI_API_BASE:-$OMNI_URL}"
+  export OPENAI_API_KEY="${OPENAI_API_KEY:-sk-omniroute}"
+  export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
+fi
+
+if [ "${1:-}" = "--elenco" ]; then
+  printf '  %-22s %s\n' "OpenCode Zen"   "$([ -n "${OC_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
+  printf '  %-22s %s\n' "Groq"           "$([ -n "${GQ_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
+  printf '  %-22s %s\n' "Google AI Studio" "$([ -n "${GM_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
+  printf '  %-22s %s\n' "OmniRoute"      "$([ -n "${OM_KEY:-}" ] && echo '✓ trovata' || echo '— assente (il motore usa la sua)')"
+  printf '  %-22s %s\n' "AgentRouter"    "$([ -n "${AR_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
+  echo "  cervello di default per gli agenti: $OPENAI_BASE_URL  (modello: $OPENAI_MODEL)"
+fi

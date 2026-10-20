@@ -596,6 +596,43 @@ def _oc_esegui(argomenti, attesa=90):
         return 1, str(e)
 
 
+_inst_agenti = {"in_corso": False, "log": "", "quando": ""}
+
+
+def agenti_stato():
+    """Stato di TUTTI gli agenti (installato? chiave? pronto?) — dal file agenti_stato.sh."""
+    base = {"agenti": [], "chiavi": {}, "cervello": ""}
+    try:
+        out = subprocess.run(["bash", os.path.join(POSTA, "agenti_stato.sh"), "--json"],
+                             capture_output=True, text=True, timeout=60).stdout.strip()
+        if out.startswith("{"):
+            base = json.loads(out)
+    except Exception as e:
+        base["errore"] = str(e)
+    return base
+
+
+def installa_agenti(quali=None):
+    """Installa gli agenti mancanti in sottofondo (una volta per volta)."""
+    if _inst_agenti["in_corso"]:
+        return {"stato": "in_corso", "msg": "Sto già installando: aspetta (può volerci qualche minuto).",
+                "log": _inst_agenti["log"][-2000:]}
+    _inst_agenti.update({"in_corso": True, "log": "", "quando": time.strftime("%H:%M")})
+    argomenti = ["bash", os.path.join(POSTA, "installa_agenti.sh")] + (list(quali) if quali else [])
+
+    def _lavoro():
+        try:
+            p = subprocess.run(argomenti, capture_output=True, text=True, timeout=1800, cwd=POSTA)
+            _inst_agenti["log"] = ((p.stdout or "") + (p.stderr or ""))[-3000:]
+        except Exception as e:
+            _inst_agenti["log"] = f"Errore: {e}"
+        finally:
+            _inst_agenti["in_corso"] = False
+    threading.Thread(target=_lavoro, daemon=True).start()
+    return {"stato": "avviato", "msg": "Installazione partita: 1-5 minuti. Puoi continuare a chattare.",
+            "log": _inst_agenti["log"]}
+
+
 def chiavi_conteggio():
     """Quante chiavi ci sono nel portachiavi (attive / totali) — senza mostrarle."""
     f = os.path.join(HOME, "CHIAVI_LOCALI.md")
@@ -725,6 +762,11 @@ class H(BaseHTTPRequestHandler):
             self.wfile.write(b)
         elif self.path.startswith("/api/salute"):
             self._json(salute(fresco=True))
+        elif self.path.startswith("/api/agenti/andamento"):
+            self._json({"in_corso": _inst_agenti["in_corso"], "log": _inst_agenti["log"][-2500:],
+                        "quando": _inst_agenti["quando"]})
+        elif self.path.startswith("/api/agenti"):
+            self._json(agenti_stato())
         elif self.path.startswith("/api/chiavi"):
             self._json(chiavi_conteggio())
         elif self.path.startswith("/api/ponte"):
@@ -788,6 +830,10 @@ class H(BaseHTTPRequestHandler):
                 self._json({"testo": d["choices"][0]["message"]["content"], "modello": d.get("model") or "?"})
             except Exception as e:
                 self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
+        elif self.path == "/api/agenti/installa":
+            b = self._body()
+            quali = b.get("quali") or None
+            self._json(installa_agenti(quali))
         elif self.path == "/api/pc/aggiorna":
             self._json(aggiorna_pc())
         elif self.path == "/api/openclaw":
