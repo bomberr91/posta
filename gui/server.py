@@ -246,6 +246,9 @@ def omniroute_avvia(attesa=25):
     return porta_viva(20128)
 
 
+_omni_lav = {"quando": 0.0, "cosa": ""}
+
+
 def omni_pids():
     """I processi VERI di OmniRoute. Prima si usava «pkill -f omniroute», che ammazzava
     anche il curl che stava chiamando /api/omniroute (l'indirizzo contiene la parola):
@@ -844,7 +847,9 @@ def stato():
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
             "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
-                       "installato": bool(omni_bin()), "nome": "OmniRoute"},
+                       "installato": bool(omni_bin()), "nome": "OmniRoute",
+                       "lavoro": (_omni_lav["cosa"] if _omni_lav["quando"] and
+                                  time.time() - _omni_lav["quando"] < 420 else "")},
             "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
@@ -1116,6 +1121,29 @@ class H(BaseHTTPRequestHandler):
                 su = omniroute_riavvia()
                 self._json({"stato": "ok" if su else "ko", "gateway": su,
                             "msg": "🔄 Motore riavviato" if su else "⚠️ Non è ripartito: vedi /tmp/omniroute.log"})
+            elif az in ("free", "chiavi"):
+                if porta_viva(20128) and az == "free":
+                    # omni_free.sh spegne e riaccende il motore da sé: nessun blocco
+                    pass
+                if _omni_lav["quando"] and time.time() - _omni_lav["quando"] < 420:
+                    self._json({"stato": "in_corso",
+                                "msg": f"⏳ Sto già lavorando ({_omni_lav['cosa']}): 2-5 minuti, non premere altro."})
+                    return
+                script = os.path.join(POSTA, "omni_free.sh" if az == "free" else "omni_chiavi.sh")
+                if not os.path.exists(script):
+                    self._json({"stato": "ko", "msg": f"⚠️ Manca {os.path.basename(script)}"})
+                    return
+                _omni_lav["quando"] = time.time()
+                _omni_lav["cosa"] = "provider gratis" if az == "free" else "chiavi"
+                log = os.path.join("/tmp", "omni_lav_" + az + ".log")
+                subprocess.Popen(["bash", script], stdout=open(log, "w"), stderr=subprocess.STDOUT,
+                                 start_new_session=True)
+                self._json({"stato": "avviato",
+                            "msg": ("⏳ Attivo i provider gratis (2-5 minuti). Il motore si spegne e si "
+                                    "riaccende da solo; a fine lavoro ricontrollo i modelli."
+                                    if az == "free" else
+                                    "⏳ Innesto le tue chiavi nei provider (2-3 minuti). Il motore si spegne e "
+                                    "si riaccende da solo.")})
             elif az == "spegni":
                 spento = omni_spegni()
                 self._json({"stato": "ok" if spento else "ko", "gateway": porta_viva(20128),
