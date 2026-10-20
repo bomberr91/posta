@@ -1,7 +1,7 @@
-# 💰 Check-in AgentRouter (GUI) — 20/10/2026 16:32
+# 💰 Check-in AgentRouter (GUI) — 20/10/2026 16:34
 
 ```
-[checkin] 20/10/2026 16:32 · base=http://127.0.0.1:8771 · modo=RISCATTO
+[checkin] 20/10/2026 16:33 · base=http://127.0.0.1:8771 · modo=RISCATTO
 [checkin] sessione GitHub: bomberr91
 [checkin] AgentRouter: fuori · saldo prima: non letto
 [checkin] provo il rientro dal login…
