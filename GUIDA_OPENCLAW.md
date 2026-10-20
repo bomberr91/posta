@@ -108,6 +108,12 @@ Il punto è che OpenClaw **non è un'app da aprire**: è un servizio che gira so
 | **Hub + Agenti** (in arrivo) | OpenClaw entra come **motore disponibile**, perché parla la stessa lingua di OpenAI: `http://127.0.0.1:18789/v1` |
 | **Terminale** | `./openclaw_stato.sh` → dice tutto in 5 righe (installato? acceso? configurato?) |
 
+### Il file da conoscere: `CONFIGURA_OPENCLAW.bat`
+
+Fa le domande iniziali di OpenClaw (lingua, provider, canali). **Doppio clic e rispondi**: alla fine si ferma con «Premere un tasto» così vedi se è andata bene.
+
+> Perché un file e non un pulsante che "incastra" il comando: dentro un `.bat` bisogna chiamare l'altro comando con `call`, altrimenti Windows passa il nome del file come argomento e OpenClaw risponde *«does not know the command ...»*. Era esattamente l'errore che avevi visto.
+
 ### I due pulsanti che contano
 
 1. **⚙️ Configura ora** — una volta sola. Apre una finestra su Windows con le domande di OpenClaw (lingua, provider, canali): rispondi lì, poi torna nella GUI e premi *Controlla*.

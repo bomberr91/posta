@@ -9,6 +9,7 @@
 #     «Riscatta ora» non forza il giro)
 #   · "ho già riscattato a mano" → segna il giorno senza toccare il browser
 #   · saldo letto solo se la risposta è JSON (il WAF Aliyun restituisce HTML)
+import glob
 import json, os, re, subprocess, sys, time, threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -447,33 +448,37 @@ def openclaw_stato():
     return v
 
 
+def _l2w(percorso):
+    """percorso Linux -> percorso Windows (se wslpath non c'è, restituisce l'originale)."""
+    if not percorso or not percorso.startswith("/mnt/"):
+        return percorso
+    try:
+        r = subprocess.run(["wslpath", "-w", percorso], capture_output=True, text=True, timeout=5).stdout.strip()
+        return r or percorso
+    except Exception:
+        return percorso
+
+
+def _w2l(percorso):
+    """percorso Windows -> percorso Linux."""
+    if not percorso or percorso.startswith("/mnt/"):
+        return percorso
+    try:
+        r = subprocess.run(["wslpath", "-u", percorso], capture_output=True, text=True, timeout=5).stdout.strip()
+        return r or percorso
+    except Exception:
+        return percorso
+
+
 def _oc_bat(cmd, argomenti, pausa=False, nome="_posta_openclaw.bat"):
     """Scrive un .bat con dentro la riga giusta e restituisce il suo percorso WINDOWS.
     Serve perché cmd.exe sbaglia sempre con le virgolette annidate passate da Linux."""
-    def _l2w(p):
-        if not p.startswith("/mnt/"):
-            return p
-        try:
-            r = subprocess.run(["wslpath", "-w", p], capture_output=True, text=True, timeout=5).stdout.strip()
-            return r or p
-        except Exception:
-            return p
-
-    def _w2l(p):
-        if p.startswith("/mnt/"):
-            return p
-        try:
-            r = subprocess.run(["wslpath", "-u", p], capture_output=True, text=True, timeout=5).stdout.strip()
-            return r or p
-        except Exception:
-            return p
-
     cmd_lin = _w2l(cmd)                       # il comando in forma Linux (per copiarne la cartella)
     cmd_win = _l2w(cmd_lin)                   # ... e in forma Windows (per scriverlo dentro il .bat)
     cartella = os.environ.get("OC_BAT_DIR") or os.path.dirname(cmd_lin) or "/mnt/c/Windows/Temp"
     bat_lin = os.path.join(cartella, nome)
     righe = ["@echo off", "chcp 65001 >nul", "title OpenClaw",
-             f'"{cmd_win}" {" ".join(argomenti)}']
+             f'call "{cmd_win}" {" ".join(argomenti)}']
     if pausa:
         righe += ["echo.", "echo  Fatto. Puoi chiudere questa finestra.", "pause"]
     try:
@@ -657,25 +662,55 @@ class H(BaseHTTPRequestHandler):
                     pass
                 self._json({"stato": "ok", "msg": f"Apro {u} nel browser di Windows.", "url": u})
             elif az == "prepara":
-                # configurazione iniziale: finestra Windows con dentro la riga giusta già scritta
-                cmd = openclaw_cmd()
-                if not cmd:
-                    self._json({"stato": "errore", "msg": "OpenClaw non risulta installato."}, 400)
+                # uso il .bat che sta nel ponte (verificabile, con dentro "call"): lo copio in una
+                # cartella Windows vera e apro quello. Niente virgolette annidate, niente file generati.
+                sorgente = os.path.join(POSTA, "CONFIGURA_OPENCLAW.bat")
+                if not os.path.exists(sorgente):
+                    self._json({"stato": "errore",
+                                "msg": "Manca CONFIGURA_OPENCLAW.bat nel ponte: rifai [8]."}, 400)
                     return
-                bat = _oc_bat(cmd, ["onboard"], pausa=True, nome="_posta_openclaw_config.bat")
-                if not bat:
-                    self._json({"stato": "errore", "msg": "Non riesco a scrivere il file su Windows."}, 500)
-                    return
+                # home di Windows (%USERPROFILE%)
+                dest_dir = None
                 try:
-                    subprocess.Popen(["cmd.exe", "/c", "start", "OpenClaw", bat],
+                    r = subprocess.run(["cmd.exe", "/c", "echo", "%USERPROFILE%"], capture_output=True,
+                                       text=True, timeout=15, cwd="/mnt/c")
+                    prof = (r.stdout or "").strip().splitlines()[-1].strip()
+                    if prof and ":" in prof:
+                        lin = _w2l(prof)
+                        if lin and os.path.isdir(lin):
+                            dest_dir = lin
+                except Exception:
+                    dest_dir = None
+                if not dest_dir:
+                    winroot = os.environ.get("WINROOT", "/mnt/c")
+                    for d in sorted(glob.glob(os.path.join(winroot, "Users", "*"))):
+                        if os.path.isdir(os.path.join(d, "AppData", "Roaming")):
+                            dest_dir = d
+                            break
+                if not dest_dir:
+                    self._json({"stato": "errore",
+                                "msg": "Non riesco a trovare la tua cartella utente di Windows. "
+                                       "Fai doppio clic a mano su CONFIGURA_OPENCLAW.bat nella cartella posta."}, 400)
+                    return
+                dest = os.path.join(dest_dir, "CONFIGURA_OPENCLAW.bat")
+                try:
+                    with open(sorgente, "rb") as fi, open(dest, "wb") as fo:
+                        fo.write(fi.read())
+                except Exception as e:
+                    self._json({"stato": "errore", "msg": f"Non riesco a copiare il file: {e}"}, 500)
+                    return
+                dest_win = _l2w(dest)
+                try:
+                    subprocess.Popen(["cmd.exe", "/c", "start", "", dest_win],
                                      cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA,
                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    msg = ("Si sta aprendo una finestra su Windows: rispondi alle domande (lingua, provider, canali). "
-                           "Alla fine chiudila e torna qui: la scheda si aggiorna da sola. "
-                           f"Se non si apre, fai doppio clic su: {bat}")
+                    msg = ("Si sta aprendo una finestra su Windows con le domande di OpenClaw. "
+                           "Rispondi, poi chiudila e torna qui: la scheda si aggiorna da sola. "
+                           f"Se non si apre: doppio clic su {dest_win}")
                 except Exception as e:
-                    msg = f"Non riesco ad aprire la finestra di Windows ({e}). A mano: openclaw onboard"
-                self._json({"stato": "ok", "msg": msg, "bat": bat})
+                    msg = (f"Non riesco ad aprire la finestra ({e}). "
+                           f"Doppio clic a mano su: {dest_win}")
+                self._json({"stato": "ok", "msg": msg, "bat": dest_win})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/omniroute":
