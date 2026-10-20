@@ -2270,8 +2270,19 @@ function aggiornaPilota(){
   const led = (el, testo, cls) => { el.textContent = testo; el.className = cls || ''; };
 
   async function api(percorso, corpo){
-    const r = await fetch(percorso, corpo ? {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo)} : {});
-    return r.json();
+    try{
+      const r = await fetch(percorso, corpo ? {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo)} : {});
+      const d = await r.json();
+      const guasto = !r.ok || d.stato === 'ko' || d.errore || d.err
+                     || (d.testo && String(d.testo).indexOf('⚠️') === 0);
+      if(guasto) log('⚠️ ERRORE su ' + percorso + '\n\n' + JSON.stringify(d, null, 1).slice(0, 1600) +
+                     '\n\n(copia questo e mandalo in chat: lo sistemo)');
+      return d;
+    }catch(e){
+      log('⚠️ ERRORE di rete su ' + percorso + '\n\n' + (e && e.message ? e.message : e) +
+          '\n\n(copia questo e mandalo in chat: lo sistemo)');
+      return {};
+    }
   }
   function log(t){
     const c = $('agLog');

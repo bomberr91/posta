@@ -31,9 +31,25 @@ cerca(){ grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1; }
   echo "# 🔑 Rapporto innesto chiavi in OmniRoute — $(date '+%d/%m/%Y %H:%M')"
   echo
   # provider_id | riga da cercare | pattern chiave
-  while IFS=';' read -r PID RIGA PAT; do
+  while IFS='|' read -r PID RIGA; do
     [ -z "$PID" ] && continue
-    KEY=$(cerca "$RIGA" "$PAT")
+    # chiave = il token piu' lungo sulla riga del provider (funziona per tutti, senza
+    # dover scrivere un formato a mano per ognuno)
+    RIGA_TXT=$(grep -iE "\*\*$RIGA" "$K" 2>/dev/null)
+    KEY=""
+    # prima i formati di chiave noti (in ordine), poi il token piu' lungo senza "/" (mai i percorsi)
+    for PAT in 'oc_sk_[A-Za-z0-9_]+' 'gsk_[A-Za-z0-9_-]+' 'AQ\.[A-Za-z0-9_.-]{20,}' \
+               'nvapi-[A-Za-z0-9_-]+' 'mstrl_[A-Za-z0-9_-]+' 'hf_[A-Za-z0-9]+' \
+               'sk-or-[A-Za-z0-9_-]+' 'sk-bl-[A-Za-z0-9_-]+' 'sk-air-[A-Za-z0-9_-]+' \
+               'sk-nry-[A-Za-z0-9_-]+' 'sk-orca-[A-Za-z0-9_-]+' 'sk-navy-[A-Za-z0-9_-]+' \
+               'sk-xt-[A-Za-z0-9_-]+' 'rqsty-sk-[A-Za-z0-9+/=_-]+' 'ek-[A-Za-z0-9]+' \
+               'ak_[A-Za-z0-9]+' 'alv2_[A-Za-z0-9]+' 'cfut_[A-Za-z0-9]+' 'lfu_[A-Za-z0-9]+' \
+               'sk-free-[A-Za-z0-9_-]+' 'ghp_[A-Za-z0-9]+' 'sk-[A-Za-z0-9_-]{16,}'; do
+      KEY=$(printf '%s' "$RIGA_TXT" | grep -oE "$PAT" | head -1)
+      [ -n "$KEY" ] && break
+    done
+    [ -z "$KEY" ] && KEY=$(printf '%s' "$RIGA_TXT" | grep -oE '[A-Za-z0-9_+=.-]{24,}' \
+          | grep -v '/' | awk '{print length" "$0}' | sort -rn | head -1 | cut -d' ' -f2-)
     if [ -z "$KEY" ]; then echo "- $PID: · nessuna chiave nel portachiavi (salto)"; continue; fi
     if timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | grep -qiE "[[:space:]]$PID[[:space:]]"; then
       ROT=$(timeout 90 "$OMNI" providers rotate "$PID" --api-key "$KEY" </dev/null 2>&1 | noansi | tail -2 | tr '\n' ' ')
@@ -47,27 +63,7 @@ cerca(){ grep -iE "$1" "$K" 2>/dev/null | grep -oE "$2" | head -1; }
       OUT2=$(timeout 90 "$OMNI" setup --non-interactive --add-provider --provider "$PID" --api-key "$KEY" </dev/null 2>&1 | noansi | tail -2 | tr '\n' ' ')
       echo "- $PID: ① ${OUT:-nulla} ② ${OUT2:-nulla}"
     fi
-  done << 'MAPPA'
-groq;groq;gsk_[A-Za-z0-9_-]+
-gemini;gemini|google ai;AQ\.[A-Za-z0-9_-]+
-mistral;mistral;mstrl_[A-Za-z0-9_-]+
-cohere;cohere;[A-Za-z0-9]{40}
-openrouter;openrouter;sk-or-[A-Za-z0-9_-]+
-nvidia;nvidia;nvapi-[A-Za-z0-9_-]+
-agentrouter;agentrouter;sk-[A-Za-z0-9]{30,}
-huggingface;huggingface;hf_[A-Za-z0-9]+
-pollinations;pollinations;sk_[A-Za-z0-9]+
-api-airforce;airforce;sk-air-[A-Za-z0-9_-]+
-bazaarlink;bazaarlink;sk-bl-[A-Za-z0-9_-]+
-longcat;longcat;ak_[A-Za-z0-9]+
-llm7;llm7;[A-Za-z0-9+/=]{40,}
-requesty;requesty;rqsty-sk-[A-Za-z0-9+/=_-]+
-routeway;routeway;sk-[A-Za-z0-9]{30,}
-nara;nara;sk-nry-[A-Za-z0-9_-]+
-electronhub;electronhub;ek-[A-Za-z0-9]+
-anyapi;anyapi;sk-[A-Za-z0-9_-]{20,}
-opencode;opencode zen;oc_sk_[A-Za-z0-9_]+
-MAPPA
+  done < <(grep -v '^#' "$QUI/mappa_innesto.txt" 2>/dev/null | grep -v '^$')
   echo
   echo "## Connessioni configurate adesso"
   timeout 60 "$OMNI" providers list </dev/null 2>&1 | noansi | head -40
