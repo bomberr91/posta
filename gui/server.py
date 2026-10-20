@@ -403,6 +403,76 @@ def salute(fresco=False):
     return v
 
 
+_oc_cmd_cache = {"t": 0.0, "cmd": ""}
+
+def openclaw_cmd():
+    """Il comando openclaw eseguibile da qui (Ubuntu, Bun o Windows), con cache 5 min."""
+    if time.time() - _oc_cmd_cache["t"] < 300 and _oc_cmd_cache["cmd"]:
+        return _oc_cmd_cache["cmd"]
+    cmd = ""
+    try:
+        fuori = subprocess.run(["bash", os.path.join(POSTA, "apri_openclaw.sh"), "--trova"],
+                               capture_output=True, text=True, timeout=20).stdout.strip()
+        if "(installato su Windows):" in fuori:
+            cmd = fuori.split(":", 1)[1].strip()
+        elif fuori and "non è ancora installato" not in fuori:
+            # "OpenClaw (dentro Ubuntu): /percorso" / "runtime Bun"
+            for marca in ("Ubuntu):", "Bun):"):
+                if marca in fuori:
+                    cmd = fuori.split(marca, 1)[1].strip()
+                    break
+    except Exception:
+        cmd = ""
+    _oc_cmd_cache.update(t=time.time(), cmd=cmd)
+    return cmd
+
+
+def openclaw_stato():
+    """Stato OpenClaw per la scheda della GUI."""
+    v = {"installato": False, "versione": "", "dove": "", "gateway": False, "configurato": False,
+         "porta": 18789, "url": "http://localhost:18789", "base_api": "http://127.0.0.1:18789/v1"}
+    try:
+        out = subprocess.run(["bash", os.path.join(POSTA, "openclaw_stato.sh"), "--json"],
+                             capture_output=True, text=True, timeout=30).stdout.strip()
+        d = json.loads(out) if out.startswith("{") else {}
+        v.update({"installato": d.get("tipo", "no") != "no", "versione": d.get("versione", ""),
+                  "dove": d.get("dove", ""), "gateway": bool(d.get("gateway")),
+                  "configurato": bool(d.get("configurato")), "porta": d.get("porta", 18789),
+                  "url": f"http://localhost:{d.get('porta', 18789)}",
+                  "base_api": d.get("base_api", "")})
+    except Exception as e:
+        v["errore"] = str(e)
+    if not v["gateway"]:
+        v["gateway"] = porta_viva(v["porta"])
+    return v
+
+
+def _oc_esegui(argomenti, attesa=90):
+    """Lancia il comando openclaw (anche .cmd di Windows) e restituisce l'output."""
+    cmd = openclaw_cmd()
+    if not cmd:
+        return 127, "OpenClaw non risulta installato."
+    if cmd.startswith("/mnt/") or (len(cmd) > 2 and cmd[1] == ":" and cmd[2] in "\\/"):
+        # percorso di Windows (eventualmente senza estensione: cmd.exe risolve .cmd/.exe da solo)
+        w = cmd
+        try:
+            w = subprocess.run(["wslpath", "-w", cmd], capture_output=True, text=True, timeout=5).stdout.strip() or cmd
+        except Exception:
+            pass
+        riga = ["cmd.exe", "/c", w] + list(argomenti)
+        cwd = "/mnt/c" if os.path.isdir("/mnt/c") else POSTA
+    else:
+        riga = [cmd] + list(argomenti)
+        cwd = POSTA
+    try:
+        p = subprocess.run(riga, capture_output=True, text=True, timeout=attesa, cwd=cwd)
+        return p.returncode, (p.stdout or "") + (p.stderr or "")
+    except subprocess.TimeoutExpired:
+        return 124, f"Tempo scaduto dopo {attesa}s."
+    except Exception as e:
+        return 1, str(e)
+
+
 def stato():
     fus = {}
     try:
@@ -426,7 +496,7 @@ def stato():
             "adesso": adesso_hhmm(),
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
-            "fusion": fus, "risultati": ultimi, "salute": sl,
+            "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
 
@@ -521,6 +591,55 @@ class H(BaseHTTPRequestHandler):
                 self._json({"testo": d["choices"][0]["message"]["content"], "modello": d.get("model") or "?"})
             except Exception as e:
                 self._json({"testo": f"⚠️ Non riesco a parlare con OmniRoute: {e}", "modello": "-"})
+        elif self.path == "/api/openclaw":
+            b = self._body()
+            az = (b.get("azione") or "stato").strip()
+            if az == "stato":
+                self._json(openclaw_stato())
+            elif az == "avvia":
+                # prima prova a installare il servizio (parte da solo col PC), poi riavvia
+                rc, out = _oc_esegui(["gateway", "install"], attesa=120)
+                rc2, out2 = _oc_esegui(["gateway", "status"], attesa=60)
+                vivo = porta_viva(18789)
+                self._json({"stato": "ok" if vivo else "avviato_forse",
+                            "msg": ("🟢 Gateway acceso su :18789" if vivo else
+                                    "⚠️ Non risulta ancora acceso: guarda il log qui sotto (a volte serve 'gateway restart')"),
+                            "log": (out + "\n" + out2)[-1500:], "gateway": vivo})
+            elif az == "riavvia":
+                rc, out = _oc_esegui(["gateway", "restart"], attesa=90)
+                self._json({"stato": "ok", "msg": "Riavvio richiesto.", "log": out[-1200:],
+                            "gateway": porta_viva(18789)})
+            elif az == "doctor":
+                rc, out = _oc_esegui(["doctor"], attesa=120)
+                self._json({"stato": "ok", "msg": "Diagnostica completata.", "log": out[-2500:]})
+            elif az == "apri":
+                # apre l'interfaccia di OpenClaw nel browser di Windows
+                u = f"http://localhost:{openclaw_stato()['porta']}"
+                try:
+                    subprocess.run(["cmd.exe", "/c", "start", "", u], timeout=20,
+                                   cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA)
+                except Exception:
+                    pass
+                self._json({"stato": "ok", "msg": f"Apro {u} nel browser di Windows.", "url": u})
+            elif az == "prepara":
+                # configurazione iniziale: si apre una finestra Windows dove rispondere alle domande
+                cmd = openclaw_cmd() or "openclaw"
+                try:
+                    w = subprocess.run(["wslpath", "-w", cmd], capture_output=True, text=True, timeout=5).stdout.strip() or cmd
+                except Exception:
+                    w = cmd
+                try:
+                    subprocess.Popen(["cmd.exe", "/c", "start", "OpenClaw - configurazione iniziale", "cmd", "/k",
+                                      f'"{w}"', "onboard"],
+                                     cwd="/mnt/c" if os.path.isdir("/mnt/c") else POSTA,
+                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    msg = ("Si è aperta una finestra su Windows: rispondi alle domande (lingua, provider, canali). "
+                           "Alla fine torna qui e premi «Controlla».")
+                except Exception as e:
+                    msg = f"Non riesco ad aprire la finestra di Windows: {e}. Fallo a mano: openclaw onboard"
+                self._json({"stato": "ok", "msg": msg})
+            else:
+                self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/omniroute":
             az = self._body().get("azione")
             if az == "avvia":

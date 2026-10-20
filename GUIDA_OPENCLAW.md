@@ -98,6 +98,26 @@ openclaw gateway status
 
 ---
 
+## 2-bis · Come lo usi (senza mai aprirlo a mano)
+
+Il punto è che OpenClaw **non è un'app da aprire**: è un servizio che gira sotto. Una volta acceso il **Gateway**, resta lì e risponde. Da quel momento:
+
+| Dove | Cosa fai |
+|---|---|
+| **Centrale → GUI (`[g]`)** | scheda **🦾 OpenClaw**: `▶ Accendi` / `🩺 Diagnostica` / `🔄 Riavvia` / `🖥 Interfaccia` |
+| **Hub + Agenti** (in arrivo) | OpenClaw entra come **motore disponibile**, perché parla la stessa lingua di OpenAI: `http://127.0.0.1:18789/v1` |
+| **Terminale** | `./openclaw_stato.sh` → dice tutto in 5 righe (installato? acceso? configurato?) |
+
+### I due pulsanti che contano
+
+1. **⚙️ Configura ora** — una volta sola. Apre una finestra su Windows con le domande di OpenClaw (lingua, provider, canali): rispondi lì, poi torna nella GUI e premi *Controlla*.
+2. **▶ Accendi** — installa il Gateway come **servizio**: da quel momento **parte da solo all'accensione del PC**, e la Centrale lo trova sempre acceso. Non dovrai più aprirlo tu.
+
+Quando è acceso, il semaforo in GUI diventa 🟢 e compare l'indirizzo:
+`http://localhost:18789` (interfaccia) · `http://127.0.0.1:18789/v1` (API per il Hub).
+
+---
+
 ## 3 · Se qualcosa non va
 
 | Cosa vedi | Cosa fare |

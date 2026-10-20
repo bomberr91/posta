@@ -61,6 +61,19 @@ select{background:#0d1117;color:var(--testo);border:1px solid var(--bordo);borde
     <button class="primario" onclick="checkin(true)">Riscatta ora</button>
     <div class="fase" style="margin-top:8px">⏰ <b>Sveglia automatica</b>: riscatto da solo appena scatta il giorno cinese (≈18:05 italiane; con l'ora solare ≈17:05). PC spento a quell'ora? Riscatto all'accensione. Popup verde a successo avvenuto.</div>
   </div>
+  <div class="card"><h2>🦾 OpenClaw <span class="fase">— l'agente che lavora sul PC</span></h2>
+    <div class="riga"><span><span id="l_oc" class="led off"></span>Stato</span><span id="oc_stato">—</span></div>
+    <div class="riga"><span>Gateway</span><span id="oc_gw">—</span></div>
+    <div class="riga"><span>Configurato</span><span id="oc_cfg">—</span></div>
+    <div id="oc_aiuto" class="fase" style="margin:10px 0;line-height:1.45"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="primario" onclick="oc('avvia')">▶ Accendi</button>
+      <button onclick="oc('apri')">🖥 Interfaccia</button>
+      <button onclick="oc('doctor')">🩺 Diagnostica</button>
+      <button onclick="oc('riavvia')">🔄 Riavvia</button>
+    </div>
+    <pre id="oc_log" style="display:none"></pre>
+  </div>
   <div class="card largo"><h2>💬 Chat Hub <span class="fase">— modelli gratis via OmniRoute, risponde il migliore (model: auto)</span></h2>
     <div id="chatlog" style="max-height:320px;overflow:auto;margin-bottom:10px"></div>
     <textarea id="chatmsg" placeholder="Chiedi qualcosa ai modelli gratis..." style="min-height:60px"></textarea>
@@ -110,7 +123,7 @@ function promemoria(){
 }
 async function aggiorna(){try{
   const s=await api('/api/stato');
-  window._ultimoStato=s; disegnaSalute(s.salute); promemoria();
+  window._ultimoStato=s; disegnaSalute(s.salute); promemoria(); disegnaOpenClaw(s.openclaw);
   $('ora').textContent=s.ora;
   $('l_omni').className='led '+(s.omniroute?'on':'off');
   $('l_brow').className='led '+(s.browser_agenti?'on':'off');
@@ -162,6 +175,34 @@ async function fusion(){
   note=false;
   const r=await api('/api/fusion',{missione:m});
   toast(r.stato==='avviata'?'🚀 Squadra lanciata! Segui la barra.':'⚠️ '+(r.msg||'errore'));
+}
+async function oc(azione){
+  if(azione==='apri'||azione==='doctor') toast('🦾 Un attimo…',4000);
+  else if(azione==='prepara') toast('🦾 Apro la configurazione su Windows…',6000);
+  else toast('🦾 OpenClaw: '+azione+' in corso… (può volerci 1 minuto)',9000);
+  const r=await api('/api/openclaw',{azione:azione});
+  if(r.log){const p=$('oc_log');p.textContent=r.log;p.style.display='block';}
+  if(r.msg) toast(r.msg,10000);
+  aggiorna();
+}
+function disegnaOpenClaw(o){
+  if(!o) return;
+  const ok=!!o.installato, gw=!!o.gateway;
+  $('l_oc').className='led '+(ok&&gw?'on':'off');
+  $('oc_stato').textContent = ok ? ('installato'+(o.versione?(' · '+o.versione):'')) : 'non installato';
+  $('oc_gw').textContent = gw ? ('🟢 acceso — '+o.url) : '🔴 spento';
+  $('oc_cfg').textContent = o.configurato ? '✅ sì' : '⚠️ no';
+  const a=$('oc_aiuto');
+  if(!ok){
+    a.innerHTML='Prima installalo: <b>INSTALLA_OPENCLAW.bat</b> nella cartella posta (una volta sola).';
+  } else if(!o.configurato){
+    a.innerHTML='Manca la configurazione iniziale (2 minuti, una volta sola). '+
+      '<button onclick="oc(\'prepara\')">⚙️ Configura ora</button>';
+  } else if(!gw){
+    a.innerHTML='Configurato ma spento: premi <b>▶ Accendi</b> e diventa un servizio che parte da solo col PC.';
+  } else {
+    a.innerHTML='<span style="color:#3fb950">Pronto</span>: il Hub può usarlo come provider su <b>'+o.base_api+'</b>.';
+  }
 }
 async function omni(a){await api('/api/omniroute',{azione:a});setTimeout(aggiorna,3000);toast(a==='avvia'?'🧠 Accensione motore...':'🔴 Spento.')}
 let STORIA=[];

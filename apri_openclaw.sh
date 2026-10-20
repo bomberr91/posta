@@ -63,7 +63,7 @@ case "$TIPO" in
   windows-exe)
     W=$(wslpath -w "$DOVE" 2>/dev/null || echo "$DOVE")
     case "$DOVE" in
-      *.cmd|*.bat)
+      /mnt/*|[A-Za-z]:\\*|*.cmd|*.bat|*.exe)
         if [ "${1:-}" = "--finestra" ]; then
           echo "▸ Apro OpenClaw in una finestra di Windows…"
           cmd.exe /c start "OpenClaw" "$W"
