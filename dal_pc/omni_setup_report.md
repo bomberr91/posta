@@ -20,3 +20,7 @@
 - freebuff: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
 - charm-hyper: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
 - agentrouter: già attivo
+- unorouter: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- openrouter: già attivo
+- requesty: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
+- zylo-api: ①  ✖ locking protocol   ②     omniroute providers remove <id> — remove a connection (requires confirmation)  
