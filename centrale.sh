@@ -88,10 +88,7 @@ while :; do
         b|B) cd "$HOME/posta" && goose session ;;
         c|C) cd "$HOME/posta" && interpreter ;;
         d|D) cd "$HOME/posta" && (hermes || "$HOME/.hermes/hermes-agent/venv/bin/hermes") ;;
-        e|E) cd "$HOME/posta"
-             if command -v openclaw >/dev/null 2>&1; then openclaw
-             else echo "OpenClaw non c'è ancora: provo a metterlo in funzione (Bun / Windows nativo)..."
-                  bash "$HOME/posta/openclaw_fix.sh"; fi ;;
+        e|E) bash "$HOME/posta/apri_openclaw.sh" ;;
         f|F) cd "$HOME/posta" && (gemini || "$NODE22_BIN/gemini") ;;
         *)   cd "$HOME/posta" && opencode ;;
       esac
@@ -130,7 +127,7 @@ while :; do
       echo "  • Goose      : $(goose --version 2>&1 | head -1)"
       echo "  • Secondhand : $(interpreter --version 2>&1 | head -1 || echo non presente)"
       echo "  • Hermes     : $(hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo installato in ~/.hermes || echo non presente))"
-      echo "  • OpenClaw   : $(openclaw --version 2>&1 | head -1 || "$NODE22_BIN/openclaw" --version 2>&1 | head -1 || echo 'non ancora pronto — ./openclaw_fix.sh')"
+      echo "  • OpenClaw   : $(bash "$HOME/posta/apri_openclaw.sh" --trova 2>/dev/null || echo 'non ancora installato — INSTALLA_OPENCLAW.bat')"
       echo "  • Gemini CLI : $(gemini --version 2>&1 | head -1 || "$NODE22_BIN/gemini" --version 2>&1 | head -1 || echo in installazione)"
       echo ""
       echo "── Super-Poteri & Innesti Attivi ──"

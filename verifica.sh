@@ -50,12 +50,16 @@ for a in opencode goose interpreter hermes gemini; do
   if c_e "$a"; then A_ok="$A_ok $a"; else giu "Agente: $a" "NON trovato"; fi
 done
 [ -n "$A_ok" ] && ok "Agenti presenti" "$A_ok"
-# openclaw merita un rigo suo (dipende dal runtime)
-if c_e openclaw; then
-  ok "OpenClaw" "$(ver openclaw)"
-else
-  att "OpenClaw" "non installato (serve un runtime Node 24+ o il Bun: vedi ./openclaw_fix.sh)"
-fi
+# openclaw merita un rigo suo (può stare in Ubuntu, con Bun, o su Windows)
+QUI=$(cd "$(dirname "$0")" && pwd)
+OC_TIPO=$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null); OC_TIPO=${OC_TIPO:-no}
+case "$OC_TIPO" in
+  wsl)         ok   "OpenClaw (Ubuntu)"  "$(ver openclaw)" ;;
+  bun)         ok   "OpenClaw (Bun)"     "$("$HOME/.bun/bin/openclaw" --version 2>&1 | head -1)" ;;
+  windows-exe) ok   "OpenClaw (Windows)" "installato · si apre con [1]→[e]" ;;
+  windows-app) att  "OpenClaw (Windows)" "c'è l'app grafica: aprila dal menu Start di Windows" ;;
+  *)           giu  "OpenClaw"           "manca · doppio clic su INSTALLA_OPENCLAW.bat (o ./openclaw_fix.sh)" ;;
+esac
 
 # ── 4 · NODE (il problema WSL1)
 DEF=$(ls -d "$HOME/.nvm/versions/node/"* 2>/dev/null | sort -V | tail -1 | xargs -r basename)
@@ -65,7 +69,7 @@ N24=$(ls -d "$HOME/.nvm/versions/node/v2"[4-9]* 2>/dev/null | sort -V | tail -1 
 if [ -n "$N24" ]; then
   V24BIN=$(ls "$HOME/.nvm/versions/node/$N24/bin/node" 2>/dev/null)
   if "$V24BIN" -v >/dev/null 2>&1; then ok "Node $N24" "$("$V24BIN" -v) · gira"
-  else att "Node $N24" "installato ma NON eseguibile su WSL1 (bug noto node#63735 → ./openclaw_fix.sh)"; fi
+  else att "Node $N24" "installato ma NON eseguibile su WSL1 (bug noto node#63735: usa Windows o Bun)"; fi
 fi
 
 # ── 5 · MOTORI E PORTE
