@@ -392,6 +392,13 @@ class H(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(b)))
             self.end_headers()
             self.wfile.write(b)
+        elif self.path == "/api/hub" or self.path == "/hub":
+            b = leggi(os.path.join(QUI, "hub.html"), "<h1>hub.html mancante</h1>").encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
         elif self.path == "/api/stato":
             self._json(stato())
         elif self.path.startswith("/api/risultato"):
