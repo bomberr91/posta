@@ -260,8 +260,11 @@ def _fai_checkin(forza=False):
         avviato_da_noi = True
         time.sleep(3)
     try:
+        env = dict(os.environ)
+        if forza:
+            env["FORZA"] = "1"        # il tasto «Riscatta ora» è una richiesta esplicita: salta le guardie
         p = subprocess.run(["python3", os.path.join(POSTA, "checkin_agentrouter.py")],
-                           capture_output=True, text=True, timeout=300)
+                           capture_output=True, text=True, timeout=300, env=env)
         out = (p.stdout or "") + (p.stderr or "")
         rc = p.returncode
     except Exception as e:
@@ -273,7 +276,7 @@ def _fai_checkin(forza=False):
     scrivi(os.path.join(POSTA, "dal_pc", "agentrouter_checkin.md"),
            f"# 💰 Check-in AgentRouter (GUI) — {time.strftime('%d/%m/%Y %H:%M')}\n\n```\n{out}\n```\n")
 
-    if rc != 2:                       # browser spento = non è un tentativo vero
+    if rc not in (2, 4, 5):           # browser spento / finestra chiusa / salto = non sono tentativi veri
         segna_tentativo()
     if ok:
         scrivi(flag_checkin(), time.strftime("%H:%M"))
@@ -297,6 +300,8 @@ def _fai_checkin(forza=False):
         msg = "⚠️ Serve un login a mano nel BROWSER_AGENTI (GitHub) → poi «Riscatta ora»."
     elif rc == 4:
         msg = "⏳ Finestra chiusa: si riscatta dalle 18:05."
+    elif rc == 5:
+        msg = "⏭ Niente da fare: o è già fatto oggi, o serve il login a mano."
     elif rc == 2:
         msg = "⚠️ BROWSER_AGENTI spento: apri l'icona e riprova."
     else:
