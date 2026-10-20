@@ -75,6 +75,27 @@ if vuole goose; then
   fi
 fi
 
+# Goose va puntato al MOTORE una volta sola (altrimenti chiede un login e non risponde)
+if vuole goose && c_e goose; then
+  GC="$HOME/.config/goose/config.yaml"
+  mkdir -p "$(dirname "$GC")"
+  if ! grep -q "127.0.0.1:20128" "$GC" 2>/dev/null; then
+    if [ -f "$GC" ]; then cp "$GC" "$GC.prima_del_motore" 2>/dev/null || true; fi
+    cat > "$GC" <<'YAML'
+# scritto da installa_agenti.sh — Goose parla con OmniRoute (il cervello comune)
+GOOSE_PROVIDER: openai
+GOOSE_MODEL: auto
+OPENAI_HOST: http://127.0.0.1:20128
+OPENAI_BASE_PATH: v1/chat/completions
+GOOSE_MODE: auto
+GOOSE_TELEMETRY_ENABLED: false
+YAML
+    ok "Goose puntato al motore (config.yaml)"
+  else
+    ok "Goose già puntato al motore"
+  fi
+fi
+
 # ── 3 · Secondhand (OpenInterpreter) ────────────────────────────────────────
 if vuole interpreter; then
   if c_e interpreter; then ok "Secondhand già presente"

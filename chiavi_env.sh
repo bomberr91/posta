@@ -50,6 +50,13 @@ else
   export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
 fi
 
+# ---- Goose: stesso cervello di tutti, senza dover fare "goose configure" a mano ----
+# Goose vuole HOST senza /v1 e il percorso a parte; la chiave la legge dall'ambiente.
+export OPENAI_HOST="${OPENAI_HOST:-http://127.0.0.1:20128}"
+export OPENAI_BASE_PATH="${OPENAI_BASE_PATH:-v1/chat/completions}"
+export GOOSE_PROVIDER="${GOOSE_PROVIDER:-openai}"
+export GOOSE_MODEL="${GOOSE_MODEL:-${OPENAI_MODEL:-auto}}"
+
 if [ "${1:-}" = "--elenco" ]; then
   printf '  %-22s %s\n' "OpenCode Zen"   "$([ -n "${OC_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
   printf '  %-22s %s\n' "Groq"           "$([ -n "${GQ_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
