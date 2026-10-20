@@ -271,7 +271,11 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <section class="agCard">
         <h3>🌐 Browser agenti</h3>
         <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
-        <div class="agBottoni"><button class="agB" id="agBrowApri">Apri / mostra</button></div>
+        <div class="agRiga"><span>GitHub · AgentRouter</span><span class="agDim">profilo separato, non è il tuo browser</span></div>
+        <div class="agBottoni">
+          <button class="agB" id="agBrowApri">👁 Mostra</button>
+          <button class="agB" id="agBrowNas">🙈 Nascondi</button>
+        </div>
         <div class="agDim" style="margin-top:6px">Serve solo per il check-in: resta nascosto se non serve.</div>
       </section>
 
@@ -2305,7 +2309,7 @@ function aggiornaPilota(){
       led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
       led($('agOcGw'), oc.gateway ? ('🟢 acceso — ' + oc.url) : '🔴 spento', oc.gateway ? 'ok' : 'att');
       // browser
-      led($('agBrow'), s.browser_agenti ? '🟢 acceso' : 'spento', s.browser_agenti ? 'ok' : 'att');
+      led($('agBrow'), s.browser_agenti ? '🟢 attivo, nascosto' : 'spento', s.browser_agenti ? 'ok' : 'att');
       // salute
       const sl = s.salute || {};
       $('agSalute').innerHTML = (sl.verdetto || '—') +
@@ -2345,7 +2349,8 @@ function aggiornaPilota(){
   $('agOcOn').addEventListener('click', async () => { log('Accendo OpenClaw… (30-60 s, non premere altro)'); const r = await api('/api/openclaw', {azione:'avvia'}); log(r.msg + (r.log ? '\n\n' + r.log : '')); aggiorna(); });
   $('agOcApri').addEventListener('click', async () => { const r = await api('/api/openclaw', {azione:'apri'}); log(r.msg || ''); });
   $('agOcDoc').addEventListener('click', async () => { log('Diagnostica in corso…'); const r = await api('/api/openclaw', {azione:'doctor'}); log(r.msg + '\n\n' + (r.log || '')); });
-  $('agBrowApri').addEventListener('click', async () => { const r = await api('/api/openclaw', {azione:'cartella'}); log(r.msg || ''); });
+  $('agBrowApri').addEventListener('click', async () => { log('Apro la finestra del browser degli agenti…'); const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || ''); aggiorna(); });
+  $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
   $('agRisLista').addEventListener('change', async e => {
     const n = e.target.value; if(!n || n === '—') return;
     const r = await api('/api/risultato?f=' + encodeURIComponent(n));

@@ -361,6 +361,33 @@ def chrome_headless_avvia():
     return porta_viva(9222)
 
 
+def chrome_finestra(mostra=True):
+    """Mostra la finestra del browser degli agenti o la rimanda dietro le quinte.
+    Stesso profilo e stessa porta 9222: cambia solo se la finestra si vede."""
+    if porta_viva(9222):
+        chrome_headless_chiudi()
+        for _ in range(15):
+            if not porta_viva(9222):
+                break
+            time.sleep(1)
+    for c in CHROME_PATHS:
+        if not os.path.exists(c):
+            continue
+        argomenti = [c, "--remote-debugging-port=9222", f"--user-data-dir={PROFILO_WIN}",
+                     "--no-first-run", "--no-default-browser-check"]
+        if not mostra:
+            argomenti += ["--headless=new", "--disable-gpu", "about:blank"]
+        else:
+            argomenti += ["https://www.google.com"]
+        subprocess.Popen(argomenti, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        for _ in range(20):
+            if porta_viva(9222):
+                return True
+            time.sleep(1)
+        return porta_viva(9222)
+    return False
+
+
 def chrome_headless_chiudi():
     try:
         from checkin_agentrouter import WS, http_json
@@ -1106,6 +1133,17 @@ class H(BaseHTTPRequestHandler):
                             "comando": "openclaw onboard"})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
+        elif self.path == "/api/browser":
+            az = (self._body().get("azione") or "stato").strip()
+            if az == "stato":
+                self._json({"acceso": porta_viva(9222), "porta": 9222})
+                return
+            visibile = (az == "mostra")
+            su = chrome_finestra(mostra=visibile)
+            self._json({"stato": "ok" if su else "ko", "acceso": su,
+                        "msg": ("👁 Browser degli agenti in primo piano (porta 9222)"
+                                if visibile else "🙈 Browser di nuovo dietro le quinte: continua a lavorare")
+                               if su else "⚠️ Non sono riuscito ad aprire il browser: serve Chrome o Edge installato"})
         elif self.path == "/api/omniroute":
             az = self._body().get("azione")
             if az in ("avvia", "riavvia") and not omni_bin():
