@@ -46,9 +46,16 @@ while :; do
   POSTINO_ST=$(pgrep -f 'postino.sh' >/dev/null 2>&1 && echo "🟢 ATTIVO" || echo "🔴 SPENTO")
   MAGPIE_ST=$(pgrep -f 'magpie serve' >/dev/null 2>&1 && echo "🟢 ATTIVO" || echo "🔴 SPENTO")
   SKILLS_N=$(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)
+  # Verdetto di salute: 1 decimo di secondo, così una rottura si vede subito (senza rifare [8])
+  SALUTE=""
+  if [ -x "$HOME/posta/verifica.sh" ]; then
+    SALUTE=$(bash "$HOME/posta/verifica.sh" 2>/dev/null | grep -oE '🟢 TUTTO A POSTO|🟡 [0-9]+ cose da guardare|🔴 [0-9]+ PROBLEMI' | head -1)
+    [ -z "$SALUTE" ] && SALUTE="🩺 verifica non disponibile"
+  fi
   echo "======================================================================"
   echo "   ⚡ CENTRALE AGENTI H24 — FILIPPOPC (Pre-Hub v2)"
   echo "   Ponte GitHub: $POSTINO_ST  ·  Magpie: $MAGPIE_ST  ·  Skill attive: $SKILLS_N"
+  [ -n "$SALUTE" ] && echo "   Salute del PC: $SALUTE   ([v] per il dettaglio)"
   echo "======================================================================"
   echo ""
   echo "  [1] 💬 Chatta con un Agente singolo (OpenCode / Goose / Secondhand / Hermes / OpenClaw / Gemini)"
@@ -60,6 +67,7 @@ while :; do
   echo "  [7] 📊 STATO AGENTI, INNESTI (Headroom/XERJ/Beads) E QUOTE MAGPIE"
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
   echo "  [9] 🧠 MOTORE OMNIROUTE — HUB V2 (359 provider, 90+ GRATIS, dashboard web)"
+  echo "  [v] 🩺 CONTROLLO SALUTE (2 secondi: dice subito se qualcosa è rotto, non installa niente)"
   echo "  [g] 🖥️  GUI CENTRALE (interfaccia web: Hub + Agenti + check-in automatico)"
   echo ""
   echo "  [0] Esci"
@@ -80,7 +88,10 @@ while :; do
         b|B) cd "$HOME/posta" && goose session ;;
         c|C) cd "$HOME/posta" && interpreter ;;
         d|D) cd "$HOME/posta" && (hermes || "$HOME/.hermes/hermes-agent/venv/bin/hermes") ;;
-        e|E) cd "$HOME/posta" && (openclaw || "$NODE22_BIN/openclaw") ;;
+        e|E) cd "$HOME/posta"
+             if command -v openclaw >/dev/null 2>&1; then openclaw
+             else echo "OpenClaw non c'è ancora: provo a metterlo in funzione (Bun / Windows nativo)..."
+                  bash "$HOME/posta/openclaw_fix.sh"; fi ;;
         f|F) cd "$HOME/posta" && (gemini || "$NODE22_BIN/gemini") ;;
         *)   cd "$HOME/posta" && opencode ;;
       esac
@@ -119,7 +130,7 @@ while :; do
       echo "  • Goose      : $(goose --version 2>&1 | head -1)"
       echo "  • Secondhand : $(interpreter --version 2>&1 | head -1 || echo non presente)"
       echo "  • Hermes     : $(hermes --version 2>&1 | head -1 || ([ -d ~/.hermes/hermes-agent ] && echo installato in ~/.hermes || echo non presente))"
-      echo "  • OpenClaw   : $(openclaw --version 2>&1 | head -1 || "$NODE22_BIN/openclaw" --version 2>&1 | head -1 || echo non presente)"
+      echo "  • OpenClaw   : $(openclaw --version 2>&1 | head -1 || "$NODE22_BIN/openclaw" --version 2>&1 | head -1 || echo 'non ancora pronto — ./openclaw_fix.sh')"
       echo "  • Gemini CLI : $(gemini --version 2>&1 | head -1 || "$NODE22_BIN/gemini" --version 2>&1 | head -1 || echo in installazione)"
       echo ""
       echo "── Super-Poteri & Innesti Attivi ──"
@@ -189,6 +200,12 @@ while :; do
       sleep 2
       cmd.exe /c start "" "http://localhost:20200" 2>/dev/null || echo "Apri a mano: http://localhost:20200"
       echo "🖥️ GUI avviata su http://localhost:20200 (il check-in parte da solo)"
+      read -r -p "Premi INVIO per tornare al menu..." _
+      ;;
+    v|V)
+      bash "$HOME/posta/verifica.sh"
+      echo ""
+      echo "  (se è giallo/rosso: [8] aggiorna, ./openclaw_fix.sh mette a posto OpenClaw)"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     0|q|Q)

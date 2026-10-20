@@ -146,40 +146,23 @@ else
   { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || nota "Hermes: installazione saltata"
 fi
 
-# ── 6 · OPENCLAW (richiede Node ≥24: su WSL1 non parte → un tentativo ogni 7 giorni) ──
+# ── 6 · OPENCLAW (delego a openclaw_fix.sh: prova Bun e Windows nativo, non solo Node) ──
 echo ""
 echo "── 6/6 · OpenClaw..."
-NODE24_OK=0
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
-  ls -d "$HOME/.nvm/versions/node/v"2[4-9]* >/dev/null 2>&1 && NODE24_OK=1
-fi
 if c_e openclaw; then
   salto "OpenClaw $(ver openclaw)"
-elif [ "$NODE24_OK" = "0" ] && [ "$FORZA" != "1" ]; then
-  salto "OpenClaw: serve Node ≥24 e sul PC non c'è (WSL1 non lo fa partire) → non tento nemmeno"
+elif [ "$DRY" = "1" ]; then
+  nota "[DRY] lancerei ./openclaw_fix.sh (prova Bun, poi Windows nativo)"
+elif [ -x "$HOME/posta/openclaw_fix.sh" ]; then
+  FIX_ARGS=""; [ "$FORZA" = "1" ] && FIX_ARGS="-f"
+  ESITO=0; "$HOME/posta/openclaw_fix.sh" $FIX_ARGS >/dev/null 2>&1 || ESITO=$?
+  case "$ESITO" in
+    0) ok "OpenClaw: $(ver openclaw)" ;;
+    2) salto "OpenClaw: già provato da poco, riprovo tra qualche giorno (FORZA=1 per insistere)" ;;
+    *) nota "OpenClaw non ancora pronto: lancia a mano ./openclaw_fix.sh e vedi cosa dice" ;;
+  esac
 else
-  ULTIMO="$ST/openclaw_ultimo_tentativo"
-  TENTA=1
-  if [ -f "$ULTIMO" ] && [ "$FORZA" != "1" ]; then
-    T0=$(date -r "$ULTIMO" +%s 2>/dev/null || echo 0)
-    G=$(( ( $(date +%s) - T0 ) / 86400 ))
-    [ "$G" -lt 7 ] && TENTA=0
-  fi
-  if [ "$TENTA" = "0" ]; then
-    salto "OpenClaw: tentato $G giorni fa, riprovo tra $((7-G)) giorni (serve Node ≥24, non disponibile su WSL1)"
-  elif [ "$DRY" = "1" ]; then
-    nota "[DRY] tenterei l'installazione di OpenClaw"
-  else
-    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh \
-      | OPENCLAW_NO_ONBOARD=1 OPENCLAW_NO_PROMPT=1 bash -s -- --runtime node --no-onboard --no-prompt >/dev/null 2>&1 || true
-    date -Is > "$ULTIMO"
-    if command -v openclaw >/dev/null 2>&1; then
-      ok "OpenClaw installato: $(openclaw --version 2>&1 | head -1)"
-    else
-      nota "OpenClaw: serve Node ≥24 (su WSL1 non parte) → prossimo tentativo tra 7 giorni"
-    fi
-  fi
+  nota "OpenClaw: manca openclaw_fix.sh nel ponte (sincronizza e riprova)"
 fi
 
 # ── Extra: innesti Scaglione 1 + skill di marketing (con timbro) ──────────────
@@ -222,7 +205,7 @@ if [ "$FATTI" -gt 0 ] && [ "$DRY" != "1" ]; then
     echo "- Goose: $(goose --version 2>&1 | head -1)"
     echo "- Secondhand: $(c_e interpreter && ver interpreter || echo non presente)"
     echo "- Hermes: $(c_e hermes && ver hermes || echo 'presente in ~/.hermes')"
-    echo "- OpenClaw: $(c_e openclaw && ver openclaw || echo 'non installabile su WSL1 (serve Node 24)')"
+    echo "- OpenClaw: $(c_e openclaw && ver openclaw || echo 'non ancora pronto → ./openclaw_fix.sh')"
   } > "$HOME/posta/dal_pc/stato_aggiornamento.md"
   cd "$HOME/posta" || exit 0
   git add -A >/dev/null 2>&1 || true
