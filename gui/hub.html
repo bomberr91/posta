@@ -202,6 +202,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         </div>
         <div id="pilotbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--mut);padding:6px 2px 2px">
           <span id="pilot"></span>
+          <span id="agChip" title="Quanti agenti (OpenCode, Goose, Secondhand, Hermes, Gemini, OpenClaw…) sono installati e pronti. Clicca per aprire la scheda e sistemarli." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">🤖 agenti…</span>
           <span id="livemode" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">…</span>
         </div>
         <div id="sysrow"><textarea id="sys" rows="1" placeholder="istruzioni di sistema (opzionale) — es. rispondi in italiano, sii brevissimo…"></textarea></div>
@@ -2212,7 +2213,7 @@ function aggiornaPilota(){
   }
   if(lm){
     const live=!!window.__LIVE;
-    lm.innerHTML = live ? '🟢 MODALITÀ VERA (OmniRoute sul PC)' : '🧪 ANTEPRIMA (risposte dimostrative)';
+    lm.innerHTML = live ? '🟢 CHAT VERA — risponde OmniRoute sul tuo PC' : '🧪 ANTEPRIMA — risposte dimostrative';
     lm.style.borderColor = live ? '#3fb95066' : '#30363d';
     lm.style.color = live ? '#3fb950' : '#8b949e';
   }
@@ -2389,6 +2390,36 @@ function aggiornaPilota(){
   const b = $('btnAgenti');
   if(b) b.addEventListener('click', () => setTimeout(carica, 300));
   setTimeout(carica, 1200);
+})();
+</script>
+
+<script>
+// ─── chip "🤖 agenti": la verità in una riga (quanti sono PRONTI davvero) ───
+(function(){
+  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
+  const chip = document.getElementById('agChip');
+  if(!chip) return;
+  if(!VIVO){ chip.textContent = '🤖 agenti: solo sul PC'; chip.style.opacity = '.6'; return; }
+
+  chip.addEventListener('click', () => {
+    const b = document.getElementById('btnAgenti');
+    if(b) b.click();
+  });
+
+  async function leggi(){
+    try{
+      const d = await (await fetch('/api/agenti')).json();
+      const lista = d.agenti || [];
+      const pronti = lista.filter(a => a.pronto).length;
+      const mancano = lista.filter(a => !a.installato).map(a => a.nome);
+      chip.textContent = '🤖 ' + pronti + '/' + lista.length + ' agenti pronti' +
+                         (mancano.length ? (' · mancano: ' + mancano.join(', ')) : '');
+      chip.style.borderColor = pronti === lista.length ? '#3fb95066' : '#d2992266';
+      chip.style.color = pronti === lista.length ? '#3fb950' : '#d29922';
+    }catch(e){ chip.textContent = '🤖 agenti: non leggo'; }
+  }
+  leggi();
+  setInterval(leggi, 60000);
 })();
 </script>
 </body>
