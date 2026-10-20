@@ -251,15 +251,15 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agOmniDash">Dashboard ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Cervello</b></span><b id="agCer">—</b></div>
-        <div class="agRiga"><span class="agDim" style="font-size:12px">provider disponibili</span><b id="agCerProv" style="font-size:12px">—</b></div>
+        <div class="agRiga"><span><b>Portiere</b> <span class="agDim" style="font-size:11px">20129</span></span><b id="agCer">—</b></div>
+        <div class="agRiga"><span class="agDim" style="font-size:12px">provider nella sua lista</span><b id="agCerProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB" id="agCerOn">Avvia</button>
           <button class="agB" id="agCerRi">Riavvia</button>
-          <button class="agB" id="agCerDash">Dashboard ↗</button>
+          <button class="agB" id="agCerDash">La sua lista ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Chiavi di scorta</b></span><b id="agScorta">—</b></div>
+        <div class="agRiga"><span><b>Chiavi di scorta</b> <span class="agDim" style="font-size:11px">solo qui</span></span><b id="agScorta">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB" id="agScortaApp">Appello</button>
         </div>
@@ -290,9 +290,9 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <section class="agCard">
         <h3>🔑 Chiavi</h3>
         <div class="agRiga"><span>🧠 Lavorano in OmniRoute</span><b id="agC1">—</b></div>
-        <div class="agRiga"><span>🛟 Scorta (se OmniRoute cade)</span><b id="agC2">—</b></div>
+        <div class="agRiga"><span>🚪 Nel Portiere (la scorta)</span><b id="agC2">—</b></div>
         <div class="agRiga"><span>📦 Fuori da tutti e due</span><b id="agC3">—</b></div>
-        <div class="agDim" id="agCNota">Le chiavi doppie contano in OmniRoute, e se cade passano alla scorta.</div>
+        <div class="agDim" id="agCNota">Le doppie contano in OmniRoute e valgono anche per il Portiere. Le 12 «solo scorta» stanno unicamente lì.</div>
         <div class="agBottoni"><button class="agB" id="agCDett">📋 Dettagli in basso</button></div>
       </section>
 
@@ -338,7 +338,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agProva">🧪 Prova che rispondano</button>
           <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
         </div>
-        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa lo stesso cervello (OmniRoute): se il motore è spento, non rispondono.</div>
+        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa il motore (OmniRoute): se è spento, non rispondono.</div>
       </section>
 
       <section class="agCard agLargo">
@@ -2411,8 +2411,8 @@ function aggiornaPilota(){
       const ct0 = s.contatori || {};
       // attive / totale (totale = le mie chiavi + quelle già pronte dentro OmniRoute)
       $('agOmniProv').textContent = (ap0.pronti || 0) + '/' + (ct0.omniroute_totali || ct0.omniroute || 0);
-      $('agScorta').textContent = '0/' + (ct0.fuori || 0);
-      // il Cervello: parte spento, conta solo se lo accendo
+      $('agScorta').textContent = '0/' + (ct0.scorta_solo || 0);
+      // il Portiere: parte spento, conta solo se lo accendo
       if(!mot2) caricaMotore2();
       else {
         led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
@@ -2456,9 +2456,9 @@ function aggiornaPilota(){
       // i tre contatori delle chiavi
       const ct = s.contatori || {};
       $('agC1').textContent = (ct.omniroute ?? '—') + ' chiavi';
-      $('agC2').textContent = (ct.scorta ?? '—') + ' chiavi' +
-          (ct.doppie ? ' (' + ct.doppie + ' sono le stesse)' : '');
-      $('agC3').textContent = (ct.fuori ?? '—') + ' chiavi';
+      $('agC2').textContent = (ct.portiere ?? '—') + ' provider' +
+          (ct.scorta_solo ? ' · ' + ct.scorta_solo + ' solo qui' : '');
+      $('agC3').textContent = (ct.fuori ?? '—') + ' voci';
       window._contatori = ct;
       // all'accensione: se c'è qualcosa che non va, lo dico subito in chiaro
       if((s.avvisi || []).length && !window._avvisiMostrati){
@@ -2507,10 +2507,12 @@ function aggiornaPilota(){
     if(!c.totali_portachiavi){ log('Contatori non ancora letti: premi «Ricontrolla» nella scheda Salute.'); return; }
     log('🔑 DOVE POSSONO LAVORARE LE TUE ' + c.totali_portachiavi + ' CHIAVI\n\n' +
         '🧠 IN OMNIROUTE (' + c.omniroute + '): ' + (c.omni_nomi || []).join(', ') + '\n\n' +
-        '🛟 NELLA SCORTA (' + c.scorta + ', di cui ' + c.doppie + ' sono le stesse di sopra): ' +
-        (c.scorta_nomi || []).join(', ') + '\n\n' +
+        '🚪 NEL PORTIERE (' + c.portiere + ' provider, di cui ' + c.doppie + ' sono gli stessi di OmniRoute): ' +
+        (c.scorta_nomi || []).join(', ') + '\n' +
+        '   → solo lì (' + c.scorta_solo + '): ' +
+        (c.scorta_nomi || []).filter(n => (c.omni_nomi || []).indexOf(n) < 0).join(', ') + '\n\n' +
         '📦 FUORI DA TUTTI E DUE (' + c.fuori + '): ' + (c.fuori_nomi || []).join(', ') +
-        '\n\n(queste non le conosce né OmniRoute né il portiere: per usarle bisogna aggiungerle a mano)');
+        '\n\n(sono strumenti — voce, immagini, video, database, visione —, provider morti, o provider di cui non abbiamo mai scritto l\'indirizzo: nessun motore può chiamarli)');
   });
   $('agAppDett').addEventListener('click', () => {
     const d = window._appello || {};
@@ -2526,9 +2528,9 @@ function aggiornaPilota(){
   $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
   $('agOmniRi').addEventListener('click', async () => { log('Riavvio del motore… (10-30 s)'); log((await api('/api/omniroute', {azione:'riavvia'})).msg || ''); setTimeout(() => { aggiorna(); }, 3000); });
   $('agCerOn').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'avvia'})).msg || 'acceso'); setTimeout(caricaMotore2, 2500); });
-  $('agCerDash').addEventListener('click', () => window.open('http://127.0.0.1:20129/cervello', '_blank'));
+  $('agCerDash').addEventListener('click', () => window.open('http://127.0.0.1:20129/portiere', '_blank'));
   $('agScortaApp').addEventListener('click', async () => {
-    log('🗣️ Appello delle chiavi di scorta: provo quelle che non sono in nessuno dei due motori (circa 30 secondi)…');
+    log('🗣️ Appello delle chiavi: provo TUTTA la lista del Portiere, una per una (circa 1 minuto)…');
     log((await api('/api/appello', {azione:'completo'})).msg || '');
     setTimeout(() => { caricaAppello(); aggiorna(); }, 20000);
     setTimeout(() => { caricaAppello(); aggiorna(); }, 55000);
@@ -2588,7 +2590,7 @@ function aggiornaPilota(){
       window._agenti = lista;
       $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
         (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
-        (d.cervello ? ' · cervello: ' + d.cervello : '');
+        (d.portiere || d.cervello ? ' · portiere: ' + (d.portiere || d.cervello) : '');
     }catch(e){
       const el = $('agListaAgenti');
       if(!el.innerHTML || el.innerHTML.indexOf('agRiga') < 0)

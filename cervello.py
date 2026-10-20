@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""cervello.py — il cervello di scorta.
+"""cervello.py — il PORTIERE (motore di riserva, porta 20129).
 
 Perché esiste: oggi tutti gli agenti (OpenCode, Goose, Secondhand, Hermes, Gemini CLI)
 parlano con UNA porta sola: 20128, dove gira OmniRoute. Se OmniRoute cade, gli agenti
@@ -29,20 +29,40 @@ MOTORE = "http://127.0.0.1:20128/v1"
 PORTA = 20129
 APPELLO = os.path.join(os.path.expanduser("~"), ".posta_appello.json")
 
-# dove sta ogni provider e un modello di scorta (il modello vero lo dice l'appello)
-BASE = {
-    "groq": ("https://api.groq.com/openai/v1", "allam-2-7b"),
-    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai", "gemma-4-31b-it"),
-    "mistral": ("https://api.mistral.ai/v1", "mistral-small-latest"),
-    "cohere": ("https://api.cohere.ai/compatibility/v1", "command-r-plus-08-2024"),
-    "openrouter": ("https://openrouter.ai/api/v1", "openrouter/auto"),
-    "nvidia": ("https://integrate.api.nvidia.com/v1", "z-ai/glm-5.3"),
-    "huggingface": ("https://router.huggingface.co/v1", "Qwen/Qwen3-8B"),
-    "pollinations": ("https://text.pollinations.ai/openai", "openai-fast"),
-    "githubmodels": ("https://models.github.ai/inference", "openai/gpt-4o-mini"),
-    "agentrouter": ("https://agentrouter.org/v1", "auto"),
-    "opencode": ("https://opencode.ai/zen/v1", "glm-5.3"),
-}
+# ── LA LISTA SUA (portiere_lista.txt) ─────────────────────────────────────────
+# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo
+LISTA = os.path.join(QUI, "portiere_lista.txt")
+
+
+def carica_lista():
+    """Legge la lista del Portiere. Ritorna (base, etichette, nomi, modi)."""
+    base, etichette, nomi, modi = {}, {}, {}, {}
+    try:
+        righe = open(LISTA, encoding="utf-8", errors="replace").read().splitlines()
+    except Exception:
+        return base, etichette, nomi, modi
+    for riga in righe:
+        r = riga.strip()
+        if not r or r.startswith("#"):
+            if r.startswith("##"):
+                break                      # da qui in poi sono i "da confermare"
+            continue
+        pezzi = r.split("|")
+        if len(pezzi) < 5:
+            continue
+        pid, eti, nome, url = pezzi[0], pezzi[1], pezzi[2], pezzi[3]
+        modello = pezzi[4] if len(pezzi) > 4 else "auto"
+        modo = pezzi[5] if len(pezzi) > 5 else "chat"
+        base[pid] = (url.rstrip("/"), modello)
+        etichette[pid] = eti
+        nomi[pid] = nome
+        modi[pid] = modo
+    return base, etichette, nomi, modi
+
+
+BASE, ETICHETTE, NOMI, MODI = carica_lista()
+
+NOME = "Portiere"
 
 
 def vivo(url, secondi=1):
@@ -69,14 +89,22 @@ _cache_chiavi = {}
 
 
 def chiave(pid):
+    """La chiave di quel provider, presa dal portachiavi con lo stesso estrattore
+    di tutto il resto (chiave_di.py). SENZA = provider che non vuole chiave."""
     if pid in _cache_chiavi and time.time() - _cache_chiavi[pid][0] < 600:
         return _cache_chiavi[pid][1]
-    try:
-        p = subprocess.run(["bash", os.path.join(QUI, "appello_chiavi.sh"), "--chiave", pid],
-                           capture_output=True, text=True, timeout=20)
-        k = (p.stdout or "").strip()
-    except Exception:
-        k = ""
+    nome = NOMI.get(pid, "")
+    if nome == "SENZA":
+        _cache_chiavi[pid] = (time.time(), "free")
+        return "free"
+    k = ""
+    if nome:
+        try:
+            p = subprocess.run(["python3", os.path.join(QUI, "chiave_di.py"), nome],
+                               capture_output=True, text=True, timeout=20)
+            k = (p.stdout or "").strip()
+        except Exception:
+            k = ""
     _cache_chiavi[pid] = (time.time(), k)
     return k
 
@@ -120,6 +148,82 @@ def riserva(payload):
     return None
 
 
+
+def da_confermare():
+    """Le voci in fondo alla lista (indirizzo mai scritto / non-chat): non contano."""
+    fuori, dentro = [], False
+    try:
+        for riga in open(LISTA, encoding="utf-8", errors="replace").read().splitlines():
+            r = riga.strip()
+            if r.startswith("##"):
+                dentro = True
+                continue
+            if dentro and r and not r.startswith("#"):
+                pezzi = r.split("|")
+                if len(pezzi) >= 2:
+                    fuori.append((pezzi[0], pezzi[1]))
+    except Exception:
+        pass
+    return fuori
+
+
+def pagina():
+    """La pagina del Portiere: la SUA lista, provider per provider."""
+    voci = {v.get("id"): v for v in appello()}
+    su_motore = vivo(MOTORE)
+    pronti = sum(1 for pid in BASE if (voci.get(pid) or {}).get("esito") == "risponde")
+    corpo = []
+    for pid, (url, modello) in BASE.items():
+        v = voci.get(pid) or {}
+        esito = v.get("esito", "")
+        icona, colore = {"risponde": ("✅", "#39d98a"), "occupato": ("🟡", "#f5c451"),
+                         "chiave-no": ("🔴", "#ff6b6b"), "rete": ("⚪", "#9aa4b2"),
+                         "no-chiave": ("—", "#9aa4b2")}.get(esito, ("·", "#6b7280"))
+        nota = v.get("nota") or ("mai provato: fai l'appello dalla Centrale" if not esito else esito)
+        corpo.append(
+            '<tr><td style="padding:7px 10px;border-bottom:1px solid #ffffff12">'
+            f'<span style="color:{colore}">{icona}</span> <b>{ETICHETTE.get(pid, pid)}</b></td>'
+            '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#9aa4b2">'
+            f'{url.replace("https://", "")} · {modello}</td>'
+            '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#c9d1d9">'
+            f'{nota}</td></tr>')
+    fuori = da_confermare()
+    righe_fuori = "".join(
+        '<div style="display:flex;justify-content:space-between;padding:5px 0;'
+        'border-bottom:1px solid #ffffff0d"><b>' + n + '</b>'
+        '<span style="color:#9aa4b2">' + m + '</span></div>' for n, m in fuori)
+    html = f"""<!doctype html><html lang="it"><head><meta charset="utf-8">
+<title>Portiere — la sua lista</title></head>
+<body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
+<div style="max-width:1000px;margin:0 auto;padding:26px 20px">
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129</span></h1>
+  <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
+    quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+    <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
+      <div style="color:#9aa4b2;font-size:12px">provider nella sua lista</div>
+      <div style="font-size:20px"><b>{pronti}/{sum(1 for _ in BASE)}</b> rispondono</div></div>
+    <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
+      <div style="color:#9aa4b2;font-size:12px">OmniRoute (20128)</div>
+      <div style="font-size:20px">{'🟢 vivo' if su_motore else '🔴 spento'}</div></div>
+    <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
+      <div style="color:#9aa4b2;font-size:12px">appello</div>
+      <div style="font-size:20px">{len(voci) and str(len(voci)) + ' prove fatte' or 'non ancora fatto'}</div></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;background:#161b22;border:1px solid #ffffff14;border-radius:10px;overflow:hidden">
+    <tr style="background:#1c2430;text-align:left;color:#9aa4b2;font-size:12px">
+      <th style="padding:8px 10px">PROVIDER</th><th style="padding:8px 10px">INDIRIZZO · MODELLO</th>
+      <th style="padding:8px 10px">STATO</th></tr>
+    {''.join(corpo)}
+  </table>
+  <h2 style="font-size:16px;margin:24px 0 6px">Da confermare ({len(fuori)})</h2>
+  <div style="color:#9aa4b2;margin-bottom:10px">Fuori dal numero qui sopra: gli indirizzi che non
+    abbiamo mai scritto, più le chiavi che non sono modelli di chat (voce, immagini, video, database).</div>
+  <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">{righe_fuori}</div>
+</div></body></html>"""
+    return html
+
+
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -133,6 +237,22 @@ class H(BaseHTTPRequestHandler):
         self.wfile.write(corpo)
 
     def do_GET(self):
+        if self.path.startswith("/portiere") and not self.path.startswith("/portiere.json"):
+            b = pagina().encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
+            return
+        if self.path.startswith("/portiere.json"):
+            self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
+                        "risponde": [v["id"] for v in appello()
+                                     if v.get("esito") == "risponde" and v.get("id") in BASE],
+                        "voci": [{"id": k, "nome": ETICHETTE.get(k, k),
+                                  "indirizzo": v[0], "modello": v[1]} for k, v in BASE.items()],
+                        "da_confermare": da_confermare()})
+            return
         if self.path.startswith("/cervello"):
             su = vivo(MOTORE)
             self._json({"motore": su, "riserva": [v["id"] for v in appello()
@@ -190,5 +310,5 @@ if __name__ == "__main__":
     if "--stato" in sys.argv:
         stato()
         sys.exit(0)
-    print("Cervello di scorta su http://127.0.0.1:%d/v1  (passa al motore, e usa la riserva se cade)" % PORTA)
+    print("Portiere (motore di riserva) su http://127.0.0.1:%d/v1 — la sua lista: %d provider" % (PORTA, len(BASE)))
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()

@@ -17,6 +17,7 @@ QUI=$(cd "$(dirname "$0")" && pwd)
 K="$HOME/CHIAVI_LOCALI.md"
 OUT="$HOME/.posta_appello.json"
 RAP="$QUI/dal_pc/appello_chiavi.md"
+LISTA="$QUI/portiere_lista.txt"   # la lista del Portiere: una sola per tutti
 SVELTO=0; JSON=0
 for a in "$@"; do
   [ "$a" = "--svelto" ] && SVELTO=1
@@ -24,24 +25,11 @@ for a in "$@"; do
 done
 if [ "${1:-}" = "--chiave" ]; then
   ID="${2:-}"
-  RIGA=$(grep -E "^$ID\|" <<'REG' | cut -d'|' -f3,4
-groq|Groq|groq|gsk_[A-Za-z0-9_-]+
-gemini|Google AI Studio|google ai|AQ\.[A-Za-z0-9_-]+
-mistral|Mistral|mistral|mstrl_[A-Za-z0-9_-]+
-cohere|Cohere|cohere|[A-Za-z0-9]{40}
-openrouter|OpenRouter|openrouter|sk-or-[A-Za-z0-9_-]+
-nvidia|NVIDIA|nvidia|nvapi-[A-Za-z0-9_-]+
-huggingface|HuggingFace|huggingface|hf_[A-Za-z0-9]+
-pollinations|Pollinations|pollinations|sk_[A-Za-z0-9]+
-githubmodels|GitHub Models|github models|ghp_[A-Za-z0-9]+
-agentrouter|AgentRouter|agentrouter|sk-[A-Za-z0-9]{30,}
-opencode|OpenCode Zen|opencode zen|oc_sk_[A-Za-z0-9_]+
-REG
-)
-  R=$(printf '%s' "$RIGA" | cut -d'|' -f1)
-  P=$(printf '%s' "$RIGA" | cut -d'|' -f2)
-  [ -z "$R" ] && exit 1
-  grep -iE "$R" "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | grep -oE "$P" | head -1
+  # cerca l'id nella lista del Portiere e tira fuori la chiave col vero estrattore
+  NOME=$(awk -F'|' -v id="$ID" '$1==id {print $3; exit}' "$LISTA" 2>/dev/null)
+  [ -z "$NOME" ] && exit 1
+  if [ "$NOME" = "SENZA" ]; then echo "free"; exit 0; fi
+  python3 "$QUI/chiave_di.py" "$NOME" 2>/dev/null
   exit 0
 fi
 
@@ -91,9 +79,9 @@ PY
 
 # prova <id> <etichetta> <riga-portachiavi> <pattern> <base_url> <modello-suggerito> <chat|modelli>
 prova(){
-  local id="$1" eti="$2" riga="$3" pat="$4" base="$5" mod="$6" modo="$7"
+  local id="$1" eti="$2" nome="$3" base="$4" mod="$5" modo="$6"
   local key
-  if [ "$pat" = "SENZA" ]; then key="free"; else key=$(chiave_di "$riga" "$pat"); fi
+  if [ "$nome" = "SENZA" ]; then key="free"; else key=$(chiave_di "$nome"); fi
   if [ -z "$key" ]; then
     printf '%s\t%s\tno-chiave\t0\tnessuna chiave nel portachiavi\t\n' "$id" "$eti" > "$TMP/$id.res"; return
   fi
@@ -154,28 +142,15 @@ prova(){
 echo "── 🗣️  APPELLO DELLE CHIAVI ($(date '+%H:%M')) ──"
 echo
 
-# id | etichetta | riga del portachiavi | pattern chiave | base url | modello | modo
-# L'ordine è: prima le più affidabili (diventano riserva in quest'ordine).
-while IFS='|' read -r id eti riga pat base modello modo; do
-  [ -z "$id" ] && continue
-  prova "$id" "$eti" "$riga" "$pat" "$base" "$modello" "$modo" &
+# La lista è UNA: portiere_lista.txt (id|etichetta|nome nel portachiavi|indirizzo|modello|modo)
+# L'ordine è quello del file: prima le più affidabili (diventano riserva in quest'ordine).
+while IFS='|' read -r id eti nome base modello modo; do
+  if [ "${id:0:2}" = "##" ]; then break; fi          # da qui in poi sono i "da confermare"
+  case "$id" in ''|\#*) continue ;; esac
+  prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" &
   # max 6 alla volta
   while [ "$(jobs -rp | wc -l)" -ge 6 ]; do sleep 0.3; done
-done <<'REGISTRO'
-groq|Groq|groq|gsk_[A-Za-z0-9_-]+|https://api.groq.com/openai/v1|llama-3.3-70b-versatile|chat
-gemini|Google AI Studio|google ai|AQ\.[A-Za-z0-9_-]+|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat
-mistral|Mistral|mistral|mstrl_[A-Za-z0-9_-]+|https://api.mistral.ai/v1|mistral-small-latest|chat
-cohere|Cohere|cohere|[A-Za-z0-9]{40}|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat
-openrouter|OpenRouter|openrouter|sk-or-[A-Za-z0-9_-]+|https://openrouter.ai/api/v1|openrouter/auto|chat
-nvidia|NVIDIA|nvidia|nvapi-[A-Za-z0-9_-]+|https://integrate.api.nvidia.com/v1|meta/llama-3.1-8b-instruct|chat
-huggingface|HuggingFace|huggingface|hf_[A-Za-z0-9]+|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
-pollinations|Pollinations|pollinations|sk_[A-Za-z0-9]+|https://text.pollinations.ai/openai|openai|chat
-githubmodels|GitHub Models|github models|ghp_[A-Za-z0-9]+|https://models.github.ai/inference|openai/gpt-4o-mini|chat
-agentrouter|AgentRouter|agentrouter|sk-[A-Za-z0-9]{30,}|https://agentrouter.org/v1|auto|modelli
-opencode|OpenCode Zen|opencode zen|oc_sk_[A-Za-z0-9_]+|https://opencode.ai/zen/v1|glm-5.3|chat
-pollinationsfree|Pollinations (senza chiave)|pollinations senza|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
-aihorde|AI Horde (senza chiave)|ai horde|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
-REGISTRO
+done < "$LISTA"
 wait
 
 # raccolgo i risultati

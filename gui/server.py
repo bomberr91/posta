@@ -690,11 +690,40 @@ def _norm(x):
     return re.sub(r"[^a-z0-9]", "", (x or "").lower())
 
 
+_chiave_di_mod = {"m": None, "cache": {}, "t": 0.0}
+
+
+def _modulo_chiave_di():
+    """Carica chiave_di.py: è l'unico estrattore di chiavi del sistema."""
+    if _chiave_di_mod["m"] is None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "chiave_di", os.path.join(POSTA, "chiave_di.py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _chiave_di_mod["m"] = mod
+    return _chiave_di_mod["m"]
+
+
+def ha_chiave(nome):
+    """True se nel portachiavi c'è davvero una chiave per quel provider."""
+    cache = _chiave_di_mod["cache"]
+    if nome in cache:
+        return cache[nome]
+    try:
+        k, _ = _modulo_chiave_di().chiave(nome, os.path.join(HOME, "CHIAVI_LOCALI.md"))
+        cache[nome] = bool(k)
+    except Exception:
+        cache[nome] = True
+    return cache[nome]
+
+
 def contatori_chiavi():
-    """I tre contatori: dove può lavorare ogni chiave.
-    1) dentro OmniRoute (il motore)
-    2) nella scorta (il portiere, se OmniRoute cade) — le doppie restano contate nel primo
-    3) fuori da entrambi
+    """Dove può lavorare ogni chiave del portachiavi.
+    1) dentro OmniRoute (motore 1)
+    2) nel Portiere (motore 2, porta 20129) — le doppie restano contate in OmniRoute
+    3) fuori da tutti e due: strumenti (voce/immagini/video/database/visione),
+       provider morti, o provider di cui non abbiamo mai scritto l'indirizzo.
     """
     omni_nomi = {}          # nome normalizzato → id omniroute
     try:
@@ -707,9 +736,16 @@ def contatori_chiavi():
                 omni_nomi[_norm(pezzi[1])] = pezzi[0]
     except Exception:
         pass
-    scorta_nomi = {_norm(v): k for k, v in NOMI_SCORTA.items()}
+    # la lista del Portiere è una sola: portiere_lista.txt
+    port_nomi = {}
+    for pid, v in lista_portiere().items():
+        nome = v[3]
+        if nome == "SENZA":                     # provider senza chiave (es. AI Horde)
+            nome = v[2].split("(")[0].strip()
+        if nome:
+            port_nomi[_norm(nome)] = pid
 
-    nomi = []
+    nomi, senza_chiave = [], set()
     try:
         testo = open(os.path.join(HOME, "CHIAVI_LOCALI.md"), encoding="utf-8",
                      errors="replace").read()
@@ -722,22 +758,24 @@ def contatori_chiavi():
                 nome = m.group(1).strip()
                 if nome and nome not in nomi:
                     nomi.append(nome)
+                if not ha_chiave(nome):          # domanda al vero estrattore (chiave_di.py)
+                    senza_chiave.add(nome)
     except Exception:
         pass
 
-    in_omni, in_scorta, fuori = [], [], []
+    in_omni, in_port, fuori = [], [], []
     for nome in nomi:
         n = _norm(nome)
         preso_omni = any(n == k or (len(n) > 5 and (k.startswith(n[:6]) or n.startswith(k[:6])))
                          for k in omni_nomi)
-        preso_scorta = any(n == k or (len(n) > 5 and (k.startswith(n[:5]) or n.startswith(k[:5])))
-                           for k in scorta_nomi)
+        preso_port = any(n == k or (len(n) > 5 and (k.startswith(n[:5]) or n.startswith(k[:5])))
+                         for k in port_nomi)
         if preso_omni:
             in_omni.append(nome)
-            if preso_scorta:
-                in_scorta.append(nome)      # doppia: conta nel primo, usabile nel secondo
-        elif preso_scorta:
-            in_scorta.append(nome)
+            if preso_port:
+                in_port.append(nome)        # doppia: conta in OmniRoute, usabile nel Portiere
+        elif preso_port:
+            in_port.append(nome)            # solo Portiere: è lei la chiave di scorta vera
         else:
             fuori.append(nome)
 
@@ -749,15 +787,16 @@ def contatori_chiavi():
     except Exception:
         noauth_omni = 10
 
+    port_totali = len(lista_portiere())
     return {"omniroute": len(in_omni), "omniroute_totali": len(in_omni) + noauth_omni,
             "noauth_omni": noauth_omni,
-            "cervello_totali": len(APP_BASE) + 1,      # + AI Horde (senza chiave)
-            "doppie": len([x for x in in_omni if x in in_scorta]),
-            "scorta": len(in_scorta),
-            "scorta_solo": len([x for x in in_scorta if x not in in_omni]),
+            "cervello_totali": port_totali, "portiere_totali": port_totali,
+            "doppie": len([x for x in in_omni if x in in_port]),
+            "scorta": len(in_port), "portiere": len(in_port),
+            "scorta_solo": len([x for x in in_port if x not in in_omni and x not in senza_chiave]),
             "fuori": len(fuori), "fuori_nomi": fuori,
             "totali_portachiavi": len(nomi),
-            "omni_nomi": in_omni, "scorta_nomi": in_scorta}
+            "omni_nomi": in_omni, "scorta_nomi": in_port}
 
 
 _oc_cmd_cache = {"t": 0.0, "cmd": ""}
@@ -1051,19 +1090,34 @@ def aggiorna_pc():
 # ─────────────────────── appello delle chiavi (riserva) ────────────────────
 APPELLO_JSON = os.path.join(HOME, ".posta_appello.json")
 
-APP_BASE = {
-    "groq": ("https://api.groq.com/openai/v1", "llama-3.3-70b-versatile"),
-    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai", "gemma-4-31b-it"),
-    "mistral": ("https://api.mistral.ai/v1", "mistral-small-latest"),
-    "cohere": ("https://api.cohere.ai/compatibility/v1", "command-r-plus-08-2024"),
-    "openrouter": ("https://openrouter.ai/api/v1", "openrouter/auto"),
-    "nvidia": ("https://integrate.api.nvidia.com/v1", "z-ai/glm-5.3"),
-    "huggingface": ("https://router.huggingface.co/v1", "Qwen/Qwen3-8B"),
-    "pollinations": ("https://text.pollinations.ai/openai", "openai-fast"),
-    "githubmodels": ("https://models.github.ai/inference", "openai/gpt-4o-mini"),
-    "agentrouter": ("https://agentrouter.org/v1", "auto"),
-    "opencode": ("https://opencode.ai/zen/v1", "glm-5.3"),
-}
+# ── LA LISTA DEL PORTIERE (motore 2, porta 20129) ────────────────────────────
+# La lista è UNA sola, nel file portiere_lista.txt: la leggono il Portiere, l'appello
+# delle chiavi e questa schermata. Se un provider non è lì dentro, il Portiere non lo usa.
+LISTA_PORTIERE = os.path.join(POSTA, "portiere_lista.txt")
+
+
+def lista_portiere():
+    """id → (indirizzo, modello, etichetta, nome nel portachiavi, modo)."""
+    out = {}
+    try:
+        righe = open(LISTA_PORTIERE, encoding="utf-8", errors="replace").read().splitlines()
+    except Exception:
+        return out
+    for riga in righe:
+        r = riga.strip()
+        if r.startswith("##"):
+            break
+        if not r or r.startswith("#"):
+            continue
+        pezzi = r.split("|")
+        if len(pezzi) < 5:
+            continue
+        out[pezzi[0]] = (pezzi[3].rstrip("/"), pezzi[4],
+                         pezzi[1], pezzi[2], pezzi[5] if len(pezzi) > 5 else "chat")
+    return out
+
+
+APP_BASE = {k: (v[0], v[1]) for k, v in lista_portiere().items()}
 
 
 def appello_dati():
@@ -1534,22 +1588,22 @@ class H(BaseHTTPRequestHandler):
             if az == "avvia":
                 su = cervello_avvia()
                 self._json({"stato": "ok" if su else "ko", "acceso": su,
-                            "msg": "🟢 Cervello di scorta acceso (porta 20129)" if su else
+                            "msg": "🟢 Portiere acceso (porta 20129)" if su else
                                    "⚠️ Non sono riuscito ad accenderlo: manca cervello.py"})
             elif az == "riavvia":
                 omni_spegni_porta(20129)
                 time.sleep(1)
                 su = cervello_avvia()
                 self._json({"stato": "ok" if su else "ko", "acceso": su,
-                            "msg": "🔄 Cervello di scorta riavviato" if su else
+                            "msg": "🔄 Portiere riavviato" if su else
                                    "⚠️ Non è ripartito"})
             elif az == "spegni":
                 self._json({"stato": "ok", "acceso": not omni_spegni_porta(20129),
-                            "msg": "🔴 Cervello di scorta spento"})
+                            "msg": "🔴 Portiere spento"})
             else:
                 su = porta_viva(20129)
-                tot = contatori_chiavi().get("cervello_totali", len(APP_BASE) + 1)
-                d = {"acceso": su, "porta": 20129, "totali": tot, "pronti": 0, "nome": "Cervello"}
+                tot = contatori_chiavi().get("cervello_totali", len(APP_BASE))
+                d = {"acceso": su, "porta": 20129, "totali": tot, "pronti": 0, "nome": "Portiere"}
                 if su:      # le chiamate le fa SOLO se è acceso
                     try:
                         import urllib.request

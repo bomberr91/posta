@@ -1,0 +1,78 @@
+# portiere_lista.txt — LA LISTA SUA DEL PORTIERE (motore 2, porta 20129)
+# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo
+#   nome nel portachiavi = SENZA  → provider che non vuole chiave
+#   modo = chat (prova una domanda vera) · modelli (solo elenco modelli)
+# Regola: qui entra SOLO un provider di cui conosciamo l'indirizzo OpenAI-compatibile.
+# Gli altri (indirizzo mai scritto, o non-chat: voce/immagini/video/database/visione)
+# stanno in fondo al file, dopo la riga "## DA CONFERMARE": non contano nel numero.
+# Ultimo controllo degli indirizzi: 20/10/2026 (dal portachiavi, non inventati).
+
+groq|Groq|Groq|https://api.groq.com/openai/v1|llama-3.3-70b-versatile|chat
+gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat
+mistral|Mistral|Mistral|https://api.mistral.ai/v1|mistral-small-latest|chat
+cohere|Cohere|Cohere|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat
+openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat
+nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|meta/llama-3.1-8b-instruct|chat
+huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
+pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat
+githubmodels|GitHub Models|GitHub Models|https://models.github.ai/inference|openai/gpt-4o-mini|chat
+agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli
+opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat
+aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat
+api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat
+bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat
+auray|Auray|Auray|https://api.auray.ai/openai/v1|glm-5-3-flash|chat
+clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat
+navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli
+orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|auto|modelli
+nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli
+routeway|Routeway|Routeway|https://api.routeway.ai/v1|auto|modelli
+septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli
+typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli
+tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli
+unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|auto|modelli
+plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
+simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
+llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
+router9|Router9|Router9|https://api.router9.com/v1|auto|modelli
+waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
+blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-chat|modelli
+logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
+lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|auto|modelli
+freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
+speka|Speka|Speka|https://speka.me/v1|google/gemma-4-31b-it|chat
+nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
+chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|auto|modelli
+sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
+aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
+pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
+
+## DA CONFERMARE — non contano nel numero del Portiere
+# Per farli entrare basta scrivere l'indirizzo nella riga qui sotto e spostarla sopra.
+# Nome nel portachiavi | perché è fermo
+OVH|nel portachiavi è scritto «NO KEY» e fa solo embedding
+TeamoRouter|chiave mai salvata per intero (solo «sk-teamo-e0c685…»)
+LLM7|indirizzo API mai scritto nel portachiavi
+LongCat|indirizzo API mai scritto nel portachiavi
+Ollama Cloud|indirizzo API mai scritto nel portachiavi
+Requesty|indirizzo API mai scritto nel portachiavi
+Zhipu|indirizzo API mai scritto nel portachiavi
+ElectronHub|indirizzo API mai scritto nel portachiavi
+AnyAPI|indirizzo API mai scritto nel portachiavi
+Gizmo|indirizzo API mai scritto nel portachiavi
+Inferbase|indirizzo API mai scritto nel portachiavi
+Sail|indirizzo API mai scritto nel portachiavi
+xKiro|indirizzo API mai scritto nel portachiavi
+DreamPrompting|indirizzo API mai scritto nel portachiavi
+BlockRun|indirizzo API mai scritto nel portachiavi
+Kilo|indirizzo API mai scritto nel portachiavi
+Cloudflare Workers AI|formato suo (account:token), non OpenAI-compatibile
+Agnes AI|sito di video/immagini, non chat
+Moondream|solo visione
+Speechify|solo voce (TTS)
+Jina AI (n2)|solo embedding/rerank
+Qdrant Cloud — cluster «Bomber91»|database, non un modello
+fal.ai|immagini/video
+WaveSpeedAI|video
+AI21|ritirato, non esiste più
+Nebius|chiede la carta: escluso
