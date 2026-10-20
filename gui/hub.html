@@ -304,6 +304,19 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
       </section>
 
+      <section class="agCard agLargo" id="agAppelloCard">
+        <h3>🗣️ Appello delle chiavi — la riserva</h3>
+        <div class="agRiga"><span>Chiavi che rispondono</span><b id="agAppOk">—</b></div>
+        <div class="agRiga"><span>Ultimo appello</span><span id="agAppQuando" class="agDim">—</span></div>
+        <div class="agRiga"><span>Portiere degli agenti (20129)</span><b id="agAppPortiere">—</b></div>
+        <div class="agDim" id="agAppNota" style="margin-top:4px">All'accensione provo ogni chiave del portachiavi. Se OmniRoute cade, gli agenti usano queste.</div>
+        <div id="agAppLista" style="display:grid;gap:3px;margin-top:8px"></div>
+        <div class="agBottoni">
+          <button class="agB pri" id="agAppSvelto">Rifai l'appello (20 s)</button>
+          <button class="agB" id="agAppCompleto">Prova vera (1 min)</button>
+        </div>
+      </section>
+
       <section class="agCard agLargo" id="agAgentiCard">
         <h3>🤖 Agenti — tutti dentro, tutti pronti</h3>
         <div id="agListaAgenti" style="display:grid;gap:4px"></div>
@@ -2245,7 +2258,7 @@ function aggiornaPilota(){
   if(!pan) return;
 
   let ultimo = null;
-  function apri(){ pan.classList.add('on'); pan.setAttribute('aria-hidden','false'); aggiorna(); }
+  function apri(){ pan.classList.add('on'); pan.setAttribute('aria-hidden','false'); aggiorna(); setTimeout(caricaAppello, 400); }
   function chiudi(){ pan.classList.remove('on'); pan.setAttribute('aria-hidden','true'); }
   $('btnAgenti').addEventListener('click', apri);
   $('agChiudi').addEventListener('click', chiudi);
@@ -2261,6 +2274,29 @@ function aggiornaPilota(){
   function log(t){
     const c = $('agLog');
     c.innerHTML = '<pre>' + String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
+  }
+
+  async function caricaAppello(){
+    try{
+      const d = await api('/api/appello', {azione:'stato'});
+      const voci = d.voci || [];
+      const pronti = voci.filter(v => v.esito === 'risponde');
+      const provati = voci.filter(v => v.esito !== 'no-chiave');
+      $('agAppOk').textContent = pronti.length + ' su ' + provati.length;
+      $('agAppQuando').textContent = d.quando || '—';
+      $('agAppLista').innerHTML = provati.map(v => {
+        const icona = v.esito === 'risponde' ? '✅' : (v.esito === 'occupato' ? '🟡' : '🔴');
+        const nota = v.esito === 'risponde' ? (v.modello || '') : (v.nota || v.esito);
+        return '<div class="agRiga"><span>' + icona + ' ' + v.nome + '</span>' +
+               '<span class="agDim">' + nota + '</span></div>';
+      }).join('') || '<div class="agDim">appello non ancora fatto</div>';
+      if(d.in_corso) $('agAppNota').textContent = '⏳ Appello in corso: 20-60 secondi…';
+      else if(pronti.length) $('agAppNota').textContent = 'Riserva pronta: se OmniRoute cade, gli agenti usano queste chiavi (prima le più veloci).';
+      else if(provati.length) $('agAppNota').textContent = 'Nessuna chiave ha risposto: il motore resta l\'unica strada.';
+    }catch(e){
+      const el = document.getElementById('agAppNota');
+      if(el) el.textContent = '⚠️ Non riesco a leggere l\'appello: ' + (e && e.message ? e.message : e);
+    }
   }
 
   async function aggiorna(){
@@ -2315,6 +2351,9 @@ function aggiornaPilota(){
       $('agOmniChiavi').disabled = !inst || occupato;
       $('agOmniOff').disabled = !inst || occupato;
       $('agOmniRi').disabled = occupato || !inst || !s.omniroute;
+      const ap = s.appello || {};
+      led($('agAppPortiere'), ap.portiere ? '🟢 acceso' : 'spento', ap.portiere ? 'ok' : 'att');
+      caricaAppello();
       // openclaw
       const oc = s.openclaw || {};
       led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
@@ -2351,6 +2390,8 @@ function aggiornaPilota(){
     const r = await api('/api/checkin/segna', {});
     log(r.msg || 'segnato'); aggiorna();
   });
+  $('agAppSvelto').addEventListener('click', async () => { log('🗣️ Appello delle chiavi (20 secondi)…'); log((await api('/api/appello', {azione:'fai'})).msg || ''); setTimeout(caricaAppello, 6000); setTimeout(caricaAppello, 15000); });
+  $('agAppCompleto').addEventListener('click', async () => { log('🗣️ Appello completo: una domanda vera a ogni chiave (circa 1 minuto)…'); log((await api('/api/appello', {azione:'completo'})).msg || ''); setTimeout(caricaAppello, 12000); setTimeout(caricaAppello, 60000); });
   $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
   $('agOmniFree').addEventListener('click', async () => { log('⚡ Attivo i provider gratis: 2-5 minuti…'); log((await api('/api/omniroute', {azione:'free'})).msg || ''); setTimeout(() => { aggiorna(); }, 4000); });
   $('agOmniChiavi').addEventListener('click', async () => { log('🔑 Innesto le tue chiavi: 2-3 minuti…'); log((await api('/api/omniroute', {azione:'chiavi'})).msg || ''); setTimeout(() => { aggiorna(); }, 4000); });

@@ -985,6 +985,26 @@ def chat_riserva(messaggi, esclusi=()):
     return None
 
 
+def cervello_avvia():
+    """Accende il portiere (cervello.py, porta 20129): è lui che fa continuare gli agenti
+    a lavorare se OmniRoute cade. Nessun terminale, nessuna finestra."""
+    if porta_viva(20129):
+        return True
+    script = os.path.join(POSTA, "cervello.py")
+    if not os.path.exists(script):
+        return False
+    try:
+        subprocess.Popen(["python3", script], stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL, start_new_session=True)
+    except Exception:
+        return False
+    for _ in range(10):
+        if porta_viva(20129):
+            return True
+        time.sleep(1)
+    return porta_viva(20129)
+
+
 def _avvio_automatico():
     """All'accensione, senza che tu prema niente:
     1) se il motore è su ma ha 0 modelli, gli innesto io le chiavi (una volta per avvio);
@@ -1022,6 +1042,8 @@ def _sorveglianza():
                 continue
             if not porta_viva(20128):
                 omniroute_avvia(attesa=30)
+            if not porta_viva(20129):
+                cervello_avvia()
         except Exception:
             pass
         time.sleep(120)
@@ -1061,7 +1083,8 @@ def stato():
                         "riserva": ap.get("riserva", []),
                         "pronti": sum(1 for v in ap.get("voci", []) if v.get("esito") == "risponde"),
                         "totali": len([v for v in ap.get("voci", []) if v.get("esito") != "no-chiave"]),
-                        "in_corso": _appello_stato["in_corso"]},
+                        "in_corso": _appello_stato["in_corso"],
+                        "portiere": porta_viva(20129)},
             "fusion": fus, "risultati": ultimi, "salute": sl, "openclaw": openclaw_stato(),
             "ora": time.strftime("%H:%M:%S")}
 
@@ -1430,6 +1453,7 @@ def libera_porta_20200():
 if __name__ == "__main__":
     libera_porta_20200()
     postino_bg()
+    cervello_avvia()                                               # il portiere parte subito
     threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
     threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
     if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":

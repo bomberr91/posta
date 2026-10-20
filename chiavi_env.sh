@@ -28,6 +28,15 @@ AR_KEY="$AN_KEY"
 
 # OmniRoute parla il formato OpenAI: se c'è, TUTTI gli agenti possono usarlo come cervello
 OMNI_URL="http://127.0.0.1:20128/v1"
+# Portiere (cervello.py, porta 20129): se è acceso, gli agenti parlano con lui.
+# Lui passa la richiesta al motore e, se il motore è caduto, alle chiavi di riserva.
+CERVELLO_URL="http://127.0.0.1:20129/v1"
+if (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null; then
+  exec 3<&- 2>/dev/null || true
+  OPENAI_BASE_URL="$CERVELLO_URL"
+else
+  OPENAI_BASE_URL="$OMNI_URL"
+fi
 
 export OPENCODE_API_KEY="${OC_KEY:-}"
 export GROQ_API_KEY="${GQ_KEY:-}"
@@ -36,23 +45,15 @@ export GEMINI_API_KEY="${GM_KEY:-}"
 unset GOOGLE_API_KEY 2>/dev/null || true
 export AGENTROUTER_API_KEY="${AR_KEY:-}"
 
-# "il cervello di default" per gli agenti compatibili OpenAI (OmniRoute se c'è la chiave)
-if [ -n "${OM_KEY:-}" ]; then
-  export OPENAI_BASE_URL="$OMNI_URL"
-  export OPENAI_API_BASE="$OMNI_URL"
-  export OPENAI_API_KEY="$OM_KEY"
-  export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
-  export OMNIROUTE_API_KEY="$OM_KEY"
-else
-  export OPENAI_BASE_URL="${OPENAI_BASE_URL:-$OMNI_URL}"
-  export OPENAI_API_BASE="${OPENAI_API_BASE:-$OMNI_URL}"
-  export OPENAI_API_KEY="${OPENAI_API_KEY:-sk-omniroute}"
-  export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
-fi
+export OPENAI_BASE_URL
+export OPENAI_API_BASE="$OPENAI_BASE_URL"
+export OPENAI_API_KEY="${OM_KEY:-sk-omniroute}"
+export OPENAI_MODEL="${OPENAI_MODEL:-auto}"
+export OMNIROUTE_API_KEY="${OM_KEY:-sk-omniroute}"
 
 # ---- Goose: stesso cervello di tutti, senza dover fare "goose configure" a mano ----
 # Goose vuole HOST senza /v1 e il percorso a parte; la chiave la legge dall'ambiente.
-export OPENAI_HOST="${OPENAI_HOST:-http://127.0.0.1:20128}"
+export OPENAI_HOST="${OPENAI_HOST:-${OPENAI_BASE_URL%/v1}}"
 export OPENAI_BASE_PATH="${OPENAI_BASE_PATH:-v1/chat/completions}"
 export GOOSE_PROVIDER="${GOOSE_PROVIDER:-openai}"
 export GOOSE_MODEL="${GOOSE_MODEL:-${OPENAI_MODEL:-auto}}"
@@ -64,4 +65,5 @@ if [ "${1:-}" = "--elenco" ]; then
   printf '  %-22s %s\n' "OmniRoute"      "$([ -n "${OM_KEY:-}" ] && echo '✓ trovata' || echo '— assente (il motore usa la sua)')"
   printf '  %-22s %s\n' "AgentRouter"    "$([ -n "${AR_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
   echo "  cervello di default per gli agenti: $OPENAI_BASE_URL  (modello: $OPENAI_MODEL)"
+  echo "  riserva se il motore cade: portiere 20129 ($([ -f "$HOME/.posta_appello.json" ] && echo 'appello pronto' || echo 'appello non ancora fatto'))"
 fi

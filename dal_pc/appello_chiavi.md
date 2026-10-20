@@ -1,17 +1,17 @@
-# 🗣️ Appello delle chiavi — 20/10/2026 21:09
+# 🗣️ Appello delle chiavi — 20/10/2026 21:18
 
 Chiavi provate: 11
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | ✅ risponde | 674 | chiave valida · modello visto: auto |
-| Cohere | ✅ risponde | 18325 | ha risposto davvero (command-r-plus-08-2024) |
-| Google AI Studio | ✅ risponde | 30764 | ha risposto davvero (gemma-4-31b-it) |
-| GitHub Models | ✅ risponde | 470 | ha risposto davvero (openai/gpt-4o-mini) |
-| Groq | ✅ risponde | 419 | ha risposto davvero (allam-2-7b) |
-| HuggingFace | 🟡 occupato adesso | 319 | limite o credito finito adesso |
-| Mistral | 🟡 occupato adesso | 1007 | limite o credito finito adesso |
-| NVIDIA | ✅ risponde | 3005 | ha risposto davvero (z-ai/glm-5.3) |
-| OpenCode Zen | ✅ risponde | 219 | chiave valida · modello visto: glm-5.3 |
-| OpenRouter | ✅ risponde | 2257 | ha risposto davvero (z-ai/glm-5) |
-| Pollinations | ✅ risponde | 2217 | ha risposto davvero (openai-fast) |
+| AgentRouter | ✅ risponde | 789 | chiave valida · modello visto: auto |
+| Cohere | 🟡 occupato adesso | 160 | troppe richieste adesso (429) |
+| Google AI Studio | ✅ risponde | 427 | chiave valida · modello visto: gemini-2.5-pro |
+| GitHub Models | ✅ risponde | 269 | chiave valida · modello visto: openai/gpt-4o-mini |
+| Groq | ✅ risponde | 129 | chiave valida · modello visto: allam-2-7b |
+| HuggingFace | ✅ risponde | 268 | chiave valida · modello visto: Qwen/Qwen3-8B |
+| Mistral | ✅ risponde | 410 | chiave valida · modello visto: mistral-medium |
+| NVIDIA | ✅ risponde | 103 | chiave valida · modello visto: z-ai/glm-5.3 |
+| OpenCode Zen | ✅ risponde | 294 | chiave valida · modello visto: glm-5.3 |
+| OpenRouter | ✅ risponde | 460 | chiave valida · modello visto: z-ai/glm-5 |
+| Pollinations | ✅ risponde | 114 | chiave valida · modello visto: openai-fast |
