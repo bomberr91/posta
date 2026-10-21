@@ -2182,13 +2182,8 @@ function renderDrawer(){
       <div class="hint">🔑 le chiavi dei provider stanno nel <b>portachiavi del PC</b> (le legge il Portiere, e il router dell'hub): qui non si incolla niente.</div>
       ${cfg.warn?`<div class="warn">⚠ ${cfg.warn}</div>`:''}
       <input type="text" placeholder="modelli extra (id separati da virgola, dal catalogo del centralino)" value="${(lsGet('fh_custom_'+p)||'').replace(/"/g,'&quot;')}" data-custom="${p}">
-      <div class="hint" style="margin-top:6px">✨ <b>fusion</b>: la domanda va a 3 modelli delle NOSTRE chiavi in parallelo + un giudice che fonde le risposte (se il Portiere è spento, il giudice si prova su ognuno dei membri).<br>💻 <b>code</b>: come fusion, ma i modelli sono scelti per la programmazione.<br>Il pannello si compone dal catalogo <code>/api/modelli</code> (le chiavi che rispondono).</div>
     </div>`;
   }
-  const teams = getTeams();
-  h += `<div class="prov"><h3>⭐ Squadre fusion salvate</h3>` +
-    (teams.length ? teams.map(t=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;margin:4px 0"><b>${t.approved===false?'🧪':'⭐'} ${esc(t.name)}${t.desc?' — '+esc(t.desc):''}</b><span style="color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((t.models||[]).join(' · ').slice(0,80))}</span><button class="abtn" data-delteam="${esc(t.name)}" style="margin-left:auto">🗑</button></div>`).join('')
-      : `<div class="hint">Nessuna squadra salvata: usa 🎯 fusion su misura e premi "💾 salva squadra" sotto la risposta.</div>`) + `</div>`;
   h += `<details><summary>🤳 usalo dai tuoi agenti (OpenClaw, Hermes…)</summary>
     <p class="hint">Endpoint OpenAI-compatibile, servito dall'hub stesso:<br>
     <code>POST http://localhost:20200/v1/chat/completions</code><br>
@@ -2673,7 +2668,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 </script>
 <script>
 // ─── ACCENSIONE, in chiaro accanto al menu 🤖 Agenti ───
-// motore → agenti → posta: ognuno coi suoi 3 pallini mentre parte e la ✓ verde quando è pronto.
+// motore → agenti → posta: la frase coi 3 pallini SOLO mentre parte; a posto che è, resta la spia verde.
 (function(){
   const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
   const box = document.getElementById('agBoot');
@@ -2681,13 +2676,14 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
   if(!VIVO){ box.textContent = ''; return; }
 
   const DOTS = '<span class="agDots" style="display:inline-flex;margin:0 0 0 3px"><i></i><i></i><i></i></span>';
-  // ogni pezzo: la frase che dici tu («accendo il motore»), i 3 pallini mentre parte, la ✓ verde quando è pronto
-  function pezzo(frase, stato, spento){   // stato: 'ok' | 'att' | 'no'
-    if(stato === 'ok')
-      return '<span style="color:#3fb950;white-space:nowrap">' + frase + ' <b>✓</b></span>';
-    if(stato === 'att')
-      return '<span style="color:#d29922;white-space:nowrap">' + frase + DOTS + '</span>';
-    return '<span style="color:#8b949e;white-space:nowrap">· ' + spento + '</span>';
+  // Mentre parte si legge la frase coi 3 pallini. Quando è a posto la frase SPARISCE
+  // e resta solo la spia verde. Se qualcosa non va, spia rossa (si guarda in impostazioni).
+  function frase(f){
+    return '<span style="color:#d29922;white-space:nowrap">' + f + DOTS + '</span>';
+  }
+  function spia(colore, titolo){
+    return '<span title="' + titolo.replace(/"/g, '&quot;') + '" style="display:inline-block;width:9px;height:9px;'
+         + 'border-radius:50%;background:' + colore + ';box-shadow:0 0 0 3px ' + colore + '22"></span>';
   }
   let accesoMotore = false;    // il tasto «Avvia» premuto da poco: sto aspettando che risponda
   let accesoPosta = false;
@@ -2710,10 +2706,29 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
     const pronti = (window._agenti || []).filter(a => a.pronto).length;
     const posta = (await leggiPostino(st)) || accesoPosta;
 
+    const statoMotore = qualcuno.length ? 'ok' : (partendo ? 'att' : 'no');
+    const statoAgenti = prova ? 'att' : (pronti > 0 ? 'ok' : 'no');
+    const statoPosta  = posta ? 'ok' : 'no';
+    const stati = [statoMotore, statoAgenti, statoPosta];
+
     let h = '';
-    h += pezzo('accendo il motore', qualcuno.length ? 'ok' : (partendo ? 'att' : 'no'), 'motore spento');
-    h += pezzo('accendo gli agenti', prova ? 'att' : (pronti > 0 ? 'ok' : 'no'), 'agenti spenti');
-    h += pezzo('accendo la posta', posta ? 'ok' : 'no', 'posta spenta');
+    if (stati.includes('att')){
+      // sta ancora partendo qualcosa: si legge cosa
+      if (statoMotore === 'att') h += frase('accendo il motore');
+      if (statoAgenti === 'att') h += frase('accendo gli agenti');
+      if (statoPosta  === 'att') h += frase('accendo la posta');
+      // e in grigio, senza frase, quello che non sta partendo adesso
+      const altri = stati.filter(x => x === 'no').length;
+      if (altri) h += '<span style="color:#8b949e;white-space:nowrap">· ' + altri + (altri === 1 ? ' spento' : ' spenti') + '</span>';
+    } else if (stati.every(x => x === 'ok')){
+      h = spia('#3fb950', 'Tutto acceso: motore, agenti e posta');      // solo la spia verde
+    } else {
+      const guasti = [];
+      if (statoMotore === 'no') guasti.push('motore');
+      if (statoAgenti === 'no') guasti.push('agenti');
+      if (statoPosta  === 'no') guasti.push('posta');
+      h = spia('#f85149', 'Da guardare: ' + guasti.join(' · ') + ' — apri 🤖 Agenti / ⚙');
+    }
 
     box.innerHTML = h;
     box.title = 'Motore: ' + (qualcuno.length ? 'acceso (' + qualcuno.join(', ') + ')' : (partendo ? 'si sta accendendo' : 'spento'))
