@@ -268,6 +268,15 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="ag3motB" disabled>Avvia</button>
         </div>
       </section>
+      <section class="agCard">
+        <h3>📂 Risultati Fusion</h3>
+        <div id="agRisLista" class="agDim" style="font-size:12px">—</div>
+      </section>
+      <section class="agCard">
+        <h3>🔄 Computer</h3>
+        <div class="agBottoni"><span class="agDots" id="agPcDots" style="display:none"><i></i><i></i><i></i></span><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
+        <div class="agDim" style="margin-top:4px;font-size:11.5px" id="agAggNota">Solo le novità (1-3 min). Puoi continuare a chattare.</div>
+      </section>
       </div>
       <div class="agCol">
       <section class="agCard" id="agAgentiCard">
@@ -305,16 +314,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         </div>
       </section>
       </div>
-      <section class="agCard agLargo">
-        <h3>📬 Risultati</h3>
-        <select id="agRisLista" style="width:100%"><option>—</option></select>
-        <pre id="agRisTesto" style="max-height:150px;overflow:auto;white-space:pre-wrap;font-size:11.5px;margin-top:6px">(scegli un risultato)</pre>
-      </section>
-      <section class="agCard agLargo">
-        <h3>🔄 Computer</h3>
-        <div class="agBottoni"><span class="agDots" id="agPcDots" style="display:none"><i></i><i></i><i></i></span><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
-        <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
-      </section>
             <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
         <div id="agSalute" class="agDim">—</div>
@@ -2268,7 +2267,7 @@ function aggiornaPilota(){
   pan.addEventListener('click', e => { if(e.target === pan) chiudi(); });
   document.addEventListener('keydown', e => { if(e.key === 'Escape') chiudi(); });
 
-  const led = (el, testo, cls) => { el.textContent = testo; el.className = cls || ''; };
+  const led = (el, testo, cls) => { if(!el) return; el.textContent = testo; el.className = cls || ''; };
 
   // errori SEMPRE IN CHIARO: niente JSON nel riquadro, solo frasi che si capiscono
   const COSA_SI_FACEVA = {
@@ -2359,7 +2358,6 @@ function aggiornaPilota(){
       led($('agCheck'), 'anteprima', 'agDim');
       led($('agOmni'), 'anteprima', 'agDim');
       led($('agBrow'), 'anteprima', 'agDim');
-      led($('agChiavi'), 'anteprima', 'agDim');
       led($('agPostino'), 'anteprima', 'agDim');
       $('agSalute').textContent = 'Questa è l\'anteprima nel workspace: i comandi veri si attivano quando è aperta dal PC (porta 20200).';
       document.querySelectorAll('.agB').forEach(b => b.disabled = true);
@@ -2461,6 +2459,7 @@ function aggiornaPilota(){
         : (ng ? '<span class="att">🟡 ' + ng + ' cose da guardare</span> — niente di rotto'
               : '<span class="ok">✅ tutto a posto</span>');
       // contatori: li mostra la scheda Motori
+      const ct = s.contatori || {};
       window._contatori = ct;
       // all'accensione: se c'è qualcosa che non va, lo dico subito in chiaro
       if((s.avvisi || []).length && !window._avvisiMostrati){
@@ -2469,13 +2468,14 @@ function aggiornaPilota(){
         log('ALL\'ACCENSIONE HO TROVATO ' + n + (n === 1 ? ' COSA' : ' COSE') + ' DA GUARDARE:\n\n' + s.avvisi.join('\n\n'));
       }
       // risultati
-      const L = $('agRisLista'); const sel = L.value;
-      L.innerHTML = (s.risultati || []).map(r => '<option' + (r === sel ? ' selected' : '') + '>' + r + '</option>').join('') || '<option>—</option>';
+      const L = $('agRisLista');
+      const rr = (s.risultati || []);
+      L.innerHTML = rr.length
+        ? rr.map(r => '<a href="/api/risultato/raw?f=' + encodeURIComponent(r) + '" target="_blank" ' +
+            'style="display:block;padding:3px 0;color:#7db4ff;text-decoration:none;border-bottom:1px solid #ffffff0d">' +
+            r.replace(/^FUSION_/, '').replace(/\.md$/, '').replace(/_/, ' · ') + '</a>').join('')
+        : 'nessun risultato ancora';
     }catch(e){ avvisa('/api/stato', null, e); }
-    try{
-      const c = await api('/api/chiavi');
-      led($('agChiavi'), (c.attive ?? 0) + ' / ' + (c.totali ?? 0), 'ok');
-    }catch(e){}
     try{
       const p = await api('/api/ponte');
       led($('agPostino'), p.postino ? '🟢 attivo' : '🔴 spento', p.postino ? 'ok' : 'att');
@@ -2550,11 +2550,6 @@ function aggiornaPilota(){
     gira('agBroDots', false); $('agBrowApri').disabled = false; aggiorna();
   });
   $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
-  $('agRisLista').addEventListener('change', async e => {
-    const n = e.target.value; if(!n || n === '—') return;
-    const r = await api('/api/risultato?f=' + encodeURIComponent(n));
-    $('agRisTesto').textContent = (r.testo || '').slice(0, 4000) || '(vuoto)';
-  });
   $('agAggiorna').addEventListener('click', async () => {
     $('agAggNota').textContent = 'Aggiornamento in corso… puoi continuare a chattare.'; gira('agPcDots', true);
     const r = await api('/api/pc/aggiorna', {});

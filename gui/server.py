@@ -1377,7 +1377,7 @@ def stato():
     except Exception:
         pass
     ris_dir = os.path.join(POSTA, "RISPOSTE_AGENTI")
-    ultimi = sorted(os.listdir(ris_dir), reverse=True)[:5] if os.path.isdir(ris_dir) else []
+    ultimi = sorted(os.listdir(ris_dir), reverse=True)[:8] if os.path.isdir(ris_dir) else []
     if serve_login_manuale() and not os.path.exists(flag_checkin()) \
             and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
         threading.Thread(target=verifica_sessione, daemon=True).start()
@@ -1463,6 +1463,17 @@ class H(BaseHTTPRequestHandler):
             self._json(ponte_stato())
         elif self.path == "/api/stato":
             self._json(stato())
+        elif self.path.startswith("/api/risultato/raw"):
+            import urllib.parse
+            q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            nome = os.path.basename((q.get("f") or [""])[0])
+            testo = leggi(os.path.join(POSTA, "RISPOSTE_AGENTI", nome), "(vuoto)")
+            b = testo.encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
         elif self.path.startswith("/api/risultato"):
             import urllib.parse
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
