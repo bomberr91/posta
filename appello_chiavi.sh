@@ -88,8 +88,18 @@ prova(){
   local t0 t1 code esito extra modello
   t0=$(date +%s%N)
 
+  # CLOUDFLARE: l'indirizzo dipende dall'account, che sta DENTRO la chiave («account_id:token»),
+  # e l'elenco modelli non sta su /models ma su /ai/models/search. (21/10: verificato)
+  local base_probe="$base" key_hdr="$key"
+  if [ "$base" = "SPECIALE-CLOUDFLARE" ]; then
+    base="https://api.cloudflare.com/client/v4/accounts/${key%%:*}/ai/v1"
+    base_probe="https://api.cloudflare.com/client/v4/accounts/${key%%:*}/ai/models/search?per_page=200"
+    key_hdr="${key#*:}"          # nel «Bearer» va solo il token
+    mod="${mod}"
+  fi
+
   # 1) elenco modelli: dice se la chiave vale e QUALE modello esiste OGGI
-  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -H "Authorization: Bearer $key" "$base/models" 2>/dev/null)
+  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -H "Authorization: Bearer $key_hdr" "$base_probe" 2>/dev/null)
   case "$code" in
     401|403) printf '%s\t%s\tchiave-no\t%s\tchiave rifiutata (%s)\t\n' "$id" "$eti" "$(( ($(date +%s%N)-t0)/1000000 ))" "$code" > "$TMP/$id.res"; return ;;
   esac
@@ -109,7 +119,7 @@ prova(){
     # (i nomi cambiano spesso: così non resta mai indietro)
     while IFS= read -r tentativo; do
       [ -z "$tentativo" ] && continue
-      body=$(curl -s -m 45 -H "Authorization: Bearer $key" -H "Content-Type: application/json" \
+      body=$(curl -s -m 45 -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
         -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
         "$base/chat/completions" 2>/dev/null)
       if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; break; fi

@@ -1426,12 +1426,22 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
     if not k:
         return "", "chiave assente nel portachiavi", 0
     t0 = time.time()
+    base = (m.get("base") or "").rstrip("/")
+    if base.startswith("SPECIALE-"):
+        # Cloudflare non ha un indirizzo uguale per tutti: è accounts/<account_id>/ai/v1
+        # e l'account_id sta DENTRO la chiave, prima dei due punti.
+        acc, _, solo_token = k.partition(":")
+        acc = acc.strip()
+        if not acc or not solo_token:
+            return "", "chiave Cloudflare senza account_id (formato account_id:token)", 0
+        k = solo_token.strip()      # nel «Bearer» va SOLO il token, l'account sta nell'indirizzo
+        base = "https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc
     try:
         # L'INTESTAZIONE «CHI SEI» CONTA (trovato il 21/10): xKiro, DreamPrompting e Gizmo
         # rispondono 403 se la richiesta arriva come «Python-urllib». Con l'UA di un browser
         # passano. È lo stesso quirk che FreeLLMAPI chiama «UA browser» nelle sue note.
         req = urllib.request.Request(
-            m["base"].rstrip("/") + "/chat/completions",
+            base + "/chat/completions",
             data=json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
                              "max_tokens": quanti}).encode(),
             headers={"Authorization": "Bearer " + k, "Content-Type": "application/json",
@@ -1445,7 +1455,7 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
             # è rimasta vuota (quirk Agnes/Logfare). Un secondo giro con più spazio.
             corpo2 = json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
                                  "max_tokens": max(800, quanti * 4)}).encode()
-            req2 = urllib.request.Request(m["base"].rstrip("/") + "/chat/completions", data=corpo2,
+            req2 = urllib.request.Request(base + "/chat/completions", data=corpo2,
                                           headers={"Authorization": "Bearer " + k,
                                                    "Content-Type": "application/json",
                                                    "Accept": "application/json",

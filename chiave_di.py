@@ -37,6 +37,7 @@ FORMATI = [
     r"sk_[A-Za-z0-9]{20,}",
     r"ak_[A-Za-z0-9]+",
     r"alv2_[A-Za-z0-9]+",
+    r"[0-9a-f]{32}:cfut_[A-Za-z0-9]+",   # Cloudflare: la chiave è «account_id:token»
     r"cfut_[A-Za-z0-9]+",
     r"lfu_[A-Za-z0-9]+",
     r"sk-free-[A-Za-z0-9_-]+",

@@ -62,7 +62,10 @@ blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
 sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat
 anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
 kilo|Kilo (senza chiave)|SENZA|https://kilocode.ai/api/openrouter/v1|auto|modelli
-cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.1-8b-instruct|modelli
+cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat
+#   Cloudflare: la chiave nel registro è «account_id:token», e il router ricava l'indirizzo da lì
+#   (https://api.cloudflare.com/client/v4/accounts/<account_id>/ai/v1). L'elenco modelli NON sta su
+#   /models: sta su /ai/models/search. Il vecchio llama-3.1-8b è stato deprecato (410) → 3.3-70b-fast.
 
 # ── INDIRIZZI RECUPERATI DALLE INFO DELLA REPO FREELMAPI (MIT) — 21/10 notte ──
 # Fonte: tashfeenahmed/freellmapi, server/src/providers/index.ts e providers/*.ts.
