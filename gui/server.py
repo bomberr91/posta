@@ -1372,7 +1372,9 @@ def risultati_in_testo(risultati, domanda=""):
         righe.append(f"[{i}] {r['title']} — {r['url']}")
         if r.get("snippet"):
             righe.append("    " + r["snippet"])
-    righe.append("Se la domanda riguarda una versione o una data, fidati di questi risultati e indica la data.")
+    righe.append("REGOLE: per fatti, versioni, date, prezzi e notizie usa SOLO questi risultati; ")
+    righe.append("se non contengono la risposta scrivi «non ho trovato un dato aggiornato» invece di inventare; ")
+    righe.append("cita il sito tra parentesi, e ricorda che la tua memoria può essere vecchia.")
     return "\n".join(righe)
 
 
@@ -1427,6 +1429,11 @@ def motori_in_chiaro():
         else:
             righe.append("%s (%d): acceso, nessuna risposta" % (nome, porta))
     return "\n".join("  · " + r for r in righe)
+
+
+AVVISO_SENZA_WEB = ("La ricerca web NON ha dato risultati adesso. Se la domanda riguarda fatti recenti, "
+                    "versioni, prezzi o notizie, dillo in una riga («non riesco a controllare online in questo "
+                    "momento») e rispondi solo con quello che sai, dicendo che può essere vecchio.")
 
 
 def messaggio_motori():
@@ -1642,7 +1649,9 @@ def stato():
     mo = modelli_omni()
     lo = lavoro_omni()
     ap = appello_dati()
+    motori = {n: porta_viva(p) for n, p in MOTORI_CHAT}   # chi può rispondere ADESSO
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
+            "motori": motori, "motori_nessuno": not any(motori.values()),
             "checkin_oggi": os.path.exists(flag_checkin()),
             "checkin_ora": leggi(flag_checkin(), "").strip(),
             "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()),

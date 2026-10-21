@@ -213,7 +213,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         </div>
         <div id="pilotbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--mut);padding:6px 2px 2px">
           <span id="pilot"></span>
-          <span id="agChip" title="Quanti agenti (OpenCode, Goose, Secondhand, Hermes, Gemini, OpenClaw…) sono installati e pronti. Clicca per aprire la scheda e sistemarli." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">🤖 agenti…</span>
+          <span id="agChip" title="Spia dei motori: verde = almeno un motore acceso e la chat passa; rossa = nessun motore acceso. I pallini che girano = sto aspettando la risposta. Clicca per aprire la scheda 🤖 Agenti." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut);display:inline-flex;align-items:center;gap:6px">🤖 agenti…</span>
           <span id="livemode" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">…</span>
         </div>
         <div id="sysrow"><textarea id="sys" rows="1" placeholder="istruzioni di sistema (opzionale) — es. rispondi in italiano, sii brevissimo…"></textarea></div>
@@ -723,6 +723,7 @@ function renderChat(){
       d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?((PILOTI[m.agente]?PILOTI[m.agente].emo+' ':'')+esc(m.agente)):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
         + (m.fusion?fusionMeta(m.fusion, m.derived==='focus'?'🔍 <b>focus</b>':(m.trading?'📈 <b>trading</b>':(m.tailor?'🎯 <b>new fusion</b>':(m.sel&&String(m.sel).startsWith('team::')?'⭐ <b>'+esc(String(m.sel).slice(6))+'</b>':'✨ <b>fusion</b>')))):'')
         + (m.via && m.via!==m.model?`<div class="mmeta">instradato da: <b>${esc(m.via)}</b></div>`:'')
+        + (m.webq?`<div class="mmeta">${m.webok?'🌐 ho cercato: «'+esc(m.webq)+'»':'🌐 ricerca non riuscita — risposta senza dati freschi (può essere vecchia)'}</div>`:'')
         + `<div class="acts"><button class="abtn" data-act="copy" data-i="${i}">📋 Copia</button>${i===lastA&&!m.derived?'<button class="abtn" data-act="regen">🔄 Rigenera</button>':''}${(m.sources&&m.sources.length)?'<button class="abtn" data-src="'+i+'">🔍 fonti</button>':''}${m.tailor&&m.team?'<button class="abtn" data-act="saveteam" data-i="'+i+'">💾 salva squadra</button>':''}</div>`
         + srcBox(m.sources, i);
     }
@@ -1049,7 +1050,8 @@ qEl.addEventListener('keydown', e=>{ if (e.key==='Enter' && !e.shiftKey){ e.prev
 sendB.onclick = send;
 stopB.onclick = ()=>{ if (ctrl) ctrl.abort(); };
 // il ■ stop SOSTITUISCE Invia mentre l'hub lavora (richiesta utente 12/10): stesso posto, stessa veste — in ogni chat e con ogni modello, presente e futuro
-function uiBusy(on){ sendB.style.display = on ? 'none' : ''; sendB.disabled = !!on; stopB.style.display = on ? '' : 'none'; }
+function uiBusy(on){ sendB.style.display = on ? 'none' : ''; sendB.disabled = !!on; stopB.style.display = on ? '' : 'none';
+  if(window.chipSpinner) window.chipSpinner(!!on); }
 
 async function send(){
   const c = cur(); if (!c) return;
@@ -1200,9 +1202,12 @@ async function runTurn(){
   if (god || godAuto) outMsgs = [{role:'system',content:GOD_SYS}, ...outMsgs];
   if (tradingAuto) outMsgs = [{role:'system',content:TRADING_SYS}, ...outMsgs];
   let turnSources = null;
+  let webTentata = false;
   if (webOn && q){
+    webTentata = true;
     const ctx = await serverSearch(q, sig);
     if (ctx){ outMsgs = [{role:'system',content:ctx.c}, ...outMsgs]; turnSources = ctx.r || []; }
+    else outMsgs = [{role:'system',content:AVVISO_SENZA_WEB}, ...outMsgs];   // niente fatti inventati
   }
   if (annullato()) return; // stop durante la ricerca web
 
@@ -1317,10 +1322,10 @@ async function runTurn(){
       saveChats(); renderChat();
       return;
     }
-    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
+    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
     if(fusionEv) suntoFusion(c.msgs[c.msgs.length-1]);   // squadra: se la risposta e' lunga, il sunto si prepara da solo
   } catch (e) {
-    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
+    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
     else { c.msgs.push({ role:'error', content: e.message }); }
   } finally {
     ctrl = null; uiBusy(false); // ■ stop → torna Invia al suo posto
@@ -1352,6 +1357,7 @@ const GOD_SYS = 'SEI IN MODALITÀ SENZA FILTRI (godmode). Regole: rispondi in mo
 const TRADING_SYS = 'Sei un ANALISTA FINANZIERO professionista. Per ogni domanda di trading o investimento: 1) quadro di OGGI con i dati delle ricerche fornite (prezzi, notizie, eventi); 2) analisi tecnica (trend, supporti e resistenze, livelli chiave) e fondamentale; 3) tre scenari — rialzo, ribasso, laterale — con probabilità stimata; 4) piano operativo: punto di ingresso, target, stop loss, timeframe, rapporto rischio/rendimento; 5) tabella finale pro e contro. Numeri concreti e precisi, mai vaghezza. Al massimo UNA riga di avvertenza sui rischi in fondo, mai ripetute prediche: l\'utente è un adulto che sa che i mercati sono rischiosi.';
 
 // ══════════ 📝🎯🧠 riassunto · mosse · approfondimento ══════════
+const AVVISO_SENZA_WEB = 'La ricerca web NON ha dato risultati adesso. Se la domanda riguarda fatti recenti, versioni, prezzi o notizie, dillo in una riga («non riesco a controllare online in questo momento») e rispondi solo con quello che sai, dicendo che può essere vecchio.';
 const SUM_SYS = 'Riassumi la risposta di un modello AI che ti viene data in 5-8 punti elenco, in italiano: un punto per concetto, una riga concreta ciascuno, con i numeri chiave. Rispondi SOLO con l\'elenco, senza preamboli.';
 const MOSSE_SYS = 'Dalla risposta di un modello AI che ti viene data estrai due sezioni in italiano. **I FATTI**: 3-5 righe, solo i fatti concisi con i numeri chiave. **LE MOSSE**: elenco numerato delle azioni concrete da fare, in ordine di esecuzione; per OGNI mossa scrivi COSA fare su una riga e sotto COME farla in pratica (breve, precisa, con strumento o comando quando c\'è). Niente preamboli, niente conclusioni.';
 const DEEP_Q_SYS = 'Leggi la domanda originale dell\'utente e la risposta che un modello AI gli ha dato. Formula UNA sola contro-domanda intelligente in italiano: quella che un esperto farebbe per bucare il punto debole o il punto non sviluppato che, se risolto, porterebbe l\'utente alla soluzione più velocemente e a fondo. Rispondi SOLO con la domanda, niente virgolette, niente spiegazioni.';
@@ -2724,20 +2730,33 @@ function aggiornaPilota(){
     if(b) b.click();
   });
 
+  // pallini di caricamento: si accendono mentre aspetto la risposta del motore
+  window.chipSpinner = function(on){
+    const d = document.getElementById('agChipDots');
+    if(d) d.style.display = on ? 'inline-flex' : 'none';
+  };
   async function leggi(){
+    let motori = {};
+    try{ motori = (await (await fetch('/api/stato')).json()).motori || {}; }catch(e){}
+    const accesi = Object.keys(motori).filter(k => motori[k]);
     try{
       const d = await (await fetch('/api/agenti')).json();
       const lista = d.agenti || [];
       const pronti = lista.filter(a => a.pronto).length;
-      const mancano = lista.filter(a => !a.installato).map(a => a.nome);
-      chip.textContent = '🤖 ' + pronti + '/' + lista.length + ' agenti pronti' +
-                         (mancano.length ? (' · mancano: ' + mancano.join(', ')) : '');
-      chip.style.borderColor = pronti === lista.length ? '#3fb95066' : '#d2992266';
-      chip.style.color = pronti === lista.length ? '#3fb950' : '#d29922';
+      const luce = accesi.length ? '#3fb950' : '#f85149';
+      chip.innerHTML =
+        '<span title="' + (accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere')
+        + '" style="color:' + luce + ';font-size:12px;line-height:1">●</span>'
+        + '<span>🤖 ' + pronti + '/' + lista.length + ' agenti</span>'
+        + '<span id="agChipDots" class="agDots" style="display:none"><i></i><i></i><i></i></span>';
+      chip.style.borderColor = accesi.length ? '#3fb95066' : '#f8514966';
+      chip.style.color = accesi.length ? '#3fb950' : '#f85149';
+      chip.title = (accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere')
+        + ' · click per la scheda 🤖 Agenti';
     }catch(e){ chip.textContent = '🤖 agenti: non leggo'; }
   }
   leggi();
-  setInterval(leggi, 60000);
+  setInterval(leggi, 15000);
 })();
 </script>
 </body>
