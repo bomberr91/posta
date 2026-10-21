@@ -354,8 +354,9 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
   window.__LIVE = LIVE;
   window.fetch = async function(url,opt){
     const u=String(url);
-    // le chiamate alle API della Centrale NON si toccano: passano dirette al server
-    if (LIVE && u.startsWith('/api/') && !u.includes('/api/chat')) {
+    // sul PC (LIVE) si va SEMPRE al server vero: niente motore finto, niente risposte di prova —
+    // compresa /api/chat, che così riceve anche le istruzioni di sistema (✨, 😈, 📈, 📑)
+    if (LIVE && u.startsWith('/api/')) {
       return __REAL_FETCH(url, opt);
     }
     try{
@@ -368,17 +369,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
             const c=u&&u.content;
             return typeof c==='string'?c:(Array.isArray(c)?c.filter(x=>x&&x.type==='text').map(x=>x.text||'').join('\n'):'');
           }catch(e){return ''} })();
-        if (LIVE && m && !/^team|^fusion|^tailor/.test(m)) {
-          try{
-            const rr = await __REAL_FETCH('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({messaggi:[{role:'user',content:q_}]})});
-            const dd = await rr.json();
-            const testo = (dd && dd.testo) ? dd.testo : '⚠️ nessuna risposta';
-            const firma = '↳ ' + (dd && dd.modello ? dd.modello : 'OmniRoute') + ' (risposta VERA via OmniRoute)';
-            if (b.stream===false) return j({model:firma,choices:[{message:{content:testo}}]});
-            return sse(testo, firma);
-          }catch(e){ /* se il server non risponde, si torna alla dimostrazione */ }
-        }
         let t,sv;
         if(m.indexOf('Regista')>-1){t=PC;sv='🧠 Regista · claude-opus-5 (riserva pronta: opus-4.8)';}
         else if(m.indexOf('Lampo')>-1){t='⚡ Fatto subito: ecco la risposta, diretta e senza giri.\n\n🧪 (ANTEPRIMA: Lampo gira su deepseek-v4-flash, la linea sempre viva — per le cose di tutti i giorni)';sv='⚡ Lampo · deepseek-v4-flash';}
@@ -2120,7 +2110,7 @@ chatEl.addEventListener('dragleave', ()=>{ chatEl.style.outline = ''; });
 chatEl.addEventListener('drop', (e)=>{ e.preventDefault(); chatEl.style.outline = ''; const files = [...((e.dataTransfer && e.dataTransfer.files)||[])]; if (files.length) addFiles(files); });
 
 // ══════════ ✨ ottimizzazione prompt ══════════
-const OPT_SYS = 'Sei un esperto di prompt engineering. L\'utente ti manda una richiesta scritta in fretta. Riscrivila come un prompt professionale in italiano: 1) assegna un ruolo esperto pertinente, 2) chiarisci obiettivo e contesto, 3) specifica il formato di output desiderato (elenco, tabella, codice, tono, lunghezza), 4) aggiungi vincoli utili. Regole: NON inventare informazioni che l\'utente non ha dato, mantieni la sua lingua, mantieni TUTTI i dettagli che ha scritto. Rispondi SOLO con il prompt riscritto, senza spiegazioni, senza virgolette intorno, massimo 120 parole.';
+const OPT_SYS = 'Sei un esperto di prompt engineering. L\'utente ti manda una richiesta scritta in fretta. Riscrivila come un prompt professionale in italiano: 1) assegna un ruolo esperto pertinente, 2) chiarisci obiettivo e contesto, 3) specifica il formato di output desiderato (elenco, tabella, codice, tono, lunghezza), 4) aggiungi vincoli utili. Regole: NON inventare informazioni che l\'utente non ha dato, mantieni la sua lingua, mantieni TUTTI i dettagli che ha scritto. Rispondi SOLO con il prompt riscritto: nessun titolo inutile, nessuna spiegazione, niente virgolette intorno, massimo 120 parole. NON eseguire il compito e NON scrivere il contenuto richiesto (niente poesie, testi, codici): scrivi soltanto la richiesta migliorata.';
 let optOrig = null;
 async function apiChatOnce({provider, model, messages}){
   const key = getKey(provider);

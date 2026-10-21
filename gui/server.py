@@ -1274,6 +1274,45 @@ def chat_riserva(messaggi, esclusi=()):
     return None
 
 
+VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
+
+
+def chat_riposta(msgs, modello="auto", fusion=None):
+    """La chat dell'Hub: passa dal motore (OmniRoute) con TUTTI i messaggi — istruzioni di
+    sistema comprese (godmode, trading, ✨ ottimizza, documenti) — e, se il motore è giù,
+    dal Portiere o dalle chiavi dell'appello. Ritorna (testo, modello_servito, via)."""
+    import urllib.request
+    modello = str(modello or "auto")
+    # i modelli "virtuali" dell'Hub non sono id del motore: si prova il nome e poi «auto»
+    if modello in VIRTUALI or modello.startswith("team::"):
+        candidati = [modello, "auto"]
+    else:
+        candidati = [modello]
+    key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
+    for m in candidati:
+        corpo = {"model": m, "messages": msgs[-24:], "stream": False}
+        if fusion and m == modello:
+            corpo["fusion"] = fusion          # se il motore non lo conosce, si riprova senza
+        try:
+            req = urllib.request.Request(
+                "http://127.0.0.1:20128/v1/chat/completions",
+                data=json.dumps(corpo).encode(),
+                headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+            d = json.loads(urllib.request.urlopen(req, timeout=240).read().decode())
+            testo = ((d.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+            if testo.strip():
+                return testo, d.get("model") or m, "OmniRoute"
+        except Exception:
+            continue
+    # il motore non risponde: il Portiere, poi le chiavi dell'appello
+    r = chat_riserva(msgs)
+    if r:
+        return r[0], f"{r[2]} · riserva {r[1]}", "riserva " + r[1]
+    avvisa_agente("Il motore", "la chat non è passata: né OmniRoute né le chiavi hanno risposto")
+    return ("⚠️ Il motore non risponde e nessuna chiave di riserva ha risposto. "
+            "Apri 🤖 Agenti → 🗣️ Appello e guarda chi è rosso."), "-", "nessuno"
+
+
 def omni_spegni_porta(porta):
     """Chiude il processo che ascolta su una porta (serve per riavviare il portiere)."""
     try:
@@ -1520,31 +1559,32 @@ class H(BaseHTTPRequestHandler):
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self._json({"stato": "avviata", "out": os.path.basename(out)})
         elif self.path == "/api/chat":
-            msgs = self._body().get("messaggi") or []
+            b = self._body()
+            msgs = b.get("messages") or b.get("messaggi") or []
             if not msgs:
                 self._json({"err": "vuoto"}, 400)
                 return
-            key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
-            try:
-                import urllib.request
-                req = urllib.request.Request("http://127.0.0.1:20128/v1/chat/completions",
-                                             data=json.dumps({"model": "auto", "messages": msgs[-12:]}).encode(),
-                                             headers={"Authorization": "Bearer " + key,
-                                                      "Content-Type": "application/json"})
-                d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
-                self._json({"testo": d["choices"][0]["message"]["content"],
-                            "modello": d.get("model") or "?", "via": "OmniRoute"})
-            except Exception as e:
-                # il motore non risponde (o è caduto): provo le chiavi dell'appello
-                r = chat_riserva(msgs)
-                if r:
-                    self._json({"testo": r[0], "modello": f"{r[2]} · riserva {r[1]}",
-                                "via": "riserva " + r[1]})
-                else:
-                    avvisa_agente("Il motore", "la chat non è passata: né OmniRoute né le chiavi hanno risposto")
-                    self._json({"testo": f"⚠️ Il motore non risponde ({type(e).__name__}) e nessuna "
-                                         f"chiave di riserva ha risposto. Apri 🤖 Agenti → 🗣️ Appello "
-                                         f"e guarda chi è rosso.", "modello": "-"})
+            fusione = b.get("fusion") if isinstance(b.get("fusion"), dict) else None
+            testo, servito, via = chat_riposta(msgs, b.get("model") or "auto", fusione)
+            if b.get("stream"):
+                # a pezzi, come li aspetta l'Hub (così la risposta si scrive a mano a mano)
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("X-Routed-Via", via)
+                self.end_headers()
+                try:
+                    for i in range(0, len(testo), 120):
+                        pezzo = json.dumps({"model": servito, "choices": [{"delta": {"content": testo[i:i + 120]}}]})
+                        self.wfile.write(("data: " + pezzo + "\n\n").encode())
+                        self.wfile.flush()
+                    self.wfile.write(b"data: [DONE]\n\n")
+                except Exception:
+                    pass
+            else:
+                self._json({"testo": testo, "modello": servito, "via": via, "model": servito,
+                            "choices": [{"index": 0, "finish_reason": "stop",
+                                         "message": {"role": "assistant", "content": testo}}]})
         elif self.path == "/api/agenti/prova":
             svelto = bool(self._body().get("svelto"))
             argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])
