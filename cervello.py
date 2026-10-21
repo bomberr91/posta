@@ -35,12 +35,12 @@ LISTA = os.path.join(QUI, "portiere_lista.txt")
 
 
 def carica_lista():
-    """Legge la lista del Portiere. Ritorna (base, etichette, nomi, modi)."""
-    base, etichette, nomi, modi = {}, {}, {}, {}
+    """Legge la lista del Portiere. Ritorna (base, etichette, nomi, modi, tipi)."""
+    base, etichette, nomi, modi, tipi = {}, {}, {}, {}, {}
     try:
         righe = open(LISTA, encoding="utf-8", errors="replace").read().splitlines()
     except Exception:
-        return base, etichette, nomi, modi
+        return base, etichette, nomi, modi, tipi
     for riga in righe:
         r = riga.strip()
         if not r or r.startswith("#"):
@@ -53,14 +53,26 @@ def carica_lista():
         pid, eti, nome, url = pezzi[0], pezzi[1], pezzi[2], pezzi[3]
         modello = pezzi[4] if len(pezzi) > 4 else "auto"
         modo = pezzi[5] if len(pezzi) > 5 else "chat"
+        tipo = (pezzi[6] if len(pezzi) > 6 else "chat").strip() or "chat"
         base[pid] = (url.rstrip("/"), modello)
         etichette[pid] = eti
         nomi[pid] = nome
         modi[pid] = modo
-    return base, etichette, nomi, modi
+        tipi[pid] = tipo
+    return base, etichette, nomi, modi, tipi
 
 
-BASE, ETICHETTE, NOMI, MODI = carica_lista()
+BASE, ETICHETTE, NOMI, MODI, TIPI = carica_lista()
+
+
+def indirizzo(pid, k):
+    """Indirizzo e intestazioni per quel provider (Cloudflare ha un formato suo)."""
+    url, _ = BASE[pid]
+    if url == "SPECIALE-CLOUDFLARE":
+        acc, _, tok = (k or "").partition(":")
+        return ("https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc,
+                {"Authorization": "Bearer " + tok})
+    return url, {"Authorization": "Bearer " + k}
 
 NOME = "Portiere"
 
@@ -128,17 +140,20 @@ def riserva(payload):
         pid = v.get("id")
         if pid not in BASE:
             continue
-        base, modello = BASE[pid]
+        if TIPI.get(pid, "chat") != "chat":
+            continue                        # immagini/voce/video/db non fanno chat
+        _, modello = BASE[pid]
         modello = v.get("modello") or modello
         k = chiave(pid)
         if not k:
             continue
+        base, intestazioni = indirizzo(pid, k)
+        intestazioni["Content-Type"] = "application/json"
         corpo = json.dumps({"model": modello, "messages": messaggi,
                             "max_tokens": payload.get("max_tokens", 1200)}).encode()
         try:
             req = urllib.request.Request(base + "/chat/completions", data=corpo,
-                                         headers={"Authorization": "Bearer " + k,
-                                                  "Content-Type": "application/json"})
+                                         headers=intestazioni)
             d = json.loads(urllib.request.urlopen(req, timeout=90).read().decode())
             if (d.get("choices") or [{}])[0].get("message", {}).get("content"):
                 d["model"] = "%s (riserva %s)" % (modello, v.get("nome") or pid)
@@ -167,6 +182,25 @@ def da_confermare():
     return fuori
 
 
+def immagini(prompt):
+    """Le chiavi di immagini della lista: se ti serve una foto, il Portiere pesca qui.
+    Oggi risponde Pollinations (senza chiave, gratis): restituisce l'indirizzo dell'immagine."""
+    import urllib.parse
+    if not prompt:
+        return None
+    for pid, tipo in TIPI.items():
+        if tipo != "immagini":
+            continue
+        url, modello = BASE[pid]
+        if "image.pollinations.ai" in url:
+            q = urllib.parse.urlencode({"width": 1024, "height": 1024, "nologo": "true",
+                                        "model": modello or "flux", "seed": int(time.time()) % 999999})
+            return {"created": int(time.time()),
+                    "data": [{"url": "%s/prompt/%s?%s" % (url, urllib.parse.quote(prompt), q)}],
+                    "provider": "Pollinations (senza chiave)"}
+    return None
+
+
 def pagina():
     """La pagina del Portiere: la SUA lista, provider per provider."""
     voci = {v.get("id"): v for v in appello()}
@@ -182,7 +216,8 @@ def pagina():
         nota = v.get("nota") or ("mai provato: fai l'appello dalla Centrale" if not esito else esito)
         corpo.append(
             '<tr><td style="padding:7px 10px;border-bottom:1px solid #ffffff12">'
-            f'<span style="color:{colore}">{icona}</span> <b>{ETICHETTE.get(pid, pid)}</b></td>'
+            f'<span style="color:{colore}">{icona}</span> <b>{ETICHETTE.get(pid, pid)}</b> '
+            f'<span style="color:#6b7280;font-size:12px">{TIPI.get(pid, "chat")}</span></td>'
             '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#9aa4b2">'
             f'{url.replace("https://", "")} · {modello}</td>'
             '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#c9d1d9">'
@@ -249,7 +284,7 @@ class H(BaseHTTPRequestHandler):
             self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
                         "risponde": [v["id"] for v in appello()
                                      if v.get("esito") == "risponde" and v.get("id") in BASE],
-                        "voci": [{"id": k, "nome": ETICHETTE.get(k, k),
+                        "voci": [{"id": k, "nome": ETICHETTE.get(k, k), "tipo": TIPI.get(k, "chat"),
                                   "indirizzo": v[0], "modello": v[1]} for k, v in BASE.items()],
                         "da_confermare": da_confermare()})
             return
@@ -272,6 +307,20 @@ class H(BaseHTTPRequestHandler):
         self._json({"errore": "usa /v1/chat/completions oppure /cervello"}, 404)
 
     def do_POST(self):
+        if self.path.startswith("/v1/images/generations"):
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                corpo = json.loads(self.rfile.read(n).decode() or "{}")
+            except Exception:
+                corpo = {}
+            d = immagini((corpo.get("prompt") or "").strip())
+            if d:
+                self._json(d)
+            else:
+                self._json({"error": {"message": "Nessuna chiave di immagini in grado di rispondere adesso: "
+                                                 "le altre (fal.ai, WaveSpeedAI) hanno un formato loro, "
+                                                 "vanno collegate una per una."}}, 503)
+            return
         if not self.path.startswith("/v1/chat/completions"):
             self._json({"errore": "solo /v1/chat/completions"}, 404)
             return

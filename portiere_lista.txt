@@ -1,12 +1,13 @@
-# portiere_lista.txt — LA LISTA SUA DEL PORTIERE (motore 2, porta 20129)
-# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo
+# portiere_lista.txt — LA LISTA DEL PORTIERE (motore nostro, porta 20129)
+# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo|tipo
 #   nome nel portachiavi = SENZA  → provider che non vuole chiave
 #   modo = chat (prova una domanda vera) · modelli (solo elenco modelli)
-# Regola: qui entra SOLO un provider di cui conosciamo l'indirizzo OpenAI-compatibile.
-# Gli altri (indirizzo mai scritto, o non-chat: voce/immagini/video/database/visione)
-# stanno in fondo al file, dopo la riga "## DA CONFERMARE": non contano nel numero.
-# Ultimo controllo degli indirizzi: 20/10/2026 (dal portachiavi, non inventati).
+#   tipo = chat · immagini · video · voce · embedding · visione · db   (assente = chat)
+# Regola: qui ci stanno TUTTE le chiavi di cui conosciamo l'indirizzo, anche quelle che
+# non fanno chat: il Portiere è nostro e deve poter pescare la chiave giusta.
+# Indirizzi verificati uno per uno il 21/10/2026 (elenco modelli 200), dal portachiavi.
 
+# ── CHAT ────────────────────────────────────────────────────────────────────
 groq|Groq|Groq|https://api.groq.com/openai/v1|llama-3.3-70b-versatile|chat
 gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat
 mistral|Mistral|Mistral|https://api.mistral.ai/v1|mistral-small-latest|chat
@@ -30,6 +31,7 @@ routeway|Routeway|Routeway|https://api.routeway.ai/v1|auto|modelli
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli
+teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
 unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|auto|modelli
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
@@ -43,36 +45,40 @@ freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
 speka|Speka|Speka|https://speka.me/v1|google/gemma-4-31b-it|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|auto|modelli
-sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
 ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
-teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
+sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
 aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
 
+# ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
+llm7|LLM7|LLM7|https://api.llm7.io/v1|auto|modelli
+longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli
+ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli
+requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli
+zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli
+electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|auto|modelli
+inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
+sail|Sail|Sail|https://api.sailresearch.com/v1|auto|modelli
+anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
+kilo|Kilo (senza chiave)|SENZA|https://kilocode.ai/api/openrouter/v1|auto|modelli
+cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.1-8b-instruct|modelli
+
+# ── NON CHAT (restano chiavi nostre: immagini, video, voce, memoria) ────────
+speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce
+jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding
+qdrant|Qdrant Cloud|Qdrant Cloud — cluster «Bomber91»|https://4e506b83-cf3b-4dab-b1ff-774a090094ba.eu-central-1-0.aws.cloud.qdrant.io|—|no|db
+fal|fal.ai|fal.ai|https://fal.run|—|no|immagini
+wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video
+moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream2|no|visione
+pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini
+
 ## DA CONFERMARE — non contano nel numero del Portiere
-# Per farli entrare basta scrivere l'indirizzo nella riga qui sotto e spostarla sopra.
 # Nome nel portachiavi | perché è fermo
-LLM7|indirizzo API mai scritto nel portachiavi
-LongCat|indirizzo API mai scritto nel portachiavi
-Ollama Cloud|indirizzo API mai scritto nel portachiavi
-Requesty|indirizzo API mai scritto nel portachiavi
-Zhipu|indirizzo API mai scritto nel portachiavi
-ElectronHub|indirizzo API mai scritto nel portachiavi
-AnyAPI|indirizzo API mai scritto nel portachiavi
-Gizmo|indirizzo API mai scritto nel portachiavi
-Inferbase|indirizzo API mai scritto nel portachiavi
-Sail|indirizzo API mai scritto nel portachiavi
-xKiro|indirizzo API mai scritto nel portachiavi
-DreamPrompting|indirizzo API mai scritto nel portachiavi
-BlockRun|indirizzo API mai scritto nel portachiavi
-Kilo|indirizzo API mai scritto nel portachiavi
-Cloudflare Workers AI|formato suo (account:token), non OpenAI-compatibile
-Agnes AI|sito di video/immagini, non chat
-Moondream|solo visione
-Speechify|solo voce (TTS)
-Jina AI (n2)|solo embedding/rerank
-Qdrant Cloud — cluster «Bomber91»|database, non un modello
-fal.ai|immagini/video
-WaveSpeedAI|video
-AI21|ritirato, non esiste più
-Nebius|chiede la carta: escluso
+Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
+AI21|ritirato: il servizio Studio non esiste più
+Kilo|ha risposto ma è senza chiave: già dentro come «Kilo (senza chiave)»
+xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
+DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
+Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
+Nebius|chiave mai presa: al signup chiede la carta

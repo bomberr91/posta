@@ -252,48 +252,26 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
         <div class="agRiga"><span><b>Portiere</b> <span class="agDim" style="font-size:11px">20129</span></span><b id="agCer">—</b></div>
-        <div class="agRiga"><span class="agDim" style="font-size:12px">provider nella sua lista</span><b id="agCerProv" style="font-size:12px">—</b></div>
+        <div class="agRiga"><span class="agDim" style="font-size:12px">chiavi nella sua lista</span><b id="agCerProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB" id="agCerOn">Avvia</button>
           <button class="agB" id="agCerRi">Riavvia</button>
           <button class="agB" id="agCerDash">La sua lista ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Chiavi di scorta</b> <span class="agDim" style="font-size:11px">solo qui</span></span><b id="agScorta">—</b></div>
+        <div class="agRiga"><span><b>Motore «sito»</b> <span class="agDim" style="font-size:11px">da scegliere</span></span><b id="ag3mot" style="font-size:12px">new-api · 9router · LiteLLM</b></div>
         <div class="agBottoni" style="margin-top:5px">
-          <button class="agB" id="agScortaApp">Appello</button>
-        </div>
-      </section>
-
-      <section class="agCard">
-        <h3>🦾 OpenClaw</h3>
-        <div class="agRiga"><span>Stato</span><b id="agOc">—</b></div>
-        <div class="agRiga"><span>Gateway</span><b id="agOcGw">—</b></div>
-        <div class="agBottoni">
-          <button class="agB pri" id="agOcOn">▶ Accendi</button>
-          <button class="agB" id="agOcApri">🖥 Interfaccia</button>
-          <button class="agB" id="agOcDoc">🩺 Diagnostica</button>
+          <button class="agB" id="ag3motB" disabled>Avvia</button>
         </div>
       </section>
 
       <section class="agCard">
         <h3>🌐 Browser agenti</h3>
         <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
-        <div class="agRiga"><span>GitHub · AgentRouter</span><span class="agDim">profilo separato, non è il tuo browser</span></div>
         <div class="agBottoni">
-          <button class="agB" id="agBrowApri">👁 Mostra</button>
+          <button class="agB pri" id="agBrowApri">Avvia</button>
           <button class="agB" id="agBrowNas">🙈 Nascondi</button>
         </div>
-        <div class="agDim" style="margin-top:6px">Serve solo per il check-in: resta nascosto se non serve.</div>
-      </section>
-
-      <section class="agCard">
-        <h3>🔑 Chiavi</h3>
-        <div class="agRiga"><span>🧠 Lavorano in OmniRoute</span><b id="agC1">—</b></div>
-        <div class="agRiga"><span>🚪 Nel Portiere (la scorta)</span><b id="agC2">—</b></div>
-        <div class="agRiga"><span>📦 Fuori da tutti e due</span><b id="agC3">—</b></div>
-        <div class="agDim" id="agCNota">Le doppie contano in OmniRoute e valgono anche per il Portiere. Le 12 «solo scorta» stanno unicamente lì.</div>
-        <div class="agBottoni"><button class="agB" id="agCDett">📋 Dettagli in basso</button></div>
       </section>
 
       <section class="agCard">
@@ -2380,13 +2358,14 @@ function aggiornaPilota(){
     }catch(e){}
   }
 
+  let accendo = 0;   // 1 = il motore sta partendo
+  let accendoPortiere = 0;
+
   async function aggiorna(){
     if(!VIVO){
       led($('agSaldo'), 'anteprima', 'agDim');
       led($('agCheck'), 'anteprima', 'agDim');
       led($('agOmni'), 'anteprima', 'agDim');
-      led($('agOc'), 'anteprima', 'agDim');
-      led($('agOcGw'), 'anteprima', 'agDim');
       led($('agBrow'), 'anteprima', 'agDim');
       led($('agChiavi'), 'anteprima', 'agDim');
       led($('agPostino'), 'anteprima', 'agDim');
@@ -2406,16 +2385,28 @@ function aggiornaPilota(){
       $('agSegna').disabled = !!s.checkin_oggi;
       // motore
       const mot = s.motore || {};
-      led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
+      if(accendo && !s.omniroute){
+        // sta partendo: lo dico con le parole, non con un pallino rosso
+        led($('agOmni'), '⏳ si sta accendendo…', 'att');
+        if(!window._tAcc){ window._tAcc = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) aggiorna(); }, 2000); }
+      } else {
+        if(window._tAcc && s.omniroute){ clearInterval(window._tAcc); window._tAcc = null; accendo = 0; log('🟢 OmniRoute è acceso.'); }
+        led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
+      }
       const ap0 = s.appello || {};
       const ct0 = s.contatori || {};
       // attive / totale (totale = le mie chiavi + quelle già pronte dentro OmniRoute)
       $('agOmniProv').textContent = (ap0.pronti || 0) + '/' + (ct0.omniroute_totali || ct0.omniroute || 0);
-      $('agScorta').textContent = '0/' + (ct0.scorta_solo || 0);
       // il Portiere: parte spento, conta solo se lo accendo
       if(!mot2) caricaMotore2();
       else {
-        led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
+        if(accendoPortiere && !mot2.acceso){
+          led($('agCer'), '⏳ si sta accendendo…', 'att');
+          if(!window._tCer){ window._tCer = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) caricaMotore2(); }, 2000); }
+        } else {
+          if(window._tCer && mot2.acceso){ clearInterval(window._tCer); window._tCer = null; accendoPortiere = 0; log('🟢 Portiere acceso.'); }
+          led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
+        }
         $('agCerProv').textContent = (mot2.acceso ? (mot2.pronti || 0) : 0) + '/' + (mot2.totali || '—');
       }
       // mentre il motore lavora i tasti restano fermi e lo dico nel riquadro in basso
@@ -2431,8 +2422,8 @@ function aggiornaPilota(){
         log('✅ Lavoro finito. Provider attivi adesso: ' + (ap0.pronti || 0) + '/' + (ap0.totali || 0) + '.'); }
       const inst = mot.installato !== false;
       const occupato = !!mot.lavoro;
-      $('agOmniOn').disabled = !!s.omniroute || !inst || occupato;
-      $('agOmniRi').disabled = occupato || !inst || !s.omniroute;
+      $('agOmniOn').disabled = !!s.omniroute || !inst || occupato || !!accendo;
+      $('agOmniRi').disabled = occupato || !inst || !s.omniroute || !!accendo;
       const cerOn = document.getElementById('agCerOn');
       if(cerOn && mot2){ cerOn.disabled = !!mot2.acceso; document.getElementById('agCerRi').disabled = !mot2.acceso; }
       const ap = s.appello || {};
@@ -2440,8 +2431,6 @@ function aggiornaPilota(){
       caricaAppello();
       // openclaw
       const oc = s.openclaw || {};
-      led($('agOc'), oc.installato ? ('installato' + (oc.versione ? ' · ' + oc.versione : '')) : 'non installato', oc.installato ? 'ok' : 'no');
-      led($('agOcGw'), oc.gateway ? ('🟢 acceso — ' + oc.url) : '🔴 spento', oc.gateway ? 'ok' : 'att');
       // browser
       led($('agBrow'), s.browser_agenti ? '🟢 attivo, nascosto' : 'spento', s.browser_agenti ? 'ok' : 'att');
       // salute
@@ -2453,12 +2442,7 @@ function aggiornaPilota(){
           '<div class="agDim" style="margin-top:4px">Il riquadro in basso ti dice cosa vuol dire e cosa fare. Non è detto che blocchi qualcosa.</div>'
         : (ng ? '<span class="att">🟡 ' + ng + ' cose da guardare</span> — niente di rotto'
               : '<span class="ok">✅ tutto a posto</span>');
-      // i tre contatori delle chiavi
-      const ct = s.contatori || {};
-      $('agC1').textContent = (ct.omniroute ?? '—') + ' chiavi';
-      $('agC2').textContent = (ct.portiere ?? '—') + ' provider' +
-          (ct.scorta_solo ? ' · ' + ct.scorta_solo + ' solo qui' : '');
-      $('agC3').textContent = (ct.fuori ?? '—') + ' voci';
+      // contatori: li mostra la scheda Motori
       window._contatori = ct;
       // all'accensione: se c'è qualcosa che non va, lo dico subito in chiaro
       if((s.avvisi || []).length && !window._avvisiMostrati){
@@ -2502,18 +2486,6 @@ function aggiornaPilota(){
       '   dettaglio: ' + (v.dettaglio || '—') + '\n' +
       '   cosa fare: ' + v.chefare).join('\n\n'));
   });
-  $('agCDett').addEventListener('click', () => {
-    const c = window._contatori || {};
-    if(!c.totali_portachiavi){ log('Contatori non ancora letti: premi «Ricontrolla» nella scheda Salute.'); return; }
-    log('🔑 DOVE POSSONO LAVORARE LE TUE ' + c.totali_portachiavi + ' CHIAVI\n\n' +
-        '🧠 IN OMNIROUTE (' + c.omniroute + '): ' + (c.omni_nomi || []).join(', ') + '\n\n' +
-        '🚪 NEL PORTIERE (' + c.portiere + ' provider, di cui ' + c.doppie + ' sono gli stessi di OmniRoute): ' +
-        (c.scorta_nomi || []).join(', ') + '\n' +
-        '   → solo lì (' + c.scorta_solo + '): ' +
-        (c.scorta_nomi || []).filter(n => (c.omni_nomi || []).indexOf(n) < 0).join(', ') + '\n\n' +
-        '📦 FUORI DA TUTTI E DUE (' + c.fuori + '): ' + (c.fuori_nomi || []).join(', ') +
-        '\n\n(sono strumenti — voce, immagini, video, database, visione —, provider morti, o provider di cui non abbiamo mai scritto l\'indirizzo: nessun motore può chiamarli)');
-  });
   $('agAppDett').addEventListener('click', () => {
     const d = window._appello || {};
     const voci = (d.voci || []).filter(v => v.esito !== 'no-chiave');
@@ -2525,22 +2497,35 @@ function aggiornaPilota(){
   });
   $('agAppSvelto').addEventListener('click', async () => { log('🗣️ Appello delle chiavi (20 secondi)…'); log((await api('/api/appello', {azione:'fai'})).msg || ''); setTimeout(caricaAppello, 6000); setTimeout(caricaAppello, 15000); });
   $('agAppCompleto').addEventListener('click', async () => { log('🗣️ Appello completo: una domanda vera a ogni chiave (circa 1 minuto)…'); log((await api('/api/appello', {azione:'completo'})).msg || ''); setTimeout(caricaAppello, 12000); setTimeout(caricaAppello, 60000); });
-  $('agOmniOn').addEventListener('click', async () => { log('Accendo il motore…'); log((await api('/api/omniroute', {azione:'avvia'})).msg || 'avviato'); setTimeout(aggiorna, 3000); });
-  $('agOmniRi').addEventListener('click', async () => { log('Riavvio del motore… (10-30 s)'); log((await api('/api/omniroute', {azione:'riavvia'})).msg || ''); setTimeout(() => { aggiorna(); }, 3000); });
-  $('agCerOn').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'avvia'})).msg || 'acceso'); setTimeout(caricaMotore2, 2500); });
-  $('agCerDash').addEventListener('click', () => window.open('http://127.0.0.1:20129/portiere', '_blank'));
-  $('agScortaApp').addEventListener('click', async () => {
-    log('🗣️ Appello delle chiavi: provo TUTTA la lista del Portiere, una per una (circa 1 minuto)…');
-    log((await api('/api/appello', {azione:'completo'})).msg || '');
-    setTimeout(() => { caricaAppello(); aggiorna(); }, 20000);
-    setTimeout(() => { caricaAppello(); aggiorna(); }, 55000);
+  $('agOmniOn').addEventListener('click', async () => {
+    accendo = 1; log('⏳ Accendo il motore: 10-40 secondi, lo vedi qui sopra che sta partendo.');
+    $('agOmniOn').disabled = true; $('agOmniOn').textContent = 'Accensione…';
+    led($('agOmni'), '⏳ si sta accendendo…', 'att');
+    const r = await api('/api/omniroute', {azione:'avvia'});
+    $('agOmniOn').textContent = 'Avvia';
+    accendo = 0; log(r.msg || 'motore avviato'); aggiorna();
   });
+  $('agOmniRi').addEventListener('click', async () => {
+    accendo = 1; led($('agOmni'), '⏳ si sta riaccendendo…', 'att');
+    log('Riavvio del motore… (10-30 s)'); log((await api('/api/omniroute', {azione:'riavvia'})).msg || '');
+    accendo = 0; aggiorna();
+  });
+  $('agCerOn').addEventListener('click', async () => {
+    accendoPortiere = 1; led($('agCer'), '⏳ si sta accendendo…', 'att');
+    $('agCerOn').disabled = true; $('agCerOn').textContent = 'Accensione…';
+    const r = await api('/api/cervello', {azione:'avvia'});
+    $('agCerOn').textContent = 'Avvia';
+    accendoPortiere = 0; log(r.msg || 'portiere acceso'); caricaMotore2(); aggiorna();
+  });
+  $('agCerDash').addEventListener('click', () => window.open('http://127.0.0.1:20129/portiere', '_blank'));
   $('agCerRi').addEventListener('click', async () => { log((await api('/api/cervello', {azione:'riavvia'})).msg || 'riavviato'); setTimeout(caricaMotore2, 3000); });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
-  $('agOcOn').addEventListener('click', async () => { log('Accendo OpenClaw… (30-60 s, non premere altro)'); const r = await api('/api/openclaw', {azione:'avvia'}); log(r.msg + (r.log ? '\n\n' + r.log : '')); aggiorna(); });
-  $('agOcApri').addEventListener('click', async () => { const r = await api('/api/openclaw', {azione:'apri'}); log(r.msg || ''); });
-  $('agOcDoc').addEventListener('click', async () => { log('Diagnostica in corso…'); const r = await api('/api/openclaw', {azione:'doctor'}); log(r.msg + '\n\n' + (r.log || '')); });
-  $('agBrowApri').addEventListener('click', async () => { log('Apro la finestra del browser degli agenti…'); const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || ''); aggiorna(); });
+  $('agBrowApri').addEventListener('click', async () => {
+    $('agBrowApri').disabled = true; $('agBrowApri').textContent = 'Apertura…';
+    log('Apro il browser degli agenti…');
+    const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || '');
+    $('agBrowApri').textContent = 'Avvia'; $('agBrowApri').disabled = false; aggiorna();
+  });
   $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
   $('agRisLista').addEventListener('change', async e => {
     const n = e.target.value; if(!n || n === '—') return;

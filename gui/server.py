@@ -250,10 +250,21 @@ _PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
                           if _niente_schede() else "")
 
 
+_avvio_motore = {"in_corso": False, "dal": 0.0}
+
+
 def omniroute_avvia(attesa=25):
     """Accende OmniRoute se è spento e aspetta che risponda (era il comportamento di prima)."""
     if porta_viva(20128):
         return True
+    _avvio_motore.update(in_corso=True, dal=time.time())
+    try:
+        return _omniroute_avvia_davvero(attesa)
+    finally:
+        _avvio_motore["in_corso"] = False
+
+
+def _omniroute_avvia_davvero(attesa=25):
     script = (_PREFISSO_SENZA_SCHEDE +
               "export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
               "B=$(ls -d $HOME/.nvm/versions/node/v22*/bin 2>/dev/null | sort -V | tail -1); "
@@ -1112,8 +1123,9 @@ def lista_portiere():
         pezzi = r.split("|")
         if len(pezzi) < 5:
             continue
-        out[pezzi[0]] = (pezzi[3].rstrip("/"), pezzi[4],
-                         pezzi[1], pezzi[2], pezzi[5] if len(pezzi) > 5 else "chat")
+        out[pezzi[0]] = (pezzi[3].rstrip("/"), pezzi[4], pezzi[1], pezzi[2],
+                         pezzi[5] if len(pezzi) > 5 else "chat",
+                         (pezzi[6] if len(pezzi) > 6 else "chat").strip() or "chat")
     return out
 
 
@@ -1177,6 +1189,8 @@ def chat_riserva(messaggi, esclusi=()):
         pid = v.get("id")
         if pid not in APP_BASE:
             continue
+        if lista_portiere().get(pid, ("", "", "", "", "", "chat"))[5] != "chat":
+            continue                     # immagini/voce/video/db non fanno chat
         base, modello = APP_BASE[pid]
         modello = v.get("modello") or modello
         k = chiave_provider(pid)
@@ -1255,6 +1269,18 @@ def _avvio_automatico():
                                  start_new_session=True)
     except Exception:
         pass
+    # il Portiere NON deve trovarsi acceso: se è rimasto su dalla volta prima, lo spengo
+    try:
+        if porta_viva(20129):
+            omni_spegni_porta(20129)
+    except Exception:
+        pass
+    # il browser degli agenti invece serve sempre: si accende da solo (dietro le quinte)
+    try:
+        if not porta_viva(9222):
+            chrome_headless_avvia()
+    except Exception:
+        pass
     try:
         vecchio = True
         if os.path.exists(APPELLO_JSON):
@@ -1307,6 +1333,7 @@ def stato():
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
             "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
+                       "avvio_in_corso": _avvio_motore["in_corso"],
                        "installato": bool(omni_bin()), "nome": "OmniRoute",
                        "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
                        "lavoro_log": lo["log"]},
