@@ -2218,6 +2218,13 @@ async function riempiCapacita(){
   try {
     const c = await (await fetch('/api/capacita')).json();
     const u = await (await fetch('/api/contabilita')).json();
+    let mo = null; try { mo = await (await fetch('/api/modelli')).json(); } catch(e){}
+    if (mo) out += `<div style="margin:2px 0 6px"><b>chiavi in uso</b>: ${mo.pronti_verificati} verificate
+      (hanno già risposto a una domanda) · ${Math.max(0,(mo.pronti||0)-(mo.pronti_verificati||0))} rispondono all'elenco ma la chat non è ancora provata
+      · ${mo.non_chat||0} chiavi sono per video/immagini/voce/embedding (fuori dalla chat)</div>`
+      + `<div style="margin:0 0 6px;color:var(--mut)">ultimo appello delle chiavi: <b>${esc(mo.appello_quando||'mai fatto')}</b>
+      (${mo.appello_voci||0} chiavi provate). Se è di ieri o di prima, i modelli «pronti» sono pochi per forza:
+      in 🤖 Agenti → 🧠 Motori premi <b>Ricontrolla</b> e rifà il giro su tutte.</div>`;
     const uso = {}; for (const r of (u.provider||[])) uso[r.id] = r;
     const conTetto = (c.righe||[]).filter(r=>r.req_giorno||r.tok_giorno||r.req_mese||r.tok_mese);
     out += `<div style="margin:6px 0 2px"><b>tetti dichiarati</b> · ${conTetto.length} provider con un tetto scritto ·

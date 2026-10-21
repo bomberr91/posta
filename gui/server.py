@@ -1239,6 +1239,25 @@ _appello_stato = {"in_corso": False, "quando": 0.0}
 _CHIAVI_CACHE = {}          # pid → (chiave, quando): evita un giro di bash a ogni chiamata
 
 
+# quali servizi possono fare una chat: gli altri (immagini, video, voce, embedding, db)
+# restano nel portachiavi ma non si chiamano per una domanda.
+TIPI_CHAT = ("chat", "visione")
+
+
+def puo_chattare(pid):
+    v = lista_portiere().get(pid)
+    if not v:
+        return False
+    modo, tipo = v[4], v[5]
+    return modo != "no" and tipo in TIPI_CHAT
+
+
+def chat_verificata(pid):
+    """True = per questo provider è già passata una domanda vera (modo «chat»)."""
+    v = lista_portiere().get(pid)
+    return bool(v) and v[4] == "chat"
+
+
 def chiave_provider(pid, ttl=600):
     """La chiave di un provider, presa dal portachiavi (una sola fonte).
     In memoria per 10 minuti: la rotazione fa più chiamate di fila e il portachiavi non cambia."""
@@ -1454,9 +1473,11 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
 def _candidati(modello="auto", quanti=6):
     """Chi provare, in che ordine. «priority» per un modello scelto, «fastest» per auto,
     «più forte prima» per auto:smart. Le pause della rotazione si rispettano sempre."""
-    tutti = modelli_nostri(True)
-    if not tutti:
-        tutti = modelli_nostri(False)
+    # si prova TUTTO quello che può chattare: se il file dell'appello è vecchio il router
+    # non deve restare fermo. L'ordine però è onesto: prima chi ha già risposto a una
+    # domanda vera, poi chi risponde all'elenco, poi gli altri. Chi si difende con un
+    # 429/402 finisce in pausa da solo.
+    tutti = modelli_nostri(False)
     m = str(modello or "auto").lower()
     if m in ("auto", "auto:fast", "fast", ""):
         ordine = sorted(tutti, key=lambda x: x["ms"])
@@ -1468,6 +1489,14 @@ def _candidati(modello="auto", quanti=6):
                    or str(x["modello"]).lower().endswith("/" + m)]
         resto = [x for x in tutti if x not in davanti]
         ordine = (davanti or []) + sorted(resto, key=lambda x: x["ms"])
+    # tre livelli, poi l'ordine della strategia: verificato+risponde · risponde · da provare
+    def livello(x):
+        if x.get("verificato") and (x.get("stato") or "") == "risponde":
+            return 0
+        if (x.get("stato") or "") == "risponde":
+            return 1
+        return 2
+    ordine = sorted(ordine, key=livello)   # sort stabile: dentro ogni livello resta la strategia
     return ordine[:max(1, quanti)]
 
 
@@ -1512,7 +1541,7 @@ def capacita():
     _rota_carica()
     righe = []
     for pid, v in lista_portiere().items():
-        if v[5] != "chat":
+        if not puo_chattare(pid):
             continue
         chiave_cap = ""
         for k in CAPACITA:
@@ -1963,7 +1992,7 @@ def modelli_nostri(solo_pronti=True):
     voci = {v.get("id"): v for v in appello_dati().get("voci", [])}
     out = []
     for pid, v in lista_portiere().items():
-        if v[5] != "chat" or pid not in APP_BASE:
+        if pid not in APP_BASE or not puo_chattare(pid):
             continue
         voce = voci.get(pid) or {}
         if solo_pronti and voce.get("esito") != "risponde":
@@ -1974,6 +2003,7 @@ def modelli_nostri(solo_pronti=True):
         uso = _ROTA["provider"].get(pid) or {}
         out.append({"id": pid, "provider": (voce.get("nome") or pid),
                     "modello": (voce.get("modello") or modello), "base": base,
+                    "verificato": chat_verificata(pid),
                     "ms": voce.get("ms") or 99999,
                     "stato": ("in pausa %ds" % _freddo(pid)) if _freddo(pid) else
                              (voce.get("esito") or "mai provato"),
@@ -2395,10 +2425,21 @@ class H(BaseHTTPRequestHandler):
         elif self.path == "/api/modelli":
             # i NOSTRI modelli (chiavi nostre, niente centralino): la tendina e le squadre leggono qui
             lista = modelli_nostri(False)
+            pronti = modelli_nostri(True)
             self._json({"data": [{"id": m["id"], "provider": m["provider"], "modello": m["modello"],
                                   "stato": m.get("stato", ""), "chiamate": m.get("chiamate", 0),
-                                  "errori": m.get("errori", 0)} for m in lista],
-                        "pronti": len(modelli_nostri(True)), "totali": len(lista)})
+                                  "errori": m.get("errori", 0),
+                                  "verificato": bool(m.get("verificato"))} for m in lista],
+                        "pronti": len(pronti),
+                        "pronti_verificati": len([m for m in pronti if m.get("verificato")]),
+                        "totali": len(lista),
+                        # chi ha una chiave ma non fa chat (video, immagini, voce, embedding, db)
+                        "non_chat": len([p for p, v in lista_portiere().items()
+                                         if p in APP_BASE and not puo_chattare(p)]),
+                        # se questi due numeri sono vecchi, i modelli «pronti» sono pochi:
+                        # basta premere Ricontrolla e l'appello rifà il giro su tutte le chiavi
+                        "appello_quando": appello_dati().get("quando", ""),
+                        "appello_voci": len(appello_dati().get("voci", []))})
         elif self.path in ("/v1/models", "/v1/models/"):
             if not agente_autorizzato(self.headers.get("Authorization")):
                 self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
