@@ -270,10 +270,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
       <section class="agCard">
         <h3>📂 Risultati Fusion</h3>
-        <div style="display:flex;gap:6px;align-items:center">
-          <select id="agRisLista" style="flex:1;min-width:0;background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:5px 6px;font-size:12.5px"></select>
-          <button class="agB" id="agRisApri" style="padding:5px 9px">Apri ↗</button>
-        </div>
+        <select id="agRisLista" title="Scegli un risultato: si apre in una scheda" style="width:100%;background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:5px 6px;font-size:12.5px"></select>
       </section>
       <section class="agCard">
         <h3>🔄 Computer</h3>
@@ -326,9 +323,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB pri" id="agRicontrolla">Ricontrolla</button>
           <button class="agB" id="agSalDett">📋 Dettagli</button>
         </div>
-        <div id="agLogSezione" style="display:none;margin-top:10px;border-top:1px solid #ffffff14;padding-top:8px">
+        <div id="agLogSezione" style="margin-top:10px;border-top:1px solid #ffffff14;padding-top:8px">
           <div class="agDim" style="margin-bottom:4px">📋 Messaggi ed errori</div>
-          <div id="agLog" style="max-height:200px;overflow:auto"></div>
+          <div id="agStato" style="display:none;margin-bottom:5px;font-size:11.5px;color:#8b949e"></div>
+          <div id="agLog" style="max-height:200px;overflow:auto"><div id="agLogBase" class="agDim" style="font-size:12px">Qui vedrai i problemi, con il motivo e cosa fare. Adesso non ce ne sono.</div></div>
         </div>
       </section>
     </div>
@@ -726,7 +724,13 @@ function renderChat(){
         + (i===lastU?'<div class="acts"><button class="abtn" data-act="edit">✏️ Modifica e ri-manda</button></div>':'');
     }
     else if (m.role==='assistant'){ d.className='msg assistant';
-      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?')))))}${m.web?' 🌐':''}${m.god?' 😈':''}</div>` + mdLite(m.content)
+      // 📝 fusion lunga: prima le cose importanti, poi la risposta intera (richiesta di Filippo 21/10)
+      const corpo = m.sunto
+        ? '<div style="border-left:3px solid #3fb950;background:#0d2318;padding:8px 10px;border-radius:6px;margin-bottom:8px">'
+          + '<div style="font-size:12px;color:#7ee787;font-weight:700;margin-bottom:4px">📝 In breve — le cose importanti</div>' + mdLite(m.sunto) + '</div>'
+          + '<details><summary style="cursor:pointer;color:var(--mut);font-size:12px">La risposta completa (' + String(m.content).length + ' caratteri)</summary>' + mdLite(m.content) + '</details>'
+        : mdLite(m.content);
+      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?')))))}${m.web?' 🌐':''}${m.god?' 😈':''}</div>` + corpo
         + (m.fusion?fusionMeta(m.fusion, m.derived==='focus'?'🔍 <b>focus</b>':(m.trading?'📈 <b>trading</b>':(m.tailor?'🎯 <b>new fusion</b>':(m.sel&&String(m.sel).startsWith('team::')?'⭐ <b>'+esc(String(m.sel).slice(6))+'</b>':'✨ <b>fusion</b>')))):'')
         + (m.via && m.via!==m.model?`<div class="mmeta">instradato da: <b>${esc(m.via)}</b></div>`:'')
         + `<div class="acts"><button class="abtn" data-act="copy" data-i="${i}">📋 Copia</button>${i===lastA&&!m.derived?'<button class="abtn" data-act="regen">🔄 Rigenera</button>':''}${(m.sources&&m.sources.length)?'<button class="abtn" data-src="'+i+'">🔍 fonti</button>':''}${m.tailor&&m.team?'<button class="abtn" data-act="saveteam" data-i="'+i+'">💾 salva squadra</button>':''}</div>`
@@ -1313,6 +1317,7 @@ async function runTurn(){
       return;
     }
     c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: !!autoGod, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
+    if(fusionEv) suntoFusion(c.msgs[c.msgs.length-1]);   // squadra: se la risposta e' lunga, il sunto si prepara da solo
   } catch (e) {
     if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: !!autoGod, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
     else { c.msgs.push({ role:'error', content: e.message }); }
@@ -1430,6 +1435,18 @@ async function streamCall(payload, onChunk, stopWhen){ // fusion in streaming co
     if (stopped) break;
   }
   return { txt: acc, stopped };
+}
+
+// 📝 se la fusion risponde lungo, il sunto arriva da solo (le cose importanti), senza toccare la risposta
+const SOGLIA_SUNTO = 1200;   // caratteri: sotto questa lunghezza non serve
+async function suntoFusion(m){
+  if(!m || m.role!=='assistant' || m.sunto) return;
+  const testo = String(m.content || '');
+  if(testo.length < SOGLIA_SUNTO) return;
+  try {
+    const out = await callModel('auto:fast', [SUM_SYS], 'Risposta da riassumere:\n' + testo.slice(0, 12000), '📝 in breve');
+    if(out && out.trim()){ m.sunto = out.trim(); saveChats(); renderChat(); }
+  } catch(e){ /* se il sunto non riesce resta la risposta intera: nessun errore a schermo */ }
 }
 
 async function deriveFrom(idx, kind){
@@ -2334,10 +2351,35 @@ function aggiornaPilota(){
     const sez = document.getElementById('agLogSezione');
     if(sez) sez.style.display = 'block';
   }
+  // qui dentro SOLO i problemi veri: appena ce n'e' uno la riga base sparisce
   function log(t){
     mostraRiquadro();
     const c = $('agLog');
     c.innerHTML = '<pre>' + String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
+  }
+  // le novita' di un lavoro (acceso, in corso, finito) NON sono errori: una riga piccola a parte, che sparisce da sola
+  let _tStato = null;
+  function nota(t){
+    t = String(t || '').trim();
+    if(!t) return;
+    const s = $('agStato');
+    if(!s) return;
+    s.textContent = t.replace(/^[^A-Za-z0-9\u00c0-\u00ff]+/, '');
+    s.style.display = 'block';
+    if(_tStato) clearTimeout(_tStato);
+    _tStato = setTimeout(() => { s.style.display = 'none'; }, 20000);
+  }
+  // quando i problemi sono finiti il riquadro torna alla riga base
+  function pulisciErrori(){
+    const c = $('agLog');
+    if(c) c.innerHTML = '<div id="agLogBase" class="agDim" style="font-size:12px">Qui vedrai i problemi, con il motivo e cosa fare. Adesso non ce ne sono.</div>';
+  }
+  window.pulisciErrori = pulisciErrori;
+  // un esito puo' essere un guasto o una buona notizia: lo smisto da solo
+  function esito(t){
+    t = String(t || '').trim();
+    if(!t) return;
+    if(/^(\u26a0\ufe0f|\ud83d\udd34|\u274c|ERRORE)/i.test(t)) log(t); else nota(t);
   }
 
 
@@ -2410,7 +2452,7 @@ function aggiornaPilota(){
           led($('agCer'), 'si sta accendendo…', 'att');
           if(!window._tCer){ window._tCer = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) caricaMotore2(); }, 2000); }
         } else {
-          if(window._tCer && mot2.acceso){ clearInterval(window._tCer); window._tCer = null; accendoPortiere = 0; log('🟢 Portiere acceso.'); }
+          if(window._tCer && mot2.acceso){ clearInterval(window._tCer); window._tCer = null; accendoPortiere = 0; nota('Portiere acceso.'); }
           led($('agCer'), mot2.acceso ? '🟢 acceso' : '🔴 spento', mot2.acceso ? 'ok' : 'att');
         }
         $('agCerProv').textContent = (mot2.acceso ? (mot2.pronti || 0) : 0) + '/' + (mot2.totali || '—');
@@ -2422,13 +2464,13 @@ function aggiornaPilota(){
       if(mot.lavoro){
         if(!window._tLav){
           const sec = mot.lavoro_secondi || 0;
-          log('⏳ Il motore sta lavorando sui ' + mot.lavoro + ' da ' + (sec < 90 ? sec + ' secondi' : Math.round(sec/60) + ' minuti') +
+          nota('Il motore sta lavorando sui ' + mot.lavoro + ' da ' + (sec < 90 ? sec + ' secondi' : Math.round(sec/60) + ' minuti') +
               '. Non premere altro: lo riaccendo io alla fine.' + (mot.lavoro_log ? '\nUltima riga: ' + mot.lavoro_log : ''));
           window._tLav = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) aggiorna(); }, 8000);
         }
       }
       else if(window._tLav){ clearInterval(window._tLav); window._tLav = null;
-        log('✅ Lavoro finito. Provider attivi adesso: ' + (ap0.pronti || 0) + '/' + (ap0.totali || 0) + '.'); }
+        nota('Motore pronto: ' + (ap0.pronti || 0) + '/' + (ap0.totali || 0) + ' provider attivi.'); }
       const inst = mot.installato !== false;
       const occupato = !!mot.lavoro;
       $('agOmniOn').disabled = !!s.omniroute || !inst || occupato || !!accendo;
@@ -2474,8 +2516,11 @@ function aggiornaPilota(){
       // all'accensione: se c'è qualcosa che non va, lo dico subito in chiaro
       if((s.avvisi || []).length && !window._avvisiMostrati){
         window._avvisiMostrati = true;
-        const n = s.avvisi.length;
-        log('ALL\'ACCENSIONE HO TROVATO ' + n + (n === 1 ? ' COSA' : ' COSE') + ' DA GUARDARE:\n\n' + s.avvisi.join('\n\n'));
+        // solo i rossi sono problemi veri; le note (es. chiavi che oggi non rispondono) stanno nella riga piccola
+        const rossi = s.avvisi.filter(x => String(x).trim().startsWith('🔴'));
+        const altri = s.avvisi.filter(x => !String(x).trim().startsWith('🔴'));
+        if(rossi.length) log('ALL\'ACCENSIONE HO TROVATO ' + rossi.length + (rossi.length === 1 ? ' COSA' : ' COSE') + ' DA GUARDARE:\n\n' + rossi.join('\n\n'));
+        if(altri.length) nota(altri.join(' · '));
       }
       // risultati
       const L = $('agRisLista');
@@ -2497,27 +2542,26 @@ function aggiornaPilota(){
 
   // ── azioni
   $('agRiscatta').addEventListener('click', async () => {
-    log('Riscatto in corso… (browser invisibile, ~1 minuto)');
+    nota('Riscatto in corso: browser invisibile, circa 1 minuto…');
     const r = await api('/api/checkin', {forza:false});
-    log(r.msg || 'fatto'); aggiorna();
+    esito(r.msg); aggiorna();
   });
   $('agSegna').addEventListener('click', async () => {
     const r = await api('/api/checkin/segna', {});
-    log(r.msg || 'segnato'); aggiorna();
+    esito(r.msg); aggiorna();
   });
   function apriRisultato(){
     const f = $('agRisLista').value;
     if(f) window.open('/api/risultato/raw?f=' + encodeURIComponent(f), '_blank');
   }
-  $('agRisLista').addEventListener('change', apriRisultato);
-  $('agRisApri').addEventListener('click', apriRisultato);
+  $('agRisLista').addEventListener('change', apriRisultato);   // scegli e si apre: nessun tasto
   $('agSalDett').addEventListener('click', () => {
     const box = document.getElementById('agSaluteBox');
     if(box){ box.style.display = box.style.display === 'none' ? 'block' : 'none'; }
     return;
     const sc = (ultimo && ultimo.salute_chiara) || {};
     const voci = sc.voci || [];
-    if(!voci.length){ log('🩺 Nessun problema: è tutto a posto.'); return; }
+    if(!voci.length){ nota('Nessun problema: è tutto a posto.'); return; }
     log('🩺 SALUTE DEL PC — ' + (sc.verdetto || '') + '\n\n' + voci.map(v =>
       (v.tipo === 'rosso' ? '🔴 ' : '🟡 ') + v.nome + '\n' +
       '   cos\'è: ' + v.cosa + '\n' +
@@ -2526,63 +2570,64 @@ function aggiornaPilota(){
   });
   $('agCerOff').addEventListener('click', async () => {
     const r = await api('/api/cervello', {azione:'spegni'});
-    log(r.msg || 'portiere spento'); caricaMotore2(); aggiorna();
+    esito(r.msg); caricaMotore2(); aggiorna();
   });
   $('agAppello').addEventListener('click', async () => {
     gira('agAppDots', true); setTimeout(() => gira('agAppDots', false), 30000);
-    log('🗣️ Appello delle chiavi (20 secondi): provo tutte quelle della lista…');
-    log((await api('/api/appello', {azione:'fai'})).msg || '');
+    nota('Appello delle chiavi (20 secondi): provo tutte quelle della lista…');
+    esito((await api('/api/appello', {azione:'fai'})).msg);
     setTimeout(aggiorna, 8000); setTimeout(aggiorna, 20000);
   });
   $('agAppelloVero').addEventListener('click', async () => {
     gira('agAppDots', true); setTimeout(() => gira('agAppDots', false), 80000);
-    log('🗣️ Prova vera: una domanda a ogni chiave di chat (circa 1 minuto)…');
-    log((await api('/api/appello', {azione:'completo'})).msg || '');
+    nota('Prova vera: una domanda a ogni chiave di chat (circa 1 minuto)…');
+    esito((await api('/api/appello', {azione:'completo'})).msg);
     setTimeout(aggiorna, 20000); setTimeout(aggiorna, 70000);
   });
   $('agOmniOn').addEventListener('click', async () => {
-    accendo = 1; log('⏳ Accendo il motore: 10-40 secondi, lo vedi dai pallini che girano.');
+    accendo = 1; nota('Accendo il motore: 10-40 secondi, lo vedi dai pallini che girano.');
     $('agOmniOn').disabled = true;
     $('agOmniDots').style.display = 'inline-flex'; led($('agOmni'), 'si sta accendendo…', 'att');
     const r = await api('/api/omniroute', {azione:'avvia'});
-    accendo = 0; log(r.msg || 'motore avviato'); aggiorna();
+    accendo = 0; esito(r.msg || 'Motore avviato.'); aggiorna();
   });
   $('agOmniOff').addEventListener('click', async () => {
-    log('Spengo il motore…');
+    nota('Spengo il motore…');
     const r = await api('/api/omniroute', {azione:'spegni'});
-    log(r.msg || 'motore spento'); aggiorna();
+    esito(r.msg || 'Motore spento.'); aggiorna();
   });
   $('agCerOn').addEventListener('click', async () => {
     accendoPortiere = 1; $('agCerDots').style.display = 'inline-flex';
     led($('agCer'), 'si sta accendendo…', 'att');
     $('agCerOn').disabled = true;
     const r = await api('/api/cervello', {azione:'avvia'});
-    accendoPortiere = 0; log(r.msg || 'portiere acceso'); caricaMotore2(); aggiorna();
+    accendoPortiere = 0; esito(r.msg || 'Portiere acceso.'); caricaMotore2(); aggiorna();
   });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
   $('agBrowApri').addEventListener('click', async () => {
     $('agBrowApri').disabled = true; gira('agBroDots', true);
-    log('Mostro il browser degli agenti…');
-    const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || '');
+    nota('Mostro il browser degli agenti…');
+    const r = await api('/api/browser', {azione:'mostra'}); esito(r.msg);
     gira('agBroDots', false); $('agBrowApri').disabled = false; aggiorna();
   });
-  $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
+  $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); esito(r.msg); aggiorna(); });
   $('agAggiorna').addEventListener('click', async () => {
     $('agAggNota').textContent = 'Aggiornamento in corso… puoi continuare a chattare.'; gira('agPcDots', true);
     const r = await api('/api/pc/aggiorna', {});
-    log(r.msg || 'avviato');
-    setTimeout(async () => { const p = await api('/api/ponte'); log('Fatto. Ultimo commit: ' + (p.commit || '—')); gira('agPcDots', false); aggiorna(); }, 8000);
+    esito(r.msg || 'Avviato.');
+    setTimeout(async () => { const p = await api('/api/ponte'); nota('Fatto. Ultimo commit: ' + (p.commit || '—')); gira('agPcDots', false); aggiorna(); }, 8000);
   });
   $('agPostinoOn').addEventListener('click', async () => {
-    $('agPostinoOn').disabled = true; gira('agPosDots', true); log('Avvio il postino…');
+    $('agPostinoOn').disabled = true; gira('agPosDots', true); nota('Avvio il postino…');
     const r = await api('/api/ponte', {azione:'avvia'});
-    log(r.msg || '');
+    esito(r.msg || 'Postino avviato.');
     gira('agPosDots', false); $('agPostinoOn').disabled = false; aggiorna();
   });
   $('agRicontrolla').addEventListener('click', async () => {
     gira('agSalDots', true);
     const r = await api('/api/salute');
     $('agSalute').innerHTML = (r.verdetto || '—') + ((r.rossi || []).length ? '<br>' + r.rossi.map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
+    if(!(r.rossi || []).length && window.pulisciErrori) window.pulisciErrori();   // niente piu' problemi veri: torna la riga base
     gira('agSalDots', false);
   });
 })();
@@ -2645,10 +2690,10 @@ function aggiornaPilota(){
     $('agAgentiNota').textContent = 'Installo / sistemo i mancanti… (1-5 minuti)';
     const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
     const d = await r.json();
-    log('🔧 ' + (d.msg || 'installazione avviata'));
+    nota(d.msg || 'Installazione avviata.');
     const gira2 = setInterval(async () => {
       const a = await (await fetch('/api/agenti/andamento')).json();
-      if(String(a.log || '').trim()) log('… ' + String(a.log || '').trim().split('\n').pop());
+      if(String(a.log || '').trim()) nota(String(a.log || '').trim().split('\n').pop());
       if(!a.in_corso){
         clearInterval(gira2); gira('agAgDots', false);
         await carica();
