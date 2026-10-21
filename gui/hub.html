@@ -197,7 +197,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
         <button class="icobtn" id="btnAgenti" title="Le funzioni che servono agli AGENTI (non alla chat): crediti, motore, browser, chiavi, risultati, aggiornamento PC, postino" style="font-weight:700">🤖 Agenti</button>
         <span id="agBoot" style="display:inline-flex;gap:9px;align-items:center;font-size:11px;color:var(--mut)"></span>
-        <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
+        <button id="usage" title="Uso REALE del router dell'hub: richieste, errori e token di oggi (contabilità delle nostre chiavi) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
         <button class="gear" id="gear" title="Impostazioni">⚙</button>
@@ -371,7 +371,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         else if(m.indexOf('Fabbro')>-1){t='💻 Ho letto il codice, trovato il bug alla riga 42, corretto, test superato, commit b4c5d6e sul ponte.\n\n🧪 (ANTEPRIMA: il Fabbro scrive E prova il codice sul PC, non te lo incolla soltanto)';sv='💻 Fabbro · qwen3-coder via OmniRoute';}
         else if(m.indexOf('Libero')>-1){t='😈 Qui nessun argomento è vietato: rispondo diretto e tu valuti da solo rischi e convenienza.\n\n🧪 (ANTEPRIMA: questa chat userà SOLO piloti senza guinzaglio — Venice / modello locale — mai le chiavi dei provider seri, così niente ban)';sv='😈 Libero · venice-uncensored';}
         else if(m.indexOf('Squadra')>-1){t=SQ;sv='🔥 Squadra · il Regista ha scelto 3 agenti · giudice claude-opus-5';}
-        else {t='🧪 (ANTEPRIMA) Risposta di prova del modello «'+m+'» — nella versione vera risponde il tuo centralino, identico a oggi.';sv='deepseek-v4-flash (prova)';}
+        else {t='🧪 (ANTEPRIMA) Risposta di prova del modello «'+m+'» — nella versione vera risponde il tuo hub (Portiere o router nostro), identico a oggi.';sv='deepseek-v4-flash (prova)';}
         if(b.stream===false) return j({model:sv,choices:[{message:{content:t}}]});
         return sse(t,sv);
       }
@@ -701,8 +701,8 @@ function renderChat(){
   const c = cur(); if (!c){ msgsEl.innerHTML=''; return; }
   if (!c.msgs.length){
     msgsEl.innerHTML = `<div class="msg assistant"><div class="who">free llm hub</div>Nuova chat pronta.
-1. Serve il <b>centralino acceso</b> (FreeLLMAPI, icona nella tray) e la <b>chiave unificata</b> in ⚙.
-2. Modello in basso: <b>auto:smart</b> / <b>auto:fast</b> (il centralino sceglie), <b>new fusion</b> (fusion su misura — i 3 migliori per il tuo compito + giudice), <b>💻 fusion code</b> (esperto di coding) o <b>📈 fusion trading</b> (esperto di trading). Le squadre che ti piacciono si salvano con 💾: diventano il modello di quella chat e le ritrovi nella tendina come ⭐.
+1. Le <b>chiavi stanno nel portachiavi del PC</b>: nessun centralino da accendere. Se accendi il <b>Portiere</b> (🤖 Agenti → 🧠 Motori) è lui a scegliere il modello; se è spento risponde il <b>router dell'hub</b> con le tue chiavi.
+2. Modello in basso: <b>auto:smart</b> / <b>auto:fast</b> (sceglie il Portiere o il router nostro), <b>new fusion</b> (fusion su misura — i 3 migliori per il tuo compito + giudice), <b>💻 fusion code</b> (esperto di coding) o <b>📈 fusion trading</b> (esperto di trading). Le squadre che ti piacciono si salvano con 💾: diventano il modello di quella chat e le ritrovi nella tendina come ⭐.
 3. 😈 senza filtri è attivo DI DEFAULT (spegnilo tu se vuoi la modalità pulita).
 4. La ricerca web è SEMPRE attiva (è il motivo di esistenza dell'hub) — le fonti sono nel pulsante 🔍 fonti sotto ogni risposta.
 5. ✨ accanto a Invia riscrive il prompt in versione professionale · 📝 🎯 🧠 accanto al modello: riassunto, mosse col come-fare e approfondimento dell'ultima risposta.
@@ -1014,7 +1014,7 @@ $('usage').onclick = (ev)=>{
   const u = usageReal && usageReal.usage;
   const tot = u && (u.totals || u);
   if (tot && (tot.requests !== undefined)){
-    items.push({ label:'📞 <b>ULTIME 24H — numeri REALI del centralino</b>' });
+    items.push({ label:'📞 <b>OGGI — numeri REALI del router dell\'hub</b>' });
     items.push({ label:'&nbsp;&nbsp;richieste: <b>'+(tot.requests||0)+'</b> · errori: <b>'+(tot.errors||0)+'</b> · successo: <b>'+(tot.successes||0)+'</b>' });
     items.push({ label:'&nbsp;&nbsp;token in: <b>'+fmtTok(tot.input_tokens)+'</b> · out: <b>'+fmtTok(tot.output_tokens)+'</b> · tot: <b>'+fmtTok((tot.input_tokens||0)+(tot.output_tokens||0))+'</b>' });
     const tops = (u.topModels||u.top_models||[]).slice(0,6);

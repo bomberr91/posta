@@ -13,6 +13,10 @@ import glob
 import json, os, re, shutil, subprocess, sys, time, threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+class _Rifiutato(Exception):
+    """Richiesta scartata: la risposta d'errore è già stata scritta."""
+
+
 HOME = os.path.expanduser("~")
 POSTA = os.path.join(HOME, "posta")
 QUI = os.path.dirname(os.path.abspath(__file__))
@@ -1256,7 +1260,7 @@ def chiave_provider(pid, ttl=600):
 # Tutto quello che segue lavora con le NOSTRE chiavi (portachiavi del PC), zero centralino.
 ROTAZIONE_JSON = os.path.join(QUI, "contabilita.json")
 _ROTA = {"giorno": "", "provider": {}, "storia": {}}
-_ROTA_LOCK = threading.Lock()
+_ROTA_LOCK = threading.RLock()   # rientrante: si aggiorna e si salva sotto lo stesso lock
 
 # tetti DICHIARATI nel registro (TAPPA0_AUDIT §8): servono alla tabella capacità.
 # match = pezzo di nome/id che riconosce il provider. None = non dichiarato.
@@ -1296,30 +1300,49 @@ def _oggi():
     return time.strftime("%Y-%m-%d")
 
 
-def _rota_carica():
-    """Contabilità del giorno + pause: file locale, solo numeri, MAI chiavi."""
+def ultimi(messaggi, quanti=12):
+    """Gli ultimi N messaggi MA con tutte le istruzioni di sistema davanti.
+    Senza questo, in una chat lunga sparivano godmode, trading, documenti e ricerca web."""
+    sistema = [m for m in messaggi if m.get("role") == "system"]
+    resto = [m for m in messaggi if m.get("role") != "system"]
+    return sistema + resto[-max(1, quanti):]
+
+
+def _rota_carica(forza=False):
+    """Contabilità del giorno + pause: file locale, solo numeri, MAI chiavi.
+    Si legge dal disco UNA volta (o al cambio di giorno): rileggere a ogni chiamata
+    faceva perdere i conti quando due richieste andavano in parallelo."""
     global _ROTA
-    try:
-        d = json.loads(open(ROTAZIONE_JSON, encoding="utf-8").read())
-        if isinstance(d, dict) and d.get("giorno") == _oggi():
-            _ROTA = {"giorno": d.get("giorno"), "provider": d.get("provider") or {},
-                     "storia": d.get("storia") or {}}
+    with _ROTA_LOCK:
+        if not forza and _ROTA.get("giorno") == _oggi():
             return
-        storia = (d.get("storia") or {}) if isinstance(d, dict) else {}
-    except Exception:
-        storia = {}
-    _ROTA = {"giorno": _oggi(), "provider": {}, "storia": storia}
+        try:
+            d = json.loads(open(ROTAZIONE_JSON, encoding="utf-8").read())
+            if isinstance(d, dict) and d.get("giorno") == _oggi():
+                _ROTA = {"giorno": d.get("giorno"), "provider": d.get("provider") or {},
+                         "storia": d.get("storia") or {}}
+                return
+            storia = (d.get("storia") or {}) if isinstance(d, dict) else {}
+        except Exception:
+            storia = {}
+        _ROTA = {"giorno": _oggi(), "provider": {}, "storia": storia}
 
 
 def _rota_salva():
-    try:
-        # 7 giorni di storia, come il contatore dell'hub
-        giorni = sorted(_ROTA["storia"].keys())[-7:]
-        _ROTA["storia"] = {g: _ROTA["storia"][g] for g in giorni}
-        with open(ROTAZIONE_JSON, "w", encoding="utf-8") as f:
-            json.dump(_ROTA, f, ensure_ascii=False, indent=1)
-    except Exception:
-        pass
+    """Scrittura atomica (file temporaneo + replace): un'interruzione non lascia
+    il file dei conti a metà e due richieste in parallelo non si sovrascrivono."""
+    with _ROTA_LOCK:
+        try:
+            giorni = sorted(_ROTA["storia"].keys())[-7:]
+            _ROTA["storia"] = {g: _ROTA["storia"][g] for g in giorni}
+            tmp = ROTAZIONE_JSON + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(_ROTA, f, ensure_ascii=False, indent=1)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, ROTAZIONE_JSON)
+        except Exception:
+            pass
 
 
 def _voce(pid):
@@ -1382,7 +1405,7 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
     try:
         req = urllib.request.Request(
             m["base"].rstrip("/") + "/chat/completions",
-            data=json.dumps({"model": m["modello"], "messages": messaggi[-12:],
+            data=json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
                              "max_tokens": quanti}).encode(),
             headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
         d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
@@ -1780,7 +1803,6 @@ def _ricerca_web(q, quanti=6):
     risultati.sort(key=lambda r: r.get("data") or "0000-00-00", reverse=True)
     risultati = risultati[:quanti + 3]
     # le notizie fresche: si LEGGE l'articolo (il numero di versione sta lì, non nel titolo)
-    oggi = time.strftime("%Y-%m-%d")
     limite = time.strftime("%Y-%m-%d", time.localtime(time.time() - 4 * 86400))
     letta = 0
     for r in risultati:
@@ -2107,7 +2129,7 @@ def chat_riposta(msgs, modello="auto", fusion=None):
         # il nome del modello può non piacere al motore: si riprova con «auto» (e senza squadra)
         candidati = [modello] if modello == "auto" else [modello, "auto"]
         for m in candidati:
-            corpo = {"model": m, "messages": msgs[-24:], "stream": False}
+            corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": False}
             if fusion and m == modello:
                 corpo["fusion"] = fusion
             try:
@@ -2140,10 +2162,10 @@ def chat_stream(msgs, modello, fusion, scrivi):
     key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
     for nome_motore, porta in [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]:
         for m in ([modello] if modello == "auto" else [modello, "auto"]):
-            corpo = {"model": m, "messages": msgs[-24:], "stream": True}
+            corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": True}
             if fusion and m == modello:
                 corpo["fusion"] = fusion
-            testo, servito, iniziato = "", m, False
+            testo, servito = "", m
             try:
                 req = urllib.request.Request(
                     "http://127.0.0.1:%d/v1/chat/completions" % porta,
@@ -2168,7 +2190,6 @@ def chat_stream(msgs, modello, fusion, scrivi):
                         if pezzo:
                             testo += pezzo
                         if pezzo or j.get("_fusion"):
-                            iniziato = True
                             scrivi(riga)
             except Exception as e:
                 segna_motivo(nome_motore, e)
@@ -2417,6 +2438,29 @@ class H(BaseHTTPRequestHandler):
             self._json({"err": "not found"}, 404)
 
     def do_POST(self):
+        try:
+            self._do_POST()
+        except _Rifiutato:
+            pass                       # la risposta d'errore è già partita
+        except Exception as e:
+            segna_motivo("server", e)
+            try:
+                self._json({"err": "errore interno: %s" % (str(e) or e.__class__.__name__)[:200]}, 500)
+            except Exception:
+                pass
+
+    def _do_POST(self):
+        # le difese valgono per TUTTE le POST, anche quelle che non leggono il corpo:
+        # una pagina web qualsiasi può fare POST verso 127.0.0.1:20200 senza preflight
+        # (text/plain + no-cors) e far partire i comandi del PC. Il nostro hub manda JSON.
+        ctype = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        origine = (self.headers.get("Origin") or "").strip()
+        if ctype and ctype != "application/json":
+            self._json({"err": "il corpo deve essere JSON"}, 415)
+            return
+        if origine and not any(a in origine for a in ("127.0.0.1", "localhost", "[::1]")):
+            self._json({"err": "origine non ammessa: questo hub risponde solo al tuo PC"}, 403)
+            return
         if self.path == "/api/checkin":
             self._json(fai_checkin(forza=bool(self._body().get("forza"))))
         elif self.path == "/api/checkin/segna":
