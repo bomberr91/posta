@@ -149,15 +149,23 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 .agHead b{font-size:16px}
 .agNota{font-size:11.5px;color:var(--mut,#8b949e);flex:1}
 #agChiudi{background:none;border:1px solid var(--border,#2a2f3a);color:inherit;border-radius:8px;padding:4px 10px;cursor:pointer}
-#agCorpo{padding:14px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
-.agCard{border:1px solid var(--border,#2a2f3a);border-radius:12px;padding:12px;background:#0f131a}
-.agCard h3{font-size:12.5px;margin:0 0 8px;letter-spacing:.3px;color:var(--mut,#8b949e);text-transform:uppercase}
+#agCorpo{padding:11px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+.agCard{border:1px solid var(--border,#2a2f3a);border-radius:12px;padding:9px 10px;background:#0f131a}
+.agCard h3{font-size:11.5px;margin:0 0 6px;letter-spacing:.3px;color:var(--mut,#8b949e);text-transform:uppercase}
+/* i 3 pallini che girano mentre un motore si accende */
+.agDots{display:inline-flex;gap:4px;align-items:center;margin-right:6px;vertical-align:middle}
+.agDots i{width:6px;height:6px;border-radius:50%;background:#f5c451;display:inline-block;
+  animation:agBounce 1s infinite ease-in-out}
+.agDots i:nth-child(2){animation-delay:.15s}
+.agDots i:nth-child(3){animation-delay:.3s}
+@keyframes agBounce{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
+.agAcc{color:#f5c451}
 .agLargo{grid-column:1/-1}
-.agRiga{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:3px 0}
+.agRiga{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;padding:2px 0;line-height:1.35}
 .agRiga b{font-weight:600}
 .agDim{font-size:11.5px;color:var(--mut,#8b949e)}
-.agBottoni{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.agB{background:#1b2130;color:inherit;border:1px solid var(--border,#2a2f3a);border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+.agBottoni{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.agB{background:#1b2130;color:inherit;border:1px solid var(--border,#2a2f3a);border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer}
 .agB:hover{border-color:#3d8bfd}
 .agB.pri{background:#1f6feb;border-color:#1f6feb;font-weight:600}
 .agB[disabled]{opacity:.45;cursor:not-allowed}
@@ -243,7 +251,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 
       <section class="agCard">
         <h3>🧠 Motori</h3>
-        <div class="agRiga"><span><b>OmniRoute</b></span><b id="agOmni">—</b></div>
+        <div class="agRiga"><span><b>OmniRoute</b><span class="agDots" id="agOmniDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agOmni">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">provider attivi</span><b id="agOmniProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB pri" id="agOmniOn">Avvia</button>
@@ -251,7 +259,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agOmniDash">Dashboard ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Portiere</b> <span class="agDim" style="font-size:11px">20129</span></span><b id="agCer">—</b></div>
+        <div class="agRiga"><span><b>Portiere</b> <span class="agDim" style="font-size:11px">20129</span><span class="agDots" id="agCerDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agCer">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">capo della giornata</span><b id="agCapo" style="font-size:12px">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">chiavi nella sua lista</span><b id="agCerProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
@@ -259,7 +267,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agCerOff">Spegni</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
-        <div class="agRiga"><span><b>Motore «sito»</b> <span class="agDim" style="font-size:11px">da scegliere</span></span><b id="ag3mot" style="font-size:12px">new-api · 9router · LiteLLM</b></div>
+        <div class="agRiga"><span><b>Motore «sito»</b> <span class="agDim" style="font-size:11px">da scegliere</span><span class="agDots" id="ag3Dots" style="display:none"><i></i><i></i><i></i></span></span><b id="ag3mot" style="font-size:12px">new-api · 9router · LiteLLM</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB" id="agAppello">Appello</button>
           <button class="agB" id="agAppelloVero">Prova vera</button>
@@ -271,7 +279,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <h3>🌐 Browser agenti</h3>
         <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
         <div class="agBottoni">
-          <button class="agB pri" id="agBrowApri">Avvia</button>
+          <button class="agB pri" id="agBrowApri">Mostra</button>
           <button class="agB" id="agBrowNas">🙈 Nascondi</button>
         </div>
       </section>
@@ -281,6 +289,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agRiga"><span>Postino (ponte GitHub)</span><b id="agPostino">—</b></div>
         <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
         <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
+        <div class="agBottoni"><button class="agB pri" id="agPostinoOn">Avvia</button></div>
       </section>
 
       <section class="agCard">
@@ -313,14 +322,11 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div id="agSalute" class="agDim">—</div>
         <div class="agBottoni">
           <button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button>
-          <button class="agB" id="agSalDett">📋 Dettagli in basso</button>
+          <button class="agB" id="agSalDett">📋 Dettagli</button>
         </div>
-      </section>
-
-      <section class="agCard agLargo" id="agLogSezione" style="display:none">
-        <h3>📋 Qui il dettaglio in chiaro</h3>
-        <div class="agDim">Quando qualcosa non va, qui sotto trovi il motivo scritto in italiano: copialo e mandamelo.</div>
-        <div id="agLog" style="margin-top:8px"></div>
+        <div id="agLogSezione" style="display:none;margin-top:8px;border-top:1px solid #ffffff14;padding-top:8px">
+          <div id="agLog" style="max-height:220px;overflow:auto"></div>
+        </div>
       </section>
     </div>
   </div>
@@ -2367,12 +2373,15 @@ function aggiornaPilota(){
       $('agSegna').disabled = !!s.checkin_oggi;
       // motore
       const mot = s.motore || {};
-      if(accendo && !s.omniroute){
-        // sta partendo: lo dico con le parole, non con un pallino rosso
-        led($('agOmni'), '⏳ si sta accendendo…', 'att');
+      // i 3 pallini: girano mentre il motore si accende (anche quello che parte da solo)
+      const staPartendo = !s.omniroute && (mot.avvio_in_corso || !!accendo);
+      $('agOmniDots').style.display = staPartendo ? 'inline-flex' : 'none';
+      if(staPartendo){
+        led($('agOmni'), 'si sta accendendo…', 'att');
         if(!window._tAcc){ window._tAcc = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) aggiorna(); }, 2000); }
       } else {
-        if(window._tAcc && s.omniroute){ clearInterval(window._tAcc); window._tAcc = null; accendo = 0; log('🟢 OmniRoute è acceso.'); }
+        if(window._tAcc && s.omniroute){ clearInterval(window._tAcc); window._tAcc = null; }
+        accendo = 0;
         led($('agOmni'), s.omniroute ? '🟢 acceso' : '🔴 spento', s.omniroute ? 'ok' : 'no');
       }
       const ap0 = s.appello || {};
@@ -2382,8 +2391,9 @@ function aggiornaPilota(){
       // il Portiere: parte spento, conta solo se lo accendo
       if(!mot2 || Date.now() - (mot2._letto || 0) > 4000) caricaMotore2();
       if(mot2) {
+        $('agCerDots').style.display = (accendoPortiere && !mot2.acceso) ? 'inline-flex' : 'none';
         if(accendoPortiere && !mot2.acceso){
-          led($('agCer'), '⏳ si sta accendendo…', 'att');
+          led($('agCer'), 'si sta accendendo…', 'att');
           if(!window._tCer){ window._tCer = setInterval(() => { if(document.getElementById('agentiPanel').classList.contains('on')) caricaMotore2(); }, 2000); }
         } else {
           if(window._tCer && mot2.acceso){ clearInterval(window._tCer); window._tCer = null; accendoPortiere = 0; log('🟢 Portiere acceso.'); }
@@ -2485,11 +2495,10 @@ function aggiornaPilota(){
     setTimeout(aggiorna, 20000); setTimeout(aggiorna, 70000);
   });
   $('agOmniOn').addEventListener('click', async () => {
-    accendo = 1; log('⏳ Accendo il motore: 10-40 secondi, lo vedi qui sopra che sta partendo.');
-    $('agOmniOn').disabled = true; $('agOmniOn').textContent = 'Accensione…';
-    led($('agOmni'), '⏳ si sta accendendo…', 'att');
+    accendo = 1; log('⏳ Accendo il motore: 10-40 secondi, lo vedi dai pallini che girano.');
+    $('agOmniOn').disabled = true;
+    $('agOmniDots').style.display = 'inline-flex'; led($('agOmni'), 'si sta accendendo…', 'att');
     const r = await api('/api/omniroute', {azione:'avvia'});
-    $('agOmniOn').textContent = 'Avvia';
     accendo = 0; log(r.msg || 'motore avviato'); aggiorna();
   });
   $('agOmniOff').addEventListener('click', async () => {
@@ -2498,18 +2507,18 @@ function aggiornaPilota(){
     log(r.msg || 'motore spento'); aggiorna();
   });
   $('agCerOn').addEventListener('click', async () => {
-    accendoPortiere = 1; led($('agCer'), '⏳ si sta accendendo…', 'att');
-    $('agCerOn').disabled = true; $('agCerOn').textContent = 'Accensione…';
+    accendoPortiere = 1; $('agCerDots').style.display = 'inline-flex';
+    led($('agCer'), 'si sta accendendo…', 'att');
+    $('agCerOn').disabled = true;
     const r = await api('/api/cervello', {azione:'avvia'});
-    $('agCerOn').textContent = 'Avvia';
     accendoPortiere = 0; log(r.msg || 'portiere acceso'); caricaMotore2(); aggiorna();
   });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
   $('agBrowApri').addEventListener('click', async () => {
-    $('agBrowApri').disabled = true; $('agBrowApri').textContent = 'Apertura…';
-    log('Apro il browser degli agenti…');
+    $('agBrowApri').disabled = true;
+    log('Mostro il browser degli agenti…');
     const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || '');
-    $('agBrowApri').textContent = 'Avvia'; $('agBrowApri').disabled = false; aggiorna();
+    $('agBrowApri').disabled = false; aggiorna();
   });
   $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
   $('agRisLista').addEventListener('change', async e => {
@@ -2522,6 +2531,12 @@ function aggiornaPilota(){
     const r = await api('/api/pc/aggiorna', {});
     log(r.msg || 'avviato');
     setTimeout(async () => { const p = await api('/api/ponte'); log('Fatto. Ultimo commit: ' + (p.commit || '—')); aggiorna(); }, 8000);
+  });
+  $('agPostinoOn').addEventListener('click', async () => {
+    $('agPostinoOn').disabled = true; log('Avvio il postino…');
+    const r = await api('/api/ponte', {azione:'avvia'});
+    log(r.msg || '');
+    $('agPostinoOn').disabled = false; aggiorna();
   });
   $('agRicontrolla').addEventListener('click', async () => {
     const r = await api('/api/salute');

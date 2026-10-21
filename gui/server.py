@@ -250,7 +250,7 @@ _PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
                           if _niente_schede() else "")
 
 
-_avvio_motore = {"in_corso": False, "dal": 0.0}
+_avvio_motore = {"in_corso": False, "dal": 0.0, "tentato": False}
 
 
 def omniroute_avvia(attesa=25):
@@ -262,6 +262,7 @@ def omniroute_avvia(attesa=25):
         return _omniroute_avvia_davvero(attesa)
     finally:
         _avvio_motore["in_corso"] = False
+        _avvio_motore["tentato"] = True
 
 
 def _omniroute_avvia_davvero(attesa=25):
@@ -1333,7 +1334,11 @@ def stato():
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
             "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
-                       "avvio_in_corso": _avvio_motore["in_corso"],
+                       # sta partendo: o lo sto accendendo io adesso, o non è ancora stato
+                       # tentato il primo giro (il motore parte da solo con la Centrale)
+                       "avvio_in_corso": _avvio_motore["in_corso"] or (
+                           not _avvio_motore["tentato"] and bool(omni_bin())
+                           and not porta_viva(20128)),
                        "installato": bool(omni_bin()), "nome": "OmniRoute",
                        "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
                        "lavoro_log": lo["log"]},
@@ -1610,6 +1615,33 @@ class H(BaseHTTPRequestHandler):
                             "comando": "openclaw onboard"})
             else:
                 self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
+        elif self.path == "/api/ponte":
+            az = (self._body().get("azione") or "stato").strip()
+            if az != "avvia":
+                self._json(ponte_stato())
+                return
+            p = ponte_stato()
+            if p.get("postino"):
+                self._json({"stato": "ok", "msg": "🟢 Il postino è già in giro: non serve avviarlo."})
+                return
+            script = os.path.join(POSTA, "postino.sh")
+            if not os.path.exists(script):
+                self._json({"stato": "ko", "msg": "⚠️ Manca il file postino.sh: senza quello non posso avviarlo."})
+                return
+            try:
+                subprocess.Popen(["bash", script, "--loop"], stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL, start_new_session=True,
+                                 cwd=POSTA)
+                for _ in range(10):
+                    time.sleep(1)
+                    if ponte_stato().get("postino"):
+                        self._json({"stato": "ok", "msg": "🟢 Postino avviato: adesso è in giro."})
+                        return
+                self._json({"stato": "ko",
+                            "msg": "⚠️ Il postino non è partito: di solito è il collegamento a GitHub "
+                                   "che manca (token scaduto). Controlla il box qui sotto."})
+            except Exception as e:
+                self._json({"stato": "ko", "msg": f"⚠️ Non sono riuscito ad avviarlo: {e}"})
         elif self.path == "/api/cervello":
             az = (self._body().get("azione") or "stato").strip()
             if az == "avvia":
