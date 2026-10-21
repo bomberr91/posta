@@ -1299,8 +1299,13 @@ VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
 # la chiave UNIFICATA del centralino: l'Hub la manda nell'intestazione x-fh-key
 CHIAVE_HUB = {"k": ""}
 
-# i motori della chat, in ordine di preferenza (nome, porta)
-MOTORI_CHAT = [("FreeLLMAPI", 31415), ("OmniRoute", 20128), ("Portiere", 20129)]
+# I motori della chat, nell'ordine deciso il 16/10: PRIMA I NOSTRI.
+# «L'hub prende vita propria: i provider si chiamano direttamente, con le NOSTRE chiavi.
+#  FreeLLMAPI non è più un componente obbligatorio — resta una delle voci, come ruota di scorta.»
+# 1) Portiere (:20129) = il nostro cervello, ha tutte le nostre chiavi e sceglie da sé
+# 2) OmniRoute (:20128) = il nostro gateway locale
+# 3) FreeLLMAPI (:31415) = ruota di scorta, solo se è acceso
+MOTORI_CHAT = [("Portiere", 20129), ("OmniRoute", 20128), ("FreeLLMAPI", 31415)]
 
 
 # ── RICERCA WEB (senza chiavi): DDG lite → DDG via r.jina.ai → Wikipedia IT ──
@@ -1707,6 +1712,100 @@ def chiave_per_motore(nome, chiave_omni):
     return chiave_omni
 
 
+def modelli_nostri(solo_pronti=True):
+    """I modelli di chat che possiamo chiamare DIRETTAMENTE con le nostre chiavi (missione 16/10:
+    l'hub non dipende dal centralino). Uno per provider, con il modello che l'appello ha visto."""
+    voci = {v.get("id"): v for v in appello_dati().get("voci", [])}
+    out = []
+    for pid, v in lista_portiere().items():
+        if v[5] != "chat" or pid not in APP_BASE:
+            continue
+        voce = voci.get(pid) or {}
+        if solo_pronti and voce.get("esito") != "risponde":
+            continue
+        base, modello = APP_BASE[pid]
+        out.append({"id": pid, "provider": (voce.get("nome") or pid),
+                    "modello": (voce.get("modello") or modello), "base": base,
+                    "ms": voce.get("ms") or 99999})
+    out.sort(key=lambda m: m["ms"])
+    return out
+
+
+def chiama_diretto(m, messaggi, quanti=900, timeout=70):
+    """Una chiamata DIRETTA al provider, con la nostra chiave: nessun centralino di mezzo."""
+    import urllib.request
+    k = chiave_provider(m["id"])
+    if not k:
+        return ""
+    try:
+        req = urllib.request.Request(
+            m["base"] + "/chat/completions",
+            data=json.dumps({"model": m["modello"], "messages": messaggi[-12:],
+                             "max_tokens": quanti}).encode(),
+            headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
+        d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
+        return (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
+    except Exception:
+        return ""
+
+
+def fusion_nostra(messaggi, quanti=3):
+    """La squadra la facciamo NOI: più modelli delle nostre chiavi in parallelo + un giudice che fonde.
+    Ritorna (testo, etichetta, elenco dei modelli usati) oppure None."""
+    panel = modelli_nostri(True)[:quanti]
+    if len(panel) < 2:
+        # l'appello può essere vecchio o parziale: si prova comunque con le chiavi di chat che abbiamo
+        panel = modelli_nostri(False)[:quanti]
+    if len(panel) < 2:
+        return None
+    import concurrent.futures as cf
+    risposte = []
+    with cf.ThreadPoolExecutor(max_workers=len(panel)) as ex:
+        futs = {ex.submit(chiama_diretto, m, messaggi, 900): m for m in panel}
+        for f in cf.as_completed(futs, timeout=120):
+            m = futs[f]
+            try:
+                testo = f.result()
+            except Exception:
+                testo = ""
+            if testo:
+                risposte.append((m, testo))
+    if len(risposte) < 2:
+        return None
+    blocco = "\n\n".join("### Risposta di %s (%s):\n%s" % (m["provider"], m["modello"], testo)
+                          for m, testo in risposte)
+    domanda = ""
+    for x in reversed(messaggi):
+        if x.get("role") == "user":
+            domanda = x.get("content") if isinstance(x.get("content"), str) else ""
+            break
+    giudice = [{"role": "system",
+                "content": "Sei il giudice di una squadra di modelli. Fondi le risposte in UNA sola risposta "
+                           "in italiano: tieni il meglio di ognuna, correggi ciò che è in contrasto scegliendo il "
+                           "dato più solido, niente premesse, niente elenco dei modelli, massimo 350 parole."},
+               {"role": "user", "content": "DOMANDA:\n%s\n\n%s" % (domanda[:1500], blocco[:9000])}]
+    fuso = ""
+    # il giudice: il Portiere se è acceso (ha tutte le chiavi), altrimenti il primo modello della squadra
+    if porta_viva(20129):
+        try:
+            import urllib.request
+            req = urllib.request.Request("http://127.0.0.1:20129/v1/chat/completions",
+                                         data=json.dumps({"model": "auto", "messages": giudice,
+                                                          "max_tokens": 900}).encode(),
+                                         headers={"Content-Type": "application/json"})
+            d = json.loads(urllib.request.urlopen(req, timeout=90).read().decode())
+            fuso = (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
+        except Exception:
+            fuso = ""
+    if not fuso:
+        fuso = chiama_diretto(risposte[0][0], giudice, 900, 90)
+    etichetta = " + ".join(m["provider"] for m, _ in risposte)
+    if not fuso:
+        # senza giudice si consegna comunque il meglio che c'è, dicendolo
+        fuso = risposte[0][1] + "\n\n(giudice non disponibile: ho tenuto la risposta di %s)" % risposte[0][0]["provider"]
+    return fuso, etichetta, [m["id"] for m, _ in risposte]
+
+
 def motori_in_chiaro():
     """Com'è andata a ogni motore: acceso/spento e, se acceso, perché non ha risposto."""
     righe = []
@@ -1741,6 +1840,11 @@ def chat_riposta(msgs, modello="auto", fusion=None):
     import urllib.request
     _MOTIVI.clear()            # mai motivi vecchi: si riparte puliti a ogni domanda
     modello = str(modello or "auto")
+    if modello in ("fusion", "code", "trading") or modello.startswith("team::"):
+        # la squadra è NOSTRA: modelli delle nostre chiavi + giudice (missione: indipendenza dal centralino)
+        fatta = fusion_nostra(msgs, 3)
+        if fatta:
+            return fatta[0], "fusion nostra · " + fatta[1], "fusion"
     # la chat non si impunta MAI su un motore spento: si prova solo quello che è acceso
     vivi = [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]
     key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
@@ -2012,6 +2116,11 @@ class H(BaseHTTPRequestHandler):
             self._json(chiavi_conteggio())
         elif self.path.startswith("/api/ponte"):
             self._json(ponte_stato())
+        elif self.path == "/api/modelli":
+            # i NOSTRI modelli (chiavi nostre, niente centralino): la tendina e le squadre leggono qui
+            lista = modelli_nostri(False)
+            self._json({"data": [{"id": m["id"], "provider": m["provider"], "modello": m["modello"]} for m in lista],
+                        "pronti": len(modelli_nostri(True)), "totali": len(lista)})
         elif self.path == "/api/stato":
             self._json(stato())
         elif self.path.startswith("/api/risultato/raw"):

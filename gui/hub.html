@@ -392,7 +392,7 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
-  freellmapi:{label:'FreeLLMAPI (centralino sul PC) 🔌',keyUrl:'http://127.0.0.1:31415',quota:'il TUO centralino: 34 provider impilati (~7,4B token/mese) · failover automatico · richiede FreeLLMAPI desktop ACCESO',warn:'la chiave è quella UNIFICATA del centralino (inizia per freellmapi-), non le chiave dei singoli provider',models:[]},
+  freellmapi:{label:'Motori del PC (Portiere · OmniRoute) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → chiavi dirette. Il centralino FreeLLMAPI, se è acceso, resta come ruota di scorta',warn:'la chiave qui sotto serve SOLO alla ruota di scorta FreeLLMAPI (freellmapi-…): senza, la chat funziona lo stesso',models:[]},
   agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto']]},
 };
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
@@ -1692,11 +1692,19 @@ function parseTailor(out, ids){
 }
 async function getCatalogIds(){
   try {
-    const key = getKey('freellmapi'); if (!key) return null;
-    try {
+    try {   // PRIMA I NOSTRI: /api/modelli elenca le chiavi che rispondono, senza centralino di mezzo
       const cache = sessionStorage.getItem('fh_tailorcat');
       if (cache){ const j = JSON.parse(cache); if (Date.now()-j.t < 5*60*1000 && Array.isArray(j.ids) && j.ids.length) return j.ids; }
     } catch {}
+    try {
+      const rn = await fetch('/api/modelli');
+      if (rn.ok){
+        const jn = await rn.json();
+        const ids = (jn.data||[]).map(m=>m && (m.modello||m.id)).filter(Boolean);
+        if (ids.length){ try { sessionStorage.setItem('fh_tailorcat', JSON.stringify({t:Date.now(), ids})); } catch {} return ids; }
+      }
+    } catch {}
+    const key = getKey('freellmapi'); if (!key) return null;   // ruota di scorta: il centralino
     const r = await fetch('/api/freellmapi/models', { headers:{ 'x-fh-key': key } });
     if (!r.ok) return null;
     const j = await r.json();
