@@ -64,6 +64,22 @@ anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
 kilo|Kilo (senza chiave)|SENZA|https://kilocode.ai/api/openrouter/v1|auto|modelli
 cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.1-8b-instruct|modelli
 
+# ── INDIRIZZI RECUPERATI DALLE INFO DELLA REPO FREELMAPI (MIT) — 21/10 notte ──
+# Fonte: tashfeenahmed/freellmapi, server/src/providers/index.ts e providers/*.ts.
+# Provati uno per uno da qui il 21/10: elenco modelli 200 E una domanda vera andata a buon fine.
+#   · Agnes = «OpenAI-compatible» dietro LiteLLM+vLLM, modelli Agnes a $0/token, niente carta,
+#     ~30 richieste in parallelo prima del 429. Ragiona prima di rispondere → timeout 60 s.
+#   · xKiro = gateway OpenAI-compatibile su api.xkiro.com/v1 (l'apice ai.xkiro com'è oggi non serve);
+#     /v1/models risponde 200 ANCHE senza chiave, quindi la prova di validità va su /v1/usage;
+#     i modelli «premium» danno 403, quelli liberi (Mistral, MiniMax, DeepSeek) rispondono.
+#   · DreamPrompting = gli id sono «fornitore/modello» (groq/…, mistral/…) oppure «auto».
+#   · Gizmo = api.gizmoplatforms.com; i modelli a pagamento dicono «add a payment method»,
+#     quelli liberi finiscono con «:free».
+agnes|Agnes AI|Agnes AI|https://apihub.agnes-ai.com/v1|agnes-2.5-flash|chat
+xkiro|xKiro|xKiro|https://api.xkiro.com/v1|mistralai/ministral-14b|chat
+dreamprompting|DreamPrompting|DreamPrompting|https://dreamprompting.com/api/v1|groq/openai/gpt-oss-20b|chat
+gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|minimax/minimax-m3.1-flash:free|chat
+
 # ── NON CHAT (restano chiavi nostre: immagini, video, voce, memoria) ────────
 speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce
 jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding
@@ -75,10 +91,10 @@ pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollin
 
 ## DA CONFERMARE — non contano nel numero del Portiere
 # Nome nel portachiavi | perché è fermo
-Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
+✅ risolto 21/10 (riga chat qui sopra: apihub.agnes-ai.com/v1) — Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
 AI21|ritirato: il servizio Studio non esiste più
 Kilo|ha risposto ma è senza chiave: già dentro come «Kilo (senza chiave)»
-xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
-DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
-Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
+✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
+✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
+✅ risolto 21/10 (riga chat qui sopra: api.gizmoplatforms.com/api/v1) — Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
 Nebius|chiave mai presa: al signup chiede la carta

@@ -1422,13 +1422,33 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
         return "", "chiave assente nel portachiavi", 0
     t0 = time.time()
     try:
+        # L'INTESTAZIONE «CHI SEI» CONTA (trovato il 21/10): xKiro, DreamPrompting e Gizmo
+        # rispondono 403 se la richiesta arriva come «Python-urllib». Con l'UA di un browser
+        # passano. È lo stesso quirk che FreeLLMAPI chiama «UA browser» nelle sue note.
         req = urllib.request.Request(
             m["base"].rstrip("/") + "/chat/completions",
             data=json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
                              "max_tokens": quanti}).encode(),
-            headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
+            headers={"Authorization": "Bearer " + k, "Content-Type": "application/json",
+                     "Accept": "application/json", "User-Agent": _UA_WEB})
         d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
-        testo = (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
+        scelta = (d.get("choices") or [{}])[0]
+        testo = ((scelta.get("message") or {}).get("content") or "").strip()
+        if not testo and scelta.get("finish_reason") == "length" and quanti < 800:
+            # modello che «ragiona»: i token sono finiti dentro il ragionamento e la risposta
+            # è rimasta vuota (quirk Agnes/Logfare). Un secondo giro con più spazio.
+            corpo2 = json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
+                                 "max_tokens": max(800, quanti * 4)}).encode()
+            req2 = urllib.request.Request(m["base"].rstrip("/") + "/chat/completions", data=corpo2,
+                                          headers={"Authorization": "Bearer " + k,
+                                                   "Content-Type": "application/json",
+                                                   "Accept": "application/json",
+                                                   "User-Agent": _UA_WEB})
+            d2 = json.loads(urllib.request.urlopen(req2, timeout=timeout).read().decode())
+            scelta2 = (d2.get("choices") or [{}])[0]
+            testo2 = ((scelta2.get("message") or {}).get("content") or "").strip()
+            if testo2:
+                testo, scelta, d = testo2, scelta2, d2
         uso = d.get("usage") or {}
         ms = int((time.time() - t0) * 1000)
         with _ROTA_LOCK:
