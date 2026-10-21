@@ -1217,9 +1217,12 @@ async function runTurn(){
   if (tradingAuto) outMsgs = [{role:'system',content:TRADING_SYS}, ...outMsgs];
   let turnSources = null;
   let webTentata = false;
-  if (webOn && q){
+  // se hai premuto ✨, la ricerca usa la domanda che avevi scritto tu (il prompt ottimizzato è
+  // pieno di istruzioni e come domanda da cercare non vale niente: è quello che rovinava i risultati)
+  const qWeb = (optOrig && optOrig.trim().length > 3 && optOrig.trim() !== qEl.value.trim()) ? optOrig.trim() : q;
+  if (webOn && qWeb){
     webTentata = true;
-    const ctx = await serverSearch(q, sig);
+    const ctx = await serverSearch(qWeb, sig);
     if (ctx){ outMsgs = [{role:'system',content:ctx.c}, ...outMsgs]; turnSources = ctx.r || []; }
     else outMsgs = [{role:'system',content:AVVISO_SENZA_WEB}, ...outMsgs];   // niente fatti inventati
   }

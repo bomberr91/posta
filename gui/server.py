@@ -1297,9 +1297,12 @@ _UA_WEB = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 
 def _pulisci_html(s):
+    import html as _h
     s = re.sub(r"<[^>]*>", "", s or "")
-    for a, b in (("&amp;", "&"), ("&quot;", '"'), ("&#x27;", "'"), ("&lt;", "<"), ("&gt;", ">")):
-        s = s.replace(a, b)
+    try:
+        s = _h.unescape(s)          # &amp; &#232; &quot; … tutto in una volta
+    except Exception:
+        pass
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -1312,6 +1315,159 @@ def _ddg_url(u):
         except Exception:
             return u
     return u
+
+
+def _data_da_url(url):
+    """La data di un articolo, letta dall'indirizzo; serve per far vincere la notizia più fresca."""
+    import re as _re
+    m = (_re.search(r"/(20\d{2})[/-](\d{1,2})[/-](\d{1,2})/", url) or
+         _re.search(r"/(20\d{2})(\d{2})(\d{2})", url) or
+         _re.search(r"[/-](20\d{2})[/-](\d{1,2})[/-](\d{1,2})", url))
+    if not m:
+        return ""
+    try:
+        return "%s-%02d-%02d" % (m.group(1), int(m.group(2)), int(m.group(3)))
+    except Exception:
+        return ""
+
+
+def _asporta_html(html):
+    """Il testo leggibile di una pagina (senza script, stili e tag)."""
+    import re as _re
+    html = _re.sub(r"(?is)<(script|style|noscript|header|footer|nav)[^>]*>.*?</\1>", " ", html)
+    html = _re.sub(r"(?is)<br\s*/?>|</p>|</div>|</li>|</h[1-6]>", "\n", html)
+    testo = _re.sub(r"(?s)<[^>]+>", " ", html)
+    for a1, b1 in (("&amp;", "&"), ("&quot;", '"'), ("&#x27;", "'"), ("&lt;", "<"),
+                   ("&gt;", ">"), ("&nbsp;", " "), ("&rsquo;", "'"), ("&agrave;", "à"),
+                   ("&egrave;", "è"), ("&igrave;", "ì"), ("&ograve;", "ò"), ("&ugrave;", "ù")):
+        testo = testo.replace(a1, b1)
+    testo = _re.sub(r"[ \t]+", " ", testo)
+    testo = _re.sub(r"\n\s*\n\s*\n+", "\n\n", testo)
+    return testo.strip()
+
+
+def _leggi_pagina(url, quanti=2500):
+    """Apre la pagina del risultato e ne riporta il testo: così il modello LEGGE i numeri veri."""
+    import urllib.request
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": _UA_WEB,
+                                                   "Accept-Language": "it-IT,it;q=0.9,en;q=0.8"})
+        html = urllib.request.urlopen(req, timeout=12).read().decode("utf-8", "replace")
+        testo = _asporta_html(html)
+        return testo[:quanti]
+    except Exception:
+        return ""
+
+
+def _notizie_bing(q, quante=5):
+    """Le notizie fresche CON il link vero del giornale e la data (Bing News, gratis e senza chiave)."""
+    import urllib.request, urllib.parse, email.utils
+    out = []
+    try:
+        u = ("https://www.bing.com/news/search?format=RSS&setlang=it&q=" + urllib.parse.quote(q[:200]))
+        xml = urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": _UA_WEB}),
+                                     timeout=12).read().decode("utf-8", "replace")
+        for blocco in re.findall(r"<item>(.*?)</item>", xml, re.S)[:quante]:
+            tit = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", blocco, re.S)
+            lnk = re.search(r"<link>(.*?)</link>", blocco, re.S)
+            dat = re.search(r"<pubDate>(.*?)</pubDate>", blocco, re.S)
+            if not tit or not lnk:
+                continue
+            link = _pulisci_html(lnk.group(1)).replace("&amp;", "&")
+            vero = link
+            m = re.search(r"[?&]url=([^&]+)", link)
+            if m:
+                vero = urllib.parse.unquote(m.group(1))
+            if not vero.startswith("http"):
+                continue
+            data = ""
+            if dat:
+                try:
+                    data = email.utils.parsedate_to_datetime(dat.group(1).strip()).strftime("%Y-%m-%d")
+                except Exception:
+                    data = ""
+            out.append({"title": _pulisci_html(tit.group(1)), "url": vero, "snippet": "",
+                        "data": data, "notizia": True})
+    except Exception:
+        pass
+    return out
+
+
+def _notizie(q, quante=5):
+    """Le notizie FRESCHE con la data vera: Google News (gratis, senza chiave).
+    Serve perché una pagina di supporto o un articolo vecchio non ti dicono qual è «l'ultima» versione."""
+    import urllib.request, urllib.parse
+    out = []
+    try:
+        u = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(q)
+             + "&hl=it&gl=IT&ceid=IT:it")
+        xml = urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": _UA_WEB}),
+                                     timeout=12).read().decode("utf-8", "replace")
+        for blocco in re.findall(r"<item>(.*?)</item>", xml, re.S)[:quante]:
+            tit = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", blocco, re.S)
+            lnk = re.search(r"<link>(.*?)</link>", blocco, re.S)
+            dat = re.search(r"<pubDate>(.*?)</pubDate>", blocco, re.S)
+            if not tit:
+                continue
+            data = ""
+            if dat:
+                try:
+                    import email.utils
+                    d = email.utils.parsedate_to_datetime(dat.group(1).strip())
+                    data = d.strftime("%Y-%m-%d")
+                except Exception:
+                    data = ""
+            out.append({"title": _pulisci_html(tit.group(1)),
+                        "url": (lnk.group(1).strip() if lnk else ""),
+                        "snippet": "", "data": data, "notizia": True})
+    except Exception:
+        pass
+    return out
+
+
+def _bing(q, quanti=5):
+    """Bing, senza chiave: seconda fonte quando DuckDuckGo fa i capricci (blocca l'indirizzo)."""
+    import urllib.request, urllib.parse
+    out = []
+    try:
+        u = "https://www.bing.com/search?setlang=it&q=" + urllib.parse.quote(q[:200])
+        html = urllib.request.urlopen(urllib.request.Request(
+            u, headers={"User-Agent": _UA_WEB, "Accept-Language": "it-IT,it;q=0.9"}), timeout=12
+        ).read().decode("utf-8", "replace")
+        for blocco in re.findall(r'<li class="b_algo".*?</li>', html, re.S)[:quanti]:
+            m = re.search(r'<h2[^>]*>\s*<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)</a>', blocco)
+            if not m:
+                continue
+            url = m.group(1)
+            if not url.startswith("http"):
+                continue
+            snip = re.search(r'<p[^>]*>([\s\S]*?)</p>', blocco)
+            out.append({"title": _pulisci_html(m.group(2)), "url": url,
+                        "snippet": _pulisci_html(snip.group(1)) if snip else ""})
+    except Exception:
+        pass
+    return out
+
+
+def _url_da_titolo(titolo):
+    """Trova l'indirizzo del sito che ha pubblicato la notizia (i link di Google News sono solo rimandi)."""
+    import urllib.request, urllib.parse
+    try:
+        u = "https://lite.duckduckgo.com/lite/?q=" + urllib.parse.quote(titolo[:150])
+        html = urllib.request.urlopen(urllib.request.Request(
+            u, headers={"User-Agent": _UA_WEB, "Accept-Language": "it-IT,it;q=0.9"}),
+            timeout=12).read().decode("utf-8", "replace")
+        for m in re.finditer(r'href="([^"]*uddg=[^"]+)"', html):
+            url = _ddg_url(m.group(1))
+            if url.startswith("http") and "duckduckgo.com" not in url:
+                return url
+    except Exception:
+        pass
+    # seconda strada: Bing
+    for r in _bing(titolo[:150], 3):
+        if r["url"].startswith("http") and "bing.com" not in r["url"]:
+            return r["url"]
+    return ""
 
 
 def _ricerca_web(q, quanti=6):
@@ -1361,21 +1517,145 @@ def _ricerca_web(q, quanti=6):
                                   "snippet": _pulisci_html(v.get("snippet", ""))})
         except Exception:
             pass
+    if not risultati:                      # DuckDuckGo muto: si prova Bing
+        for r in _bing(q, quanti):
+            r["data"] = _data_da_url(r["url"])
+            risultati.append(r)
+    # le notizie con la data e il LINK VERO (Bing News): è lì che sta «l'ultima»
+    visti = {r["url"] for r in risultati}
+    notizie = _notizie_bing(q)
+    if not notizie:
+        notizie = _notizie(q)
+    for n in notizie:
+        if n["url"] and n["url"] not in visti:
+            risultati.append(n)
+            visti.add(n["url"])
+    for r in risultati:
+        r["data"] = r.get("data") or _data_da_url(r.get("url", ""))
+    # la più FRESCA vince
+    risultati.sort(key=lambda r: r.get("data") or "0000-00-00", reverse=True)
+    risultati = risultati[:quanti + 3]
+    # le notizie fresche: si LEGGE l'articolo (il numero di versione sta lì, non nel titolo)
+    oggi = time.strftime("%Y-%m-%d")
+    limite = time.strftime("%Y-%m-%d", time.localtime(time.time() - 4 * 86400))
+    letta = 0
+    for r in risultati:
+        if letta >= 2 or not r.get("notizia"):
+            continue
+        if (r.get("data") or "") < limite:
+            continue                      # troppo vecchia: non serve aprire
+        vero = r["url"]
+        if "news.google.com" in vero:     # rimando di Google: non si può aprire
+            vero = _url_da_titolo(r["title"])
+            if not vero:
+                continue
+        letto = _leggi_pagina(vero)
+        if letto:
+            r["url"] = vero               # la fonte diventa il sito vero, non il rimando
+            r["testo"] = letto
+            r["notizia"] = False
+            letta += 1
+    # e si legge il testo delle prime pagine: versioni e date si prendono da lì, non dai titoli
+    letti = 0
+    for r in risultati:
+        if letti >= 3:
+            break
+        if r.get("notizia"):        # i link di Google News sono rimandi: non si possono leggere
+            continue
+        letto = _leggi_pagina(r["url"])
+        if letto:
+            r["testo"] = letto
+            letti += 1
     return risultati
 
 
+def _righe_chiave(testo, quante=6):
+    """Le frasi della pagina che contengono numeri di versione o date: sono quelle che contano."""
+    out = []
+    for frase in re.split(r"(?<=[.!?])\s+|\n", testo):
+        f = frase.strip()
+        if len(f) < 20 or len(f) > 400:
+            continue
+        if re.search(r"\d{2}\.\d{2}-\d{2}\.\d{2}|\bversione\b|\bversion\b|\bfirmware\b|\d{1,2}\s+(?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)", f, re.I):
+            out.append(f)
+        if len(out) >= quante:
+            break
+    return out
+
+
 def risultati_in_testo(risultati, domanda=""):
+    """Il contesto per il modello, in ordine di importanza:
+    1) la notizia più FRESCA (data certa), 2) la pagina letta per intero, 3) gli altri titoli."""
     if not risultati:
         return ""
-    righe = ["RISULTATI DI RICERCA WEB (aggiornati adesso — usali come fonte, citando il sito):"]
-    for i, r in enumerate(risultati, 1):
-        righe.append(f"[{i}] {r['title']} — {r['url']}")
-        if r.get("snippet"):
-            righe.append("    " + r["snippet"])
-    righe.append("REGOLE: per fatti, versioni, date, prezzi e notizie usa SOLO questi risultati; ")
-    righe.append("se non contengono la risposta scrivi «non ho trovato un dato aggiornato» invece di inventare; ")
-    righe.append("cita il sito tra parentesi, e ricorda che la tua memoria può essere vecchia.")
+    oggi = time.strftime("%d/%m/%Y")
+    con_testo = [r for r in risultati if r.get("testo")]
+    con_data = [r for r in risultati if r.get("data")]
+    righe = [f"RICERCA WEB fatta adesso (oggi è il {oggi}). Questi sono i tuoi dati: usali al posto della memoria."]
+    righe.append("")
+
+    # ── 1 · le notizie più recenti, lette (per dire «l'ultima») ──
+    if con_data:
+        righe.append("═══ NOTIZIE PIÙ RECENTI — dalla più nuova alla più vecchia (per «ultima versione» vale SOLO questa parte) ═══")
+        for p0 in con_data[:3]:
+            righe.append(f"• del {p0['data']} — {p0['title']}")
+            if p0.get("testo"):
+                righe.append("  TESTO LETTO:")
+                righe.append("  " + p0["testo"][:1500].replace("\n", "\n  "))
+            else:
+                righe.append(f"  (ho solo il titolo — sito: {p0['url']} — non inventare il numero: se serve dì che "
+                             f"la notizia più recente è del {p0['data']} e riporta il titolo)")
+            righe.append("")
+        righe.append("═══ fine delle notizie più recenti ═══")
+        righe.append("")
+
+    # ── 1-bis · i numeri di versione che compaiono nelle notizie (così il modello non li salta) ──
+    numeri = []
+    for p0 in con_data[:3]:
+        if not p0.get("testo"):
+            continue
+        for mm in re.finditer(r"\b\d{1,3}\.\d{1,3}(?:[.-]\d{1,3}){1,4}\b", p0["testo"]):
+            n = mm.group(0)
+            if n not in [x[0] for x in numeri] and not re.match(r"^\d{1,2}\.\d{1,2}$", n):
+                numeri.append((n, p0["data"], p0["title"][:60]))
+    if numeri:
+        righe.append("NUMERI DI VERSIONE TROVATI NEL TESTO DELLE NOTIZIE (il più recente è il primo):")
+        for n, d, ti in numeri[:6]:
+            righe.append(f"  · {n}  (dalla notizia del {d}: {ti})")
+        righe.append("")
+
+    # ── 2 · le pagine lette (fonte di appoggio) ──
+    altre = [r for r in con_testo if r is not (con_data[0] if con_data else None)][:2]
+    for r in altre:
+        righe.append(f"─── PAGINA LETTA: {r['title'][:100]} ({r['url']}) ───")
+        chiave = _righe_chiave(r["testo"])
+        if chiave:
+            righe.append("FRASI CHE CONTANO:")
+            for c in chiave:
+                righe.append("  · " + c[:300])
+        righe.append(r["testo"][:900])
+        righe.append("")
+
+    # ── 3 · gli altri titoli ──
+    altri = [r for r in risultati if r not in con_testo][:6]
+    if altri:
+        righe.append("ALTRI TITOLI (possono essere VECCHI: NON servono per dire qual è l'ultima versione o l'ultima notizia):")
+        for i, r in enumerate(altri, 1):
+            quando = (" · del " + r["data"]) if r.get("data") else " · data non indicata"
+            righe.append(f"[{i}] {r['title'][:120]} — {r['url']}{quando}")
+        righe.append("")
+
+    righe.append("REGOLE: rispondi in italiano e breve. Per fatti, versioni, date e prezzi usa SOLO quanto sopra. ")
+    righe.append("Se la notizia più recente parla di un aggiornamento appena uscito e il numero preciso non è scritto, ")
+    righe.append("dillo con la data invece di inventarlo. Un titolo vecchio NON è «l'ultima versione». ")
+    righe.append("Se nelle fonti compare un numero di versione (per esempio 26.07-14.20.00) riportalo fra virgolette, ")
+    righe.append("così si vede che l'hai letto e non inventato. Cita il sito tra parentesi.")
     return "\n".join(righe)
+
+
+AVVISO_SENZA_WEB = ("La ricerca web NON ha dato risultati adesso. Se la domanda riguarda fatti recenti, "
+                    "versioni, prezzi o notizie, dillo in una riga («non riesco a controllare online in questo "
+                    "momento») e rispondi solo con quello che sai, dicendo che può essere vecchio.")
 
 
 _MOTIVI = {}          # motore → ultimo motivo per cui non ha risposto
@@ -1397,29 +1677,26 @@ def segna_motivo(nome, errore):
             return
     except Exception:
         pass
-    testo = str(e) or e.__class__.__name__
-    _MOTIVI[nome] = testo[:160]
+    _MOTIVI[nome] = (str(e) or e.__class__.__name__)[:160]
 
 
 def chiave_chat():
     """La chiave unificata del centralino che manda l'Hub (x-fh-key), se c'è."""
-    k = (CHIAVE_HUB.get("k") or "").strip()
-    return k
+    return (CHIAVE_HUB.get("k") or "").strip()
 
 
 def chiave_per_motore(nome, chiave_omni):
-    """Ogni motore vuole la SUA chiave: il centralino quella unificata dell'Hub, gli altri quella di OmniRoute."""
+    """Ogni motore vuole la SUA chiave: il centralino quella dell'Hub, gli altri quella di OmniRoute."""
     if nome == "FreeLLMAPI":
         k = chiave_chat()
         if k:
             return k
-        k2 = chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+")
-        return k2 or chiave_omni
+        return chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+") or chiave_omni
     return chiave_omni
 
 
 def motori_in_chiaro():
-    """Cosa è successo a ogni motore, detto come si deve: acceso/spento e, se acceso, perché non ha risposto."""
+    """Com'è andata a ogni motore: acceso/spento e, se acceso, perché non ha risposto."""
     righe = []
     for nome, porta in MOTORI_CHAT:
         if not porta_viva(porta):
@@ -1429,11 +1706,6 @@ def motori_in_chiaro():
         else:
             righe.append("%s (%d): acceso, nessuna risposta" % (nome, porta))
     return "\n".join("  · " + r for r in righe)
-
-
-AVVISO_SENZA_WEB = ("La ricerca web NON ha dato risultati adesso. Se la domanda riguarda fatti recenti, "
-                    "versioni, prezzi o notizie, dillo in una riga («non riesco a controllare online in questo "
-                    "momento») e rispondi solo con quello che sai, dicendo che può essere vecchio.")
 
 
 def messaggio_motori():
