@@ -1243,6 +1243,9 @@ _CHIAVI_CACHE = {}          # pid → (chiave, quando): evita un giro di bash a 
 # restano nel portachiavi ma non si chiamano per una domanda.
 TIPI_CHAT = ("chat", "visione")
 
+# provider che accettano la «chiave anonima» ufficiale quando nel portachiavi non c'è nulla
+CHIAVE_ANONIMA = {"aihorde": "0000000000"}
+
 
 def puo_chattare(pid):
     v = lista_portiere().get(pid)
@@ -1418,6 +1421,8 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
     if restanti:
         return "", "in pausa ancora %ds" % restanti, restanti
     k = chiave_provider(pid)
+    if k == "free" or not k:
+        k = CHIAVE_ANONIMA.get(pid, "")      # senza chiave: solo chi ha una chiave anonima ufficiale
     if not k:
         return "", "chiave assente nel portachiavi", 0
     t0 = time.time()
@@ -1434,7 +1439,8 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
         d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
         scelta = (d.get("choices") or [{}])[0]
         testo = ((scelta.get("message") or {}).get("content") or "").strip()
-        if not testo and scelta.get("finish_reason") == "length" and quanti < 800:
+        if not testo and (scelta.get("finish_reason") == "length"
+                          or (scelta.get("message") or {}).get("reasoning_content")):
             # modello che «ragiona»: i token sono finiti dentro il ragionamento e la risposta
             # è rimasta vuota (quirk Agnes/Logfare). Un secondo giro con più spazio.
             corpo2 = json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),

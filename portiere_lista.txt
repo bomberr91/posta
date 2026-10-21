@@ -38,16 +38,16 @@ simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Inst
 llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 router9|Router9|Router9|https://api.router9.com/v1|auto|modelli
 waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
-blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-chat|modelli
+blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-v4-flash|chat
 logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
 lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|auto|modelli
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
 speka|Speka|Speka|https://speka.me/v1|google/gemma-4-31b-it|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
-chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|auto|modelli
+chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli
 ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
-aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/LLaMA2-13B-Tiefighter|modelli
+aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|google/gemma-4-31b|chat
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
@@ -59,7 +59,7 @@ zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli
 electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|auto|modelli
 inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
 blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
-sail|Sail|Sail|https://api.sailresearch.com/v1|auto|modelli
+sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat
 anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
 kilo|Kilo (senza chiave)|SENZA|https://kilocode.ai/api/openrouter/v1|auto|modelli
 cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.1-8b-instruct|modelli
@@ -88,6 +88,16 @@ fal|fal.ai|fal.ai|https://fal.run|—|no|immagini
 wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video
 moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream2|no|visione
 pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini
+
+## NOTE DEL 21/10 NOTTE (provate una per una dal router)
+# · Chutes: la chiave risponde all'elenco modelli ma la chat dà 402 «balance is $0.0, please pay»:
+#   il loro piano free vuole un saldo diverso da zero → resta in lista ma il router lo mette in pausa da sé.
+# · Kilo: l'indirizzo giusto è https://api.kilo.ai/api/gateway/v1 ma risponde 401 (INVALID_TOKEN)
+#   con qualunque token, anche senza: serve una chiave Kilo vera dal loro sito.
+# · Cloudflare Workers AI: la chiave deve essere nel formato «account_id:api_token»; la nostra è
+#   solo il token, quindi l'indirizzo non si può comporre. Appena c'è l'account id si accende.
+# · Sail e i modelli che «ragionano» (Agnes): rispondono col pensiero e il testo vuoto → ora il
+#   router fa un secondo giro con più spazio e la risposta arriva.
 
 ## DA CONFERMARE — non contano nel numero del Portiere
 # Nome nel portachiavi | perché è fermo
