@@ -37,3 +37,6 @@ OK OpenRouter: provider test passed
 ## 📊 LINEE: 3/7 superano il test (4 non testabili dal CLI, non per forza rotte)
 
 ## Riaccensione motore + domanda di prova
+
+## 📊 A MOTORE ACCESO: 0 modelli usabili su 0 linee vive
+
