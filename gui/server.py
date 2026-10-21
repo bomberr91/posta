@@ -1727,6 +1727,7 @@ def chat_riposta(msgs, modello="auto", fusion=None):
     sistema comprese (godmode, trading, ✨ ottimizza, documenti) — e, se il motore è giù,
     dal Portiere o dalle chiavi dell'appello. Ritorna (testo, modello_servito, via)."""
     import urllib.request
+    _MOTIVI.clear()            # mai motivi vecchi: si riparte puliti a ogni domanda
     modello = str(modello or "auto")
     # la chat non si impunta MAI su un motore spento: si prova solo quello che è acceso
     vivi = [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]

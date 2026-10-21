@@ -196,6 +196,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <label class="webt" id="godl" title="Godmode: risposte dirette senza prediche, disclaimer o rifiuti da eccesso di zelo. Vale per il modello, la fusion e la code. (I filtri DURI dei provider restano: non sono nei nostri computer)"><input type="checkbox" id="god">😈 senza filtri</label>
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
         <button class="icobtn" id="btnAgenti" title="Le funzioni che servono agli AGENTI (non alla chat): crediti, motore, browser, chiavi, risultati, aggiornamento PC, postino" style="font-weight:700">🤖 Agenti</button>
+        <span id="agChip" title="Spia dei motori: verde = almeno un motore acceso; rosso = nessuno acceso (la chat non passa). I pallini girano mentre aspetto la risposta. Clicca per aprire la scheda 🤖 Agenti." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut);display:inline-flex;align-items:center;gap:5px;font-weight:700">● motori…</span>
         <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
@@ -213,7 +214,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         </div>
         <div id="pilotbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--mut);padding:6px 2px 2px">
           <span id="pilot"></span>
-          <span id="agChip" title="Spia dei motori: verde = almeno un motore acceso e la chat passa; rossa = nessun motore acceso. I pallini che girano = sto aspettando la risposta. Clicca per aprire la scheda 🤖 Agenti." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut);display:inline-flex;align-items:center;gap:6px">🤖 agenti…</span>
           <span id="livemode" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">…</span>
         </div>
         <div id="sysrow"><textarea id="sys" rows="1" placeholder="istruzioni di sistema (opzionale) — es. rispondi in italiano, sii brevissimo…"></textarea></div>
@@ -2729,6 +2729,12 @@ function aggiornaPilota(){
   const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
   const chip = document.getElementById('agChip');
   if(!chip) return;
+  let spireOn = false;                 // lo stato resta anche quando la chip si ridisegna ogni 15 s
+  window.chipSpinner = function(on){   // definita SEMPRE (anche in anteprima): chi la chiama non deve rompersi
+    spireOn = !!on;
+    const d = document.getElementById('agChipDots');
+    if(d) d.style.display = on ? 'inline-flex' : 'none';
+  };
   if(!VIVO){ chip.textContent = '🤖 agenti: solo sul PC'; chip.style.opacity = '.6'; return; }
 
   chip.addEventListener('click', () => {
@@ -2737,29 +2743,32 @@ function aggiornaPilota(){
   });
 
   // pallini di caricamento: si accendono mentre aspetto la risposta del motore
-  window.chipSpinner = function(on){
-    const d = document.getElementById('agChipDots');
-    if(d) d.style.display = on ? 'inline-flex' : 'none';
-  };
+  function disegna(accesi, pronti, totale){
+    const luce = accesi.length ? '#3fb950' : '#f85149';
+    const quale = accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere';
+    const agenti = (totale !== null && totale !== undefined) ? ('🤖 ' + pronti + '/' + totale + ' agenti') : '🤖 agenti';
+    chip.innerHTML =
+      '<span title="' + quale + '" style="color:' + luce + ';font-size:12px;line-height:1">●</span>'
+      + '<span>' + agenti + '</span>'
+      + '<span id="agChipDots" class="agDots" style="display:' + (spireOn ? 'inline-flex' : 'none') + '"><i></i><i></i><i></i></span>';
+    chip.style.borderColor = accesi.length ? '#3fb95066' : '#f8514966';
+    chip.style.color = accesi.length ? '#3fb950' : '#f85149';
+    chip.title = quale + ' · click per la scheda 🤖 Agenti';
+  }
   async function leggi(){
-    let motori = {};
-    try{ motori = (await (await fetch('/api/stato')).json()).motori || {}; }catch(e){}
-    const accesi = Object.keys(motori).filter(k => motori[k]);
+    let accesi = [];
+    try{
+      const st = await (await fetch('/api/stato')).json();
+      const motori = st.motori || {};
+      accesi = Object.keys(motori).filter(k => motori[k]);
+    }catch(e){}
+    let pronti = null, totale = null;
     try{
       const d = await (await fetch('/api/agenti')).json();
       const lista = d.agenti || [];
-      const pronti = lista.filter(a => a.pronto).length;
-      const luce = accesi.length ? '#3fb950' : '#f85149';
-      chip.innerHTML =
-        '<span title="' + (accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere')
-        + '" style="color:' + luce + ';font-size:12px;line-height:1">●</span>'
-        + '<span>🤖 ' + pronti + '/' + lista.length + ' agenti</span>'
-        + '<span id="agChipDots" class="agDots" style="display:none"><i></i><i></i><i></i></span>';
-      chip.style.borderColor = accesi.length ? '#3fb95066' : '#f8514966';
-      chip.style.color = accesi.length ? '#3fb950' : '#f85149';
-      chip.title = (accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere')
-        + ' · click per la scheda 🤖 Agenti';
-    }catch(e){ chip.textContent = '🤖 agenti: non leggo'; }
+      totale = lista.length; pronti = lista.filter(a => a.pronto).length;
+    }catch(e){}
+    disegna(accesi, pronti, totale);   // la spia dei motori c'è sempre, anche se gli agenti non si leggono
   }
   leggi();
   setInterval(leggi, 15000);
