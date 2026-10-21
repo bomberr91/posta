@@ -34,11 +34,13 @@ TEST = os.environ.get("CENTRALE_NO_POSTINO") == "1"
 # ───────────────────────────── util ─────────────────────────────────────────
 def porta_viva(porta, host="127.0.0.1"):
     import socket
-    try:
-        with socket.create_connection((host, porta), timeout=2):
-            return True
-    except Exception:
-        return False
+    for h in (host, "::1", "localhost"):
+        try:
+            with socket.create_connection((h, porta), timeout=2):
+                return True
+        except Exception:
+            continue
+    return False
 
 
 def leggi(path, default=""):
@@ -1282,6 +1284,9 @@ def chat_riserva(messaggi, esclusi=(), fretta=False):
 
 VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
 
+# la chiave UNIFICATA del centralino: l'Hub la manda nell'intestazione x-fh-key
+CHIAVE_HUB = {"k": ""}
+
 # i motori della chat, in ordine di preferenza (nome, porta)
 MOTORI_CHAT = [("FreeLLMAPI", 31415), ("OmniRoute", 20128), ("Portiere", 20129)]
 
@@ -1371,6 +1376,73 @@ def risultati_in_testo(risultati, domanda=""):
     return "\n".join(righe)
 
 
+_MOTIVI = {}          # motore → ultimo motivo per cui non ha risposto
+
+
+def segna_motivo(nome, errore):
+    """Tiene il motivo VERO (es. 401, connessione rifiutata) per dirlo in chiaro all'utente."""
+    e = errore
+    try:
+        import urllib.error
+        if isinstance(e, urllib.error.HTTPError):
+            corpo = ""
+            try:
+                corpo = e.read().decode("utf-8", "replace")[:200]
+            except Exception:
+                pass
+            m = re.search(r'"message"\s*:\s*"([^"]{1,160})', corpo)
+            _MOTIVI[nome] = "HTTP %s%s" % (e.code, (" — " + m.group(1)) if m else "")
+            return
+    except Exception:
+        pass
+    testo = str(e) or e.__class__.__name__
+    _MOTIVI[nome] = testo[:160]
+
+
+def chiave_chat():
+    """La chiave unificata del centralino che manda l'Hub (x-fh-key), se c'è."""
+    k = (CHIAVE_HUB.get("k") or "").strip()
+    return k
+
+
+def chiave_per_motore(nome, chiave_omni):
+    """Ogni motore vuole la SUA chiave: il centralino quella unificata dell'Hub, gli altri quella di OmniRoute."""
+    if nome == "FreeLLMAPI":
+        k = chiave_chat()
+        if k:
+            return k
+        k2 = chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+")
+        return k2 or chiave_omni
+    return chiave_omni
+
+
+def motori_in_chiaro():
+    """Cosa è successo a ogni motore, detto come si deve: acceso/spento e, se acceso, perché non ha risposto."""
+    righe = []
+    for nome, porta in MOTORI_CHAT:
+        if not porta_viva(porta):
+            righe.append("%s (%d): spento" % (nome, porta))
+        elif _MOTIVI.get(nome):
+            righe.append("%s (%d): acceso, ma non ha risposto — %s" % (nome, porta, _MOTIVI[nome]))
+        else:
+            righe.append("%s (%d): acceso, nessuna risposta" % (nome, porta))
+    return "\n".join("  · " + r for r in righe)
+
+
+def messaggio_motori():
+    stato = motori_in_chiaro()
+    if any("401" in (m or "") or "403" in (m or "") for m in _MOTIVI.values()):
+        fare = ("Cosa fare: il motore è acceso ma ha rifiutato la chiave. Apri ⚙ Chiavi e modelli e "
+                "incolla la chiave UNIFICATA del centralino (freellmapi-…, la trovi nel pannello di FreeLLMAPI).")
+    elif any(_MOTIVI.get(n) for n, _ in MOTORI_CHAT):
+        fare = ("Cosa fare: il motore è acceso ma non ha risposto. Riprova una volta; se rifà lo stesso, "
+                "apri 🤖 Agenti → 🧠 Motori e premi «Spegni» poi «Avvia».")
+    else:
+        fare = ("Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su uno dei motori (nessuno risulta acceso); "
+                "poi rimanda il messaggio.")
+    return "⚠️ La chat non è passata. Stato dei motori:\n" + stato + "\n" + fare
+
+
 def chat_riposta(msgs, modello="auto", fusion=None):
     """La chat dell'Hub: passa dal motore (OmniRoute) con TUTTI i messaggi — istruzioni di
     sistema comprese (godmode, trading, ✨ ottimizza, documenti) — e, se il motore è giù,
@@ -1391,21 +1463,22 @@ def chat_riposta(msgs, modello="auto", fusion=None):
                 req = urllib.request.Request(
                     "http://127.0.0.1:%d/v1/chat/completions" % porta,
                     data=json.dumps(corpo).encode(),
-                    headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+                    headers={"Authorization": "Bearer " + chiave_per_motore(nome_motore, key),
+                             "x-fh-key": CHIAVE_HUB["k"], "Content-Type": "application/json"})
                 d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
                 testo = ((d.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
                 if testo.strip():
                     return testo, d.get("model") or m, nome_motore
-            except Exception:
+            except Exception as e:
+                segna_motivo(nome_motore, e)
                 continue
     # nessun motore acceso: chiavi, ma in fretta (mai minuti di attesa)
     r = chat_riserva(msgs, fretta=True)
     if r:
         return r[0], f"{r[2]} · riserva {r[1]}", "riserva " + r[1]
-    spenti = ", ".join(n for n, _ in MOTORI_CHAT)
-    avvisa_agente("I motori", "la chat non è passata: nessun motore acceso e nessuna chiave ha risposto")
-    return ("⚠️ Nessun motore acceso (" + spenti + ") e nessuna chiave ha risposto.\n"
-            "Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su uno dei motori; poi rimanda il messaggio."), "-", "nessuno"
+    testo = messaggio_motori()
+    avvisa_agente("I motori", "la chat non è passata: " + "; ".join(_MOTIVI.values() or ["nessun motore acceso"]))
+    return testo, "-", "nessuno"
 
 
 def chat_stream(msgs, modello, fusion, scrivi):
@@ -1424,7 +1497,8 @@ def chat_stream(msgs, modello, fusion, scrivi):
                 req = urllib.request.Request(
                     "http://127.0.0.1:%d/v1/chat/completions" % porta,
                     data=json.dumps(corpo).encode(),
-                    headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+                    headers={"Authorization": "Bearer " + chiave_per_motore(nome_motore, key),
+                             "x-fh-key": CHIAVE_HUB["k"], "Content-Type": "application/json"})
                 with urllib.request.urlopen(req, timeout=180) as r:
                     for riga in r:
                         riga = riga.decode("utf-8", "replace").rstrip("\n")
@@ -1443,11 +1517,10 @@ def chat_stream(msgs, modello, fusion, scrivi):
                         if pezzo:
                             testo += pezzo
                         if pezzo or j.get("_fusion"):
-                            if not iniziato:
-                                iniziato = True
+                            iniziato = True
                             scrivi(riga)
-            except Exception:
-                pass
+            except Exception as e:
+                segna_motivo(nome_motore, e)
             if testo.strip():
                 return testo, servito, nome_motore
     return None
@@ -1698,6 +1771,17 @@ class H(BaseHTTPRequestHandler):
             subprocess.Popen(["bash", os.path.join(POSTA, "squadra.sh"), missione, out],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self._json({"stato": "avviata", "out": os.path.basename(out)})
+        elif self.path in ("/api/freellmapi/models", "/api/freellmapi/usage"):
+            import urllib.request
+            k = (self.headers.get("x-fh-key") or "").strip() or chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+")
+            coda = self.path.rsplit("/", 1)[-1]
+            try:
+                req = urllib.request.Request("http://127.0.0.1:31415/v1/" + coda,
+                                             headers={"Authorization": "Bearer " + k, "x-fh-key": k})
+                self.wfile.write(urllib.request.urlopen(req, timeout=20).read())
+                return
+            except Exception as e:
+                self._json({"error": {"message": "centralino non raggiungibile su :31415 (%s)" % e.__class__.__name__}})
         elif self.path == "/api/search":
             q = str((self._body().get("q") or "")).strip()[:400]
             if not q:
@@ -1707,6 +1791,8 @@ class H(BaseHTTPRequestHandler):
             self._json({"q": q, "context": risultati_in_testo(res, q),
                         "results": [{"title": r["title"], "url": r["url"]} for r in res]})
         elif self.path == "/api/chat":
+            CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
+            _MOTIVI.clear()
             b = self._body()
             msgs = b.get("messages") or b.get("messaggi") or []
             if not msgs:
@@ -1729,10 +1815,9 @@ class H(BaseHTTPRequestHandler):
                 self.end_headers()
                 try:
                     fatto = chat_stream(msgs, b.get("model") or "auto", fusione, _scrivi)
-                    if not fatto:                     # nessun motore acceso: chiavi, in fretta
+                    if not fatto:                     # nessun motore ha risposto: chiavi, in fretta
                         r2 = chat_riserva(msgs, fretta=True)
-                        testo2 = r2[0] if r2 else ("⚠️ Nessun motore acceso e nessuna chiave ha risposto.\n"
-                                                   "Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su un motore, poi rimanda.")
+                        testo2 = r2[0] if r2 else messaggio_motori()
                         for i in range(0, len(testo2), 120):
                             pezzo = json.dumps({"model": (r2[2] if r2 else "-"),
                                                 "choices": [{"delta": {"content": testo2[i:i + 120]}}]})
