@@ -31,7 +31,18 @@ OMNI_URL="http://127.0.0.1:20128/v1"
 # Portiere (cervello.py, porta 20129): se è acceso, gli agenti parlano con lui.
 # Lui passa la richiesta al motore e, se il motore è caduto, alle chiavi di riserva.
 CERVELLO_URL="http://127.0.0.1:20129/v1"
-if (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null; then
+# Catena decisa il 21/10: 1) OmniRoute (motore principale)  2) il «sito» quando ci sarà
+#  3) il Portiere, ma SOLO se qualcuno lo ha acceso  4) in caso estremo le chiavi.
+# Qui si imposta l'indirizzo di partenza: se c'è un motore «sito» acceso, quello.
+SITO_URL="http://127.0.0.1:4000/v1"          # posto del motore «sito» (new-api/9router/LiteLLM)
+if (exec 3<>/dev/tcp/127.0.0.1/4000) 2>/dev/null; then
+  exec 3<&- 2>/dev/null || true
+  OPENAI_BASE_URL="$SITO_URL"
+elif (exec 3<>/dev/tcp/127.0.0.1/20128) 2>/dev/null; then
+  exec 3<&- 2>/dev/null || true
+  OPENAI_BASE_URL="$OMNI_URL"
+elif (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null; then
+  # il Portiere è acceso: si resta su di lui (sa lui chi fa il capo)
   exec 3<&- 2>/dev/null || true
   OPENAI_BASE_URL="$CERVELLO_URL"
 else
@@ -65,5 +76,5 @@ if [ "${1:-}" = "--elenco" ]; then
   printf '  %-22s %s\n' "OmniRoute"      "$([ -n "${OM_KEY:-}" ] && echo '✓ trovata' || echo '— assente (il motore usa la sua)')"
   printf '  %-22s %s\n' "AgentRouter"    "$([ -n "${AR_KEY:-}" ] && echo '✓ trovata' || echo '— assente')"
   echo "  cervello di default per gli agenti: $OPENAI_BASE_URL  (modello: $OPENAI_MODEL)"
-  echo "  riserva se il motore cade: portiere 20129 ($([ -f "$HOME/.posta_appello.json" ] && echo 'appello pronto' || echo 'appello non ancora fatto'))"
+  echo "  catena: OmniRoute → motore sito (4000) → Portiere 20129 ($([ -f "$HOME/.posta_appello.json" ] && echo 'appello pronto' || echo 'appello non ancora fatto'))"
 fi

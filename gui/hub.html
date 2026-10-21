@@ -243,15 +243,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
     <div id="agCorpo">
       <div class="agCol">
       <section class="agCard">
-        <h3>💰 Crediti e bonus</h3>
-        <div class="agRiga"><span>Saldo</span><b id="agSaldo">—</b></div>
-        <div class="agRiga"><span>Check-in</span><b id="agCheck">—</b></div>
-        <div class="agBottoni" style="margin-top:6px">
-          <button class="agB pri" id="agRiscatta">Riscatta</button>
-          <button class="agB" id="agSegna">✔ a mano</button>
-        </div>
-      </section>
-      <section class="agCard">
         <h3>🧠 Motori</h3>
         <div class="agRiga"><span><b>OmniRoute</b><span class="agDots" id="agOmniDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agOmni">—</b></div>
         <div class="agRiga"><span class="agDim" style="font-size:12px">provider attivi</span><b id="agOmniProv" style="font-size:12px">—</b></div>
@@ -287,7 +278,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
           <button class="agB pri" id="agInstalla">Installa</button>
         </div>
-        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa il motore (OmniRoute): se è spento, non rispondono.</div>
+        <div class="agDim" style="margin-top:6px" id="agAgentiNota">—</div>
       </section>
       <section class="agCard">
         <h3>📮 Postino e ponte</h3>
@@ -295,6 +286,15 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
         <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
         <div class="agBottoni"><button class="agB pri" id="agPostinoOn">Avvia</button></div>
+      </section>
+      <section class="agCard">
+        <h3>💰 Crediti e bonus</h3>
+        <div class="agRiga"><span>Saldo</span><b id="agSaldo">—</b></div>
+        <div class="agRiga"><span>Check-in</span><b id="agCheck">—</b></div>
+        <div class="agBottoni" style="margin-top:6px">
+          <button class="agB pri" id="agRiscatta">Riscatta</button>
+          <button class="agB" id="agSegna">✔ a mano</button>
+        </div>
       </section>
       <section class="agCard">
         <h3>🌐 Browser agenti</h3>
@@ -315,16 +315,19 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agBottoni"><span class="agDots" id="agPcDots" style="display:none"><i></i><i></i><i></i></span><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
         <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
       </section>
-      <section class="agCard agLargo">
+            <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
-        <div class="agRiga"><span class="agDim" id="agSalute">—</span><span class="agDots" id="agSalDots" style="display:none"><i></i><i></i><i></i></span></div>
+        <div id="agSalute" class="agDim">—</div>
+        <div id="agSaluteBox" style="display:none;margin-top:8px"></div>
         <div class="agBottoni">
-          <button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button>
+          <span class="agDots" id="agSalDots" style="display:none"><i></i><i></i><i></i></span>
+          <button class="agB pri" id="agRicontrolla">Ricontrolla</button>
           <button class="agB" id="agSalDett">📋 Dettagli</button>
         </div>
-        <div id="agLogSezione" style="display:none;margin-top:8px;border-top:1px solid #ffffff14;padding-top:8px">
-          <div id="agLog" style="max-height:220px;overflow:auto"></div>
-        </div>
+      </section>
+      <section class="agCard agLargo" id="agLogSezione" style="display:none">
+        <h3>📋 Errori e messaggi</h3>
+        <div id="agLog" style="max-height:220px;overflow:auto"></div>
       </section>
     </div>
   </div>
@@ -2440,10 +2443,21 @@ function aggiornaPilota(){
       // salute
       const sc = s.salute_chiara || {};
       const nr = sc.rossi || 0, ng = sc.gialli || 0;
+      // Salute: dettagli SEMPRE in vista (se qualcosa non va), non da aprire col tasto
+      const scS = s.salute_chiara || {};
+      const voci = scS.voci || [];
+      const det = voci.map(v => '<div style="padding:4px 0;border-bottom:1px solid #ffffff0f">' +
+        (v.tipo === 'rosso' ? '🔴 ' : '🟡 ') + '<b>' + v.nome + '</b> — ' + v.dettaglio +
+        '<div style="color:#8b949e">→ ' + v.chefare + '</div></div>').join('');
+      const box = $('agSaluteBox');
+      if(box){
+        if(voci.length){ box.style.display = 'block'; box.innerHTML = '<div class="agDim" style="line-height:1.5">' + det + '</div>'; }
+        else { box.style.display = 'none'; }
+      }
       $('agSalute').innerHTML = nr
         ? '<span class="no">🔴 ' + nr + (nr === 1 ? ' problema' : ' problemi') + '</span>' +
           (ng ? ' · 🟡 ' + ng + ' da guardare' : '') +
-          '<div class="agDim" style="margin-top:4px">Il riquadro in basso ti dice cosa vuol dire e cosa fare. Non è detto che blocchi qualcosa.</div>'
+          '<div class="agDim" style="margin-top:4px">Qui sotto trovi cosa vuol dire e cosa fare. Non è detto che blocchi qualcosa.</div>'
         : (ng ? '<span class="att">🟡 ' + ng + ' cose da guardare</span> — niente di rotto'
               : '<span class="ok">✅ tutto a posto</span>');
       // contatori: li mostra la scheda Motori
@@ -2481,6 +2495,9 @@ function aggiornaPilota(){
     log(r.msg || 'segnato'); aggiorna();
   });
   $('agSalDett').addEventListener('click', () => {
+    const box = document.getElementById('agSaluteBox');
+    if(box){ box.style.display = box.style.display === 'none' ? 'block' : 'none'; }
+    return;
     const sc = (ultimo && ultimo.salute_chiara) || {};
     const voci = sc.voci || [];
     if(!voci.length){ log('🩺 Nessun problema: è tutto a posto.'); return; }

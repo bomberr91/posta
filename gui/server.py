@@ -1225,9 +1225,23 @@ def chiave_provider(pid):
 
 
 def chat_riserva(messaggi, esclusi=()):
-    """Se il motore è caduto: gli agenti non restano fermi, si passa alle chiavi
-    che hanno risposto all'appello. Ritorna (testo, nome, modello) o None."""
+    """Se OmniRoute è caduto: prima il Portiere (motore nostro, porta 20129) se è acceso,
+    poi le chiavi che hanno risposto all'appello. Ritorna (testo, nome, modello) o None."""
     import urllib.request
+    # 1) il Portiere, se è acceso: è lui che sceglie capo e sostituti
+    if porta_viva(20129):
+        try:
+            corpo = json.dumps({"model": "auto", "messages": messaggi[-12:],
+                                "max_tokens": 1200}).encode()
+            req = urllib.request.Request("http://127.0.0.1:20129/v1/chat/completions",
+                                         data=corpo, headers={"Content-Type": "application/json"})
+            d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
+            testo = (d.get("choices") or [{}])[0].get("message", {}).get("content", "")
+            if testo:
+                return testo, "Portiere", d.get("model") or "capo della giornata"
+        except Exception:
+            pass
+    # 2) le chiavi dell'appello, una per una
     for v in appello_dati().get("voci", []):
         if v.get("esito") != "risponde" or v.get("id") in esclusi:
             continue
