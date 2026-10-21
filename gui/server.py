@@ -1798,7 +1798,11 @@ def fusion_nostra(messaggi, quanti=3):
         except Exception:
             fuso = ""
     if not fuso:
-        fuso = chiama_diretto(risposte[0][0], giudice, 900, 90)
+        # giudice di riserva: si prova ognuno dei modelli della squadra finché uno fonde
+        for m, _ in risposte:
+            fuso = chiama_diretto(m, giudice, 900, 90)
+            if fuso:
+                break
     etichetta = " + ".join(m["provider"] for m, _ in risposte)
     if not fuso:
         # senza giudice si consegna comunque il meglio che c'è, dicendolo
