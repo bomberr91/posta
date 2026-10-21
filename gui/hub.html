@@ -402,6 +402,20 @@ const PROVIDERS = {
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
 
+// ══════════ PILOTI: chi risponde davvero, agente per agente (dal log del 19/10) ══════════
+const PILOTI = {
+  'Regista': {emo:'🧠', pilota:'claude-opus-5', riserve:'opus-4.8 → sonnet-4.5 → gpt-5.6-sol → deepseek-v4-flash',
+              fa:'coordina e risponde: è il pilota più intelligente del giorno, con le riserve a cascata'},
+  'Lampo':   {emo:'⚡', pilota:'deepseek-v4-flash', riserve:'gpt-oss-120b → glm-4.7-flash',
+              fa:'risposta immediata sulle cose di tutti i giorni, la linea sempre viva'},
+  'Fabbro':  {emo:'💻', pilota:'qwen3-coder via OmniRoute', riserve:'codestral → mistral-code',
+              fa:'scrive il codice, lo PROVA sul PC e committa sul ponte'},
+  'Squadra': {emo:'🔥', pilota:'il Regista sceglie quanti e quali servono', riserve:'+ Giudice Supremo (cascata AgentRouter)',
+              fa:'fusion di agenti: nessun numero fisso, decide il Regista; il Giudice certifica'},
+  'Libero':  {emo:'😈', pilota:'cohere command-r (già innestato)', riserve:'Venice.ai (quando ci sarà)',
+              fa:'parla di tutto: gira solo su piloti senza guinzaglio, mai sulle chiavi serie'}
+};
+
 // ══════════ stato: chat multiple + cartelle (localStorage) ══════════
 let chats = [];    // {id,title,pinned,folder,created,updated,msgs:[{role,content,model,via,web,sources,fusion}]}
 let folders = [];  // {id,name,collapsed}
@@ -720,7 +734,7 @@ function renderChat(){
           + '<div style="font-size:12px;color:#7ee787;font-weight:700;margin-bottom:4px">📝 In breve — le cose importanti</div>' + mdLite(m.sunto) + '</div>'
           + '<details><summary style="cursor:pointer;color:var(--mut);font-size:12px">La risposta completa (' + String(m.content).length + ' caratteri)</summary>' + mdLite(m.content) + '</details>'
         : mdLite(m.content);
-      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?((PILOTI[m.agente]?PILOTI[m.agente].emo+' ':'')+esc(m.agente)):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
+      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?(((typeof PILOTI!=='undefined'&&PILOTI[m.agente])?PILOTI[m.agente].emo+' ':'')+esc(m.agente)):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
         + (m.fusion?fusionMeta(m.fusion, m.derived==='focus'?'🔍 <b>focus</b>':(m.trading?'📈 <b>trading</b>':(m.tailor?'🎯 <b>new fusion</b>':(m.sel&&String(m.sel).startsWith('team::')?'⭐ <b>'+esc(String(m.sel).slice(6))+'</b>':'✨ <b>fusion</b>')))):'')
         + (m.via && m.via!==m.model?`<div class="mmeta">instradato da: <b>${esc(m.via)}</b></div>`:'')
         + (m.webq?`<div class="mmeta">${m.webok?'🌐 ho cercato: «'+esc(m.webq)+'»':'🌐 ricerca non riuscita — risposta senza dati freschi (può essere vecchia)'}</div>`:'')
@@ -1121,7 +1135,7 @@ async function runTurn(){
   ctrl = new AbortController();
   const sig = ctrl.signal;
   const nomeTeam = model.startsWith('team::') ? model.slice(6) : '';
-  const preLab = nomeAgente ? (PILOTI[nomeAgente] ? PILOTI[nomeAgente].emo+' '+nomeAgente : nomeAgente)
+  const preLab = nomeAgente ? ((typeof PILOTI!=='undefined'&&PILOTI[nomeAgente]) ? PILOTI[nomeAgente].emo+' '+nomeAgente : nomeAgente)
     : model==='trading' ? '📈 trading' : model==='code' ? '💻 fusion code' : model==='tailor' ? '🎯 new fusion' : nomeTeam ? '⭐ '+esc(nomeTeam) : model==='fusion' ? '✨ fusion' : esc(model);
   const live = document.createElement('div'); live.className = 'msg assistant';
   live.innerHTML = '<div class="who">'+preLab+'</div>'+dotsHTML();
@@ -2193,10 +2207,11 @@ $('gear').onclick = ()=>{ drawer.classList.toggle('open'); renderDrawer(); };
 $('gear2').onclick = ()=>{ drawer.classList.add('open'); renderDrawer(); closeSb(); };
 
 // ══════════ init ══════════
-loadState();
-renderSidebar();
-renderChat();
+// la TENDINA per prima: se qualcosa più sotto va storto, almeno i modelli ci sono sempre
 refreshModelSelect();
+try { loadState(); } catch(e){ console.error('loadState', e); }
+try { renderSidebar(); } catch(e){ console.error('renderSidebar', e); }
+try { renderChat(); } catch(e){ console.error('renderChat', e); }
 const godEl = $('god'), godL = $('godl');
 godEl.checked = lsGet('fh_god') !== '0'; // ON di default (decisione utente 10/10): lo spegni tu se vuoi la modalità pulita
 godL.classList.toggle('on', godEl.checked);
@@ -2232,19 +2247,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 </script>
 
 <script>
-// ══════════ PILOTI: chi risponde davvero, agente per agente (dal log del 19/10) ══════════
-const PILOTI = {
-  'Regista': {emo:'🧠', pilota:'claude-opus-5', riserve:'opus-4.8 → sonnet-4.5 → gpt-5.6-sol → deepseek-v4-flash',
-              fa:'coordina e risponde: è il pilota più intelligente del giorno, con le riserve a cascata'},
-  'Lampo':   {emo:'⚡', pilota:'deepseek-v4-flash', riserve:'gpt-oss-120b → glm-4.7-flash',
-              fa:'risposta immediata sulle cose di tutti i giorni, la linea sempre viva'},
-  'Fabbro':  {emo:'💻', pilota:'qwen3-coder via OmniRoute', riserve:'codestral → mistral-code',
-              fa:'scrive il codice, lo PROVA sul PC e committa sul ponte'},
-  'Squadra': {emo:'🔥', pilota:'il Regista sceglie quanti e quali servono', riserve:'+ Giudice Supremo (cascata AgentRouter)',
-              fa:'fusion di agenti: nessun numero fisso, decide il Regista; il Giudice certifica'},
-  'Libero':  {emo:'😈', pilota:'cohere command-r (già innestato)', riserve:'Venice.ai (quando ci sarà)',
-              fa:'parla di tutto: gira solo su piloti senza guinzaglio, mai sulle chiavi serie'}
-};
+
 function aggiornaPilota(){
   const sel=document.getElementById('model'), box=document.getElementById('pilot'), lm=document.getElementById('livemode');
   if(!sel||!box) return;
