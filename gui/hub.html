@@ -196,7 +196,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <label class="webt" id="godl" title="Godmode: risposte dirette senza prediche, disclaimer o rifiuti da eccesso di zelo. Vale per il modello, la fusion e la code. (I filtri DURI dei provider restano: non sono nei nostri computer)"><input type="checkbox" id="god">😈 senza filtri</label>
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
         <button class="icobtn" id="btnAgenti" title="Le funzioni che servono agli AGENTI (non alla chat): crediti, motore, browser, chiavi, risultati, aggiornamento PC, postino" style="font-weight:700">🤖 Agenti</button>
-        <span id="agChip" title="Spia dei motori: verde = almeno un motore acceso; rosso = nessuno acceso (la chat non passa). I pallini girano mentre aspetto la risposta. Clicca per aprire la scheda 🤖 Agenti." style="cursor:pointer;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut);display:inline-flex;align-items:center;gap:5px;font-weight:700">● motori…</span>
+        <span id="agBoot" style="display:inline-flex;gap:9px;align-items:center;font-size:11px;color:var(--mut)"></span>
         <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
@@ -211,10 +211,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="cbtn" id="bDeep" title="Sull'ULTIMA risposta: formula la contro-domanda da esperto (la vedi mentre lavora) e la invia in automatico col modello selezionato">🧠 Approfondisci</button>
           <button class="cbtn" id="bFocus" title="Controproba con squadra focalizzata in ricerca profonda: 3 analisti + giudice (con riserve e giudice riserva) verificano a fondo l'ultima risposta">🔍 Focus</button>
           <button class="cbtn" id="bTeam" style="display:none" title="Gestisci questa fusion: approvala (⭐ fidata), rimettila in prova (🧪) o eliminala — le chat legate migrano dove scegli tu">⚙ fusion</button>
-        </div>
-        <div id="pilotbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--mut);padding:6px 2px 2px">
-          <span id="pilot"></span>
-          <span id="livemode" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--mut)">…</span>
         </div>
         <div id="sysrow"><textarea id="sys" rows="1" placeholder="istruzioni di sistema (opzionale) — es. rispondi in italiano, sii brevissimo…"></textarea></div>
         <div id="attrow"></div>
@@ -1064,8 +1060,7 @@ qEl.addEventListener('keydown', e=>{ if (e.key==='Enter' && !e.shiftKey){ e.prev
 sendB.onclick = send;
 stopB.onclick = ()=>{ if (ctrl) ctrl.abort(); };
 // il ■ stop SOSTITUISCE Invia mentre l'hub lavora (richiesta utente 12/10): stesso posto, stessa veste — in ogni chat e con ogni modello, presente e futuro
-function uiBusy(on){ sendB.style.display = on ? 'none' : ''; sendB.disabled = !!on; stopB.style.display = on ? '' : 'none';
-  if(window.chipSpinner) window.chipSpinner(!!on); }
+function uiBusy(on){ sendB.style.display = on ? 'none' : ''; sendB.disabled = !!on; stopB.style.display = on ? '' : 'none'; }
 
 async function send(){
   const c = cur(); if (!c) return;
@@ -2251,28 +2246,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 
 <script>
 
-function aggiornaPilota(){
-  const sel=document.getElementById('model'), box=document.getElementById('pilot'), lm=document.getElementById('livemode');
-  if(!sel||!box) return;
-  const v=String(sel.value||''), nome=v.split('/').slice(1).join('/'), p=PILOTI[nome];
-  if(!p){
-    box.innerHTML='<span style="opacity:.6">modello normale del centralino — identico a oggi</span>';
-  } else {
-    box.innerHTML = p.emo+' <b style="color:#e6edf3">'+nome+'</b> → <b style="color:#58a6ff">'+p.pilota+
-      '</b> <span style="opacity:.75">· riserve: '+p.riserve+'</span><br><span style="opacity:.6">'+p.fa+'</span>';
-  }
-  if(lm){
-    const live=!!window.__LIVE;
-    lm.innerHTML = live ? '🟢 CHAT VERA — risponde OmniRoute sul tuo PC' : '🧪 ANTEPRIMA — risposte dimostrative';
-    lm.style.borderColor = live ? '#3fb95066' : '#30363d';
-    lm.style.color = live ? '#3fb950' : '#8b949e';
-  }
-}
-(function(){
-  const sel=document.getElementById('model');
-  if(sel) sel.addEventListener('change',aggiornaPilota);
-  aggiornaPilota(); setTimeout(aggiornaPilota,400); setTimeout(aggiornaPilota,1500);
-})();
+
 </script>
 
 <script>
@@ -2600,6 +2574,7 @@ function aggiornaPilota(){
     setTimeout(aggiorna, 20000); setTimeout(aggiorna, 70000);
   });
   $('agOmniOn').addEventListener('click', async () => {
+    if(window.bootMotoreAvviato) window.bootMotoreAvviato();
     accendo = 1; nota('Accendo il motore: 10-40 secondi, lo vedi dai pallini che girano.');
     $('agOmniOn').disabled = true;
     $('agOmniDots').style.display = 'inline-flex'; led($('agOmni'), 'si sta accendendo…', 'att');
@@ -2612,6 +2587,7 @@ function aggiornaPilota(){
     esito(r.msg || 'Motore spento.'); aggiorna();
   });
   $('agCerOn').addEventListener('click', async () => {
+    if(window.bootMotoreAvviato) window.bootMotoreAvviato();
     accendoPortiere = 1; $('agCerDots').style.display = 'inline-flex';
     led($('agCer'), 'si sta accendendo…', 'att');
     $('agCerOn').disabled = true;
@@ -2633,6 +2609,7 @@ function aggiornaPilota(){
     setTimeout(async () => { const p = await api('/api/ponte'); nota('Fatto. Ultimo commit: ' + (p.commit || '—')); gira('agPcDots', false); aggiorna(); }, 8000);
   });
   $('agPostinoOn').addEventListener('click', async () => {
+    if(window.bootPostaAvviata) window.bootPostaAvviata();
     $('agPostinoOn').disabled = true; gira('agPosDots', true); nota('Avvio il postino…');
     const r = await api('/api/ponte', {azione:'avvia'});
     esito(r.msg || 'Postino avviato.');
@@ -2645,6 +2622,62 @@ function aggiornaPilota(){
     if(!(r.rossi || []).length && window.pulisciErrori) window.pulisciErrori();   // niente piu' problemi veri: torna la riga base
     gira('agSalDots', false);
   });
+})();
+</script>
+<script>
+// ─── ACCENSIONE, in chiaro accanto al menu 🤖 Agenti ───
+// motore → agenti → posta: ognuno coi suoi 3 pallini mentre parte e la ✓ verde quando è pronto.
+(function(){
+  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
+  const box = document.getElementById('agBoot');
+  if(!box) return;
+  if(!VIVO){ box.textContent = ''; return; }
+
+  const DOTS = '<span class="agDots" style="display:inline-flex;margin:0 0 0 3px"><i></i><i></i><i></i></span>';
+  function pezzo(testo, stato){        // stato: 'ok' | 'att' | 'no'
+    const col = stato === 'ok' ? '#3fb950' : stato === 'att' ? '#d29922' : '#8b949e';
+    const segno = stato === 'ok' ? '✓ ' : (stato === 'att' ? '' : '· ');
+    return '<span style="color:' + col + ';white-space:nowrap">' + segno + testo +
+           (stato === 'att' ? DOTS : '') + '</span>';
+  }
+  let accesoMotore = false;    // il tasto «Avvia» premuto da poco: sto aspettando che risponda
+  window.bootMotoreAvviato = () => { accesoMotore = true; setTimeout(() => { accesoMotore = false; aggiorna(); }, 90000); aggiorna(); };
+  window.bootPostaAvviata  = () => { accesoPosta = true;  setTimeout(() => { accesoPosta = false;  aggiorna(); }, 60000); aggiorna(); };
+  let accesoPosta = false;
+
+  async function aggiorna(){
+    let st = {};
+    try{ st = await (await fetch('/api/stato')).json(); }catch(e){ return; }
+    const motori = st.motori || {};
+    const qualcuno = Object.keys(motori).filter(k => motori[k]);
+    const partendo = !!(st.motore && st.motore.avvio_in_corso) || accesoMotore;
+    const prova = (st.prova_agenti && st.prova_agenti.in_corso) || (window._prova && window._prova.in_corso);
+    const pronti = (window._agenti || []).filter(a => a.pronto).length;
+    const posta = !!st.postino || accesoPosta;
+
+    let h = '';
+    if(qualcuno.length) h += pezzo('motore', 'ok');
+    else if(partendo)   h += pezzo('accendo il motore', 'att');
+    else                h += pezzo('motore spento', 'no');
+
+    if(prova)               h += pezzo('accendo gli agenti', 'att');
+    else if(pronti > 0)     h += pezzo('agenti', 'ok');
+    else                    h += pezzo('agenti', 'no');
+
+    if(posta)                h += pezzo('posta', 'ok');
+    else if(accesoPosta)     h += pezzo('accendo la posta', 'att');
+    else                     h += pezzo('posta', 'no');
+
+    box.innerHTML = h;
+    box.title = 'Accensione: ' + (qualcuno.length ? 'motore acceso (' + qualcuno.join(', ') + ')' : 'motore spento')
+      + ' · agenti ' + (prova ? 'in avvio' : pronti + ' pronti')
+      + ' · posta ' + (posta ? 'accesa' : 'spenta');
+    box.style.cursor = 'pointer';
+    box.onclick = () => { const b = document.getElementById('btnAgenti'); if(b) b.click(); };
+  }
+  window.bootAggiorna = aggiorna;
+  aggiorna();
+  setInterval(() => { if(!document.hidden) aggiorna(); }, 6000);
 })();
 </script>
 <script>
@@ -2694,6 +2727,7 @@ function aggiornaPilota(){
   }
 
   $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', async () => {
+    if(window.bootAggiorna) window.bootAggiorna();
     gira('agAgDots', true);
     $('agAgentiNota').textContent = 'Ricontrollo…';
     await carica();
@@ -2701,6 +2735,7 @@ function aggiornaPilota(){
     $('agAgentiNota').textContent = 'Ricontrollato.';
   });
   $('agInstalla') && $('agInstalla').addEventListener('click', async () => {
+    if(window.bootAggiorna) window.bootAggiorna();
     gira('agAgDots', true);
     $('agAgentiNota').textContent = 'Installo / sistemo i mancanti… (1-5 minuti)';
     const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
@@ -2723,56 +2758,6 @@ function aggiornaPilota(){
 })();
 </script>
 
-<script>
-// ─── chip "🤖 agenti": la verità in una riga (quanti sono PRONTI davvero) ───
-(function(){
-  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
-  const chip = document.getElementById('agChip');
-  if(!chip) return;
-  let spireOn = false;                 // lo stato resta anche quando la chip si ridisegna ogni 15 s
-  window.chipSpinner = function(on){   // definita SEMPRE (anche in anteprima): chi la chiama non deve rompersi
-    spireOn = !!on;
-    const d = document.getElementById('agChipDots');
-    if(d) d.style.display = on ? 'inline-flex' : 'none';
-  };
-  if(!VIVO){ chip.textContent = '🤖 agenti: solo sul PC'; chip.style.opacity = '.6'; return; }
 
-  chip.addEventListener('click', () => {
-    const b = document.getElementById('btnAgenti');
-    if(b) b.click();
-  });
-
-  // pallini di caricamento: si accendono mentre aspetto la risposta del motore
-  function disegna(accesi, pronti, totale){
-    const luce = accesi.length ? '#3fb950' : '#f85149';
-    const quale = accesi.length ? 'Motori accesi: ' + accesi.join(', ') : 'Nessun motore acceso: la chat non può rispondere';
-    const agenti = (totale !== null && totale !== undefined) ? ('🤖 ' + pronti + '/' + totale + ' agenti') : '🤖 agenti';
-    chip.innerHTML =
-      '<span title="' + quale + '" style="color:' + luce + ';font-size:12px;line-height:1">●</span>'
-      + '<span>' + agenti + '</span>'
-      + '<span id="agChipDots" class="agDots" style="display:' + (spireOn ? 'inline-flex' : 'none') + '"><i></i><i></i><i></i></span>';
-    chip.style.borderColor = accesi.length ? '#3fb95066' : '#f8514966';
-    chip.style.color = accesi.length ? '#3fb950' : '#f85149';
-    chip.title = quale + ' · click per la scheda 🤖 Agenti';
-  }
-  async function leggi(){
-    let accesi = [];
-    try{
-      const st = await (await fetch('/api/stato')).json();
-      const motori = st.motori || {};
-      accesi = Object.keys(motori).filter(k => motori[k]);
-    }catch(e){}
-    let pronti = null, totale = null;
-    try{
-      const d = await (await fetch('/api/agenti')).json();
-      const lista = d.agenti || [];
-      totale = lista.length; pronti = lista.filter(a => a.pronto).length;
-    }catch(e){}
-    disegna(accesi, pronti, totale);   // la spia dei motori c'è sempre, anche se gli agenti non si leggono
-  }
-  leggi();
-  setInterval(leggi, 15000);
-})();
-</script>
 </body>
 </html>

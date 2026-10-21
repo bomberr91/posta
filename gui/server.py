@@ -1104,6 +1104,14 @@ def chiavi_conteggio():
     return {"attive": att, "totali": tot}
 
 
+def postino_acceso():
+    """Il postino gira? Una sola domanda al sistema, niente git: si può chiedere spesso."""
+    try:
+        return subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True, timeout=5).returncode == 0
+    except Exception:
+        return False
+
+
 def ponte_stato():
     """Il ponte GitHub: ultimo commit, quante modifiche aperte, se il postino gira."""
     d = {"commit": "", "data": "", "modifiche": 0, "postino": False, "avanti": 0}
@@ -1923,8 +1931,9 @@ def stato():
     lo = lavoro_omni()
     ap = appello_dati()
     motori = {n: porta_viva(p) for n, p in MOTORI_CHAT}   # chi può rispondere ADESSO
+    posta = postino_acceso()                              # il postino (ponte GitHub) è acceso? (pgrep: leggerissimo)
     return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
-            "motori": motori, "motori_nessuno": not any(motori.values()),
+            "motori": motori, "motori_nessuno": not any(motori.values()), "postino": posta,
             "checkin_oggi": os.path.exists(flag_checkin()),
             "checkin_ora": leggi(flag_checkin(), "").strip(),
             "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()),
