@@ -1525,6 +1525,10 @@ def _candidati(modello="auto", quanti=6):
                    or str(x["modello"]).lower().endswith("/" + m)]
         resto = [x for x in tutti if x not in davanti]
         ordine = (davanti or []) + sorted(resto, key=lambda x: x["ms"])
+        if davanti:
+            # BUG trovato il 21/10: se scegli TU un provider, comanda la tua scelta.
+            # Il riordino per «verificato» vale solo per auto / auto:fast / auto:smart.
+            return ordine[:max(1, quanti)]
     # tre livelli, poi l'ordine della strategia: verificato+risponde · risponde · da provare
     def livello(x):
         if x.get("verificato") and (x.get("stato") or "") == "risponde":
