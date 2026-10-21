@@ -392,7 +392,7 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
-  freellmapi:{label:'Motori del PC (Portiere · OmniRoute) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → chiavi dirette. Il centralino FreeLLMAPI, se è acceso, resta come ruota di scorta',warn:'la chiave qui sotto serve SOLO alla ruota di scorta FreeLLMAPI (freellmapi-…): senza, la chat funziona lo stesso',models:[]},
+  freellmapi:{label:'Motori del PC (Portiere · OmniRoute · chiavi nostre) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → router nostro (rotazione, riserve, contabilità). Nessun centralino obbligatorio: le chiavi stanno nel portachiavi del PC',warn:'',models:[]},
   agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto']]},
 };
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
@@ -984,7 +984,7 @@ async function refreshUsageReal(){
     if (cache){ const j = JSON.parse(cache); if (Date.now()-j.t < 30000){ usageReal = j.d; renderUsage(); return; } }
   } catch {}
   try {
-    const r = await fetch('/api/freellmapi/usage', { headers:{ 'x-fh-key': getKey('freellmapi') } });
+    const r = await fetch('/api/contabilita');   // i conti sono NOSTRI: nessun centralino
     if (!r.ok){ usageReal = null; renderUsage(); return; }
     const j = await r.json();
     usageReal = j;
@@ -1024,7 +1024,7 @@ $('usage').onclick = (ev)=>{
       for (const m of tops) items.push({ label:'&nbsp;&nbsp;'+esc(shortName(m.model_id||m.modelId||m.model))+' … <b>'+(m.requests||0)+'</b> req' });
     }
   } else {
-    items.push({ label:'⚠️ Centralino non raggiunto (serve FreeLLMAPI acceso + MCP attivo: Keys → Agent compatibility)' });
+    items.push({ label:'⚠️ Nessuna chiamata registrata oggi dal router dell\'hub' });
   }
   const t = usageAll()[todayKey()] || {};
   const models = [], combos = [];
@@ -1099,11 +1099,7 @@ async function runTurn(){
   const c = cur(); if (!c || ctrl) return;
   const [provider, ...rest] = (sel.value || 'freellmapi/auto').split('/');
   let model = rest.join('/');
-  const key = getKey(provider);
-  if (!key){
-    c.msgs.push({role:'error', content:'Chiave mancante: apri ⚙ e incolla la chiave UNIFICATA del centralino (freellmapi-…, la trovi nella dashboard di FreeLLMAPI).'});
-    saveChats(); renderChat(); drawer.classList.add('open'); renderDrawer(); return;
-  }
+  const key = getKey(provider) || 'locale';   // le chiavi vere stanno nel portachiavi del PC: qui non serve niente
   const sys = $('sys').value.trim();
   const webOn = true; // il web È il motivo dell'hub: sempre ON (decisione utente 10/10)
   const q = msgText([...c.msgs].reverse().find(m=>m.role==='user') || {});
@@ -1378,8 +1374,7 @@ const FOCUS_SYS = 'Sei una SQUADRA DI VERIFICA esperta. Ti vengono date la doman
 const DEEP_A_SYS = 'Rispondi alla contro-domanda che ti viene posta in modo diretto, tecnico e a fondo, tenendo conto della domanda originale e della risposta già data: NON ripetere ciò che è già stato detto, vai OLTRE, aggiungi dettagli pratici e passi concreti. Rispondi in italiano.';
 
 async function callModel(model, sysStack, userContent, comboLabel){
-  const key = getKey('freellmapi');
-  if (!key) throw new Error('chiave del centralino mancante (⚙)');
+  const key = getKey('freellmapi') || 'locale';
   if (model==='vision') model = 'auto';
   else if (model==='docs') model = 'auto:smart';
   let fusionCfg = null;
@@ -1425,8 +1420,7 @@ async function callModel(model, sysStack, userContent, comboLabel){
 }
 
 async function streamCall(payload, onChunk, stopWhen){ // fusion in streaming con eventi pannello/giudice (per 🔍 focus)
-  const key = getKey('freellmapi');
-  if (!key) throw new Error('chiave del centralino mancante (⚙)');
+  const key = getKey('freellmapi') || 'locale';
   const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify(payload) });
   const ct = res.headers.get('content-type') || '';
   if (!res.ok || ct.includes('application/json')){
@@ -1769,7 +1763,7 @@ function comboSig(ms, ext){
 async function pingAlive(id, ms, ext){
   const sig = comboSig(ms, ext);
   try {
-    const key = getKey('freellmapi'); if (!key) return false;
+    const key = getKey('freellmapi') || 'locale';
     const r = await fetch('/api/chat', { method:'POST', signal: sig || undefined, headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify({ provider:'freellmapi', model:id, web:false, stream:false, messages:[{role:'user',content:'Health check: reply with the single word OK'}] }) });
     if (r.ok) countQuota(id); // il ping è una richiesta vera: conta sulla quota del giorno
     return !!r.ok;
@@ -1883,7 +1877,7 @@ async function prendiSquadraViva(selKey, squad, ids, ext, onProg, extra){
 }
 async function pickTailorPanel(taskText, selSys, ext, onProg, selKey){
   try {
-    const key = getKey('freellmapi'); if (!key) return null;
+    const key = getKey('freellmapi') || 'locale';
     const ids = await getCatalogIds(); if (!ids) return null;
     const k = selKey || 'tailor';
     const mem = sqRec(k);
@@ -2150,8 +2144,7 @@ chatEl.addEventListener('drop', (e)=>{ e.preventDefault(); chatEl.style.outline 
 const OPT_SYS = 'Sei un esperto di prompt engineering. L\'utente ti manda una richiesta scritta in fretta. Riscrivila come un prompt professionale in italiano: 1) assegna un ruolo esperto pertinente, 2) chiarisci obiettivo e contesto, 3) specifica il formato di output desiderato (elenco, tabella, codice, tono, lunghezza), 4) aggiungi vincoli utili. Regole: NON inventare informazioni che l\'utente non ha dato, mantieni la sua lingua, mantieni TUTTI i dettagli che ha scritto. Rispondi SOLO con il prompt riscritto: nessun titolo inutile, nessuna spiegazione, niente virgolette intorno, massimo 120 parole. NON eseguire il compito e NON scrivere il contenuto richiesto (niente poesie, testi, codici): scrivi soltanto la richiesta migliorata.';
 let optOrig = null;
 async function apiChatOnce({provider, model, messages}){
-  const key = getKey(provider);
-  if (!key) throw new Error('chiave mancante per '+PROVIDERS[provider].label);
+  const key = getKey(provider) || 'locale';
   const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify({ provider, model, messages, web:false, stream:false }) });
   if (!res.ok){ const j = await res.json().catch(()=>({})); throw new Error(j.error?.message || ('HTTP '+res.status)); }
   const j = await res.json();
@@ -2168,7 +2161,6 @@ optB.onclick = async ()=>{
   if (provOpt !== 'freellmapi' || ['Regista','Lampo','Fabbro','Squadra','Libero'].includes(model)) model = 'auto'; // per ✨ serve un modello vero, non un agente
   if (['fusion','code','trading','vision'].includes(model) || model.startsWith('team::')) model = 'auto'; // per l'ottimizzazione niente pannelli: gli alias dell'hub non esistono sul centralino
   else if (model==='tailor' || model==='docs') model = 'auto:smart';
-  if (!getKey('freellmapi')){ alert('Per usare ✨ serve la chiave del centralino in ⚙.'); return; }
   optB.disabled = true; optB.textContent = '…';
   try {
     const out = await apiChatOnce({ provider:'freellmapi', model, messages:[{role:'system',content:OPT_SYS},{role:'user',content:raw}] });
@@ -2187,11 +2179,10 @@ function renderDrawer(){
     const k = getKey(p);
     h += `<div class="prov"><h3><span class="dot ${k?'ok':''}"></span>${cfg.label}</h3>
       <div class="quota">${cfg.quota}</div>
-      <input type="password" placeholder="chiave unificata del centralino (freellmapi-…)" value="${k.replace(/"/g,'&quot;')}" data-key="${p}">
-      <a href="http://127.0.0.1:31415" target="_blank" rel="noopener">→ pannello del centralino (tray FreeLLMAPI → Open Dashboard, chiave unificata lì)</a>
+      <div class="hint">🔑 le chiavi dei provider stanno nel <b>portachiavi del PC</b> (le legge il Portiere, e il router dell'hub): qui non si incolla niente.</div>
       ${cfg.warn?`<div class="warn">⚠ ${cfg.warn}</div>`:''}
       <input type="text" placeholder="modelli extra (id separati da virgola, dal catalogo del centralino)" value="${(lsGet('fh_custom_'+p)||'').replace(/"/g,'&quot;')}" data-custom="${p}">
-      <div class="hint" style="margin-top:6px">✨ <b>fusion</b>: la domanda va a 3 modelli in parallelo + un giudice che fonde le risposte (e fa parte della squadra: viene verificato pure lui, con le sue riserve).<br>💻 <b>code</b>: come fusion, ma il pannello è di esperti di programmazione.<br>Il pannello a 3 e il giudice si regolano dalla <b>pagina Fusion</b> del centralino.</div>
+      <div class="hint" style="margin-top:6px">✨ <b>fusion</b>: la domanda va a 3 modelli delle NOSTRE chiavi in parallelo + un giudice che fonde le risposte (se il Portiere è spento, il giudice si prova su ognuno dei membri).<br>💻 <b>code</b>: come fusion, ma i modelli sono scelti per la programmazione.<br>Il pannello si compone dal catalogo <code>/api/modelli</code> (le chiavi che rispondono).</div>
     </div>`;
   }
   const teams = getTeams();
@@ -2199,15 +2190,56 @@ function renderDrawer(){
     (teams.length ? teams.map(t=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;margin:4px 0"><b>${t.approved===false?'🧪':'⭐'} ${esc(t.name)}${t.desc?' — '+esc(t.desc):''}</b><span style="color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((t.models||[]).join(' · ').slice(0,80))}</span><button class="abtn" data-delteam="${esc(t.name)}" style="margin-left:auto">🗑</button></div>`).join('')
       : `<div class="hint">Nessuna squadra salvata: usa 🎯 fusion su misura e premi "💾 salva squadra" sotto la risposta.</div>`) + `</div>`;
   h += `<details><summary>🤳 usalo dai tuoi agenti (OpenClaw, Hermes…)</summary>
-    <p class="hint">Endpoint OpenAI-compatibile (dall'hub in locale):<br>
-    <code>POST http://localhost:3000/v1/chat/completions</code><br>
-    model: <code>freellmapi/auto</code> (o <code>freellmapi/fusion</code>) · header <code>x-fh-web: 1</code> per la ricerca web.<br>
-    Serve la chiave: imposta l'env <code>FREELLMAPI_KEY</code> quando avvii (<code>set FREELLMAPI_KEY=freellmapi-… &amp;&amp; node dev.js</code>) oppure manda l'header <code>x-fh-key</code>.</p>
+    <p class="hint">Endpoint OpenAI-compatibile, servito dall'hub stesso:<br>
+    <code>POST http://localhost:20200/v1/chat/completions</code><br>
+    model: <code>auto:smart</code> · <code>auto:fast</code> · <code>fusion</code> · oppure l'id di un provider<br>
+    serve l'intestazione <code>Authorization: Bearer &lt;token&gt;</code> — il token è in <code>hub/agente_token.txt</code> e <b>non va fuori dal PC</b>.<br>
+    <button class="abtn" id="tokCop" style="margin-top:6px">📋 copia indirizzo + token</button></p>
   </details>`;
+  h += `<div class="prov"><h3>🧮 Capacità e conti di oggi</h3>
+    <div id="capBox" class="hint">… leggo i tetti dichiarati e chi ha lavorato</div></div>`;
   drawer.innerHTML = h;
+  riempiCapacita();
   drawer.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{ lsSet('fh_key_'+el.dataset.key, el.value.trim()); el.closest('.prov').querySelector('.dot').className='dot '+(el.value.trim()?'ok':''); refreshModelSelect(); }));
   drawer.querySelectorAll('[data-custom]').forEach(el=>el.addEventListener('input',()=>{ lsSet('fh_custom_'+el.dataset.custom, el.value.trim()); refreshModelSelect(); }));
   drawer.querySelectorAll('[data-delteam]').forEach(el=>el.addEventListener('click',(ev)=>{ ev.stopPropagation(); teamDeleteMenu(ev, el.dataset.delteam); }));
+  const tc = document.getElementById('tokCop');
+  if (tc) tc.onclick = async (ev)=>{ ev.preventDefault(); ev.stopPropagation();
+    try { const j = await (await fetch('/api/agente-token')).json();
+      const riga = 'url = "http://127.0.0.1:20200/v1/chat/completions"\nchiave = "' + j.token + '"\nmodello = "auto:smart"';
+      await navigator.clipboard.writeText(riga); tc.textContent = '✓ copiato';
+    } catch(e){ tc.textContent = '⚠ non riesco a copiare'; } };
+}
+function fmtNum(n){ return (n===null||n===undefined) ? '—' : Number(n).toLocaleString('it-IT'); }
+async function riempiCapacita(){
+  const box = document.getElementById('capBox'); if (!box) return;
+  const riga = `style="display:grid;grid-template-columns:1fr auto auto;gap:2px 10px;font-size:11.5px;font-family:ui-monospace,monospace"`;
+  let out = '';
+  try {
+    const c = await (await fetch('/api/capacita')).json();
+    const u = await (await fetch('/api/contabilita')).json();
+    const uso = {}; for (const r of (u.provider||[])) uso[r.id] = r;
+    const conTetto = (c.righe||[]).filter(r=>r.req_giorno||r.tok_giorno||r.req_mese||r.tok_mese);
+    out += `<div style="margin:6px 0 2px"><b>tetti dichiarati</b> · ${conTetto.length} provider con un tetto scritto ·
+      somma <b>${fmtNum(c.totali?.req_giorno||0)}</b> richieste/gg e <b>${fmtNum(c.totali?.tok_giorno||0)}</b> token/gg
+      <span style="color:var(--mut)">(solo dove il registro lo dichiara)</span></div>`;
+    out += `<div ${riga}>` + conTetto.slice(0,10).map(r=>{
+      const tetto = [r.req_giorno?fmtNum(r.req_giorno)+' req/gg':'', r.tok_giorno?fmtNum(r.tok_giorno)+' tok/gg':'',
+                     r.req_mese?fmtNum(r.req_mese)+' req/mese':'', r.tok_mese?fmtNum(r.tok_mese)+' tok/mese':'', r.nota||'']
+                    .filter(Boolean).join(' · ');
+      return `<span>${esc(r.nome)}</span><span style="color:var(--mut)">${esc(tetto)}</span><span>${fmtNum(r.oggi_chiamate)} oggi</span>`;
+    }).join('') + `</div>`;
+    const fatti = (u.provider||[]);
+    if (fatti.length){
+      out += `<div style="margin:8px 0 2px"><b>oggi hanno lavorato</b> · ${fmtNum(u.totali?.richieste||0)} richieste ·
+        ${fmtNum(u.totali?.errori||0)} errori · ${fmtNum(u.totali?.token||0)} token</div>`;
+      out += `<div ${riga}>` + fatti.slice(0,10).map(r=>`<span>${esc(r.nome)}</span><span style="color:var(--mut)">${r.ok}/${r.chiamate} ok${r.in_pausa?' · in pausa '+r.in_pausa+'s':''}${r.ultimo_errore?' · '+esc(r.ultimo_errore):''}</span><span>${r.ms} ms</span>`).join('') + `</div>`;
+    } else {
+      out += `<div style="margin-top:6px;color:var(--mut)">oggi nessuna chiamata diretta registrata (se hai chattato, ha risposto il Portiere: i suoi conti stanno nel suo file).</div>`;
+    }
+    out += `<div style="margin-top:6px;color:var(--mut)">${esc(c.nota||'')}</div>`;
+  } catch(e){ out = '⚠️ non riesco a leggere i conti: ' + e.message; }
+  box.innerHTML = out;
 }
 $('gear').onclick = ()=>{ drawer.classList.toggle('open'); renderDrawer(); };
 $('gear2').onclick = ()=>{ drawer.classList.add('open'); renderDrawer(); closeSb(); };
@@ -2236,7 +2268,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 (function(){
   try{ var _g=document.getElementById('god'); if(_g) _g.checked=true; lsSet('fh_god','1');
        var _gl=document.getElementById('godl'); if(_gl) _gl.style.display='none'; }catch(e){}
-  try{ lsSet('fh_key_agenti','locale'); if(!getKey('freellmapi')) lsSet('fh_key_freellmapi','freellmapi-anteprima'); }catch(e){}
+  try{ lsSet('fh_key_agenti','locale'); }catch(e){}
 })();
 </script>
 

@@ -1232,66 +1232,292 @@ def appello_lancia(svelto=True):
 _appello_stato = {"in_corso": False, "quando": 0.0}
 
 
-def chiave_provider(pid):
-    """La chiave di un provider, presa dal portachiavi (una sola fonte)."""
+_CHIAVI_CACHE = {}          # pid → (chiave, quando): evita un giro di bash a ogni chiamata
+
+
+def chiave_provider(pid, ttl=600):
+    """La chiave di un provider, presa dal portachiavi (una sola fonte).
+    In memoria per 10 minuti: la rotazione fa più chiamate di fila e il portachiavi non cambia."""
+    c = _CHIAVI_CACHE.get(pid)
+    if c and (time.time() - c[1]) < ttl:
+        return c[0]
     try:
         p = subprocess.run(["bash", os.path.join(POSTA, "appello_chiavi.sh"), "--chiave", pid],
                            capture_output=True, text=True, timeout=20)
-        return (p.stdout or "").strip()
+        k = (p.stdout or "").strip()
+        _CHIAVI_CACHE[pid] = (k, time.time())
+        return k
     except Exception:
         return ""
 
 
-def chat_riserva(messaggi, esclusi=(), fretta=False):
-    """Se OmniRoute è caduto: prima il Portiere (motore nostro, porta 20129) se è acceso,
-    poi le chiavi che hanno risposto all'appello. Ritorna (testo, nome, modello) o None."""
+# ── IL ROUTER NOSTRO ────────────────────────────────────────────────────────
+# Missione 16/10: «la rotazione, il fallback e la contabilità per chiave sono nostri».
+# Tutto quello che segue lavora con le NOSTRE chiavi (portachiavi del PC), zero centralino.
+ROTAZIONE_JSON = os.path.join(QUI, "contabilita.json")
+_ROTA = {"giorno": "", "provider": {}, "storia": {}}
+_ROTA_LOCK = threading.Lock()
+
+# tetti DICHIARATI nel registro (TAPPA0_AUDIT §8): servono alla tabella capacità.
+# match = pezzo di nome/id che riconosce il provider. None = non dichiarato.
+CAPACITA = {
+    "groq":           {"req_giorno": 1000, "tok_giorno": None,         "nota": "audio: 2.000 richieste/gg · 8 h/gg"},
+    "airforce":       {"req_giorno": 1000, "tok_giorno": None,         "nota": "Api.Airforce"},
+    "kilo":           {"req_giorno": 5000, "tok_giorno": None,         "nota": "+200/ora"},
+    "dreamprompting": {"req_giorno": 5000, "tok_giorno": 500000,       "nota": "rolling 24h"},
+    "routeway":       {"req_giorno": 200,  "tok_giorno": None,         "nota": ""},
+    "bazaarlink":     {"req_giorno": 150,  "tok_giorno": None,         "nota": ""},
+    "lucidity":       {"req_giorno": 80,   "tok_giorno": None,         "nota": "Synth"},
+    "septor":         {"req_giorno": 50,   "tok_giorno": None,         "nota": ""},
+    "orcarouter":     {"req_giorno": 50,   "tok_giorno": None,         "nota": ""},
+    "google":         {"req_giorno": 20,   "tok_giorno": None,         "nota": "~20 (Gemini flash)"},
+    "nararouter":     {"req_giorno": None, "tok_giorno": 7000000,      "nota": ""},
+    "xkiro":          {"req_giorno": None, "tok_giorno": 1000000,      "nota": "0,5-1M"},
+    "longcat":        {"req_giorno": None, "tok_giorno": 500000,       "nota": "ora 402"},
+    "blaze":          {"req_giorno": None, "tok_giorno": 200000,       "nota": "BlazeAPI"},
+    "navy":           {"req_giorno": None, "tok_giorno": 150000,       "nota": "in pausa"},
+    "llm7":           {"req_giorno": None, "tok_giorno": 100000,       "nota": ""},
+    "aion":           {"req_giorno": None, "tok_giorno": 20000,        "nota": ""},
+    "mistral":        {"req_giorno": None, "tok_giorno": None,         "nota": "100M token/mese", "tok_mese": 100000000},
+    "electronhub":    {"req_giorno": None, "tok_giorno": None,         "nota": "100k token/mese", "tok_mese": 100000},
+    "cohere":         {"req_giorno": None, "tok_giorno": None,         "nota": "1.000 chiamate/mese", "req_mese": 1000},
+    "inferbase":      {"req_giorno": None, "tok_giorno": None,         "nota": "5.000 richieste/mese + $0,50/gg", "req_mese": 5000},
+    "router9":        {"req_giorno": None, "tok_giorno": None,         "nota": "10.000 crediti/mese", "req_mese": 10000},
+    "auray":          {"req_giorno": None, "tok_giorno": None,         "nota": "50 crediti/mese", "req_mese": 50},
+}
+
+# chi vale di più quando si chiede «auto:smart» (qualità, non velocità)
+PESO = {"mistral": 9, "cohere": 8, "githubmodels": 8, "huggingface": 7, "groq": 7,
+        "agentrouter": 6, "opencode": 6, "pollinationsfree": 5, "pollinations": 4,
+        "aihorde": 3}
+
+
+def _oggi():
+    return time.strftime("%Y-%m-%d")
+
+
+def _rota_carica():
+    """Contabilità del giorno + pause: file locale, solo numeri, MAI chiavi."""
+    global _ROTA
+    try:
+        d = json.loads(open(ROTAZIONE_JSON, encoding="utf-8").read())
+        if isinstance(d, dict) and d.get("giorno") == _oggi():
+            _ROTA = {"giorno": d.get("giorno"), "provider": d.get("provider") or {},
+                     "storia": d.get("storia") or {}}
+            return
+        storia = (d.get("storia") or {}) if isinstance(d, dict) else {}
+    except Exception:
+        storia = {}
+    _ROTA = {"giorno": _oggi(), "provider": {}, "storia": storia}
+
+
+def _rota_salva():
+    try:
+        # 7 giorni di storia, come il contatore dell'hub
+        giorni = sorted(_ROTA["storia"].keys())[-7:]
+        _ROTA["storia"] = {g: _ROTA["storia"][g] for g in giorni}
+        with open(ROTAZIONE_JSON, "w", encoding="utf-8") as f:
+            json.dump(_ROTA, f, ensure_ascii=False, indent=1)
+    except Exception:
+        pass
+
+
+def _voce(pid):
+    _ROTA["provider"].setdefault(pid, {"chiamate": 0, "ok": 0, "errori": 0,
+                                       "tok_in": 0, "tok_out": 0, "ms": 0,
+                                       "ultimo_errore": "", "freddo_fino": 0.0})
+    return _ROTA["provider"][pid]
+
+
+def _freddo(pid):
+    """Quanti secondi mancano prima di poter riprovare (0 = si può)."""
+    v = _ROTA["provider"].get(pid) or {}
+    return max(0, int((v.get("freddo_fino") or 0) - time.time()))
+
+
+def _congela(pid, secondi, motivo=""):
+    v = _voce(pid)
+    v["freddo_fino"] = time.time() + max(5, min(int(secondi or 60), 24 * 3600))
+    if motivo:
+        v["ultimo_errore"] = motivo[:160]
+
+
+def _retry_after(e):
+    """Il back-off ALTRUI, come lo legge FreeLLMAPI (base.ts): Retry-After, «try again in 30s»."""
+    try:
+        ra = e.headers.get("Retry-After") if getattr(e, "headers", None) else None
+        if ra:
+            ra = str(ra).strip()
+            if ra.isdigit():
+                return int(ra)
+            try:
+                import email.utils
+                return max(5, int(email.utils.parsedate_to_datetime(ra).timestamp() - time.time()))
+            except Exception:
+                pass
+    except Exception:
+        pass
+    try:
+        corpo = e.read().decode("utf-8", "replace")[:400]
+    except Exception:
+        corpo = ""
+    m = re.search(r"(?:try again|riprova)\D{0,12}(\d+)\s*(second|sec|s\b|minute|min)", corpo or "", re.I)
+    if m:
+        val = int(m.group(1))
+        return val * 60 if m.group(2).lower().startswith("min") else val
+    return 0
+
+
+def _posta_diretta(m, messaggi, quanti=900, timeout=70):
+    """Una chiamata DIRETTA al provider. Ritorna (testo, errore, secondi_da_aspettare)."""
     import urllib.request
-    # 1) il Portiere, se è acceso: è lui che sceglie capo e sostituti
-    if porta_viva(20129):
-        try:
-            corpo = json.dumps({"model": "auto", "messages": messaggi[-12:],
-                                "max_tokens": 1200}).encode()
-            req = urllib.request.Request("http://127.0.0.1:20129/v1/chat/completions",
-                                         data=corpo, headers={"Content-Type": "application/json"})
-            d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
-            testo = (d.get("choices") or [{}])[0].get("message", {}).get("content", "")
+    pid = m["id"]
+    restanti = _freddo(pid)
+    if restanti:
+        return "", "in pausa ancora %ds" % restanti, restanti
+    k = chiave_provider(pid)
+    if not k:
+        return "", "chiave assente nel portachiavi", 0
+    t0 = time.time()
+    try:
+        req = urllib.request.Request(
+            m["base"].rstrip("/") + "/chat/completions",
+            data=json.dumps({"model": m["modello"], "messages": messaggi[-12:],
+                             "max_tokens": quanti}).encode(),
+            headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
+        d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
+        testo = (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
+        uso = d.get("usage") or {}
+        ms = int((time.time() - t0) * 1000)
+        with _ROTA_LOCK:
+            v = _voce(pid)
+            v["chiamate"] += 1
+            v["ms"] += ms
+            v["tok_in"] += int(uso.get("prompt_tokens") or 0)
+            v["tok_out"] += int(uso.get("completion_tokens") or 0)
             if testo:
-                return testo, "Portiere", d.get("model") or "capo della giornata"
-        except Exception:
-            pass
-    # 2) le chiavi dell'appello, una per una (in fretta: poche e con poco tempo)
-    limite = 2 if fretta else 99
-    attesa = 15 if fretta else 90
-    provate = 0
-    for v in appello_dati().get("voci", []):
-        if v.get("esito") != "risponde" or v.get("id") in esclusi:
-            continue
-        pid = v.get("id")
-        if pid not in APP_BASE:
-            continue
-        if lista_portiere().get(pid, ("", "", "", "", "", "chat"))[5] != "chat":
-            continue                     # immagini/voce/video/db non fanno chat
-        base, modello = APP_BASE[pid]
-        modello = v.get("modello") or modello
-        k = chiave_provider(pid)
-        if not k:
-            continue
+                v["ok"] += 1
+            else:
+                v["errori"] += 1
+                v["ultimo_errore"] = "risposta vuota"
+            _rota_salva()
+        return testo, ("" if testo else "risposta vuota"), 0
+    except Exception as e:
+        ms = int((time.time() - t0) * 1000)
+        attesa = _retry_after(e)
+        motivo = ""
         try:
-            req = urllib.request.Request(
-                base + "/chat/completions",
-                data=json.dumps({"model": modello, "messages": messaggi[-12:],
-                                 "max_tokens": 1200}).encode(),
-                headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
-            d = json.loads(urllib.request.urlopen(req, timeout=attesa).read().decode())
-            testo = (d.get("choices") or [{}])[0].get("message", {}).get("content", "")
-            if testo:
-                return testo, v.get("nome") or pid, modello
+            import urllib.error
+            if isinstance(e, urllib.error.HTTPError):
+                motivo = "HTTP %s" % e.code
+                if e.code in (429, 402, 403, 503):
+                    attesa = attesa or 120
+            else:
+                motivo = e.__class__.__name__
         except Exception:
-            pass
-        provate += 1
-        if provate >= limite:
-            break
+            motivo = str(e)[:120]
+        with _ROTA_LOCK:
+            v = _voce(pid)
+            v["chiamate"] += 1
+            v["errori"] += 1
+            v["ms"] += ms
+            v["ultimo_errore"] = motivo
+            if attesa:
+                _congela(pid, attesa, motivo)
+            _rota_salva()
+        return "", motivo, attesa
+
+
+def _candidati(modello="auto", quanti=6):
+    """Chi provare, in che ordine. «priority» per un modello scelto, «fastest» per auto,
+    «più forte prima» per auto:smart. Le pause della rotazione si rispettano sempre."""
+    tutti = modelli_nostri(True)
+    if not tutti:
+        tutti = modelli_nostri(False)
+    m = str(modello or "auto").lower()
+    if m in ("auto", "auto:fast", "fast", ""):
+        ordine = sorted(tutti, key=lambda x: x["ms"])
+    elif m in ("auto:smart", "smart", "auto:best"):
+        ordine = sorted(tutti, key=lambda x: (-PESO.get(x["id"], 2), x["ms"]))
+    else:
+        # un provider preciso (id) oppure un id di modello: quello davanti, poi il resto
+        davanti = [x for x in tutti if m == x["id"].lower() or m == str(x["modello"]).lower()
+                   or str(x["modello"]).lower().endswith("/" + m)]
+        resto = [x for x in tutti if x not in davanti]
+        ordine = (davanti or []) + sorted(resto, key=lambda x: x["ms"])
+    return ordine[:max(1, quanti)]
+
+
+def chat_diretta(messaggi, modello="auto", quanti=900, quante_prove=4, timeout=70):
+    """Il percorso normale dell'hub: chiavi NOSTRE, uno dopo l'altro finché uno risponde.
+    Ritorna (testo, nome, modello, via) oppure None."""
+    for m in _candidati(modello, quante_prove):
+        testo, errore, attesa = _posta_diretta(m, messaggi, quanti, timeout)
+        if testo:
+            return testo, m["provider"], m["modello"], "diretto " + m["provider"]
     return None
+
+
+def contabilita():
+    """Chi ha lavorato oggi, quanto, e chi è in pausa: numeri onesti, nessuna chiave."""
+    _rota_carica()
+    nomi = {k: v[2] for k, v in lista_portiere().items()}
+    righe = []
+    for pid, v in sorted(_ROTA["provider"].items(), key=lambda kv: -kv[1]["chiamate"]):
+        righe.append({"id": pid, "nome": nomi.get(pid, pid),
+                      "chiamate": v["chiamate"], "ok": v["ok"], "errori": v["errori"],
+                      "token": v["tok_in"] + v["tok_out"],
+                      "ms": (int(v["ms"] / v["chiamate"]) if v["chiamate"] else 0),
+                      "in_pausa": _freddo(pid), "ultimo_errore": v["ultimo_errore"]})
+    tot = {"richieste": sum(r["chiamate"] for r in righe),
+           "successi": sum(r["ok"] for r in righe),
+           "errori": sum(r["errori"] for r in righe),
+           "token": sum(r["token"] for r in righe)}
+    return {"giorno": _ROTA["giorno"], "provider": righe, "totali": tot,
+            "storia": _ROTA["storia"],
+            # forma compatibile col menu 🔢 uso dell'Hub (prima veniva dal centralino)
+            "usage": {"totals": {"requests": tot["richieste"], "errors": tot["errori"],
+                                 "successes": tot["successi"],
+                                 "input_tokens": sum(v["tok_in"] for v in _ROTA["provider"].values()),
+                                 "output_tokens": sum(v["tok_out"] for v in _ROTA["provider"].values())},
+                      "topModels": [{"model_id": r["nome"], "requests": r["chiamate"]}
+                                    for r in righe[:6]]}}
+
+
+def capacita():
+    """TABELLA CAPACITÀ (TAPPA0_AUDIT §8): i tetti DICHIARATI + quello che abbiamo usato oggi."""
+    _rota_carica()
+    righe = []
+    for pid, v in lista_portiere().items():
+        if v[5] != "chat":
+            continue
+        chiave_cap = ""
+        for k in CAPACITA:
+            if k in (pid + " " + v[2]).lower():
+                chiave_cap = k
+                break
+        cap = CAPACITA.get(chiave_cap) or {}
+        uso = _ROTA["provider"].get(pid) or {}
+        righe.append({"id": pid, "nome": v[2],
+                      "req_giorno": cap.get("req_giorno"), "tok_giorno": cap.get("tok_giorno"),
+                      "req_mese": cap.get("req_mese"), "tok_mese": cap.get("tok_mese"),
+                      "nota": cap.get("nota", ""),
+                      "oggi_chiamate": uso.get("chiamate", 0),
+                      "oggi_token": (uso.get("tok_in", 0) + uso.get("tok_out", 0))})
+    righe.sort(key=lambda r: (-(r["req_giorno"] or 0), -(r["tok_giorno"] or 0), r["nome"]))
+    return {"righe": righe,
+            "totali": {"req_giorno": sum(r["req_giorno"] or 0 for r in righe),
+                       "tok_giorno": sum(r["tok_giorno"] or 0 for r in righe)},
+            "nota": "tetti dichiarati nel registro, non misurati: la verità è il primo giro reale"}
+
+
+def chat_riserva(messaggi, esclusi=(), fretta=False):
+    """Quando i motori non rispondono: le NOSTRE chiavi, con rotazione e riserve.
+    Ritorna (testo, nome, modello) oppure None."""
+    r = chat_diretta(messaggi, "auto", 900, 2 if fretta else 5, 20 if fretta else 70)
+    if not r:
+        return None
+    return r[0], r[1], r[2]
 
 
 VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
@@ -1299,13 +1525,14 @@ VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
 # la chiave UNIFICATA del centralino: l'Hub la manda nell'intestazione x-fh-key
 CHIAVE_HUB = {"k": ""}
 
-# I motori della chat, nell'ordine deciso il 16/10: PRIMA I NOSTRI.
+# I motori della chat, nell'ordine deciso il 16/10: SOLO I NOSTRI.
 # «L'hub prende vita propria: i provider si chiamano direttamente, con le NOSTRE chiavi.
-#  FreeLLMAPI non è più un componente obbligatorio — resta una delle voci, come ruota di scorta.»
+#  FreeLLMAPI non è più un componente obbligatorio.»
 # 1) Portiere (:20129) = il nostro cervello, ha tutte le nostre chiavi e sceglie da sé
 # 2) OmniRoute (:20128) = il nostro gateway locale
-# 3) FreeLLMAPI (:31415) = ruota di scorta, solo se è acceso
-MOTORI_CHAT = [("Portiere", 20129), ("OmniRoute", 20128), ("FreeLLMAPI", 31415)]
+# 3) il ROUTER NOSTRO (chat_diretta): chiavi dirette, rotazione, riserve, contabilità
+# FreeLLMAPI (:31415) NON è più nella catena: se è acceso lo si interroga solo a mano.
+MOTORI_CHAT = [("Portiere", 20129), ("OmniRoute", 20128)]
 
 
 # ── RICERCA WEB (senza chiavi): DDG lite → DDG via r.jina.ai → Wikipedia IT ──
@@ -1703,18 +1930,14 @@ def chiave_chat():
 
 
 def chiave_per_motore(nome, chiave_omni):
-    """Ogni motore vuole la SUA chiave: il centralino quella dell'Hub, gli altri quella di OmniRoute."""
-    if nome == "FreeLLMAPI":
-        k = chiave_chat()
-        if k:
-            return k
-        return chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+") or chiave_omni
+    """Ogni motore vuole la SUA chiave (Portiere e OmniRoute: quella del gateway locale)."""
     return chiave_omni
 
 
 def modelli_nostri(solo_pronti=True):
     """I modelli di chat che possiamo chiamare DIRETTAMENTE con le nostre chiavi (missione 16/10:
-    l'hub non dipende dal centralino). Uno per provider, con il modello che l'appello ha visto."""
+    l'hub non dipende dal centralino). Uno per provider, col modello che l'appello ha visto."""
+    _rota_carica()
     voci = {v.get("id"): v for v in appello_dati().get("voci", [])}
     out = []
     for pid, v in lista_portiere().items():
@@ -1723,30 +1946,24 @@ def modelli_nostri(solo_pronti=True):
         voce = voci.get(pid) or {}
         if solo_pronti and voce.get("esito") != "risponde":
             continue
+        if solo_pronti and _freddo(pid):
+            continue                      # in pausa per un 429/402: non lo si tormenta
         base, modello = APP_BASE[pid]
+        uso = _ROTA["provider"].get(pid) or {}
         out.append({"id": pid, "provider": (voce.get("nome") or pid),
                     "modello": (voce.get("modello") or modello), "base": base,
-                    "ms": voce.get("ms") or 99999})
+                    "ms": voce.get("ms") or 99999,
+                    "stato": ("in pausa %ds" % _freddo(pid)) if _freddo(pid) else
+                             (voce.get("esito") or "mai provato"),
+                    "chiamate": uso.get("chiamate", 0), "errori": uso.get("errori", 0)})
     out.sort(key=lambda m: m["ms"])
     return out
 
 
 def chiama_diretto(m, messaggi, quanti=900, timeout=70):
     """Una chiamata DIRETTA al provider, con la nostra chiave: nessun centralino di mezzo."""
-    import urllib.request
-    k = chiave_provider(m["id"])
-    if not k:
-        return ""
-    try:
-        req = urllib.request.Request(
-            m["base"] + "/chat/completions",
-            data=json.dumps({"model": m["modello"], "messages": messaggi[-12:],
-                             "max_tokens": quanti}).encode(),
-            headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
-        d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode())
-        return (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
-    except Exception:
-        return ""
+    testo, _, _ = _posta_diretta(m, messaggi, quanti, timeout)
+    return testo
 
 
 def fusion_nostra(messaggi, quanti=3):
@@ -1825,16 +2042,50 @@ def motori_in_chiaro():
 
 def messaggio_motori():
     stato = motori_in_chiaro()
-    if any("401" in (m or "") or "403" in (m or "") for m in _MOTIVI.values()):
-        fare = ("Cosa fare: il motore è acceso ma ha rifiutato la chiave. Apri ⚙ Chiavi e modelli e "
-                "incolla la chiave UNIFICATA del centralino (freellmapi-…, la trovi nel pannello di FreeLLMAPI).")
-    elif any(_MOTIVI.get(n) for n, _ in MOTORI_CHAT):
+    if any(_MOTIVI.get(n) for n, _ in MOTORI_CHAT):
         fare = ("Cosa fare: il motore è acceso ma non ha risposto. Riprova una volta; se rifà lo stesso, "
                 "apri 🤖 Agenti → 🧠 Motori e premi «Spegni» poi «Avvia».")
     else:
-        fare = ("Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su uno dei motori (nessuno risulta acceso); "
-                "poi rimanda il messaggio.")
+        fare = ("Cosa fare: nessun motore è acceso e le chiavi del portachiavi non hanno risposto. "
+                "Apri 🤖 Agenti → 🧠 Motori e premi «Avvia» (Portiere), oppure in ⚙ premi «Ricontrolla».")
+    if _ROTA["provider"]:
+        perche = "; ".join("%s: %s" % (v, (d.get("ultimo_errore") or "?"))
+                           for v, d in list(_ROTA["provider"].items())[:4] if d.get("errori"))
+        if perche:
+            fare += "\nUltimo motivo dalle chiavi — " + perche
     return "⚠️ La chat non è passata. Stato dei motori:\n" + stato + "\n" + fare
+
+
+# ── ENDPOINT PER GLI AGENTI (OpenAI-compatibile) ────────────────────────────
+# «L'hub offre un endpoint OpenAI-compatibile ad agenti locali» (missione hub).
+# Il token si genera da sé al primo uso e resta sul PC: senza token non si passa.
+TOKEN_AGENTE = os.path.join(QUI, "agente_token.txt")
+
+
+def token_agente():
+    try:
+        t = open(TOKEN_AGENTE, encoding="utf-8").read().strip()
+        if t:
+            return t
+    except Exception:
+        pass
+    import base64
+    t = "hub-" + base64.urlsafe_b64encode(os.urandom(18)).decode().rstrip("=")
+    try:
+        with open(TOKEN_AGENTE, "w", encoding="utf-8") as f:
+            f.write(t)
+        os.chmod(TOKEN_AGENTE, 0o600)
+    except Exception:
+        pass
+    return t
+
+
+def agente_autorizzato(header):
+    """Solo chi ha il token di casa: l'endpoint non è per il mondo."""
+    dato = (header or "").replace("Bearer", "").strip()
+    buono = token_agente()
+    atteso = os.environ.get("HUB_TOKEN") or buono
+    return bool(dato) and dato == atteso
 
 
 def chat_riposta(msgs, modello="auto", fusion=None):
@@ -1872,10 +2123,10 @@ def chat_riposta(msgs, modello="auto", fusion=None):
             except Exception as e:
                 segna_motivo(nome_motore, e)
                 continue
-    # nessun motore acceso: chiavi, ma in fretta (mai minuti di attesa)
-    r = chat_riserva(msgs, fretta=True)
+    # nessun motore acceso: il ROUTER NOSTRO — chiavi dirette, rotazione, riserve, contabilità
+    r = chat_diretta(msgs, modello, 900, 4, 70)
     if r:
-        return r[0], f"{r[2]} · riserva {r[1]}", "riserva " + r[1]
+        return r[0], f"{r[2]} · diretto {r[1]}", "diretto " + r[1]
     testo = messaggio_motori()
     avvisa_agente("I motori", "la chat non è passata: " + "; ".join(_MOTIVI.values() or ["nessun motore acceso"]))
     return testo, "-", "nessuno"
@@ -2123,8 +2374,27 @@ class H(BaseHTTPRequestHandler):
         elif self.path == "/api/modelli":
             # i NOSTRI modelli (chiavi nostre, niente centralino): la tendina e le squadre leggono qui
             lista = modelli_nostri(False)
-            self._json({"data": [{"id": m["id"], "provider": m["provider"], "modello": m["modello"]} for m in lista],
+            self._json({"data": [{"id": m["id"], "provider": m["provider"], "modello": m["modello"],
+                                  "stato": m.get("stato", ""), "chiamate": m.get("chiamate", 0),
+                                  "errori": m.get("errori", 0)} for m in lista],
                         "pronti": len(modelli_nostri(True)), "totali": len(lista)})
+        elif self.path in ("/v1/models", "/v1/models/"):
+            if not agente_autorizzato(self.headers.get("Authorization")):
+                self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
+                return
+            data = [{"id": "auto:smart", "object": "model", "owned_by": "hub"},
+                    {"id": "auto:fast", "object": "model", "owned_by": "hub"},
+                    {"id": "fusion", "object": "model", "owned_by": "hub"}]
+            for m in modelli_nostri(True):
+                data.append({"id": m["id"], "object": "model", "owned_by": m["provider"],
+                             "root": m["modello"]})
+            self._json({"object": "list", "data": data})
+        elif self.path == "/api/agente-token":
+            self._json({"token": token_agente(), "endpoint": "/v1/chat/completions"})
+        elif self.path == "/api/contabilita":
+            self._json(contabilita())
+        elif self.path == "/api/capacita":
+            self._json(capacita())
         elif self.path == "/api/stato":
             self._json(stato())
         elif self.path.startswith("/api/risultato/raw"):
@@ -2198,6 +2468,21 @@ class H(BaseHTTPRequestHandler):
             res = _ricerca_web(q)
             self._json({"q": q, "context": risultati_in_testo(res, q),
                         "results": [{"title": r["title"], "url": r["url"]} for r in res]})
+        elif self.path in ("/v1/chat/completions", "/v1/chat/completions/"):
+            if not agente_autorizzato(self.headers.get("Authorization")):
+                self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
+                return
+            b = self._body()
+            msgs = b.get("messages") or []
+            if not msgs:
+                self._json({"error": {"message": 'manca "messages"'}}, 400)
+                return
+            CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
+            testo, servito, via = chat_riposta(msgs, b.get("model") or "auto:smart")
+            self._json({"id": "chatcmpl-hub-%d" % int(time.time()), "object": "chat.completion",
+                        "created": int(time.time()), "model": servito, "via": via,
+                        "choices": [{"index": 0, "finish_reason": "stop",
+                                     "message": {"role": "assistant", "content": testo}}]})
         elif self.path == "/api/chat":
             CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
             _MOTIVI.clear()

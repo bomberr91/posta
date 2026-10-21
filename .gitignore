@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+gui/contabilita.json
+gui/agente_token.txt
