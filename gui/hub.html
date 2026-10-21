@@ -150,6 +150,9 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 .agNota{font-size:11.5px;color:var(--mut,#8b949e);flex:1}
 #agChiudi{background:none;border:1px solid var(--border,#2a2f3a);color:inherit;border-radius:8px;padding:4px 10px;cursor:pointer}
 #agCorpo{padding:11px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+.agCol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.agLargo{grid-column:1/-1}
+#agListaAgenti{display:none}
 .agCard{border:1px solid var(--border,#2a2f3a);border-radius:12px;padding:9px 10px;background:#0f131a}
 .agCard h3{font-size:11.5px;margin:0 0 6px;letter-spacing:.3px;color:var(--mut,#8b949e);text-transform:uppercase}
 /* i 3 pallini che girano mentre un motore si accende */
@@ -238,7 +241,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <button id="agChiudi" title="Chiudi">✕</button>
     </div>
     <div id="agCorpo">
-
+      <div class="agCol">
       <section class="agCard">
         <h3>💰 Crediti e bonus</h3>
         <div class="agRiga"><span>Saldo</span><b id="agSaldo">—</b></div>
@@ -248,7 +251,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agSegna">✔ a mano</button>
         </div>
       </section>
-
       <section class="agCard">
         <h3>🧠 Motori</h3>
         <div class="agRiga"><span><b>OmniRoute</b><span class="agDots" id="agOmniDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agOmni">—</b></div>
@@ -274,7 +276,24 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="ag3motB" disabled>Avvia</button>
         </div>
       </section>
-
+      </div>
+      <div class="agCol">
+      <section class="agCard" id="agAgentiCard">
+        <h3>🤖 Agenti</h3>
+        <div class="agRiga"><span>pronti</span><b><span id="agAgentiSpia">⚪</span> <span id="agAgentiNum" style="font-size:16px">—</span></b></div>
+        <div id="agListaAgenti" style="display:none"></div>
+        <div class="agBottoni">
+          <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
+        </div>
+        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa il motore (OmniRoute): se è spento, non rispondono.</div>
+      </section>
+      <section class="agCard">
+        <h3>📮 Postino e ponte</h3>
+        <div class="agRiga"><span>Postino (ponte GitHub)</span><b id="agPostino">—</b></div>
+        <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
+        <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
+        <div class="agBottoni"><button class="agB pri" id="agPostinoOn">Avvia</button></div>
+      </section>
       <section class="agCard">
         <h3>🌐 Browser agenti</h3>
         <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
@@ -283,40 +302,17 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB" id="agBrowNas">🙈 Nascondi</button>
         </div>
       </section>
-
-      <section class="agCard">
-        <h3>📮 Postino e ponte</h3>
-        <div class="agRiga"><span>Postino (ponte GitHub)</span><b id="agPostino">—</b></div>
-        <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
-        <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
-        <div class="agBottoni"><button class="agB pri" id="agPostinoOn">Avvia</button></div>
-      </section>
-
-      <section class="agCard">
+      </div>
+      <section class="agCard agLargo">
         <h3>📬 Risultati</h3>
         <select id="agRisLista" style="width:100%"><option>—</option></select>
         <pre id="agRisTesto" style="max-height:150px;overflow:auto;white-space:pre-wrap;font-size:11.5px;margin-top:6px">(scegli un risultato)</pre>
       </section>
-
-      <section class="agCard">
+      <section class="agCard agLargo">
         <h3>🔄 Computer</h3>
         <div class="agBottoni"><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
         <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
       </section>
-
-      <section class="agCard agLargo" id="agAgentiCard">
-        <h3>🤖 Agenti — tutti dentro, tutti pronti</h3>
-        <div class="agRiga"><span>Agenti pronti</span><b id="agAgentiNum" style="font-size:16px">—</b></div>
-        <div id="agListaAgenti" style="display:none"></div>
-        <div class="agBottoni">
-          <button class="agB pri" id="agInstalla">Installa / sistema i mancanti</button>
-          <button class="agB" id="agAgentiDett">📋 Dettagli in basso</button>
-          <button class="agB" id="agProva">🧪 Prova che rispondano</button>
-          <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
-        </div>
-        <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa il motore (OmniRoute): se è spento, non rispondono.</div>
-      </section>
-
       <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
         <div id="agSalute" class="agDim">—</div>
@@ -2572,6 +2568,12 @@ function aggiornaPilota(){
       const pronti = lista.filter(a => a.pronto).length;
       const num = document.getElementById('agAgentiNum');
       if(num) num.textContent = pronti + '/' + lista.length;
+      // spia: verde se ci sono tutti, rossa se ne manca uno
+      const spia = document.getElementById('agAgentiSpia');
+      if(spia){
+        const tutti = lista.length && pronti === lista.length;
+        spia.textContent = lista.length ? (tutti ? '🟢' : '🔴') : '⚪';
+      }
       window._agenti = lista;
       $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
         (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
@@ -2583,38 +2585,22 @@ function aggiornaPilota(){
     }
   }
 
-  const bDett = document.getElementById('agAgentiDett');
-  if(bDett) bDett.addEventListener('click', async () => {
-    const lista = window._agenti || [];
-    const c = document.getElementById('agLog');
-    if(!lista.length){ c.innerHTML = '<pre>premi «Ricontrolla» per leggere gli agenti</pre>'; return; }
-    c.innerHTML = '<pre>' + lista.map(a => (!a.installato ? '✗' : (a.pronto ? '✅' : '⚠')) + ' ' + a.nome +
-      ' · ' + (!a.installato ? 'manca' : (a.pronto ? 'pronto' : (a.nota || 'da sistemare'))) +
-      (a.versione ? ' · ' + a.versione : '')).join('\n') + '\n\n(copia questo e mandalo in chat)</pre>';
-  });
-  $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', carica);
-  $('agProva') && $('agProva').addEventListener('click', async () => {
-    const log = document.getElementById('agLog');
-    if(log) log.innerHTML = '<pre>Sto chiedendo a ogni agente "rispondi OK"... (1-3 minuti)</pre>';
+  $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', async () => {
+    $('agAgentiNota').textContent = 'Ricontrollo…';
+    await carica();
+    // la prova che rispondono gira da sola (all'avvio e qui, se l'ultima è vecchia)
     try{
-      const r = await fetch('/api/agenti/prova', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({svelto:false})});
-      const d = await r.json();
-      if(log) log.innerHTML = '<pre>' + String(d.log || '').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
-    }catch(e){ if(log) log.innerHTML = '<pre>Prova non riuscita: ' + e + '</pre>'; }
+      const s = await (await fetch('/api/stato')).json();
+      const q = (s.prova_agenti || {});
+      const vecchia = !q.quando || (Date.now() / 1000 - q.quando) > 1800;
+      if(vecchia){
+        $('agAgentiNota').textContent = 'Provo che rispondano (1-2 minuti)…';
+        await fetch('/api/agenti/prova', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({svelto:true})});
+        await carica();
+      }
+    }catch(e){}
+    $('agAgentiNota').textContent = 'Ricontrollato.';
   });
-  $('agInstalla') && $('agInstalla').addEventListener('click', async () => {
-    $('agAgentiNota').textContent = 'Installazione in corso… non chiudere questa pagina.';
-    const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
-    const d = await r.json();
-    const log = document.getElementById('agLog');
-    if(log) log.innerHTML = '<pre>' + String(d.msg || '') + '</pre>';
-    const gira = setInterval(async () => {
-      const a = await (await fetch('/api/agenti/andamento')).json();
-      if(log) log.innerHTML = '<pre>' + String(a.log || 'sto lavorando…').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
-      if(!a.in_corso){ clearInterval(gira); carica(); }
-    }, 4000);
-  });
-
   // primo caricamento quando si apre il pannello
   const b = $('btnAgenti');
   if(b) b.addEventListener('click', () => setTimeout(carica, 300));

@@ -251,6 +251,24 @@ _PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
 
 
 _avvio_motore = {"in_corso": False, "dal": 0.0, "tentato": False}
+_prova_agenti = {"quando": 0.0, "in_corso": False, "log": ""}
+
+
+def prova_agenti_avvio():
+    """All'accensione: chiedo a ogni agente «rispondi OK» senza premere niente.
+    Così la scheda Agenti sa subito chi risponde e chi no. Nessun tasto da premere."""
+    if _prova_agenti["in_corso"]:
+        return
+    _prova_agenti.update(in_corso=True)
+    try:
+        p = subprocess.run(["bash", os.path.join(POSTA, "prova_agenti.sh"), "--svelto"],
+                           capture_output=True, text=True, timeout=240, cwd=POSTA)
+        _prova_agenti["log"] = ((p.stdout or "") + (p.stderr or ""))[-4000:]
+    except Exception as e:
+        _prova_agenti["log"] = f"prova non riuscita: {e}"
+    finally:
+        _prova_agenti["quando"] = time.time()
+        _prova_agenti["in_corso"] = False
 
 
 def omniroute_avvia(attesa=25):
@@ -1283,6 +1301,11 @@ def _avvio_automatico():
     except Exception:
         pass
     try:
+        if os.path.exists(os.path.join(POSTA, "prova_agenti.sh")):
+            threading.Thread(target=prova_agenti_avvio, daemon=True).start()
+    except Exception:
+        pass
+    try:
         vecchio = True
         if os.path.exists(APPELLO_JSON):
             vecchio = (time.time() - os.path.getmtime(APPELLO_JSON)) > 3 * 3600
@@ -1351,6 +1374,7 @@ def stato():
             "fusion": fus, "risultati": ultimi, "salute": sl,
             "salute_chiara": salute_chiara(), "avvisi": avvisi_accensione(),
             "contatori": contatori_chiavi(), "openclaw": openclaw_stato(),
+            "prova_agenti": {"quando": _prova_agenti["quando"], "in_corso": _prova_agenti["in_corso"]},
             "ora": time.strftime("%H:%M:%S")}
 
 
@@ -1471,9 +1495,11 @@ class H(BaseHTTPRequestHandler):
         elif self.path == "/api/agenti/prova":
             svelto = bool(self._body().get("svelto"))
             argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])
+            _prova_agenti.update(in_corso=True)
             try:
                 p = subprocess.run(argomenti, capture_output=True, text=True, timeout=300, cwd=POSTA)
                 testo = ((p.stdout or "") + (p.stderr or ""))
+                _prova_agenti.update(quando=time.time(), in_corso=False, log=testo[-4000:])
             except subprocess.TimeoutExpired:
                 testo = "Tempo scaduto: la prova è troppo lunga (usa la versione svelta)."
             self._json({"stato": "ok", "log": testo[-4000:]})
