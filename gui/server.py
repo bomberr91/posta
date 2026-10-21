@@ -1105,9 +1105,13 @@ def chiavi_conteggio():
 
 
 def postino_acceso():
-    """Il postino gira? Una sola domanda al sistema, niente git: si può chiedere spesso."""
+    """Il postino gira? Si guardano tutti i nomi con cui può essere partito (postino.sh, posta-sync.sh):
+    una sola domanda al sistema, niente git, quindi si puo' chiedere spesso."""
     try:
-        return subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True, timeout=5).returncode == 0
+        for nome in ("postino.sh", "posta-sync.sh"):
+            if subprocess.run(["pgrep", "-f", nome], capture_output=True, timeout=5).returncode == 0:
+                return True
+        return False
     except Exception:
         return False
 

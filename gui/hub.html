@@ -2634,16 +2634,24 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
   if(!VIVO){ box.textContent = ''; return; }
 
   const DOTS = '<span class="agDots" style="display:inline-flex;margin:0 0 0 3px"><i></i><i></i><i></i></span>';
-  function pezzo(testo, stato){        // stato: 'ok' | 'att' | 'no'
-    const col = stato === 'ok' ? '#3fb950' : stato === 'att' ? '#d29922' : '#8b949e';
-    const segno = stato === 'ok' ? '✓ ' : (stato === 'att' ? '' : '· ');
-    return '<span style="color:' + col + ';white-space:nowrap">' + segno + testo +
-           (stato === 'att' ? DOTS : '') + '</span>';
+  // ogni pezzo: la frase che dici tu («accendo il motore»), i 3 pallini mentre parte, la ✓ verde quando è pronto
+  function pezzo(frase, stato, spento){   // stato: 'ok' | 'att' | 'no'
+    if(stato === 'ok')
+      return '<span style="color:#3fb950;white-space:nowrap">' + frase + ' <b>✓</b></span>';
+    if(stato === 'att')
+      return '<span style="color:#d29922;white-space:nowrap">' + frase + DOTS + '</span>';
+    return '<span style="color:#8b949e;white-space:nowrap">· ' + spento + '</span>';
   }
   let accesoMotore = false;    // il tasto «Avvia» premuto da poco: sto aspettando che risponda
+  let accesoPosta = false;
   window.bootMotoreAvviato = () => { accesoMotore = true; setTimeout(() => { accesoMotore = false; aggiorna(); }, 90000); aggiorna(); };
   window.bootPostaAvviata  = () => { accesoPosta = true;  setTimeout(() => { accesoPosta = false;  aggiorna(); }, 60000); aggiorna(); };
-  let accesoPosta = false;
+
+  async function leggiPostino(st){
+    // la posta è accesa se il postino gira: prima la risposta nuova del server, poi la vecchia rotta
+    if(st && typeof st.postino === 'boolean') return st.postino;
+    try{ return !!(await (await fetch('/api/ponte')).json()).postino; }catch(e){ return false; }
+  }
 
   async function aggiorna(){
     let st = {};
@@ -2653,25 +2661,17 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
     const partendo = !!(st.motore && st.motore.avvio_in_corso) || accesoMotore;
     const prova = (st.prova_agenti && st.prova_agenti.in_corso) || (window._prova && window._prova.in_corso);
     const pronti = (window._agenti || []).filter(a => a.pronto).length;
-    const posta = !!st.postino || accesoPosta;
+    const posta = (await leggiPostino(st)) || accesoPosta;
 
     let h = '';
-    if(qualcuno.length) h += pezzo('motore', 'ok');
-    else if(partendo)   h += pezzo('accendo il motore', 'att');
-    else                h += pezzo('motore spento', 'no');
-
-    if(prova)               h += pezzo('accendo gli agenti', 'att');
-    else if(pronti > 0)     h += pezzo('agenti', 'ok');
-    else                    h += pezzo('agenti', 'no');
-
-    if(posta)                h += pezzo('posta', 'ok');
-    else if(accesoPosta)     h += pezzo('accendo la posta', 'att');
-    else                     h += pezzo('posta', 'no');
+    h += pezzo('accendo il motore', qualcuno.length ? 'ok' : (partendo ? 'att' : 'no'), 'motore spento');
+    h += pezzo('accendo gli agenti', prova ? 'att' : (pronti > 0 ? 'ok' : 'no'), 'agenti spenti');
+    h += pezzo('accendo la posta', posta ? 'ok' : 'no', 'posta spenta');
 
     box.innerHTML = h;
-    box.title = 'Accensione: ' + (qualcuno.length ? 'motore acceso (' + qualcuno.join(', ') + ')' : 'motore spento')
-      + ' · agenti ' + (prova ? 'in avvio' : pronti + ' pronti')
-      + ' · posta ' + (posta ? 'accesa' : 'spenta');
+    box.title = 'Motore: ' + (qualcuno.length ? 'acceso (' + qualcuno.join(', ') + ')' : (partendo ? 'si sta accendendo' : 'spento'))
+      + ' · Agenti: ' + (prova ? 'si stanno accendendo' : pronti + ' pronti')
+      + ' · Posta: ' + (posta ? 'accesa' : 'spenta (premi Avvia in 📮 Postino e ponte)');
     box.style.cursor = 'pointer';
     box.onclick = () => { const b = document.getElementById('btnAgenti'); if(b) b.click(); };
   }
