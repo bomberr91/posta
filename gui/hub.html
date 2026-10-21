@@ -2703,11 +2703,12 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
     const qualcuno = Object.keys(motori).filter(k => motori[k]);
     const partendo = !!(st.motore && st.motore.avvio_in_corso) || accesoMotore;
     const prova = (st.prova_agenti && st.prova_agenti.in_corso) || (window._prova && window._prova.in_corso);
+    const agentiNoti = Array.isArray(window._agenti);   // se non li ho ancora letti, non è un guasto: sto leggendo
     const pronti = (window._agenti || []).filter(a => a.pronto).length;
     const posta = (await leggiPostino(st)) || accesoPosta;
 
     const statoMotore = qualcuno.length ? 'ok' : (partendo ? 'att' : 'no');
-    const statoAgenti = prova ? 'att' : (pronti > 0 ? 'ok' : 'no');
+    const statoAgenti = (prova || !agentiNoti) ? 'att' : (pronti > 0 ? 'ok' : 'no');
     const statoPosta  = posta ? 'ok' : 'no';
     const stati = [statoMotore, statoAgenti, statoPosta];
 
