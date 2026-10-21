@@ -132,16 +132,20 @@ def inoltra(corpo, percorso="chat/completions", secondi=180):
 
 
 def riserva(payload):
-    """Chiama il primo provider dell'appello che risponde. Ritorna JSON formato OpenAI."""
+    """Manda la richiesta al CAPO; se il capo non risponde, ai sostituti in ordine.
+    Se la richiesta chiede un provider preciso (model = id o nome), parte da quello."""
     messaggi = payload.get("messages") or []
-    for v in appello():
-        if v.get("esito") != "risponde":
-            continue
-        pid = v.get("id")
-        if pid not in BASE:
-            continue
-        if TIPI.get(pid, "chat") != "chat":
-            continue                        # immagini/voce/video/db non fanno chat
+    capo, sostituti = classifica()
+    ordine = ([capo] if capo else []) + sostituti
+    chiesto = (payload.get("model") or "").strip().lower()
+    if chiesto:
+        for v in ordine:
+            if chiesto in (v["id"].lower(), v["nome"].lower()) or chiesto == (v["modello"] or "").lower():
+                ordine.remove(v)
+                ordine.insert(0, v)
+                break
+    for v in ordine:
+        pid = v["id"]
         _, modello = BASE[pid]
         modello = v.get("modello") or modello
         k = chiave(pid)
@@ -180,6 +184,46 @@ def da_confermare():
     except Exception:
         pass
     return fuori
+
+
+# ── IL CAPO DELLA GIORNATA ───────────────────────────────────────────────────
+# Il Portiere non dipende da nessuno: quando lo accendi si fa l'appello da solo
+# (solo i provider di chat), sceglie il CAPO (il primo che ha risposto, il più
+# veloce) e tiene gli altri come SOSTITUTI in ordine di velocità. Il traffico va
+# al capo; se il capo cade, passaggi ai sostituti senza che tu faccia niente.
+SOSTITUTI_MAX = 12
+
+
+def _appello_fresco(ore=2):
+    try:
+        return (time.time() - os.path.getmtime(APPELLO)) < ore * 3600
+    except Exception:
+        return False
+
+
+def appello_da_solo():
+    """Se l'appello è vecchio o non c'è, lo fa il Portiere in proprio."""
+    if _appello_fresco():
+        return
+    subprocess.Popen(["bash", os.path.join(QUI, "appello_chiavi.sh"), "--svelto"],
+                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+
+
+def classifica():
+    """(capo, sostituti): solo provider di chat che hanno risposto, dal più veloce."""
+    buoni = []
+    for v in appello():
+        pid = v.get("id")
+        if v.get("esito") != "risponde" or pid not in BASE:
+            continue
+        if TIPI.get(pid, "chat") != "chat":
+            continue
+        buoni.append({"id": pid, "nome": v.get("nome") or ETICHETTE.get(pid, pid),
+                      "modello": v.get("modello") or BASE[pid][1], "ms": v.get("ms") or 9999})
+    buoni.sort(key=lambda x: x["ms"])
+    if not buoni:
+        return None, []
+    return buoni[0], buoni[1:SOSTITUTI_MAX + 1]
 
 
 def immagini(prompt):
@@ -281,7 +325,9 @@ class H(BaseHTTPRequestHandler):
             self.wfile.write(b)
             return
         if self.path.startswith("/portiere.json"):
+            capo, sost = classifica()
             self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
+                        "capo": capo, "sostituti": len(sost),
                         "risponde": [v["id"] for v in appello()
                                      if v.get("esito") == "risponde" and v.get("id") in BASE],
                         "voci": [{"id": k, "nome": ETICHETTE.get(k, k), "tipo": TIPI.get(k, "chat"),
@@ -290,9 +336,12 @@ class H(BaseHTTPRequestHandler):
             return
         if self.path.startswith("/cervello"):
             su = vivo(MOTORE)
-            self._json({"motore": su, "riserva": [v["id"] for v in appello()
-                                                  if v.get("esito") == "risponde"],
-                        "adesso": "motore" if su else "riserva"})
+            capo, sost = classifica()
+            self._json({"motore": su, "nome": NOME,
+                        "capo": capo, "sostituti": [v["nome"] for v in sost],
+                        "riserva": [v["id"] for v in appello() if v.get("esito") == "risponde"],
+                        "risponde": (len([1 for v in appello() if v.get("esito") == "risponde"])),
+                        "adesso": "motore" if su else (capo["nome"] if capo else "nessuna chiave")})
             return
         if self.path.startswith("/v1/models"):
             d = inoltra(None, "models", secondi=10) if vivo(MOTORE) else None
@@ -359,5 +408,6 @@ if __name__ == "__main__":
     if "--stato" in sys.argv:
         stato()
         sys.exit(0)
-    print("Portiere (motore di riserva) su http://127.0.0.1:%d/v1 — la sua lista: %d provider" % (PORTA, len(BASE)))
+    print("Portiere su http://127.0.0.1:%d/v1 — %d chiavi, capo e sostituti scelti dall'appello" % (PORTA, len(BASE)))
+    appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()

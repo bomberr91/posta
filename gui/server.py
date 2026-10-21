@@ -1638,6 +1638,10 @@ class H(BaseHTTPRequestHandler):
                             "http://127.0.0.1:20129/cervello", timeout=8).read().decode())
                         d["pronti"] = len(info.get("riserva", []))
                         d["motore"] = bool(info.get("motore"))
+                        capo = info.get("capo") or {}
+                        if capo:
+                            d["capo"] = "%s · %s" % (capo.get("nome", ""), capo.get("modello", ""))
+                        d["sostituti"] = len(info.get("sostituti") or [])
                     except Exception:
                         pass
                 self._json(d)
