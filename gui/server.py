@@ -1228,7 +1228,7 @@ def chiave_provider(pid):
         return ""
 
 
-def chat_riserva(messaggi, esclusi=()):
+def chat_riserva(messaggi, esclusi=(), fretta=False):
     """Se OmniRoute è caduto: prima il Portiere (motore nostro, porta 20129) se è acceso,
     poi le chiavi che hanno risposto all'appello. Ritorna (testo, nome, modello) o None."""
     import urllib.request
@@ -1245,7 +1245,10 @@ def chat_riserva(messaggi, esclusi=()):
                 return testo, "Portiere", d.get("model") or "capo della giornata"
         except Exception:
             pass
-    # 2) le chiavi dell'appello, una per una
+    # 2) le chiavi dell'appello, una per una (in fretta: poche e con poco tempo)
+    limite = 2 if fretta else 99
+    attesa = 15 if fretta else 90
+    provate = 0
     for v in appello_dati().get("voci", []):
         if v.get("esito") != "risponde" or v.get("id") in esclusi:
             continue
@@ -1265,16 +1268,107 @@ def chat_riserva(messaggi, esclusi=()):
                 data=json.dumps({"model": modello, "messages": messaggi[-12:],
                                  "max_tokens": 1200}).encode(),
                 headers={"Authorization": "Bearer " + k, "Content-Type": "application/json"})
-            d = json.loads(urllib.request.urlopen(req, timeout=90).read().decode())
+            d = json.loads(urllib.request.urlopen(req, timeout=attesa).read().decode())
             testo = (d.get("choices") or [{}])[0].get("message", {}).get("content", "")
             if testo:
                 return testo, v.get("nome") or pid, modello
         except Exception:
-            continue
+            pass
+        provate += 1
+        if provate >= limite:
+            break
     return None
 
 
 VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
+
+# i motori della chat, in ordine di preferenza (nome, porta)
+MOTORI_CHAT = [("FreeLLMAPI", 31415), ("OmniRoute", 20128), ("Portiere", 20129)]
+
+
+# ── RICERCA WEB (senza chiavi): DDG lite → DDG via r.jina.ai → Wikipedia IT ──
+_UA_WEB = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+           "(KHTML, like Gecko) Chrome/126 Safari/537.36")
+
+
+def _pulisci_html(s):
+    s = re.sub(r"<[^>]*>", "", s or "")
+    for a, b in (("&amp;", "&"), ("&quot;", '"'), ("&#x27;", "'"), ("&lt;", "<"), ("&gt;", ">")):
+        s = s.replace(a, b)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _ddg_url(u):
+    m = re.search(r"uddg=([^&]+)", u or "")
+    if m:
+        try:
+            import urllib.parse
+            return urllib.parse.unquote(m.group(1))
+        except Exception:
+            return u
+    return u
+
+
+def _ricerca_web(q, quanti=6):
+    """Cerca sul web gratis: prima DuckDuckGo lite, poi via r.jina.ai, poi Wikipedia IT."""
+    import urllib.request, urllib.parse
+    risultati = []
+    intest = {"User-Agent": _UA_WEB, "Accept-Language": "it-IT,it;q=0.9,en;q=0.8"}
+    # 1) DuckDuckGo lite, pagina HTML
+    try:
+        u = "https://lite.duckduckgo.com/lite/?q=" + urllib.parse.quote(q)
+        html = urllib.request.urlopen(urllib.request.Request(u, headers=intest), timeout=12).read().decode("utf-8", "replace")
+        link = re.findall(r'<a[^>]*href="([^"]*uddg=[^"]+)"[^>]*>([\s\S]*?)</a>', html, re.I)
+        sni = [_pulisci_html(x) for x in re.findall(r'<td[^>]*class="result-snippet"[^>]*>([\s\S]*?)</td>', html, re.I)]
+        for i, (ind, tit) in enumerate(link[:quanti]):
+            url = _ddg_url(ind)
+            if not url.startswith("http"):
+                continue
+            risultati.append({"title": _pulisci_html(tit), "url": url,
+                              "snippet": sni[i] if i < len(sni) else ""})
+    except Exception:
+        pass
+    # 2) stessa ricerca passando da r.jina.ai (quando DuckDuckGo blocca l'indirizzo)
+    if not risultati:
+        try:
+            u = ("https://r.jina.ai/https://lite.duckduckgo.com/lite/?q=" + urllib.parse.quote(q))
+            md = urllib.request.urlopen(urllib.request.Request(u, headers=intest), timeout=20).read().decode("utf-8", "replace")
+            for m in re.finditer(r"\[([^\]]+)\]\(https://duckduckgo\.com/l/\?uddg=([^)]+)\)", md):
+                url = _ddg_url("uddg=" + m.group(2))
+                if not url.startswith("http") or "duckduckgo.com" in url:
+                    continue
+                dopo = md[m.end():m.end() + 400].strip().split("\n")[0]
+                risultati.append({"title": _pulisci_html(m.group(1)), "url": url,
+                                  "snippet": _pulisci_html(dopo)[:300]})
+                if len(risultati) >= quanti:
+                    break
+        except Exception:
+            pass
+    # 3) Wikipedia in italiano (sempre gratis e affidabile come ultima spiaggia)
+    if not risultati:
+        try:
+            u = ("https://it.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=3&srsearch="
+                 + urllib.parse.quote(q))
+            d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=intest), timeout=10).read().decode())
+            for v in (d.get("query", {}).get("search") or [])[:3]:
+                risultati.append({"title": v.get("title", ""),
+                                  "url": "https://it.wikipedia.org/wiki/" + urllib.parse.quote(v.get("title", "").replace(" ", "_")),
+                                  "snippet": _pulisci_html(v.get("snippet", ""))})
+        except Exception:
+            pass
+    return risultati
+
+
+def risultati_in_testo(risultati, domanda=""):
+    if not risultati:
+        return ""
+    righe = ["RISULTATI DI RICERCA WEB (aggiornati adesso — usali come fonte, citando il sito):"]
+    for i, r in enumerate(risultati, 1):
+        righe.append(f"[{i}] {r['title']} — {r['url']}")
+        if r.get("snippet"):
+            righe.append("    " + r["snippet"])
+    righe.append("Se la domanda riguarda una versione o una data, fidati di questi risultati e indica la data.")
+    return "\n".join(righe)
 
 
 def chat_riposta(msgs, modello="auto", fusion=None):
@@ -1283,34 +1377,80 @@ def chat_riposta(msgs, modello="auto", fusion=None):
     dal Portiere o dalle chiavi dell'appello. Ritorna (testo, modello_servito, via)."""
     import urllib.request
     modello = str(modello or "auto")
-    # i modelli "virtuali" dell'Hub non sono id del motore: si prova il nome e poi «auto»
-    if modello in VIRTUALI or modello.startswith("team::"):
-        candidati = [modello, "auto"]
-    else:
-        candidati = [modello]
+    # la chat non si impunta MAI su un motore spento: si prova solo quello che è acceso
+    vivi = [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]
     key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
-    for m in candidati:
-        corpo = {"model": m, "messages": msgs[-24:], "stream": False}
-        if fusion and m == modello:
-            corpo["fusion"] = fusion          # se il motore non lo conosce, si riprova senza
-        try:
-            req = urllib.request.Request(
-                "http://127.0.0.1:20128/v1/chat/completions",
-                data=json.dumps(corpo).encode(),
-                headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
-            d = json.loads(urllib.request.urlopen(req, timeout=240).read().decode())
-            testo = ((d.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
-            if testo.strip():
-                return testo, d.get("model") or m, "OmniRoute"
-        except Exception:
-            continue
-    # il motore non risponde: il Portiere, poi le chiavi dell'appello
-    r = chat_riserva(msgs)
+    for nome_motore, porta in vivi:
+        # il nome del modello può non piacere al motore: si riprova con «auto» (e senza squadra)
+        candidati = [modello] if modello == "auto" else [modello, "auto"]
+        for m in candidati:
+            corpo = {"model": m, "messages": msgs[-24:], "stream": False}
+            if fusion and m == modello:
+                corpo["fusion"] = fusion
+            try:
+                req = urllib.request.Request(
+                    "http://127.0.0.1:%d/v1/chat/completions" % porta,
+                    data=json.dumps(corpo).encode(),
+                    headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+                d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
+                testo = ((d.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+                if testo.strip():
+                    return testo, d.get("model") or m, nome_motore
+            except Exception:
+                continue
+    # nessun motore acceso: chiavi, ma in fretta (mai minuti di attesa)
+    r = chat_riserva(msgs, fretta=True)
     if r:
         return r[0], f"{r[2]} · riserva {r[1]}", "riserva " + r[1]
-    avvisa_agente("Il motore", "la chat non è passata: né OmniRoute né le chiavi hanno risposto")
-    return ("⚠️ Il motore non risponde e nessuna chiave di riserva ha risposto. "
-            "Apri 🤖 Agenti → 🗣️ Appello e guarda chi è rosso."), "-", "nessuno"
+    spenti = ", ".join(n for n, _ in MOTORI_CHAT)
+    avvisa_agente("I motori", "la chat non è passata: nessun motore acceso e nessuna chiave ha risposto")
+    return ("⚠️ Nessun motore acceso (" + spenti + ") e nessuna chiave ha risposto.\n"
+            "Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su uno dei motori; poi rimanda il messaggio."), "-", "nessuno"
+
+
+def chat_stream(msgs, modello, fusion, scrivi):
+    """Manda avanti la risposta pezzo per pezzo (come fa il centralino), appena arriva.
+    Ritorna (testo, modello_servito, motore) oppure None se nessun motore l'ha presa."""
+    import urllib.request
+    modello = str(modello or "auto")
+    key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
+    for nome_motore, porta in [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]:
+        for m in ([modello] if modello == "auto" else [modello, "auto"]):
+            corpo = {"model": m, "messages": msgs[-24:], "stream": True}
+            if fusion and m == modello:
+                corpo["fusion"] = fusion
+            testo, servito, iniziato = "", m, False
+            try:
+                req = urllib.request.Request(
+                    "http://127.0.0.1:%d/v1/chat/completions" % porta,
+                    data=json.dumps(corpo).encode(),
+                    headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    for riga in r:
+                        riga = riga.decode("utf-8", "replace").rstrip("\n")
+                        if not riga.startswith("data:"):
+                            continue
+                        dato = riga[5:].strip()
+                        if dato == "[DONE]":
+                            break
+                        try:
+                            j = json.loads(dato)
+                        except Exception:
+                            continue
+                        if j.get("model"):
+                            servito = j["model"]
+                        pezzo = ((j.get("choices") or [{}])[0].get("delta") or {}).get("content") or ""
+                        if pezzo:
+                            testo += pezzo
+                        if pezzo or j.get("_fusion"):
+                            if not iniziato:
+                                iniziato = True
+                            scrivi(riga)
+            except Exception:
+                pass
+            if testo.strip():
+                return testo, servito, nome_motore
+    return None
 
 
 def omni_spegni_porta(porta):
@@ -1558,6 +1698,14 @@ class H(BaseHTTPRequestHandler):
             subprocess.Popen(["bash", os.path.join(POSTA, "squadra.sh"), missione, out],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self._json({"stato": "avviata", "out": os.path.basename(out)})
+        elif self.path == "/api/search":
+            q = str((self._body().get("q") or "")).strip()[:400]
+            if not q:
+                self._json({"error": {"message": 'manca "q"'}}, 400)
+                return
+            res = _ricerca_web(q)
+            self._json({"q": q, "context": risultati_in_testo(res, q),
+                        "results": [{"title": r["title"], "url": r["url"]} for r in res]})
         elif self.path == "/api/chat":
             b = self._body()
             msgs = b.get("messages") or b.get("messaggi") or []
@@ -1565,26 +1713,39 @@ class H(BaseHTTPRequestHandler):
                 self._json({"err": "vuoto"}, 400)
                 return
             fusione = b.get("fusion") if isinstance(b.get("fusion"), dict) else None
-            testo, servito, via = chat_riposta(msgs, b.get("model") or "auto", fusione)
             if b.get("stream"):
-                # a pezzi, come li aspetta l'Hub (così la risposta si scrive a mano a mano)
+                # streaming vero: i pezzi arrivano appena il motore li produce (niente attesa muta)
+                avviato = {"fatto": False}
+
+                def _scrivi(riga):
+                    if not avviato["fatto"]:
+                        avviato["fatto"] = True
+                    self.wfile.write((riga + "\n\n").encode())
+                    self.wfile.flush()
+
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream; charset=utf-8")
                 self.send_header("Cache-Control", "no-cache")
-                self.send_header("X-Routed-Via", via)
                 self.end_headers()
                 try:
-                    for i in range(0, len(testo), 120):
-                        pezzo = json.dumps({"model": servito, "choices": [{"delta": {"content": testo[i:i + 120]}}]})
-                        self.wfile.write(("data: " + pezzo + "\n\n").encode())
-                        self.wfile.flush()
+                    fatto = chat_stream(msgs, b.get("model") or "auto", fusione, _scrivi)
+                    if not fatto:                     # nessun motore acceso: chiavi, in fretta
+                        r2 = chat_riserva(msgs, fretta=True)
+                        testo2 = r2[0] if r2 else ("⚠️ Nessun motore acceso e nessuna chiave ha risposto.\n"
+                                                   "Cosa fare: apri 🤖 Agenti → 🧠 Motori e premi «Avvia» su un motore, poi rimanda.")
+                        for i in range(0, len(testo2), 120):
+                            pezzo = json.dumps({"model": (r2[2] if r2 else "-"),
+                                                "choices": [{"delta": {"content": testo2[i:i + 120]}}]})
+                            self.wfile.write(("data: " + pezzo + "\n\n").encode())
+                            self.wfile.flush()
                     self.wfile.write(b"data: [DONE]\n\n")
                 except Exception:
                     pass
-            else:
-                self._json({"testo": testo, "modello": servito, "via": via, "model": servito,
-                            "choices": [{"index": 0, "finish_reason": "stop",
-                                         "message": {"role": "assistant", "content": testo}}]})
+                return
+            testo, servito, via = chat_riposta(msgs, b.get("model") or "auto", fusione)
+            self._json({"testo": testo, "modello": servito, "via": via, "model": servito,
+                        "choices": [{"index": 0, "finish_reason": "stop",
+                                     "message": {"role": "assistant", "content": testo}}]})
         elif self.path == "/api/agenti/prova":
             svelto = bool(self._body().get("svelto"))
             argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])

@@ -720,7 +720,7 @@ function renderChat(){
           + '<div style="font-size:12px;color:#7ee787;font-weight:700;margin-bottom:4px">📝 In breve — le cose importanti</div>' + mdLite(m.sunto) + '</div>'
           + '<details><summary style="cursor:pointer;color:var(--mut);font-size:12px">La risposta completa (' + String(m.content).length + ' caratteri)</summary>' + mdLite(m.content) + '</details>'
         : mdLite(m.content);
-      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?')))))}${m.web?' 🌐':''}${m.god?' 😈':''}</div>` + corpo
+      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?((PILOTI[m.agente]?PILOTI[m.agente].emo+' ':'')+esc(m.agente)):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
         + (m.fusion?fusionMeta(m.fusion, m.derived==='focus'?'🔍 <b>focus</b>':(m.trading?'📈 <b>trading</b>':(m.tailor?'🎯 <b>new fusion</b>':(m.sel&&String(m.sel).startsWith('team::')?'⭐ <b>'+esc(String(m.sel).slice(6))+'</b>':'✨ <b>fusion</b>')))):'')
         + (m.via && m.via!==m.model?`<div class="mmeta">instradato da: <b>${esc(m.via)}</b></div>`:'')
         + `<div class="acts"><button class="abtn" data-act="copy" data-i="${i}">📋 Copia</button>${i===lastA&&!m.derived?'<button class="abtn" data-act="regen">🔄 Rigenera</button>':''}${(m.sources&&m.sources.length)?'<button class="abtn" data-src="'+i+'">🔍 fonti</button>':''}${m.tailor&&m.team?'<button class="abtn" data-act="saveteam" data-i="'+i+'">💾 salva squadra</button>':''}</div>`
@@ -1099,7 +1099,16 @@ async function runTurn(){
 
   // 🖼️ visione / 📑 documenti: alias — se ci sono immagini il router del centralino
   // sceglie da solo un modello vision; i documenti vogliono ragionamento
-  let dispModel = model;
+  // 🤖 AGENTI: il nome dell'agente NON è un modello — ognuno ha il suo pilota vero.
+  // Senza questa mappa il motore riceveva «Libero» come nome di modello e la chat girava a vuoto.
+  let nomeAgente = '';
+  if (provider === 'agenti'){
+    nomeAgente = model;
+    const PIL = { 'Regista':'auto:smart', 'Lampo':'auto:fast', 'Fabbro':'qwen3-coder',
+                  'Squadra':'fusion', 'Libero':'command-r' };
+    model = PIL[nomeAgente] || 'auto';
+  }
+  let dispModel = nomeAgente || model;
   if (model==='vision') model = 'auto';
   else if (model==='docs') model = 'auto:smart';
   if (model==='tailor' && c.team && getTeams().some(t=>t.name===c.team)){ model = 'team::'+c.team; dispModel = model; } // chat legata alla sua squadra ⭐
@@ -1110,7 +1119,8 @@ async function runTurn(){
   ctrl = new AbortController();
   const sig = ctrl.signal;
   const nomeTeam = model.startsWith('team::') ? model.slice(6) : '';
-  const preLab = model==='trading' ? '📈 trading' : model==='code' ? '💻 fusion code' : model==='tailor' ? '🎯 new fusion' : nomeTeam ? '⭐ '+esc(nomeTeam) : model==='fusion' ? '✨ fusion' : esc(model);
+  const preLab = nomeAgente ? (PILOTI[nomeAgente] ? PILOTI[nomeAgente].emo+' '+nomeAgente : nomeAgente)
+    : model==='trading' ? '📈 trading' : model==='code' ? '💻 fusion code' : model==='tailor' ? '🎯 new fusion' : nomeTeam ? '⭐ '+esc(nomeTeam) : model==='fusion' ? '✨ fusion' : esc(model);
   const live = document.createElement('div'); live.className = 'msg assistant';
   live.innerHTML = '<div class="who">'+preLab+'</div>'+dotsHTML();
   msgsEl.appendChild(live); msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -1138,7 +1148,8 @@ async function runTurn(){
 
   // fusion / code / trading → modello virtuale "fusion" del centralino
   let fusionCfg = null;
-  let autoGod = false;
+  let tradingAuto = false;                                // 📈 trading: istruzioni da analista
+  let godAuto = !!nomeAgente && nomeAgente==='Libero';    // 😈 Libero: senza filtri (ma NON è trading)
   let whoFusion = '✨ fusion';
   let tailorTeam = null;
   let retryBuild = null; // pannello TUTTO a terra? ricostruisce la squadra (riserve dentro) e si riprova UNA volta
@@ -1150,7 +1161,7 @@ async function runTurn(){
     if (gj) fusionCfg.judge = gj;
     prendiSquadra({ models: panel || [], judge: gj });
     retryBuild = async ()=>{ const rp = await getFusionPanel(isTr ? SQUADRA_TRADING : SQUADRA_CODE, isTr ? 'trading' : 'code', true, sig); const gj2 = await prendiGiudice(isTr ? 'trading' : 'code', isTr ? GIUDICE_TRADING : GIUDICE_CODE, (await getCatalogIds()) || [], sig); return { models: rp || [], judge: gj2 }; }; // i caduti sono segnati: la coda dà i sostituti, giudice riscelto
-    if (isTr) autoGod = true; // il trading NASCE senza filtri: analista diretto, niente prediche
+    if (isTr){ tradingAuto = true; godAuto = true; } // il trading NASCE senza filtri: analista diretto, niente prediche
     model = 'fusion';
   } else if (model==='tailor'){
     // 🎯 su misura: una chiamata veloce guarda compito + catalogo e compone la squadra
@@ -1186,8 +1197,8 @@ async function runTurn(){
   // ── ricerca web: la fa il server (Node, IP di casa) e la inietta come contesto
   const god = $('god').checked; // in trading il toggle si è acceso da solo (syncGodUI); se l'utente lo spegne, vince lui
   let outMsgs = sys ? [{role:'system',content:sys}, ...c.msgs] : [...c.msgs];
-  if (god) outMsgs = [{role:'system',content:GOD_SYS}, ...outMsgs];
-  if (autoGod) outMsgs = [{role:'system',content:TRADING_SYS}, ...outMsgs];
+  if (god || godAuto) outMsgs = [{role:'system',content:GOD_SYS}, ...outMsgs];
+  if (tradingAuto) outMsgs = [{role:'system',content:TRADING_SYS}, ...outMsgs];
   let turnSources = null;
   if (webOn && q){
     const ctx = await serverSearch(q, sig);
@@ -1199,7 +1210,7 @@ async function runTurn(){
   const fusionEv = fusionCfg ? { panel:[], judge:null } : null;
   let acc = '', servedModel = '', via = '', draft = '';
   const updateLive = ()=>{
-    let h = `<div class="who">${fusionEv?(autoGod?'📈 trading':whoFusion):esc(dispModel)}${webOn&&turnSources?' 🌐':''}</div>`;
+    let h = `<div class="who">${fusionEv?(tradingAuto?'📈 trading':whoFusion):esc(dispModel)}${webOn&&turnSources?' 🌐':''}</div>`;
     // chip = SOLO i modelli reali della partita, max POSTI (3) + giudice (niente doppioni né extra: richiesta utente 12/10 sera);
     // se il centralino non manda il suo pannello, si mostrano i verificati così il riepilogo di fine risposta c'è sempre
     const chips = fusionEv ? { panel: fusionEv.panel.length ? panelMostra(fusionEv.panel, POSTI) : panelMostra(prePanel.map(m=>({ model:m, status:'ok' })), POSTI), judge: fusionEv.judge || preJudge } : null;
@@ -1306,10 +1317,10 @@ async function runTurn(){
       saveChats(); renderChat();
       return;
     }
-    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: !!autoGod, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
+    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
     if(fusionEv) suntoFusion(c.msgs[c.msgs.length-1]);   // squadra: se la risposta e' lunga, il sunto si prepara da solo
   } catch (e) {
-    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: !!autoGod, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
+    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
     else { c.msgs.push({ role:'error', content: e.message }); }
   } finally {
     ctrl = null; uiBusy(false); // ■ stop → torna Invia al suo posto
@@ -2126,7 +2137,9 @@ optB.onclick = async ()=>{
   const raw = qEl.value.trim();
   if (!raw){ optB.title = 'Scrivi prima qualcosa, poi premi ✨'; return; }
   if (ctrl) return;
+  const provOpt = (sel.value||'freellmapi/auto').split('/')[0];
   let model = (sel.value||'freellmapi/auto').split('/').slice(1).join('/');
+  if (provOpt !== 'freellmapi' || ['Regista','Lampo','Fabbro','Squadra','Libero'].includes(model)) model = 'auto'; // per ✨ serve un modello vero, non un agente
   if (['fusion','code','trading','vision'].includes(model) || model.startsWith('team::')) model = 'auto'; // per l'ottimizzazione niente pannelli: gli alias dell'hub non esistono sul centralino
   else if (model==='tailor' || model==='docs') model = 'auto:smart';
   if (!getKey('freellmapi')){ alert('Per usare ✨ serve la chiave del centralino in ⚙.'); return; }
