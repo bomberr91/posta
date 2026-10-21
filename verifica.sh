@@ -9,10 +9,12 @@ export NVM_DIR="$HOME/.nvm"
 V22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
 export PATH="$V22BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$PATH"
 
-ROSSI=0; GIALLI=0; T0=$(date +%s)
+ROSSI=0; GIALLI=0; NOTE=0; T0=$(date +%s)
 ok(){   printf "  \033[32m✓\033[0m %-26s %s\n" "$1" "$2"; }
 giu(){  printf "  \033[31m✗\033[0m %-26s %s\n" "$1" "$2"; ROSSI=$((ROSSI+1)); }
 att(){  printf "  \033[33m·\033[0m %-26s %s\n" "$1" "$2"; GIALLI=$((GIALLI+1)); }
+# nota: stato normale, NON è un problema (es. motore spento perché lo accendi tu)
+nota(){ printf "  \033[90m◦\033[0m %-26s %s\n" "$1" "$2"; NOTE=$((NOTE+1)); }
 c_e(){  command -v "$1" >/dev/null 2>&1 && return 0
         local c; for c in "$HOME/.nvm/versions/node/"*/bin/"$1" "$HOME/.local/bin/$1" \
           "$HOME/.opencode/bin/$1" "$HOME/.hermes/hermes-agent/bin/$1" \
@@ -31,7 +33,7 @@ if [ -d "$HOME/posta/.git" ]; then
   cd "$HOME/posta" || exit 1
   H=$(git rev-parse --short HEAD 2>/dev/null || echo "?")
   D=$(git status --porcelain 2>/dev/null | wc -l)
-  if [ "$D" -eq 0 ]; then ok "Ponte GitHub" "$H · pulito"; else att "Ponte GitHub" "$H · $D file modificati"; fi
+  if [ "$D" -eq 0 ]; then ok "Ponte GitHub" "$H · pulito"; else nota "Ponte GitHub" "$H · $D file in attesa di viaggio"; fi
 else
   giu "Ponte GitHub" "~/posta non è un repo git"
 fi
@@ -50,7 +52,6 @@ for a in opencode goose interpreter hermes gemini; do
   if c_e "$a"; then A_ok="$A_ok $a"; else A_manca="$A_manca $a"; fi
 done
 [ -n "$A_ok" ] && ok "Agenti presenti" "$A_ok"
-[ -n "$A_manca" ] && att "Agenti facoltativi" "non installati:$A_manca (li aggiunge il [8], non bloccano niente)"
 # openclaw merita un rigo suo (può stare in Ubuntu, con Bun, o su Windows)
 QUI=$(cd "$(dirname "$0")" && pwd)
 OC_TIPO=$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null); OC_TIPO=${OC_TIPO:-no}
@@ -78,28 +79,34 @@ if [ -n "$WINNODE" ]; then
   if [ -n "$WV" ]; then ok "Node Windows (Hub)" "$WV · serve al Free LLM Hub, si lascia stare"
   else att "Node Windows (Hub)" "trovato ma non risponde"; fi
 fi
+# Node v24 e successivi: non sono un problema — si usano dove servono.
 if [ -n "$N24" ]; then
   V24BIN=$(ls "$HOME/.nvm/versions/node/$N24/bin/node" 2>/dev/null)
-  if "$V24BIN" -v >/dev/null 2>&1; then ok "Node $N24" "$("$V24BIN" -v) · gira"
-  else att "Node $N24 (non usato)" "su WSL1 non parte (bug node#63735) — non serve: OpenClaw gira su Windows"; fi
+  if "$V24BIN" -v >/dev/null 2>&1; then ok "Node $N24" "$("$V24BIN" -v) · gira"; fi
 fi
 
 # ── 5 · MOTORI E PORTE
-[ "$(porta 20128)" = "up" ] && ok "OmniRoute (:20128)" "🟢 acceso" || att "OmniRoute (:20128)" "spento (si accende col [9])"
-[ "$(porta 20200)" = "up" ] && ok "GUI Centrale (:20200)" "🟢 aperta" || att "GUI Centrale (:20200)" "chiusa (si apre col [g])"
-[ "$(porta 9222)"  = "up" ] && ok "Browser agenti (:9222)" "🟢 acceso" || att "Browser agenti (:9222)" "spento (serve per il check-in)"
+[ "$(porta 20128)" = "up" ] && ok "OmniRoute (:20128)" "🟢 acceso" || nota "OmniRoute (:20128)" "spento (si accende col [9], non è un guasto)"
+[ "$(porta 20200)" = "up" ] && ok "GUI Centrale (:20200)" "🟢 aperta" || nota "GUI Centrale (:20200)" "chiusa (si apre col [g], non è un guasto)"
+[ "$(porta 9222)"  = "up" ] && ok "Browser agenti (:9222)" "🟢 acceso" || nota "Browser agenti (:9222)" "spento (si accende da solo per il check-in)"
 
 # ── 6 · CHECK-IN AGENTROUTER
 D=$(date +%F); HH=$((10#$(date +%H%M)))
+MIN=$((HH % 100)); ORA_MIN=$((HH / 100 * 60 + MIN))
 if [ -f "$HOME/.ar_checkin_$D" ]; then ok "Bonus AgentRouter" "fatto oggi alle $(cat "$HOME/.ar_checkin_$D" 2>/dev/null)"
-elif [ "$HH" -ge 1805 ]; then att "Bonus AgentRouter" "finestra aperta e non ancora riscosso"
-else att "Bonus AgentRouter" "si riscatta dalle 18:05 (ora $(date +%H:%M))"; fi
+elif [ "$ORA_MIN" -lt 1085 ]; then ok "Bonus AgentRouter" "si riscatta da solo alle 18:05 (ora $(date +%H:%M))"
+elif [ "$ORA_MIN" -lt 1110 ]; then ok "Bonus AgentRouter" "finestra aperta: il riscatto è in corso"
+else att "Bonus AgentRouter" "la finestra delle 18:05 è passata e non risulta riscosso: premi «Riscatta ora»"; fi
 if [ -f "$HOME/.ar_login_manuale" ]; then
   RIGA_LOGIN=$(cat "$HOME/.ar_login_manuale" 2>/dev/null | cut -c1-60)
   if [ -f "$HOME/.ar_checkin_$D" ]; then
-    att "Login AgentRouter" "da rifare per domani ($RIGA_LOGIN) — oggi il bonus è già preso"
+    : # già riscosso oggi: nessun problema, il login si rinnova da solo
+  elif [ "$ORA_MIN" -lt 1085 ]; then
+    ok "Login AgentRouter" "tenuto nel browser agenti (cookie) · il riscatto parte da solo alle 18:05"
+  elif [ "$ORA_MIN" -lt 1110 ]; then
+    ok "Login AgentRouter" "cookie nel browser agenti · riscatto in corso"
   else
-    giu "Login AgentRouter" "serve un login a mano: $RIGA_LOGIN"
+    giu "Login AgentRouter" "stasera il riscatto non è passato: login a mano nel BROWSER_AGENTI ($RIGA_LOGIN)"
   fi
 fi
 T=$(cat "$HOME/.ar_checkin_try_$D" 2>/dev/null | tr -cd "0-9"); T=${T:-0}

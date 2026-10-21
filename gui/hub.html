@@ -270,7 +270,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
       <section class="agCard">
         <h3>📂 Risultati Fusion</h3>
-        <div id="agRisLista" class="agDim" style="font-size:12px">—</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select id="agRisLista" style="flex:1;min-width:0;background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:5px 6px;font-size:12.5px"></select>
+          <button class="agB" id="agRisApri" style="padding:5px 9px">Apri ↗</button>
+        </div>
       </section>
       <section class="agCard">
         <h3>🔄 Computer</h3>
@@ -323,10 +326,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
           <button class="agB pri" id="agRicontrolla">Ricontrolla</button>
           <button class="agB" id="agSalDett">📋 Dettagli</button>
         </div>
-      </section>
-      <section class="agCard agLargo" id="agLogSezione" style="display:none">
-        <h3>📋 Errori e messaggi</h3>
-        <div id="agLog" style="max-height:220px;overflow:auto"></div>
+        <div id="agLogSezione" style="display:none;margin-top:10px;border-top:1px solid #ffffff14;padding-top:8px">
+          <div class="agDim" style="margin-bottom:4px">📋 Messaggi ed errori</div>
+          <div id="agLog" style="max-height:200px;overflow:auto"></div>
+        </div>
       </section>
     </div>
   </div>
@@ -2449,8 +2452,15 @@ function aggiornaPilota(){
         '<div style="color:#8b949e">→ ' + v.chefare + '</div></div>').join('');
       const box = $('agSaluteBox');
       if(box){
+        box.innerHTML = '';
         if(voci.length){ box.style.display = 'block'; box.innerHTML = '<div class="agDim" style="line-height:1.5">' + det + '</div>'; }
         else { box.style.display = 'none'; }
+      }
+      const note = (scS.note || []);
+      if(box && note.length){
+        box.style.display = 'block';
+        box.innerHTML += '<div class="agDim" style="margin-top:6px;font-size:11.5px;line-height:1.5">' +
+          note.map(n => '◦ ' + n).join('<br>') + '</div>';
       }
       $('agSalute').innerHTML = nr
         ? '<span class="no">🔴 ' + nr + (nr === 1 ? ' problema' : ' problemi') + '</span>' +
@@ -2470,11 +2480,12 @@ function aggiornaPilota(){
       // risultati
       const L = $('agRisLista');
       const rr = (s.risultati || []);
+      const scelto = L.value;
       L.innerHTML = rr.length
-        ? rr.map(r => '<a href="/api/risultato/raw?f=' + encodeURIComponent(r) + '" target="_blank" ' +
-            'style="display:block;padding:3px 0;color:#7db4ff;text-decoration:none;border-bottom:1px solid #ffffff0d">' +
-            r.replace(/^FUSION_/, '').replace(/\.md$/, '').replace(/_/, ' · ') + '</a>').join('')
-        : 'nessun risultato ancora';
+        ? rr.map(r => '<option value="' + r + '"' + (r === scelto ? ' selected' : '') + '>' +
+            r.replace(/^FUSION_/, '').replace(/\.md$/, '').replace('_', ' · ') + '</option>').join('')
+        : '<option value="">nessun risultato ancora</option>';
+      window._risultati = rr;
     }catch(e){ avvisa('/api/stato', null, e); }
     try{
       const p = await api('/api/ponte');
@@ -2494,6 +2505,12 @@ function aggiornaPilota(){
     const r = await api('/api/checkin/segna', {});
     log(r.msg || 'segnato'); aggiorna();
   });
+  function apriRisultato(){
+    const f = $('agRisLista').value;
+    if(f) window.open('/api/risultato/raw?f=' + encodeURIComponent(f), '_blank');
+  }
+  $('agRisLista').addEventListener('change', apriRisultato);
+  $('agRisApri').addEventListener('click', apriRisultato);
   $('agSalDett').addEventListener('click', () => {
     const box = document.getElementById('agSaluteBox');
     if(box){ box.style.display = box.style.display === 'none' ? 'block' : 'none'; }

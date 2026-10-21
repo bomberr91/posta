@@ -622,7 +622,7 @@ def salute(fresco=False):
     if not fresco and _salute_cache["v"] and time.time() - _salute_cache["t"] < 60:
         return _salute_cache["v"]
     v = {"verdetto": "🩺 verifica non disponibile", "colore": "grigio", "rossi": [], "gialli": [],
-         "righe": [], "secondi": 0, "ora": time.strftime("%H:%M:%S")}
+         "note": [], "righe": [], "secondi": 0, "ora": time.strftime("%H:%M:%S")}
     script = os.path.join(POSTA, "verifica.sh")
     if os.path.exists(script):
         t0 = time.time()
@@ -637,8 +637,8 @@ def salute(fresco=False):
             r = riga.strip()
             if "TUTTO A POSTO" in r or "PROBLEMI" in r or "cose da guardare" in r:
                 v["verdetto"] = r          # è la riga del verdetto finale: l'ultima vince
-            if r[:1] in ("✓", "✗", "·"):
-                esito = {"✓": "ok", "✗": "no", "·": "att"}[r[0]]
+            if r[:1] in ("✓", "✗", "·", "◦"):
+                esito = {"✓": "ok", "✗": "no", "·": "att", "◦": "nota"}[r[0]]
                 resto = r[1:].strip()
                 nome = resto[:26].strip()
                 dettaglio = resto[26:].strip() if len(resto) > 26 else ""
@@ -648,6 +648,8 @@ def salute(fresco=False):
                     v["rossi"].append(voce)
                 elif esito == "att":
                     v["gialli"].append(voce)
+                elif esito == "nota":
+                    v["note"].append(voce)          # stato normale: non è un problema
         if "TUTTO A POSTO" in v["verdetto"]:
             v["colore"] = "verde"
         elif "PROBLEMI" in v["verdetto"]:
@@ -697,9 +699,11 @@ def salute_chiara():
                       "dettaglio": voce.get("dettaglio", ""),
                       "cosa": "una cosa da guardare (non blocca niente)",
                       "chefare": "puoi continuare a usare tutto."})
+    note = [f"{n.get('nome', '').strip()} — {n.get('dettaglio', '')}".strip(" —")
+            for n in v.get("note", [])]
     return {"verdetto": v.get("verdetto", ""), "colore": v.get("colore", "grigio"),
             "rossi": len(v.get("rossi", [])), "gialli": len(v.get("gialli", [])),
-            "voci": righe, "ora": v.get("ora", ""), "secondi": v.get("secondi", 0)}
+            "note": note, "voci": righe, "ora": v.get("ora", ""), "secondi": v.get("secondi", 0)}
 
 
 def avvisi_accensione():
