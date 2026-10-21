@@ -252,6 +252,15 @@ _PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
 
 _avvio_motore = {"in_corso": False, "dal": 0.0, "tentato": False}
 _prova_agenti = {"quando": 0.0, "in_corso": False, "log": ""}
+_avvisi_agenti = {}          # (nome, giorno) → avviso, per non ripeterlo ogni volta
+
+
+def avvisa_agente(nome, motivo):
+    """Segna un avviso in chiaro: un agente ha smesso di rispondere (uno al giorno per agente)."""
+    k = (nome or "?", time.strftime("%Y-%m-%d"))
+    if k in _avvisi_agenti:
+        return
+    _avvisi_agenti[k] = {"nome": nome or "?", "motivo": motivo or "", "quando": time.strftime("%H:%M")}
 
 
 def prova_agenti_avvio():
@@ -269,6 +278,13 @@ def prova_agenti_avvio():
     finally:
         _prova_agenti["quando"] = time.time()
         _prova_agenti["in_corso"] = False
+        # chi non risponde → avviso in chiaro (non un tasto da premere: te lo dico e basta)
+        try:
+            for a in (agenti_stato().get("agenti") or []):
+                if a.get("installato") and not a.get("pronto"):
+                    avvisa_agente(a.get("nome"), a.get("nota") or "non ha risposto alla prova")
+        except Exception:
+            pass
 
 
 def omniroute_avvia(attesa=25):
@@ -281,6 +297,16 @@ def omniroute_avvia(attesa=25):
     finally:
         _avvio_motore["in_corso"] = False
         _avvio_motore["tentato"] = True
+
+
+def motore_in_avvio():
+    """Sto lavorando per accendere il motore? Vero se lo sto accendendo adesso, se non
+    l'ho ancora provato, o se l'ultimo tentativo è di meno di 2 minuti (sta partendo)."""
+    if porta_viva(20128) or not omni_bin():
+        return False
+    if _avvio_motore["in_corso"] or not _avvio_motore["tentato"]:
+        return True
+    return (time.time() - _avvio_motore["dal"]) < 120
 
 
 def _omniroute_avvia_davvero(attesa=25):
@@ -1357,11 +1383,7 @@ def stato():
             "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
             "modelli": mo["modelli"], "linee": mo["linee"],
             "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
-                       # sta partendo: o lo sto accendendo io adesso, o non è ancora stato
-                       # tentato il primo giro (il motore parte da solo con la Centrale)
-                       "avvio_in_corso": _avvio_motore["in_corso"] or (
-                           not _avvio_motore["tentato"] and bool(omni_bin())
-                           and not porta_viva(20128)),
+                       "avvio_in_corso": motore_in_avvio(),
                        "installato": bool(omni_bin()), "nome": "OmniRoute",
                        "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
                        "lavoro_log": lo["log"]},
@@ -1375,6 +1397,7 @@ def stato():
             "salute_chiara": salute_chiara(), "avvisi": avvisi_accensione(),
             "contatori": contatori_chiavi(), "openclaw": openclaw_stato(),
             "prova_agenti": {"quando": _prova_agenti["quando"], "in_corso": _prova_agenti["in_corso"]},
+            "avvisi_agenti": list(_avvisi_agenti.values())[-6:],
             "ora": time.strftime("%H:%M:%S")}
 
 
@@ -1489,6 +1512,7 @@ class H(BaseHTTPRequestHandler):
                     self._json({"testo": r[0], "modello": f"{r[2]} · riserva {r[1]}",
                                 "via": "riserva " + r[1]})
                 else:
+                    avvisa_agente("Il motore", "la chat non è passata: né OmniRoute né le chiavi hanno risposto")
                     self._json({"testo": f"⚠️ Il motore non risponde ({type(e).__name__}) e nessuna "
                                          f"chiave di riserva ha risposto. Apri 🤖 Agenti → 🗣️ Appello "
                                          f"e guarda chi è rosso.", "modello": "-"})

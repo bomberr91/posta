@@ -271,6 +271,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
         <div class="agRiga"><span><b>Motore «sito»</b> <span class="agDim" style="font-size:11px">da scegliere</span><span class="agDots" id="ag3Dots" style="display:none"><i></i><i></i><i></i></span></span><b id="ag3mot" style="font-size:12px">new-api · 9router · LiteLLM</b></div>
         <div class="agBottoni" style="margin-top:5px">
+          <span class="agDots" id="agAppDots" style="display:none"><i></i><i></i><i></i></span>
           <button class="agB" id="agAppello">Appello</button>
           <button class="agB" id="agAppelloVero">Prova vera</button>
           <button class="agB" id="ag3motB" disabled>Avvia</button>
@@ -280,23 +281,24 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <div class="agCol">
       <section class="agCard" id="agAgentiCard">
         <h3>🤖 Agenti</h3>
-        <div class="agRiga"><span>pronti</span><b><span id="agAgentiSpia">⚪</span> <span id="agAgentiNum" style="font-size:16px">—</span></b></div>
+        <div class="agRiga"><span>pronti<span class="agDots" id="agAgDots" style="display:none"><i></i><i></i><i></i></span></span><b><span id="agAgentiSpia">⚪</span> <span id="agAgentiNum" style="font-size:16px">—</span></b></div>
         <div id="agListaAgenti" style="display:none"></div>
         <div class="agBottoni">
           <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
+          <button class="agB pri" id="agInstalla">Installa</button>
         </div>
         <div class="agDim" style="margin-top:6px" id="agAgentiNota">Ogni agente usa il motore (OmniRoute): se è spento, non rispondono.</div>
       </section>
       <section class="agCard">
         <h3>📮 Postino e ponte</h3>
-        <div class="agRiga"><span>Postino (ponte GitHub)</span><b id="agPostino">—</b></div>
+        <div class="agRiga"><span>Postino (ponte GitHub)<span class="agDots" id="agPosDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agPostino">—</b></div>
         <div class="agRiga"><span>Ultimo commit</span><span id="agCommit" class="agDim">—</span></div>
         <div class="agRiga"><span>Modifiche non salvate</span><span id="agMod" class="agDim">—</span></div>
         <div class="agBottoni"><button class="agB pri" id="agPostinoOn">Avvia</button></div>
       </section>
       <section class="agCard">
         <h3>🌐 Browser agenti</h3>
-        <div class="agRiga"><span>Porta 9222</span><b id="agBrow">—</b></div>
+        <div class="agRiga"><span>Porta 9222<span class="agDots" id="agBroDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agBrow">—</b></div>
         <div class="agBottoni">
           <button class="agB pri" id="agBrowApri">Mostra</button>
           <button class="agB" id="agBrowNas">🙈 Nascondi</button>
@@ -310,12 +312,12 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
       <section class="agCard agLargo">
         <h3>🔄 Computer</h3>
-        <div class="agBottoni"><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
+        <div class="agBottoni"><span class="agDots" id="agPcDots" style="display:none"><i></i><i></i><i></i></span><button class="agB pri" id="agAggiorna">Aggiorna il PC</button></div>
         <div class="agDim" style="margin-top:6px" id="agAggNota">Aggiunge solo le novità (1-3 minuti). Puoi continuare a chattare.</div>
       </section>
       <section class="agCard agLargo">
         <h3>🩺 Salute del PC</h3>
-        <div id="agSalute" class="agDim">—</div>
+        <div class="agRiga"><span class="agDim" id="agSalute">—</span><span class="agDots" id="agSalDots" style="display:none"><i></i><i></i><i></i></span></div>
         <div class="agBottoni">
           <button class="agB" id="agRicontrolla">Ricontrolla (2 s)</button>
           <button class="agB" id="agSalDett">📋 Dettagli</button>
@@ -2295,6 +2297,9 @@ function aggiornaPilota(){
     if(typeof m === 'object' && m.message) return String(m.message).replace(/^⚠️\s*/, '');
     return '';
   }
+  // i 3 pallini = "sto lavorando". gira('agAgDots', true) li accende, false li spegne.
+  function gira(id, acceso){ const e = document.getElementById(id); if(e) e.style.display = acceso ? 'inline-flex' : 'none'; }
+
   function avvisa(percorso, d, e){
     const azione = cosa(percorso);
     const f = fraseErrore(percorso, d);
@@ -2369,6 +2374,15 @@ function aggiornaPilota(){
       $('agSegna').disabled = !!s.checkin_oggi;
       // motore
       const mot = s.motore || {};
+      window._prova = s.prova_agenti || {};
+      if(window._prova.in_corso) gira('agAgDots', true);
+      // avvisi nuovi (agente che ha smesso di rispondere): li dico in chiaro, una volta
+      const avv = s.avvisi_agenti || [];
+      if(avv.length !== (window._avvVisti ?? 0)){
+        window._avvVisti = avv.length;
+        const a = avv[avv.length - 1];
+        if(a) log('⚠️ ' + a.nome + ' non risponde (' + a.motivo + '). Prova «Ricontrolla» e poi «Installa» sulla scheda 🤖 Agenti.');
+      }
       // i 3 pallini: girano mentre il motore si accende (anche quello che parte da solo)
       const staPartendo = !s.omniroute && (mot.avvio_in_corso || !!accendo);
       $('agOmniDots').style.display = staPartendo ? 'inline-flex' : 'none';
@@ -2481,11 +2495,13 @@ function aggiornaPilota(){
     log(r.msg || 'portiere spento'); caricaMotore2(); aggiorna();
   });
   $('agAppello').addEventListener('click', async () => {
+    gira('agAppDots', true); setTimeout(() => gira('agAppDots', false), 30000);
     log('🗣️ Appello delle chiavi (20 secondi): provo tutte quelle della lista…');
     log((await api('/api/appello', {azione:'fai'})).msg || '');
     setTimeout(aggiorna, 8000); setTimeout(aggiorna, 20000);
   });
   $('agAppelloVero').addEventListener('click', async () => {
+    gira('agAppDots', true); setTimeout(() => gira('agAppDots', false), 80000);
     log('🗣️ Prova vera: una domanda a ogni chiave di chat (circa 1 minuto)…');
     log((await api('/api/appello', {azione:'completo'})).msg || '');
     setTimeout(aggiorna, 20000); setTimeout(aggiorna, 70000);
@@ -2511,10 +2527,10 @@ function aggiornaPilota(){
   });
   $('agOmniDash').addEventListener('click', () => window.open('http://localhost:20128', '_blank'));
   $('agBrowApri').addEventListener('click', async () => {
-    $('agBrowApri').disabled = true;
+    $('agBrowApri').disabled = true; gira('agBroDots', true);
     log('Mostro il browser degli agenti…');
     const r = await api('/api/browser', {azione:'mostra'}); log(r.msg || '');
-    $('agBrowApri').disabled = false; aggiorna();
+    gira('agBroDots', false); $('agBrowApri').disabled = false; aggiorna();
   });
   $('agBrowNas').addEventListener('click', async () => { const r = await api('/api/browser', {azione:'nascondi'}); log(r.msg || ''); aggiorna(); });
   $('agRisLista').addEventListener('change', async e => {
@@ -2523,20 +2539,22 @@ function aggiornaPilota(){
     $('agRisTesto').textContent = (r.testo || '').slice(0, 4000) || '(vuoto)';
   });
   $('agAggiorna').addEventListener('click', async () => {
-    $('agAggNota').textContent = 'Aggiornamento in corso… puoi continuare a chattare.';
+    $('agAggNota').textContent = 'Aggiornamento in corso… puoi continuare a chattare.'; gira('agPcDots', true);
     const r = await api('/api/pc/aggiorna', {});
     log(r.msg || 'avviato');
-    setTimeout(async () => { const p = await api('/api/ponte'); log('Fatto. Ultimo commit: ' + (p.commit || '—')); aggiorna(); }, 8000);
+    setTimeout(async () => { const p = await api('/api/ponte'); log('Fatto. Ultimo commit: ' + (p.commit || '—')); gira('agPcDots', false); aggiorna(); }, 8000);
   });
   $('agPostinoOn').addEventListener('click', async () => {
-    $('agPostinoOn').disabled = true; log('Avvio il postino…');
+    $('agPostinoOn').disabled = true; gira('agPosDots', true); log('Avvio il postino…');
     const r = await api('/api/ponte', {azione:'avvia'});
     log(r.msg || '');
-    $('agPostinoOn').disabled = false; aggiorna();
+    gira('agPosDots', false); $('agPostinoOn').disabled = false; aggiorna();
   });
   $('agRicontrolla').addEventListener('click', async () => {
+    gira('agSalDots', true);
     const r = await api('/api/salute');
     $('agSalute').innerHTML = (r.verdetto || '—') + ((r.rossi || []).length ? '<br>' + r.rossi.map(v => '<span class="no">✗ ' + v.nome + '</span> — ' + v.dettaglio).join('<br>') : '');
+    gira('agSalDots', false);
   });
 })();
 </script>
@@ -2575,6 +2593,7 @@ function aggiornaPilota(){
         spia.textContent = lista.length ? (tutti ? '🟢' : '🔴') : '⚪';
       }
       window._agenti = lista;
+      if((window._prova || {}).in_corso) gira('agAgDots', true); else gira('agAgDots', false);
       $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
         (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
         (d.portiere || d.cervello ? ' · portiere: ' + (d.portiere || d.cervello) : '');
@@ -2586,20 +2605,27 @@ function aggiornaPilota(){
   }
 
   $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', async () => {
+    gira('agAgDots', true);
     $('agAgentiNota').textContent = 'Ricontrollo…';
     await carica();
-    // la prova che rispondono gira da sola (all'avvio e qui, se l'ultima è vecchia)
-    try{
-      const s = await (await fetch('/api/stato')).json();
-      const q = (s.prova_agenti || {});
-      const vecchia = !q.quando || (Date.now() / 1000 - q.quando) > 1800;
-      if(vecchia){
-        $('agAgentiNota').textContent = 'Provo che rispondano (1-2 minuti)…';
-        await fetch('/api/agenti/prova', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({svelto:true})});
-        await carica();
-      }
-    }catch(e){}
+    gira('agAgDots', false);
     $('agAgentiNota').textContent = 'Ricontrollato.';
+  });
+  $('agInstalla') && $('agInstalla').addEventListener('click', async () => {
+    gira('agAgDots', true);
+    $('agAgentiNota').textContent = 'Installo / sistemo i mancanti… (1-5 minuti)';
+    const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
+    const d = await r.json();
+    log('🔧 ' + (d.msg || 'installazione avviata'));
+    const gira2 = setInterval(async () => {
+      const a = await (await fetch('/api/agenti/andamento')).json();
+      if(String(a.log || '').trim()) log('… ' + String(a.log || '').trim().split('\n').pop());
+      if(!a.in_corso){
+        clearInterval(gira2); gira('agAgDots', false);
+        await carica();
+        $('agAgentiNota').textContent = 'Installazione finita: guarda la spia.';
+      }
+    }, 4000);
   });
   // primo caricamento quando si apre il pannello
   const b = $('btnAgenti');
