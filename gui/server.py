@@ -2537,7 +2537,7 @@ def agente_manca(nome):
     if nome == "Hermes" and not agente_installato(nome):
         return ("Hermes non è installato su questo PC. Per installare SOLO Hermes, apri la cartella posta "
                 "dal menu Centrale [6] e fai doppio clic su INSTALLA_HERMES.bat. OpenClaw non viene toccato. "
-                "Poi riapri la Centrale, premi g e riprova.")
+                "Poi torna al menu e premi g per riavviare la GUI.")
     if not agente_installato(nome):
         return ("%s non è installato su questo PC. Apri 🤖 Agenti e premi Installa: "
                 "quando è pronto riprovi da qui, senza terminale." % nome)

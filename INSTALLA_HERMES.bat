@@ -24,8 +24,8 @@ if not "%ESITO%"=="0" goto ERRORE
 echo.
 echo  ================================================================
 echo    Hermes risulta installato.
-echo    Ora chiudi questa finestra, riapri la Centrale e premi g.
-echo    Poi scegli Hermes nella tendina e prova una richiesta semplice.
+echo    Ora chiudi questa finestra e torna al menu della Centrale.
+echo    Premi g per riavviare la GUI, poi scegli Hermes nella tendina.
 echo  ================================================================
 echo.
 pause
