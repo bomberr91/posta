@@ -3,6 +3,7 @@ chcp 65001 >nul 2>&1
 setlocal EnableExtensions
 title Installa Hermes - Agenti H24
 color 0B
+cd /d "%USERPROFILE%" >nul 2>&1
 
 echo.
 echo  ================================================================
