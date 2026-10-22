@@ -179,3 +179,11 @@ bash "$QUI/agenti_stato.sh"
 echo ""
 echo "  Per aprirli: [1] nella Centrale, oppure la scheda 🤖 Agenti dell'interfaccia."
 echo "══════════════════════════════════════════════════════════"
+# Se richiesto un agente specifico, restituisco un errore vero quando non c'è:
+# il suo .bat può così restare aperto e mostrare il fallimento, mai «successo» a vuoto.
+if vuole hermes && [ -n "$SOLO" ] && [ "$PROVA" = 0 ]; then
+  if ! c_e hermes && [ ! -x "$HOME/.hermes/hermes-agent/bin/hermes" ] \
+                    && [ ! -x "$HOME/.hermes/hermes-agent/venv/bin/hermes" ]; then
+    exit 1
+  fi
+fi

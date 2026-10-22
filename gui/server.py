@@ -2462,9 +2462,13 @@ AGENTI_VERI = {
     },
     "Hermes": {
         "bin": "hermes",
-        "forma": [["hermes", "-z", "{p}"], ["hermes", "chat", "-q", "{p}", "--oneshot"],
-                  ["hermes", "chat", "-q", "{p}"]],
-        "fa": "strategia & ricerca: ragiona a fondo e produce il piano",
+        # Hermes usa la porta OpenAI-compatible che il portachiavi ha selezionato (OmniRoute/Portiere).
+        # openai-api onora OPENAI_BASE_URL + OPENAI_API_KEY; niente OAuth o chiave extra da inserire.
+        # --yolo consente i suoi tool nel turno headless: l'utente lo avvia dalla chat e può fermarlo con ■.
+        "forma": [["hermes", "chat", "--oneshot", "--quiet", "-q", "{p}",
+                   "--provider", "openai-api", "--model", "auto", "--yolo"],
+                  ["hermes", "-z", "{p}", "--provider", "openai-api", "--model", "auto"]],
+        "fa": "strategia & ricerca: usa il cervello del PC, poi agisce con i suoi strumenti",
     },
     "OpenClaw": {
         "bin": "openclaw",
@@ -2530,6 +2534,10 @@ def agente_manca(nome):
         if not agente_installato(nome):
             return ("OpenClaw non è installato su questo PC. Apri 🤖 Agenti → Installa "
                     "(oppure il file INSTALLA_OPENCLAW.bat): poi riprova da qui.")
+    if nome == "Hermes" and not agente_installato(nome):
+        return ("Hermes non è installato su questo PC. Per installare SOLO Hermes, apri la cartella posta "
+                "dal menu Centrale [6] e fai doppio clic su INSTALLA_HERMES.bat. OpenClaw non viene toccato. "
+                "Poi riapri la Centrale, premi g e riprova.")
     if not agente_installato(nome):
         return ("%s non è installato su questo PC. Apri 🤖 Agenti e premi Installa: "
                 "quando è pronto riprovi da qui, senza terminale." % nome)
