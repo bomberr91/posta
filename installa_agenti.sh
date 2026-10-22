@@ -27,7 +27,8 @@ export NVM_DIR="$HOME/.nvm"
 NPM22=$(ls "$HOME/.nvm/versions/node/v22"*/bin/npm 2>/dev/null | sort -V | tail -1)
 [ -z "$NPM22" ] && NPM22=$(ls "$HOME/.nvm/versions/node/"*/bin/npm 2>/dev/null | sort -V | tail -1)
 [ -z "$NPM22" ] && command -v npm >/dev/null 2>&1 && NPM22=$(command -v npm)
-export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$HOME/bin:$PATH"
+NVM22BIN=$(ls -d "$HOME/.nvm/versions/node/v22"*/bin 2>/dev/null | sort -V | tail -1)
+export PATH="$NVM22BIN:$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$HOME/bin:$PATH"
 # shellcheck disable=SC1091
 . "$QUI/chiavi_env.sh" 2>/dev/null || true
 
@@ -110,12 +111,12 @@ fi
 
 # ── 4 · Hermes ──────────────────────────────────────────────────────────────
 if vuole hermes; then
-  if c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; then ok "Hermes già presente"
+  if c_e hermes; then ok "Hermes già presente ($(hermes --version 2>&1 | head -1))"
   else
     d "Installo Hermes (NousResearch)… può metterci 2-4 minuti"
     if esegui "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1"; then
       export PATH="$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
-      { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || ko "Hermes: non installato"
+      c_e hermes && ok "Hermes installato ($(hermes --version 2>&1 | head -1))" || ko "Hermes: cartella presente ma comando mancante"
     fi
   fi
 fi
@@ -182,8 +183,7 @@ echo "════════════════════════�
 # Se richiesto un agente specifico, restituisco un errore vero quando non c'è:
 # il suo .bat può così restare aperto e mostrare il fallimento, mai «successo» a vuoto.
 if vuole hermes && [ -n "$SOLO" ] && [ "$PROVA" = 0 ]; then
-  if ! c_e hermes && [ ! -x "$HOME/.hermes/hermes-agent/bin/hermes" ] \
-                    && [ ! -x "$HOME/.hermes/hermes-agent/venv/bin/hermes" ]; then
+  if ! c_e hermes; then
     exit 1
   fi
 fi

@@ -47,9 +47,8 @@ if c_e interpreter; then aggiungi "Secondhand" "interpreter" true "$(ver interpr
 else aggiungi "Secondhand" "interpreter" false "" false "da installare" "interpreter"; fi
 
 # ── 4 · Hermes (Strategia e ricerca)
-if c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; then
-  HV=$(ver hermes); [ -z "$HV" ] && HV="in ~/.hermes"
-  aggiungi "Hermes" "hermes" true "$HV" true "" "hermes"
+if c_e hermes; then V=$(ver hermes)
+  aggiungi "Hermes" "hermes" true "$V" true "" "hermes"
 else aggiungi "Hermes" "hermes" false "" false "da installare" "hermes"; fi
 
 # ── 5 · Gemini CLI (Google)
