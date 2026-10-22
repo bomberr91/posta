@@ -110,13 +110,45 @@ if vuole interpreter; then
 fi
 
 # ── 4 · Hermes ──────────────────────────────────────────────────────────────
+HERMES_INSTALL_FAILED=0
 if vuole hermes; then
   if c_e hermes; then ok "Hermes già presente ($(hermes --version 2>&1 | head -1))"
   else
-    d "Installo Hermes (NousResearch)… può metterci 2-4 minuti"
-    if esegui "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1"; then
-      export PATH="$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
-      c_e hermes && ok "Hermes installato ($(hermes --version 2>&1 | head -1))" || ko "Hermes: cartella presente ma comando mancante"
+    d "Installo Hermes (NousResearch)… può metterci alcuni minuti"
+    if [ "$PROVA" = "1" ]; then
+      d "[prova] scaricherei lo script ufficiale Hermes e lo eseguirei con --non-interactive --skip-browser --skip-computer-use"
+    else
+      HERMES_SETUP_TMP=$(mktemp "${TMPDIR:-/tmp}/hermes-install.XXXXXX.sh") || HERMES_SETUP_TMP=""
+      if [ -z "$HERMES_SETUP_TMP" ]; then
+        ko "Hermes: non riesco a creare il file temporaneo per l'installer"
+        HERMES_INSTALL_FAILED=1
+      elif ! curl --fail --location --silent --show-error --retry 2 \
+              --output "$HERMES_SETUP_TMP" https://hermes-agent.nousresearch.com/install.sh; then
+        ko "Hermes: non riesco a scaricare l'installer ufficiale; controlla la connessione e riprova"
+        HERMES_INSTALL_FAILED=1
+        rm -f "$HERMES_SETUP_TMP"
+      elif ! head -n 1 "$HERMES_SETUP_TMP" | grep -q '^#!/usr/bin/env bash'; then
+        ko "Hermes: il server non ha restituito lo script atteso; non l'ho eseguito"
+        HERMES_INSTALL_FAILED=1
+        rm -f "$HERMES_SETUP_TMP"
+      else
+        # output visibile: nessun install fallito nascosto nel BAT
+        bash "$HERMES_SETUP_TMP" --non-interactive --skip-browser --skip-computer-use --verbose
+        HERMES_RC=$?
+        rm -f "$HERMES_SETUP_TMP"
+        export PATH="$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"
+        if [ "$HERMES_RC" -eq 0 ] && c_e hermes; then
+          ok "Hermes installato ($(hermes --version 2>&1 | head -1))"
+        else
+          ko "Hermes: installer fermato (codice $HERMES_RC) o comando non trovato"
+          HERMES_INSTALL_FAILED=1
+          echo "  Log completo: $HOME/.hermes/logs/install.log"
+          if [ -f "$HOME/.hermes/logs/install.log" ]; then
+            echo "  Ultime righe del log:"
+            tail -n 25 "$HOME/.hermes/logs/install.log" | sed 's/^/    /'
+          fi
+        fi
+      fi
     fi
   fi
 fi
@@ -183,7 +215,7 @@ echo "════════════════════════�
 # Se richiesto un agente specifico, restituisco un errore vero quando non c'è:
 # il suo .bat può così restare aperto e mostrare il fallimento, mai «successo» a vuoto.
 if vuole hermes && [ -n "$SOLO" ] && [ "$PROVA" = 0 ]; then
-  if ! c_e hermes; then
+  if [ "$HERMES_INSTALL_FAILED" = "1" ] || ! c_e hermes; then
     exit 1
   fi
 fi
