@@ -245,6 +245,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB pri" id="agOmniOn">Avvia</button>
           <button class="agB" id="agOmniOff">Spegni</button>
+          <button class="agB" id="agRicontrollaMot">Ricontrolla</button>
           <button class="agB" id="agOmniDash">Dashboard ↗</button>
         </div>
         <div style="border-top:1px solid #ffffff14;margin:8px 0"></div>
@@ -375,6 +376,17 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         if(b.stream===false) return j({model:sv,choices:[{message:{content:t}}]});
         return sse(t,sv);
       }
+      if(u.includes('/api/agente')){
+        let bb={}; try{ bb=JSON.parse((opt&&opt.body)||'{}'); }catch(e){}
+        const nomeT = String(bb.agente||'agente');
+        const righe = ['📋 Piano: leggo i file del progetto…','✅ letti 3 file','✅ test superato','✅ commit sul ponte','','🧪 (ANTEPRIMA: sul PC qui vedi '+nomeT+' che lavora DAVVERO, riga per riga — e il ■ stop ferma il suo processo)'];
+        const enc = new TextEncoder();
+        const st = new ReadableStream({ async start(c){
+          for (const r of righe){ c.enqueue(enc.encode('data: '+JSON.stringify({riga:r+'\n'})+'\n\n')); await new Promise(x=>setTimeout(x,140)); }
+          c.enqueue(enc.encode('data: {"fine":true,"codice":0}\n\ndata: [DONE]\n\n')); c.close();
+        }});
+        return new Response(st,{status:200,headers:{'Content-Type':'text/event-stream'}});
+      }
       if(u.includes('/models')) return j({data:[{id:'auto:smart'},{id:'auto:fast'},{id:'deepseek-v4-flash'},{id:'glm-5-air'},{id:'qwen3.8-27b'}]});
       if(u.includes('/usage')) return j({ok:true});
       if(u.includes('/api/search')) return j({results:[{title:'Risultato di prova',url:'https://esempio.it',snippet:'(anteprima)'}]});
@@ -393,7 +405,7 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
   freellmapi:{label:'Motori del PC (Portiere · OmniRoute · chiavi nostre) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → router nostro (rotazione, riserve, contabilità). Nessun centralino obbligatorio: le chiavi stanno nel portachiavi del PC',warn:'',models:[]},
-  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto']]},
+  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto'],['OpenCode','🏗️ architetto & codice'],['Goose','🪿 automazione & sub-agenti'],['Secondhand','🦀 revisore Rust'],['Hermes','🧭 strategia & ricerca'],['OpenClaw','🦾 operatore PC & browser H24'],['Gemini','♊ terminale Google']]},
 };
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
@@ -404,12 +416,24 @@ const PILOTI = {
               fa:'coordina e risponde: è il pilota più intelligente del giorno, con le riserve a cascata'},
   'Lampo':   {emo:'⚡', pilota:'deepseek-v4-flash', riserve:'gpt-oss-120b → glm-4.7-flash',
               fa:'risposta immediata sulle cose di tutti i giorni, la linea sempre viva'},
-  'Fabbro':  {emo:'💻', pilota:'qwen3-coder via OmniRoute', riserve:'codestral → mistral-code',
+  'Fabbro':  {emo:'💻', pilota:'Kimi-K2.6 via Sail', riserve:'nemotron-3-ultra → deepseek-v4-flash',
               fa:'scrive il codice, lo PROVA sul PC e committa sul ponte'},
   'Squadra': {emo:'🔥', pilota:'il Regista sceglie quanti e quali servono', riserve:'+ Giudice Supremo (cascata AgentRouter)',
               fa:'fusion di agenti: nessun numero fisso, decide il Regista; il Giudice certifica'},
-  'Libero':  {emo:'😈', pilota:'cohere command-r (già innestato)', riserve:'Venice.ai (quando ci sarà)',
-              fa:'parla di tutto: gira solo su piloti senza guinzaglio, mai sulle chiavi serie'}
+  'Libero':  {emo:'😈', pilota:'qwen7b via FreeAI (senza guinzaglio)', riserve:'Trinity Mini → command-r-plus',
+              fa:'parla di tutto: gira solo su piloti senza guinzaglio, mai sulle chiavi serie'},
+  'OpenCode':   {emo:'🏗️', pilota:'Kimi-K2.6 via Sail', riserve:'nemotron-3-ultra → minimax-m3',
+              fa:'architetto & codice: costruisce e rifattorizza progetti interi, dal file al commit'},
+  'Goose':      {emo:'🪿', pilota:'deepseek-v4-flash via BlazeAPI', riserve:'glm-4.7-flash → agnes-2.5-flash',
+              fa:'automazione & sub-agenti: lancia task in parallelo e li coordina'},
+  'Secondhand': {emo:'🦀', pilota:'ministral-14b via xKiro', riserve:'Trinity Mini → mistral-small',
+              fa:'revisore Rust: legge XERJ, trova bug, propone fix veloci'},
+  'Hermes':     {emo:'🧭', pilota:'nemotron-3-ultra-550b via LLMTR', riserve:'Kimi-K2.6 → command-r-plus',
+              fa:'strategia & ricerca: piani NousResearch, ricerca profonda e sintesi'},
+  'OpenClaw':   {emo:'🦾', pilota:'command-r-plus via Cohere', riserve:'deepseek-v4-flash → agnes-2.5-flash',
+              fa:'operatore PC & browser H24: muove file, browser, committa sul ponte da solo'},
+  'Gemini':     {emo:'♊', pilota:'agnes-2.5-flash via Agnes AI', riserve:'minimax-m3 → Trinity Mini',
+              fa:'terminale Google: CLI veloce, tool e API di Big G'}
 };
 
 // ══════════ stato: chat multiple + cartelle (localStorage) ══════════
@@ -730,7 +754,7 @@ function renderChat(){
           + '<div style="font-size:12px;color:#7ee787;font-weight:700;margin-bottom:4px">📝 In breve — le cose importanti</div>' + mdLite(m.sunto) + '</div>'
           + '<details><summary style="cursor:pointer;color:var(--mut);font-size:12px">La risposta completa (' + String(m.content).length + ' caratteri)</summary>' + mdLite(m.content) + '</details>'
         : mdLite(m.content);
-      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?(((typeof PILOTI!=='undefined'&&PILOTI[m.agente])?PILOTI[m.agente].emo+' ':'')+esc(m.agente)):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
+      d.innerHTML = `<div class="who">${m.derived?esc(m.model):(m.agente?(((typeof PILOTI!=='undefined'&&PILOTI[m.agente])?PILOTI[m.agente].emo+' ':'')+esc(m.agente)+(m.cli?' <span style="color:var(--mut);text-transform:none">· agente vero sul PC</span>':'')):(m.trading?'📈 trading':(m.tailor?'🎯 fusion su misura':(m.sel&&String(m.sel).startsWith('team::')?'⭐ '+esc(String(m.sel).slice(6)):(m.fusion?'✨ fusion':'🤖 '+esc(m.model||'?'))))))}${m.web?' 🌐':''}${(m.god&&!m.agente)?' 😈':''}</div>` + corpo
         + (m.fusion?fusionMeta(m.fusion, m.derived==='focus'?'🔍 <b>focus</b>':(m.trading?'📈 <b>trading</b>':(m.tailor?'🎯 <b>new fusion</b>':(m.sel&&String(m.sel).startsWith('team::')?'⭐ <b>'+esc(String(m.sel).slice(6))+'</b>':'✨ <b>fusion</b>')))):'')
         + (m.via && m.via!==m.model?`<div class="mmeta">instradato da: <b>${esc(m.via)}</b></div>`:'')
         + (m.webq?`<div class="mmeta">${m.webok?'🌐 ho cercato: «'+esc(m.webq)+'»':'🌐 ricerca non riuscita — risposta senza dati freschi (può essere vecchia)'}</div>`:'')
@@ -820,6 +844,7 @@ function refreshModelSelect(){
       const o = document.createElement('option'); o.value = p+'/'+id;
       const mE = String(note).match(/^(\S{1,4})\s+(.+)$/); // «⚡ il più veloce» → emoji portata IN TESTA, come tutte le altre voci della tendina (richiesta utente 12/10)
       o.textContent = extra[id] || ((mE && !/[\p{L}\p{N}]/u.test(mE[1])) ? mE[1]+' '+id+' — '+mE[2] : id+' — '+note);
+      if (p==='agenti' && typeof AGENTI_VERI_HUB!=='undefined' && AGENTI_VERI_HUB[id]) o.textContent += ' · sul PC';
       sel.appendChild(o); // niente intestazione: una lista sola, asciutta
     }
   }
@@ -1095,6 +1120,73 @@ async function send(){
   runTurn();
 }
 
+// ══════════ 🤖 GLI AGENTI VERI SUL PC (dalla tendina dei modelli) ══════════
+// Questi NON sono modelli: scegliendoli, il server lancia il loro comando "senza terminale"
+// (opencode run · goose run -t · interpreter.chat · hermes -z · openclaw agent exec · gemini -p)
+// e il testo compare qui mentre lavorano. Il ■ stop spegne il processo sul PC.
+const AGENTI_VERI_HUB = {
+  'OpenCode':   {emo:'🏗️'},
+  'Goose':      {emo:'🪿'},
+  'Secondhand': {emo:'🦀'},
+  'Hermes':     {emo:'🧭'},
+  'OpenClaw':   {emo:'🦾'},
+  'Gemini':     {emo:'♊'}
+};
+async function turnoAgenteVero(nome, c, q, sys){
+  const info = AGENTI_VERI_HUB[nome] || {emo:'🤖'};
+  const runId = 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  let guasto = '';
+  ctrl = new AbortController();
+  const sig = ctrl.signal;
+  let acc = '';
+  const live = document.createElement('div'); live.className = 'msg assistant';
+  const disegna = ()=>{
+    live.innerHTML = '<div class="who">'+info.emo+' '+esc(nome)+' <span style="color:var(--mut);text-transform:none">· agente vero sul PC</span></div>'
+      + '<div class="mmeta" style="margin:0 0 6px">lavora in ~/posta — il ■ stop ferma lui, non solo la lettura</div>'
+      + (acc ? mdLite(acc) + '<span style="color:var(--mut)">▍</span>' : dotsHTML());
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  };
+  msgsEl.appendChild(live); disegna(); uiBusy(true);
+  // ■ stop: si ferma anche il processo dell'agente sul PC (non solo la lettura della risposta)
+  const fermaRemoto = ()=>{ try{ fetch('/api/agente/stop', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:runId})}); }catch(e){} };
+  if (sig && sig.addEventListener) sig.addEventListener('abort', fermaRemoto);
+  try {
+    const r = await fetch('/api/agente', {
+      method:'POST', signal: sig,
+      headers:{'Content-Type':'application/json','x-fh-key': getKey('agenti') || 'locale'},
+      body: JSON.stringify({ agente: nome, prompt: (sys ? sys + '\n\n' : '') + q, id: runId })
+    });
+    const ct = r.headers.get('content-type') || '';
+    if (ct.includes('application/json')){                 // non è partito: la frase è già in chiaro
+      const j = await r.json().catch(()=>({}));
+      throw new Error(j.errore || j.err || 'l\'agente non è partito');
+    }
+    const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
+    while (true){
+      const { done, value } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream:true });
+      const lines = buf.split('\n'); buf = lines.pop();
+      for (const line of lines){
+        if (!line.startsWith('data:')) continue;
+        const d = line.slice(5).trim(); if (d === '[DONE]') continue;
+        let j = {}; try { j = JSON.parse(d); } catch { continue; }
+        if (j.riga){ acc += j.riga; disegna(); }
+        if (j.errore){ acc += (acc ? '\n' : '') + '⚠ ' + j.errore + '\n'; disegna(); }
+      }
+    }
+  } catch (e){
+    if (e.name === 'AbortError'){ /* stop volontario: nessun errore a schermo */ }
+    else if (acc.trim()) acc += '\n\n⚠ ' + e.message;
+    else guasto = e.message;
+  } finally {
+    ctrl = null; uiBusy(false);
+    if (acc.trim()) c.msgs.push({ role:'assistant', content: acc.trim(), model:nome, sel:nome, agente:nome, cli:true, via:'agente sul PC' });
+    else if (guasto) c.msgs.push({ role:'error', content: guasto });   // la frase in chiaro, così com'è
+    else c.msgs.push({ role:'error', content: '■ fermato prima che rispondesse. Nessun lavoro lasciato a metà.' });
+    touch(c); saveChats(); renderSidebar(); renderChat();
+  }
+}
+
 async function runTurn(){
   const c = cur(); if (!c || ctrl) return;
   const [provider, ...rest] = (sel.value || 'freellmapi/auto').split('/');
@@ -1104,6 +1196,10 @@ async function runTurn(){
   const webOn = true; // il web È il motivo dell'hub: sempre ON (decisione utente 10/10)
   const q = msgText([...c.msgs].reverse().find(m=>m.role==='user') || {});
 
+  // 🤖 AGENTI VERI: la voce della tendina è un agente del PC (OpenCode, Goose, Secondhand…),
+  // non un modello: si lancia lui, che agisce sui file e sui comandi, e il testo arriva qui.
+  if (provider === 'agenti' && AGENTI_VERI_HUB[model]){ return turnoAgenteVero(model, c, q, sys); }
+
   // 🖼️ visione / 📑 documenti: alias — se ci sono immagini il router del centralino
   // sceglie da solo un modello vision; i documenti vogliono ragionamento
   // 🤖 AGENTI: il nome dell'agente NON è un modello — ognuno ha il suo pilota vero.
@@ -1111,8 +1207,8 @@ async function runTurn(){
   let nomeAgente = '';
   if (provider === 'agenti'){
     nomeAgente = model;
-    const PIL = { 'Regista':'auto:smart', 'Lampo':'auto:fast', 'Fabbro':'qwen3-coder',
-                  'Squadra':'fusion', 'Libero':'command-r' };
+    const PIL = { 'Regista':'auto:smart', 'Lampo':'auto:fast', 'Fabbro':'sail',
+                  'Squadra':'fusion', 'Libero':'freeai', 'OpenCode':'sail', 'Goose':'blazeapi', 'Secondhand':'xkiro', 'Hermes':'llmtr', 'OpenClaw':'cohere', 'Gemini':'agnes' };
     model = PIL[nomeAgente] || 'auto';
   }
   let dispModel = nomeAgente || model;
@@ -2474,7 +2570,10 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
       const ap0 = s.appello || {};
       const ct0 = s.contatori || {};
       // attive / totale (totale = le mie chiavi + quelle già pronte dentro OmniRoute)
-      $('agOmniProv').textContent = (ap0.pronti || 0) + '/' + (ct0.omniroute_totali || ct0.omniroute || 0);
+      $('agOmniProv').textContent = (ap0.pronti || 0) + ' su ' + (ap0.totali || 0) + ' provati';
+      $('agOmniProv').title = 'Rispondono ' + (ap0.pronti || 0) + ' provider su ' + (ap0.totali || 0) +
+        ' interrogati nell\'ultimo appello (fatto ' + ((ap0.quando || 'mai')) + ').\n' +
+        'I rossi di OmniRoute sono ' + (ct0.noauth_omni || 0) + ' provider che funzionano senza chiave e non si possono interrogare.';
       // il Portiere: parte spento, conta solo se lo accendo
       if(!mot2 || Date.now() - (mot2._letto || 0) > 4000) caricaMotore2();
       if(mot2) {
@@ -2614,6 +2713,12 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
     nota('Prova vera: una domanda a ogni chiave di chat (circa 1 minuto)…');
     esito((await api('/api/appello', {azione:'completo'})).msg);
     setTimeout(aggiorna, 20000); setTimeout(aggiorna, 70000);
+  });
+  $('agRicontrollaMot').addEventListener('click', async () => {
+    gira('agOmniDots', true); setTimeout(() => gira('agOmniDots', false), 90000);
+    nota('Ricontrollo tutte le chiavi della lista: una domanda vera a ciascuna, circa 1 minuto.');
+    esito((await api('/api/appello', {azione:'completo'})).msg);
+    setTimeout(aggiorna, 20000); setTimeout(aggiorna, 50000); setTimeout(aggiorna, 80000);
   });
   $('agOmniOn').addEventListener('click', async () => {
     if(window.bootMotoreAvviato) window.bootMotoreAvviato();

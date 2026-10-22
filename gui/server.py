@@ -1098,7 +1098,7 @@ def chiavi_conteggio():
             # righe del tipo:  - **Nome** — chiave... — [data] — ✅ ...
             if not riga.lstrip().startswith(("-", "*", "|")):
                 continue
-            if re.search(r"(sk-|gsk_|ghp_|xai-|AIza|jina_|sk-or-|sk-orca|thk_|blaze-|auray_sk|cfut_|hf_)", riga) \
+            if re.search(r"(sk-|gsk_|ghp_|xai-|AIza|jina_|sk-or-|sk-orca|thk_|blaze-|cfut_|hf_)", riga) \
                or re.search(r"\b[0-9a-f]{32}\b", riga):
                 tot += 1
                 if "❌" not in riga and "morto" not in riga.lower() and "RITIRATO" not in riga:
@@ -1309,7 +1309,6 @@ CAPACITA = {
     "cohere":         {"req_giorno": None, "tok_giorno": None,         "nota": "1.000 chiamate/mese", "req_mese": 1000},
     "inferbase":      {"req_giorno": None, "tok_giorno": None,         "nota": "5.000 richieste/mese + $0,50/gg", "req_mese": 5000},
     "router9":        {"req_giorno": None, "tok_giorno": None,         "nota": "10.000 crediti/mese", "req_mese": 10000},
-    "auray":          {"req_giorno": None, "tok_giorno": None,         "nota": "50 crediti/mese", "req_mese": 50},
 }
 
 # chi vale di più quando si chiede «auto:smart» (qualità, non velocità)
@@ -2417,6 +2416,236 @@ def stato():
 
 
 # ─────────────────────────────── HTTP ───────────────────────────────────────
+# ═══════════════ GLI AGENTI VERI, DALLA CHAT E SENZA TERMINALE ═══════════════
+# Le voci della tendina che sono AGENTI VERI (OpenCode, Goose, Secondhand, Hermes,
+# OpenClaw, Gemini) non passano dal router: qui c'è il loro comando "senza terminale",
+# preso dalla documentazione ufficiale (verificata il 22/10/2026):
+#   OpenCode   → opencode run "<prompt>"          («run: non-interactive mode»)
+#   Goose      → goose run -t "<prompt>"          («Text in the command» + GOOSE_MODE=auto)
+#   Hermes     → hermes -z "<prompt>"             («scripted one-shot: final response text out»)
+#   Gemini CLI → gemini -p "<prompt>"             («Headless mode: -p/--prompt»)
+#   OpenClaw   → openclaw agent exec "<prompt>"   («recommended headless entry point»)
+#   Secondhand → interpreter.chat("<prompt>")      (API Python di Open Interpreter)
+# Se in quella versione la forma non esiste, si prova la successiva: è una differenza di
+# versione, non un guasto. La forma che funziona resta in memoria (_FORMA_OK).
+import shlex as _shlex
+
+_SECONDHAND_PY = (
+    "import sys\n"
+    "prompt = sys.argv[1]\n"
+    "try:\n"
+    "    from interpreter import interpreter\n"
+    "except Exception:\n"
+    "    print('⚠️ Secondhand (Open Interpreter) non risponde: nella scheda 🤖 Agenti premi Installa.')\n"
+    "    raise SystemExit(3)\n"
+    "interpreter.auto_run = True\n"
+    "interpreter.chat(prompt)\n"
+)
+
+AGENTI_VERI = {
+    "OpenCode": {
+        "bin": "opencode",
+        "forma": [["opencode", "run", "--auto", "{p}"], ["opencode", "run", "{p}"],
+                  ["opencode", "-p", "{p}"]],
+        "fa": "architetto & codice: legge e scrive i file, lancia i comandi, committa",
+    },
+    "Goose": {
+        "bin": "goose",
+        "forma": [["goose", "run", "-t", "{p}"], ["goose", "run", "--text", "{p}"]],
+        "env": {"GOOSE_MODE": "auto", "GOOSE_DISABLE_SESSION_NAMING": "1"},
+        "fa": "automazione: esegue istruzioni a più passi con i suoi strumenti",
+    },
+    "Secondhand": {
+        "bin": "interpreter",
+        "forma": [["python3", "-c", _SECONDHAND_PY, "{p}"]],
+        "fa": "revisore: scrive ed esegue codice per controllare le cose",
+    },
+    "Hermes": {
+        "bin": "hermes",
+        "forma": [["hermes", "-z", "{p}"], ["hermes", "chat", "-q", "{p}", "--oneshot"],
+                  ["hermes", "chat", "-q", "{p}"]],
+        "fa": "strategia & ricerca: ragiona a fondo e produce il piano",
+    },
+    "OpenClaw": {
+        "bin": "openclaw",
+        "forma": [["openclaw", "agent", "exec", "{p}"],
+                  ["openclaw", "agent", "--message", "{p}", "--local"],
+                  ["openclaw", "agent", "--message", "{p}"]],
+        "fa": "operatore del PC: tocca file e browser e lavora H24",
+    },
+    "Gemini": {
+        "bin": "gemini",
+        "forma": [["gemini", "-p", "{p}"], ["gemini", "--prompt", "{p}"]],
+        "fa": "l'agente Google da terminale: legge i file del progetto e li modifica",
+    },
+}
+AGENTE_TIMEOUT = int(os.environ.get("AGENTE_TIMEOUT") or 600)   # un agente vero può lavorare a lungo
+_FORMA_OK = {}      # agente → indice della forma che ha funzionato
+_RUN_VIVI = {}      # id del giro → Popen (per il ■ stop)
+
+# le stesse cartelle di agenti_stato.sh: gli agenti stanno lì, non sempre nel PATH della GUI
+_PATH_AGENTI = ('export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.bun/bin:'
+                '$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:'
+                '$HOME/bin:$HOME/.nvm/versions/node/'
+                '$(ls "$HOME/.nvm/versions/node" 2>/dev/null | sort -V | tail -1)/bin:$PATH"')
+
+
+def _guscio_agente(argv, env_extra=None, cartella=True):
+    """Il comando dell'agente dentro un bash pulito: PATH giusto, chiavi del portachiavi,
+    cartella di lavoro ~/posta. Le chiavi non finiscono mai nei log."""
+    righe = [_PATH_AGENTI,
+             'set -a; . "$HOME/posta/chiavi_env.sh" >/dev/null 2>&1 || true; set +a']
+    for k, v in (env_extra or {}).items():
+        righe.append("export %s=%s" % (k, _shlex.quote(str(v))))
+    if cartella:
+        righe.append('cd "$HOME/posta" 2>/dev/null || true')
+    righe.append("exec " + " ".join(_shlex.quote(a) for a in argv))
+    return ["bash", "-c", "\n".join(righe)]
+
+
+def agente_installato(nome):
+    """Il binario c'è? (stesse cartelle di agenti_stato.sh)."""
+    cfg = AGENTI_VERI.get(nome)
+    if not cfg:
+        return False
+    binario = cfg["bin"]
+    if nome == "Secondhand":
+        cmd = ["bash", "-c", _PATH_AGENTI + '\npython3 -c "import interpreter" >/dev/null 2>&1']
+        try:
+            return subprocess.run(cmd, capture_output=True, timeout=25).returncode == 0
+        except Exception:
+            return False
+    cmd = ["bash", "-c", _PATH_AGENTI + '\ncommand -v %s >/dev/null 2>&1' % binario]
+    try:
+        return subprocess.run(cmd, capture_output=True, timeout=25).returncode == 0
+    except Exception:
+        return False
+
+
+def agente_manca(nome):
+    """Se non si può partire: la frase in chiaro da mostrare (niente terminale, niente JSON)."""
+    if nome not in AGENTI_VERI:
+        return "Questo agente non esiste più nella tendina: scegline un altro."
+    if nome == "OpenClaw":
+        if not agente_installato(nome):
+            return ("OpenClaw non è installato su questo PC. Apri 🤖 Agenti → Installa "
+                    "(oppure il file INSTALLA_OPENCLAW.bat): poi riprova da qui.")
+    if not agente_installato(nome):
+        return ("%s non è installato su questo PC. Apri 🤖 Agenti e premi Installa: "
+                "quando è pronto riprovi da qui, senza terminale." % nome)
+    return ""
+
+
+def agente_stato_elenco():
+    """Per la GUI: chi c'è, come si chiama il suo comando, cosa fa meglio."""
+    out = {}
+    for nome, cfg in AGENTI_VERI.items():
+        out[nome] = {"installato": agente_installato(nome), "comando": " ".join(cfg["forma"][0][:2]),
+                     "fa": cfg.get("fa", ""), "manca": agente_manca(nome)}
+    return out
+
+
+# quando un agente si ferma per un accesso che manca: la frase dice cosa fare (niente terminale a caso)
+_CONSIGLI = {
+    "OpenCode": "🏗️ OpenCode non è passato: ha bisogno della sua chiave (OpenCode Zen, sta nel portachiavi). "
+                "Guarda 🤖 Agenti → 📋 Dettagli e riprova.",
+    "Goose": "🪿 Goose parla col motore di casa: se OmniRoute è spento (🤖 Agenti → 🧠 Motori) Goose non risponde. "
+             "Accendilo e riprova.",
+    "Secondhand": "🦀 Secondhand (Open Interpreter) non è a posto: 🤖 Agenti → Installa. "
+                  "Su WSL1 a volte non si installa: in quel caso resta sui modelli, non è un guasto.",
+    "Hermes": "🧭 Hermes ha bisogno del suo accesso: la prima volta va aperto «hermes» da terminale e fatto il login "
+              "(una volta sola). Poi da qui funziona.",
+    "OpenClaw": "🦾 OpenClaw lavora col suo gateway (porta 18789): accendilo dalla sua scheda in 🤖 Agenti e riprova.",
+    "Gemini": "♊ Gemini ha bisogno dell'accesso Google: la prima volta va aperto «gemini» da terminale e fatto il login "
+              "(una volta sola), oppure la chiave GEMINI_API_KEY nel portachiavi. Poi riprova da qui.",
+}
+_ACCESSO = re.compile(r"not authenticated|unauthenticated|unauthorized|forbidden|\b401\b|\b403\b|"
+                      r"api[_ -]?key|login|sign in|credential|not logged|auth token", re.I)
+_ERRORE_FORMA = re.compile(r"unknown|unrecognized|unexpected|invalid|no such|usage:|option", re.I)
+_SPORCO = re.compile(r"\x1b\[[0-9;?]*[a-zA-Z]|\x1b\][^\x07]*\x07|\r")
+
+
+def agente_esegui(nome, prompt, manda, run_id):
+    """Lancia l'agente vero e manda le righe appena arrivano. manda({"riga": testo}) / {"fine": True}.
+    Ritorna il codice d'uscita. Il processo sta in un gruppo suo: il ■ stop lo spegne davvero."""
+    cfg = AGENTI_VERI[nome]
+    forme = cfg["forma"]
+    ordine = [ _FORMA_OK[nome] ] + [i for i in range(len(forme)) if i != _FORMA_OK.get(nome)] \
+             if nome in _FORMA_OK else list(range(len(forme)))
+    ultimo = None
+    for indice in ordine:
+        argv = [prompt if a == "{p}" else a for a in forme[indice]]
+        cmd = _guscio_agente(argv, cfg.get("env"))
+        try:
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                 text=True, bufsize=1, cwd=POSTA, start_new_session=True)
+        except Exception as e:
+            manda({"errore": "non riesco a far partire %s: %s" % (nome, e)})
+            return -1
+        _RUN_VIVI[run_id] = p
+        inizio = time.time()
+        primo = []          # righe tenute da parte finché non capiamo se la forma è giusta
+        tutto = []          # tutto quello che l'agente ha detto in questo giro (per capire il motivo)
+        avviato = False
+        try:
+            for riga in p.stdout:
+                riga = _SPORCO.sub("", riga)
+                if not avviato:
+                    primo.append(riga); tutto.append(riga)
+                    # una riga "vera" (non un errore di sintassi del CLI) sblocca lo streaming;
+                    # dopo 6 secondi di silenzio si mostra comunque quello che c'è (sta pensando)
+                    if (riga.strip() and not _ERRORE_FORMA.search(riga)) or (time.time() - inizio) > 6:
+                        avviato = True
+                        for r in primo:
+                            manda({"riga": r})
+                        primo = []
+                else:
+                    tutto.append(riga); manda({"riga": riga})
+                if time.time() - inizio > AGENTE_TIMEOUT:
+                    try:
+                        os.killpg(os.getpgid(p.pid), 15)
+                    except Exception:
+                        p.terminate()
+                    manda({"riga": "\n⏱ Tempo massimo (%d secondi) raggiunto: ho fermato %s. "
+                                    "Se serve più tempo, chiedi un lavoro più corto.\n" % (AGENTE_TIMEOUT, nome)})
+                    break
+        finally:
+            codice = p.wait()
+            _RUN_VIVI.pop(run_id, None)
+        testo = "".join(primo)
+        # forma sbagliata (versione del CLI diversa): si passa alla successiva, senza mostrare l'errore
+        if (not avviato and codice != 0 and indice != ordine[-1] and _ERRORE_FORMA.search(testo)):
+            ultimo = codice
+            continue
+        _FORMA_OK[nome] = indice
+        if not avviato and primo:      # non ha prodotto niente: almeno si vede cosa ha detto
+            for r in primo:
+                manda({"riga": r})
+        # se si è fermato per un accesso che manca, la frase dice cosa fare (una volta, in chiaro)
+        if codice != 0 and re.search(_ACCESSO, "".join(tutto)) and _CONSIGLI.get(nome):
+            manda({"riga": "\n" + _CONSIGLI[nome] + "\n"})
+        return codice
+    return ultimo if ultimo is not None else -1
+
+
+def agente_ferma(run_id=None):
+    """Il ■ stop: spegne il processo dell'agente sul PC (gruppo suo, figli compresi)."""
+    fermati = 0
+    for k, p in list(_RUN_VIVI.items()):
+        if run_id and k != run_id:
+            continue
+        try:
+            os.killpg(os.getpgid(p.pid), 15)
+        except Exception:
+            try:
+                p.terminate()
+            except Exception:
+                pass
+        _RUN_VIVI.pop(k, None)
+        fermati += 1
+    return fermati
+
+
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -2456,6 +2685,8 @@ class H(BaseHTTPRequestHandler):
         elif self.path.startswith("/api/agenti/andamento"):
             self._json({"in_corso": _inst_agenti["in_corso"], "log": _inst_agenti["log"][-2500:],
                         "quando": _inst_agenti["quando"]})
+        elif self.path == "/api/agente/stato":
+            self._json({"agenti": agente_stato_elenco()})
         elif self.path.startswith("/api/agenti"):
             self._json(agenti_stato())
         elif self.path.startswith("/api/chiavi"):
@@ -2608,6 +2839,51 @@ class H(BaseHTTPRequestHandler):
                         "created": int(time.time()), "model": servito, "via": via,
                         "choices": [{"index": 0, "finish_reason": "stop",
                                      "message": {"role": "assistant", "content": testo}}]})
+        elif self.path == "/api/agente":
+            # l'AGENTE VERO sul PC (OpenCode, Goose, Secondhand, Hermes, OpenClaw, Gemini):
+            # il testo esce mentre lavora; se non è installato, la frase in chiaro dice cosa fare
+            b = self._body()
+            nome = (b.get("agente") or "").strip()
+            prompt = (b.get("prompt") or "").strip()
+            run_id = (b.get("id") or "").strip() or ("r%d" % int(time.time() * 1000))
+            manca = agente_manca(nome)
+            if manca:
+                self._json({"errore": manca}, 200)
+                return
+            if not prompt:
+                self._json({"errore": "scrivi prima cosa deve fare l'agente."}, 200)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("X-Accel-Buffering", "no")
+            self.end_headers()
+
+            def manda(obj):
+                self.wfile.write(("data: " + json.dumps(obj, ensure_ascii=False) + "\n\n").encode())
+                self.wfile.flush()
+
+            try:
+                manda({"avvio": nome, "fa": AGENTI_VERI[nome].get("fa", "")})
+                codice = agente_esegui(nome, prompt, manda, run_id)
+                manda({"fine": True, "codice": codice})
+            except (BrokenPipeError, ConnectionResetError):
+                agente_ferma(run_id)      # l'utente ha chiuso/fermato: si spegne anche il processo
+            except Exception as e:
+                try:
+                    manda({"errore": "l'agente si è fermato: %s" % e})
+                except Exception:
+                    pass
+            try:
+                self.wfile.write(b"data: [DONE]\n\n")
+                self.wfile.flush()
+            except Exception:
+                pass
+        elif self.path == "/api/agente/stop":
+            b = self._body()
+            n = agente_ferma((b.get("id") or "").strip() or None)
+            self._json({"stato": "ok", "fermati": n,
+                        "msg": "■ fermato." if n else "non stava lavorando nessun agente"})
         elif self.path == "/api/chat":
             CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
             _MOTIVI.clear()
@@ -2961,7 +3237,8 @@ def libera_porta_20200():
 
 
 if __name__ == "__main__":
-    libera_porta_20200()
+    if not os.environ.get("CENTRALE_PORTA"):
+        libera_porta_20200()
     postino_bg()
     threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
     threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
@@ -2970,4 +3247,5 @@ if __name__ == "__main__":
     else:
         print("[gui] sveglia disattivata (CENTRALE_NO_SVEGLIA=1)")
     print(f"GUI CENTRALE su http://localhost:20200 · finestra bonus dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}")
-    ThreadingHTTPServer(("0.0.0.0", 20200), H).serve_forever()
+    PORTA = int(os.environ.get("CENTRALE_PORTA") or 20200)
+    ThreadingHTTPServer(("0.0.0.0", PORTA), H).serve_forever()
