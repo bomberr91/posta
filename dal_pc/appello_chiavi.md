@@ -1,66 +1,70 @@
-# 🗣️ Appello delle chiavi — 21/10/2026 20:10
+# 🗣️ Appello delle chiavi — 22/10/2026 10:35
 
-Chiavi provate: 60
+Chiavi provate: 64
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
 | AgentRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| AI Horde (senza chiave) | ✅ risponde | 1901 | chiave valida · modello visto: google/gemma-4-31b |
-| Aion Labs | 🔴 chiave rifiutata | 901 | chiave rifiutata (401) |
-| AnyAPI | ✅ risponde | 2299 | chiave valida · modello visto: google/gemma-4-26b-a4b-it:free |
-| Api.Airforce | ✅ risponde | 3869 | chiave valida · modello visto: gpt-5 |
-| Auray | 🔴 chiave rifiutata | 813 | chiave rifiutata (401) |
-| BazaarLink | ✅ risponde | 25916 | chiave valida · modello visto: auto:free |
-| BlazeAPI | ✅ risponde | 11336 | chiave valida · modello visto: free/glm-5.3 |
-| BlockRun | ✅ risponde | 4083 | chiave valida · modello visto: zai/glm-5 |
-| Chutes | ✅ risponde | 7816 | chiave valida · modello visto: Qwen/Qwen3-32B-TEE |
-| CLōD | ✅ risponde | 1233 | chiave valida · modello visto: GPT-5 |
-| Cloudflare Workers AI | ⚪ non raggiungibile | 1632 | non raggiungibile |
-| Cohere | 🟡 occupato adesso | 2337 | troppe richieste adesso (429) |
-| ElectronHub | ✅ risponde | 2020 | chiave valida · modello visto: gpt-5 |
+| Agnes AI | 🟡 strano | 798 | elenco modelli: risposta 404 |
+| AI Horde (senza chiave) | ⚪ non raggiungibile | 21732 | non raggiungibile |
+| Aion Labs | 🟡 strano | 1981 | elenco modelli: risposta 404 |
+| AnyAPI | 🔴 chiave rifiutata | 407 | chiave rifiutata (403) |
+| Api.Airforce | 🟡 strano | 2245 | elenco modelli: risposta 404 |
+| Auray | ✅ risponde | 1554 | chiave valida · modello visto: glm-5-3-flash |
+| BazaarLink | 🟡 strano | 2608 | elenco modelli: risposta 404 |
+| BlazeAPI | 🟡 strano | 860 | elenco modelli: risposta 302 |
+| BlockRun | 🟡 strano | 1844 | elenco modelli: risposta 404 |
+| Chutes | 🟡 strano | 1287 | elenco modelli: risposta 404 |
+| CLōD | 🟡 strano | 795 | elenco modelli: risposta 404 |
+| Cloudflare Workers AI | ✅ risponde | 1278 | chiave valida · modello visto: @cf/meta/llama-3.3-70b-instruct-fp8-fast |
+| Cohere | 🟡 strano | 6743 | elenco modelli: risposta 404 |
+| DreamPrompting | 🟡 strano | 584 | elenco modelli: risposta 404 |
+| ElectronHub | 🔴 chiave rifiutata | 598 | chiave rifiutata (403) |
 | fal.ai | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| FreeAI | ✅ risponde | 2117 | chiave valida · modello visto: qwen7b |
-| Google AI Studio | ✅ risponde | 2411 | chiave valida · modello visto: gemini-2.5-pro |
-| GitHub Models | ✅ risponde | 1319 | chiave valida · modello visto: openai/gpt-4o-mini |
-| Groq | ✅ risponde | 2648 | chiave valida · modello visto: allam-2-7b |
-| HuggingFace Router | ✅ risponde | 1222 | chiave valida · modello visto: Qwen/Qwen3-8B |
-| Inferbase | ✅ risponde | 1893 | chiave valida · modello visto: qwen3-14b |
-| Jina AI | ✅ risponde | 1841 | chiave valida · modello visto: jina-ai/jina-vlm |
-| Kilo (senza chiave) | 🟡 strano | 2112 | elenco modelli: risposta 308 |
-| LLM7 | ✅ risponde | 1522 | chiave valida · modello visto: auto |
-| LLMTR | ✅ risponde | 1942 | chiave valida · modello visto: zai/glm-5 |
-| Logfare | ✅ risponde | 1833 | chiave valida · modello visto: 8ball |
-| LongCat | ✅ risponde | 2133 | chiave valida · modello visto: LongCat-2.0 |
-| Lucidity | ✅ risponde | 2559 | chiave valida · modello visto: z-ai/glm-5 |
-| Mistral | ✅ risponde | 2300 | chiave valida · modello visto: mistral-medium |
-| Moondream | ✅ risponde | 1200 | chiave valida · modello visto: moondream/moondream3-preview |
-| NaraRouter | ✅ risponde | 12266 | chiave valida · modello visto: glm-5.2 |
-| NavyAI | ✅ risponde | 1824 | chiave valida · modello visto: gpt-5.5 |
-| Nscale | 🔴 chiave rifiutata | 811 | chiave rifiutata (401) |
-| NVIDIA | ✅ risponde | 1905 | chiave valida · modello visto: z-ai/glm-5.3 |
-| Ollama Cloud | ✅ risponde | 1637 | chiave valida · modello visto: glm-5.3 |
-| OpenCode Zen | ✅ risponde | 1332 | chiave valida · modello visto: glm-5.3 |
-| OpenRouter | ✅ risponde | 2504 | chiave valida · modello visto: z-ai/glm-5 |
-| OrcaRouter | ✅ risponde | 1246 | chiave valida · modello visto: z-ai/glm-5 |
-| OVH | 🔴 chiave rifiutata | 2030 | chiave rifiutata (403) |
-| Plugsky | ✅ risponde | 2165 | chiave valida · modello visto: plugsky-kimi |
-| Pollinations | ✅ risponde | 1053 | chiave valida · modello visto: openai-fast |
-| Pollinations (senza chiave) | ✅ risponde | 1141 | chiave valida · modello visto: openai-fast |
-| Pollinations (immagini, senza chiave) | ✅ risponde | 1156 | chiave valida · modello visto: flux |
-| Qdrant Cloud | 🟡 strano | 1487 | elenco modelli: risposta 404 |
-| Requesty | ✅ risponde | 2328 | chiave valida · modello visto: zai/GLM-5 |
-| Router9 | ✅ risponde | 1372 | chiave valida · modello visto: z-ai/glm-5.2 |
-| Routeway | ✅ risponde | 1141 | chiave valida · modello visto: ideogram-v2-turbo |
-| Sail | ✅ risponde | 3841 | chiave valida · modello visto: zai-org/GLM-5.3 |
-| SeaLION | ✅ risponde | 2307 | chiave valida · modello visto: aisingapore/Qwen-SEA-LION-v4-32B-IT |
-| Septor Labs | ✅ risponde | 4363 | chiave valida · modello visto: gemma-3-4b-it |
-| SimpleLLM | ✅ risponde | 1149 | chiave valida · modello visto: GLM-5.1 |
-| Speechify | 🟡 strano | 1717 | elenco modelli: risposta 404 |
-| Speka | ✅ risponde | 1636 | chiave valida · modello visto: z-ai/glm-5.3 |
+| FreeAI | 🟡 strano | 1223 | elenco modelli: risposta 404 |
+| Google AI Studio | 🟡 strano | 6793 | elenco modelli: risposta 404 |
+| GitHub Models | ✅ risponde | 2268 | chiave valida · modello visto: openai/gpt-4o-mini |
+| Gizmo | 🟡 strano | 725 | elenco modelli: risposta 404 |
+| Groq | 🟡 strano | 6880 | elenco modelli: risposta 404 |
+| HuggingFace Router | 🟡 strano | 1326 | elenco modelli: risposta 404 |
+| Inferbase | 🟡 strano | 1324 | elenco modelli: risposta 404 |
+| Jina AI | 🟡 strano | 788 | elenco modelli: risposta 404 |
+| Kilo (senza chiave) | 🟡 strano | 835 | elenco modelli: risposta 308 |
+| LLM7 | 🟡 strano | 1148 | elenco modelli: risposta 404 |
+| LLMTR | 🟡 strano | 946 | elenco modelli: risposta 301 |
+| Logfare | 🟡 strano | 989 | elenco modelli: risposta 404 |
+| LongCat | ⚪ non raggiungibile | 22099 | non raggiungibile |
+| Lucidity | 🟡 strano | 1313 | elenco modelli: risposta 404 |
+| Mistral | 🟡 strano | 6805 | elenco modelli: risposta 404 |
+| Moondream | 🟡 strano | 1089 | elenco modelli: risposta 404 |
+| NaraRouter | 🟡 strano | 3569 | elenco modelli: risposta 404 |
+| NavyAI | 🔴 chiave rifiutata | 540 | chiave rifiutata (403) |
+| Nscale | 🔴 chiave rifiutata | 500 | chiave rifiutata (401) |
+| NVIDIA | 🟡 strano | 6746 | elenco modelli: risposta 404 |
+| Ollama Cloud | 🟡 strano | 820 | elenco modelli: risposta 404 |
+| OpenCode Zen | 🟡 strano | 2230 | elenco modelli: risposta 404 |
+| OpenRouter | 🟡 strano | 6921 | elenco modelli: risposta 404 |
+| OrcaRouter | ⚪ non raggiungibile | 22063 | non raggiungibile |
+| OVH | 🔴 chiave rifiutata | 928 | chiave rifiutata (403) |
+| Plugsky | 🟡 strano | 1050 | elenco modelli: risposta 404 |
+| Pollinations | ✅ risponde | 2089 | chiave valida · modello visto: openai-fast |
+| Pollinations (senza chiave) | ✅ risponde | 815 | chiave valida · modello visto: openai-fast |
+| Pollinations (immagini, senza chiave) | ✅ risponde | 1983 | chiave valida · modello visto: flux |
+| Qdrant Cloud | ✅ risponde | 695 | chiave valida · modello visto: — |
+| Requesty | 🟡 strano | 972 | elenco modelli: risposta 404 |
+| Router9 | 🟡 strano | 816 | elenco modelli: risposta 404 |
+| Routeway | 🔴 chiave rifiutata | 567 | chiave rifiutata (403) |
+| Sail | 🟡 strano | 1570 | elenco modelli: risposta 404 |
+| SeaLION | 🟡 strano | 1553 | elenco modelli: risposta 404 |
+| Septor Labs | 🟡 strano | 670 | elenco modelli: risposta 404 |
+| SimpleLLM | 🟡 strano | 760 | elenco modelli: risposta 404 |
+| Speechify | 🟡 strano | 705 | elenco modelli: risposta 404 |
+| Speka | 🟡 strano | 2230 | elenco modelli: risposta 404 |
 | TeamoRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Token Harbor | ✅ risponde | 2997 | chiave valida · modello visto: glm-5.3 |
-| Typhoon | ✅ risponde | 1140 | chiave valida · modello visto: typhoon-asr-realtime |
-| UnoRouter | ✅ risponde | 2647 | chiave valida · modello visto: glm-4.6 |
-| Waterfall | ✅ risponde | 1561 | chiave valida · modello visto: glm-5 |
-| WaveSpeedAI | 🔴 chiave rifiutata | 938 | chiave rifiutata (401) |
-| Zhipu | ✅ risponde | 2653 | chiave valida · modello visto: glm-5 |
+| Token Harbor | ✅ risponde | 1104 | chiave valida · modello visto: auto |
+| Typhoon | 🟡 strano | 1309 | elenco modelli: risposta 404 |
+| UnoRouter | 🔴 chiave rifiutata | 655 | chiave rifiutata (403) |
+| Waterfall | 🟡 strano | 939 | elenco modelli: risposta 404 |
+| WaveSpeedAI | 🟡 strano | 1683 | elenco modelli: risposta 404 |
+| xKiro | 🟡 strano | 877 | elenco modelli: risposta 404 |
+| Zhipu | 🟡 strano | 13748 | elenco modelli: risposta 404 |
