@@ -10,6 +10,7 @@ Guida di navigazione della cartella della Centrale Agenti. **Non spostare i file
   - `01_HERMES.bat` — installazione Hermes nativa Windows.
   - `02_DIAGNOSTICA_HERMES_WINDOWS.bat` — controllo di sola lettura; non installa.
   - `03_OPENCODE_WINDOWS.bat` — controlla OpenCode; lo installa solo se manca, senza configurare provider o toccare altri agenti.
+  - `04_GOOSE_WINDOWS.bat` — installa Goose Desktop ufficiale x64, verifica lo ZIP e crea un'icona; non configura provider né avvia l'app.
 - `6_BROWSER_AGENTI.bat` — browser isolato per agenti.
 - `7_SQUADRA_FUSION.bat` — avvio squadra Fusion.
 
