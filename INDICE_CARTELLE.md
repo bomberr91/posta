@@ -14,6 +14,7 @@ Guida di navigazione della cartella della Centrale Agenti. **Non spostare i file
   - `05_SECONDHAND_WINDOWS.bat` — installa Open Interpreter (Secondhand) ufficiale, verifica la versione e crea un'icona; non configura provider né avvia l'agente.
   - `06_ANTIGRAVITY_WINDOWS.bat` — installa Antigravity CLI ufficiale Google, riprova i download interrotti, verifica la versione e crea un'icona; non avvia l'agente né configura account/provider.
   - `07_ICONE_AGENTI_WINDOWS.bat` — crea/aggiorna le icone con logo di Hermes, OpenCode, Secondhand e Antigravity; lascia Goose e OpenClaw intatti e non avvia agenti.
+  - `08_ICONA_OPENCLAW_WINDOWS.bat` — crea solo il collegamento Desktop OpenClaw con logo ufficiale, usando il launcher WSL esistente; non installa o modifica l'agente.
 - `6_BROWSER_AGENTI.bat` — browser isolato per agenti.
 - `7_SQUADRA_FUSION.bat` — avvio squadra Fusion.
 
