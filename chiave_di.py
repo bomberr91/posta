@@ -14,7 +14,6 @@ import sys
 
 # formati di chiave noti, in ordine di priorità (i più specifici prima)
 FORMATI = [
-    r"auray_sk_[A-Za-z0-9_-]+",
     r"blaze-[a-z0-9]+",
     r"oc_sk_[A-Za-z0-9_]+",
     r"cpk_[A-Za-z0-9]{8,}(?:\.[A-Za-z0-9]+)+",

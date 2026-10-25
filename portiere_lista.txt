@@ -22,7 +22,6 @@ opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat
 aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat
 api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat
 bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat
-auray|Auray|Auray|https://api.auray.ai/openai/v1|glm-5-3-flash|chat
 clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat
 navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli
 orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|auto|modelli

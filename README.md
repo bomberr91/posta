@@ -1,2 +1,2 @@
 # posta
-Ponte agenti &lt;-> comandante (solo testo)
+Ponte agenti <-> comandante (solo testo)
