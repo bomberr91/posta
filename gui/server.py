@@ -2698,22 +2698,14 @@ class H(BaseHTTPRequestHandler):
             return {}
 
     def do_GET(self):
-        if self.path in ("/", "/index.html"):
-            # La radice non deve aprire la vecchia pagina «Centrale»: la GUI richiesta è il Free LLM Hub.
+        if self.path in ("/", "/index.html", "/hub", "/api/hub"):
+            # Tutte le vecchie URL della GUI portano alla dashboard effettiva (Node, porta 3000).
             self.send_response(302)
-            self.send_header("Location", "/hub")
+            self.send_header("Location", "http://localhost:3000/")
             self.send_header("Cache-Control", "no-store")
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
-        elif self.path in ("/api/hub", "/hub"):
-
-            b = leggi(os.path.join(QUI, "hub.html"), "<h1>hub.html mancante</h1>").encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(b)))
-            self.end_headers()
-            self.wfile.write(b)
         elif self.path.startswith("/api/salute"):
             self._json(salute(fresco=True))
         elif self.path.startswith("/api/agenti/andamento"):
