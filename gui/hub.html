@@ -97,8 +97,6 @@ header .sp{flex:1}
 #opt{background:rgba(163,113,247,.15);border-color:#a371f7;color:#d2a8ff;font-weight:700}
 #undo{display:none;font-size:11px;color:var(--mut)}
 label.webt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mut);cursor:pointer}
-#usage{font-size:11px;padding:4px 9px;background:var(--bg);color:var(--mut)}
-#usage:hover{color:var(--txt)}
 #web{accent-color:var(--verde)}
 #god{accent-color:var(--rosso)}
 #godl.on{color:var(--rosso)}
@@ -197,7 +195,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
         <button class="icobtn" id="btnAgenti" title="Le funzioni che servono agli AGENTI (non alla chat): crediti, motore, browser, chiavi, risultati, aggiornamento PC, postino" style="font-weight:700">🤖 Agenti</button>
         <span id="agBoot" style="display:inline-flex;gap:9px;align-items:center;font-size:11px;color:var(--mut)"></span>
-        <button id="usage" title="Uso REALE del router dell'hub: richieste, errori e token di oggi (contabilità delle nostre chiavi) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
         <button class="gear" id="gear" title="Impostazioni">⚙</button>
@@ -240,8 +237,9 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       <div class="agCol">
       <section class="agCard">
         <h3>🧠 Motori</h3>
+        <div class="agRiga"><span><b>Router Hub</b> <span class="agDim" style="font-size:11px">primario</span></span><b class="agDim" style="font-size:12px">instradamento Hub</b></div>
         <div class="agRiga"><span><b>OmniRoute</b><span class="agDots" id="agOmniDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agOmni">—</b></div>
-        <div class="agRiga"><span class="agDim" style="font-size:12px">provider attivi</span><b id="agOmniProv" style="font-size:12px">—</b></div>
+        <div class="agRiga"><span class="agDim" style="font-size:12px">fonte opzionale (OpenAI-compat)</span><b id="agOmniProv" style="font-size:12px">—</b></div>
         <div class="agBottoni" style="margin-top:5px">
           <button class="agB pri" id="agOmniOn">Avvia</button>
           <button class="agB" id="agOmniOff">Spegni</button>
@@ -370,22 +368,10 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         if(m.indexOf('Regista')>-1){t=PC;sv='🧠 Regista · claude-opus-5 (riserva pronta: opus-4.8)';}
         else if(m.indexOf('Lampo')>-1){t='⚡ Fatto subito: ecco la risposta, diretta e senza giri.\n\n🧪 (ANTEPRIMA: Lampo gira su deepseek-v4-flash, la linea sempre viva — per le cose di tutti i giorni)';sv='⚡ Lampo · deepseek-v4-flash';}
         else if(m.indexOf('Fabbro')>-1){t='💻 Ho letto il codice, trovato il bug alla riga 42, corretto, test superato, commit b4c5d6e sul ponte.\n\n🧪 (ANTEPRIMA: il Fabbro scrive E prova il codice sul PC, non te lo incolla soltanto)';sv='💻 Fabbro · qwen3-coder via OmniRoute';}
-        else if(m.indexOf('Libero')>-1){t='😈 Qui nessun argomento è vietato: rispondo diretto e tu valuti da solo rischi e convenienza.\n\n🧪 (ANTEPRIMA: questa chat userà SOLO piloti senza guinzaglio — Venice / modello locale — mai le chiavi dei provider seri, così niente ban)';sv='😈 Libero · venice-uncensored';}
         else if(m.indexOf('Squadra')>-1){t=SQ;sv='🔥 Squadra · il Regista ha scelto 3 agenti · giudice claude-opus-5';}
         else {t='🧪 (ANTEPRIMA) Risposta di prova del modello «'+m+'» — nella versione vera risponde il tuo hub (Portiere o router nostro), identico a oggi.';sv='deepseek-v4-flash (prova)';}
         if(b.stream===false) return j({model:sv,choices:[{message:{content:t}}]});
         return sse(t,sv);
-      }
-      if(u.includes('/api/agente')){
-        let bb={}; try{ bb=JSON.parse((opt&&opt.body)||'{}'); }catch(e){}
-        const nomeT = String(bb.agente||'agente');
-        const righe = ['📋 Piano: leggo i file del progetto…','✅ letti 3 file','✅ test superato','✅ commit sul ponte','','🧪 (ANTEPRIMA: sul PC qui vedi '+nomeT+' che lavora DAVVERO, riga per riga — e il ■ stop ferma il suo processo)'];
-        const enc = new TextEncoder();
-        const st = new ReadableStream({ async start(c){
-          for (const r of righe){ c.enqueue(enc.encode('data: '+JSON.stringify({riga:r+'\n'})+'\n\n')); await new Promise(x=>setTimeout(x,140)); }
-          c.enqueue(enc.encode('data: {"fine":true,"codice":0}\n\ndata: [DONE]\n\n')); c.close();
-        }});
-        return new Response(st,{status:200,headers:{'Content-Type':'text/event-stream'}});
       }
       if(u.includes('/models')) return j({data:[{id:'auto:smart'},{id:'auto:fast'},{id:'deepseek-v4-flash'},{id:'glm-5-air'},{id:'qwen3.8-27b'}]});
       if(u.includes('/usage')) return j({ok:true});
@@ -405,36 +391,10 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
   freellmapi:{label:'Motori del PC (Portiere · OmniRoute · chiavi nostre) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → router nostro (rotazione, riserve, contabilità). Nessun centralino obbligatorio: le chiavi stanno nel portachiavi del PC',warn:'',models:[]},
-  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto'],['OpenCode','🏗️ architetto & codice'],['Goose','🪿 automazione & sub-agenti'],['Secondhand','🦀 revisore Rust'],['Hermes','🧭 strategia & ricerca'],['OpenClaw','🦾 operatore PC & browser H24'],['Gemini','♊ terminale Google']]},
 };
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
 
-// ══════════ PILOTI: chi risponde davvero, agente per agente (dal log del 19/10) ══════════
-const PILOTI = {
-  'Regista': {emo:'🧠', pilota:'claude-opus-5', riserve:'opus-4.8 → sonnet-4.5 → gpt-5.6-sol → deepseek-v4-flash',
-              fa:'coordina e risponde: è il pilota più intelligente del giorno, con le riserve a cascata'},
-  'Lampo':   {emo:'⚡', pilota:'deepseek-v4-flash', riserve:'gpt-oss-120b → glm-4.7-flash',
-              fa:'risposta immediata sulle cose di tutti i giorni, la linea sempre viva'},
-  'Fabbro':  {emo:'💻', pilota:'Kimi-K2.6 via Sail', riserve:'nemotron-3-ultra → deepseek-v4-flash',
-              fa:'scrive il codice, lo PROVA sul PC e committa sul ponte'},
-  'Squadra': {emo:'🔥', pilota:'il Regista sceglie quanti e quali servono', riserve:'+ Giudice Supremo (cascata AgentRouter)',
-              fa:'fusion di agenti: nessun numero fisso, decide il Regista; il Giudice certifica'},
-  'Libero':  {emo:'😈', pilota:'qwen7b via FreeAI (senza guinzaglio)', riserve:'Trinity Mini → command-r-plus',
-              fa:'parla di tutto: gira solo su piloti senza guinzaglio, mai sulle chiavi serie'},
-  'OpenCode':   {emo:'🏗️', pilota:'Kimi-K2.6 via Sail', riserve:'nemotron-3-ultra → minimax-m3',
-              fa:'architetto & codice: costruisce e rifattorizza progetti interi, dal file al commit'},
-  'Goose':      {emo:'🪿', pilota:'deepseek-v4-flash via BlazeAPI', riserve:'glm-4.7-flash → agnes-2.5-flash',
-              fa:'automazione & sub-agenti: lancia task in parallelo e li coordina'},
-  'Secondhand': {emo:'🦀', pilota:'ministral-14b via xKiro', riserve:'Trinity Mini → mistral-small',
-              fa:'revisore Rust: legge XERJ, trova bug, propone fix veloci'},
-  'Hermes':     {emo:'🧭', pilota:'nemotron-3-ultra-550b via LLMTR', riserve:'Kimi-K2.6 → command-r-plus',
-              fa:'strategia & ricerca: piani NousResearch, ricerca profonda e sintesi'},
-  'OpenClaw':   {emo:'🦾', pilota:'command-r-plus via Cohere', riserve:'deepseek-v4-flash → agnes-2.5-flash',
-              fa:'operatore PC & browser H24: muove file, browser, committa sul ponte da solo'},
-  'Gemini':     {emo:'♊', pilota:'agnes-2.5-flash via Agnes AI', riserve:'minimax-m3 → Trinity Mini',
-              fa:'terminale Google: CLI veloce, tool e API di Big G'}
-};
 
 // ══════════ stato: chat multiple + cartelle (localStorage) ══════════
 let chats = [];    // {id,title,pinned,folder,created,updated,msgs:[{role,content,model,via,web,sources,fusion}]}
@@ -829,8 +789,8 @@ async function serverSearch(q, ext){
 // ══════════ select modelli ══════════
 function refreshModelSelect(){
   const prev = lsGet('fh_model');
-  const def = 'agenti/Regista';
-  let start = (!prev || prev==='freellmapi/auto' || prev==='freellmapi/auto:cheap') ? def : prev; // chi aveva 'auto' o 'auto:cheap' finisce su auto:smart
+  const def = 'freellmapi/auto:smart';
+  let start = (!prev || prev==='freellmapi/auto' || prev==='freellmapi/auto:cheap' || prev.startsWith('agenti/')) ? def : prev; // migra le vecchie selezioni agenti a un modello Hub
   const extra = {
     tailor: '🎯 new fusion — fusion su misura',
     vision: '🖼️ visione — interroga le immagini',
@@ -844,14 +804,13 @@ function refreshModelSelect(){
       const o = document.createElement('option'); o.value = p+'/'+id;
       const mE = String(note).match(/^(\S{1,4})\s+(.+)$/); // «⚡ il più veloce» → emoji portata IN TESTA, come tutte le altre voci della tendina (richiesta utente 12/10)
       o.textContent = extra[id] || ((mE && !/[\p{L}\p{N}]/u.test(mE[1])) ? mE[1]+' '+id+' — '+mE[2] : id+' — '+note);
-      if (p==='agenti' && typeof AGENTI_VERI_HUB!=='undefined' && AGENTI_VERI_HUB[id]) o.textContent += ' · sul PC';
       sel.appendChild(o); // niente intestazione: una lista sola, asciutta
     }
   }
   const tms = getTeams();
   for (const t of tms.filter(t=>t.approved!==false)){ const o = document.createElement('option'); o.value = 'freellmapi/team::'+t.name; o.textContent = '⭐ '+t.name+(t.desc?' — '+t.desc:' — fusion'); sel.appendChild(o); }
   for (const t of tms.filter(t=>t.approved===false)){ const o = document.createElement('option'); o.value = 'freellmapi/team::'+t.name; o.textContent = '🧪 '+t.name+(t.desc?' — '+t.desc:' — fusion in prova'); sel.appendChild(o); }
-  if (![...sel.options].some(o=>o.value===start)) start = def; // valore rimasto appiccicato (modelli tolti o vecchio bug) → default
+  if (![...sel.options].some(o=>o.value===start)) start = [...sel.options].some(o=>o.value===def) ? def : (sel.options[0]?.value || ''); // evita selezioni obsolete; fallback al primo modello disponibile
   sel.value = start;
   lsSet('fh_model', sel.value);
   $('modelbadge').textContent = sel.value.split('/').slice(1).join('/');
@@ -1120,73 +1079,6 @@ async function send(){
   runTurn();
 }
 
-// ══════════ 🤖 GLI AGENTI VERI SUL PC (dalla tendina dei modelli) ══════════
-// Questi NON sono modelli: scegliendoli, il server lancia il loro comando "senza terminale"
-// (opencode run · goose run -t · interpreter.chat · hermes -z · openclaw agent exec · gemini -p)
-// e il testo compare qui mentre lavorano. Il ■ stop spegne il processo sul PC.
-const AGENTI_VERI_HUB = {
-  'OpenCode':   {emo:'🏗️'},
-  'Goose':      {emo:'🪿'},
-  'Secondhand': {emo:'🦀'},
-  'Hermes':     {emo:'🧭'},
-  'OpenClaw':   {emo:'🦾'},
-  'Gemini':     {emo:'♊'}
-};
-async function turnoAgenteVero(nome, c, q, sys){
-  const info = AGENTI_VERI_HUB[nome] || {emo:'🤖'};
-  const runId = 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-  let guasto = '';
-  ctrl = new AbortController();
-  const sig = ctrl.signal;
-  let acc = '';
-  const live = document.createElement('div'); live.className = 'msg assistant';
-  const disegna = ()=>{
-    live.innerHTML = '<div class="who">'+info.emo+' '+esc(nome)+' <span style="color:var(--mut);text-transform:none">· agente vero sul PC</span></div>'
-      + '<div class="mmeta" style="margin:0 0 6px">lavora in ~/posta — il ■ stop ferma lui, non solo la lettura</div>'
-      + (acc ? mdLite(acc) + '<span style="color:var(--mut)">▍</span>' : dotsHTML());
-    msgsEl.scrollTop = msgsEl.scrollHeight;
-  };
-  msgsEl.appendChild(live); disegna(); uiBusy(true);
-  // ■ stop: si ferma anche il processo dell'agente sul PC (non solo la lettura della risposta)
-  const fermaRemoto = ()=>{ try{ fetch('/api/agente/stop', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:runId})}); }catch(e){} };
-  if (sig && sig.addEventListener) sig.addEventListener('abort', fermaRemoto);
-  try {
-    const r = await fetch('/api/agente', {
-      method:'POST', signal: sig,
-      headers:{'Content-Type':'application/json','x-fh-key': getKey('agenti') || 'locale'},
-      body: JSON.stringify({ agente: nome, prompt: (sys ? sys + '\n\n' : '') + q, id: runId })
-    });
-    const ct = r.headers.get('content-type') || '';
-    if (ct.includes('application/json')){                 // non è partito: la frase è già in chiaro
-      const j = await r.json().catch(()=>({}));
-      throw new Error(j.errore || j.err || 'l\'agente non è partito');
-    }
-    const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
-    while (true){
-      const { done, value } = await reader.read(); if (done) break;
-      buf += dec.decode(value, { stream:true });
-      const lines = buf.split('\n'); buf = lines.pop();
-      for (const line of lines){
-        if (!line.startsWith('data:')) continue;
-        const d = line.slice(5).trim(); if (d === '[DONE]') continue;
-        let j = {}; try { j = JSON.parse(d); } catch { continue; }
-        if (j.riga){ acc += j.riga; disegna(); }
-        if (j.errore){ acc += (acc ? '\n' : '') + '⚠ ' + j.errore + '\n'; disegna(); }
-      }
-    }
-  } catch (e){
-    if (e.name === 'AbortError'){ /* stop volontario: nessun errore a schermo */ }
-    else if (acc.trim()) acc += '\n\n⚠ ' + e.message;
-    else guasto = e.message;
-  } finally {
-    ctrl = null; uiBusy(false);
-    if (acc.trim()) c.msgs.push({ role:'assistant', content: acc.trim(), model:nome, sel:nome, agente:nome, cli:true, via:'agente sul PC' });
-    else if (guasto) c.msgs.push({ role:'error', content: guasto });   // la frase in chiaro, così com'è
-    else c.msgs.push({ role:'error', content: '■ fermato prima che rispondesse. Nessun lavoro lasciato a metà.' });
-    touch(c); saveChats(); renderSidebar(); renderChat();
-  }
-}
-
 async function runTurn(){
   const c = cur(); if (!c || ctrl) return;
   const [provider, ...rest] = (sel.value || 'freellmapi/auto').split('/');
@@ -1198,20 +1090,11 @@ async function runTurn(){
 
   // 🤖 AGENTI VERI: la voce della tendina è un agente del PC (OpenCode, Goose, Secondhand…),
   // non un modello: si lancia lui, che agisce sui file e sui comandi, e il testo arriva qui.
-  if (provider === 'agenti' && AGENTI_VERI_HUB[model]){ return turnoAgenteVero(model, c, q, sys); }
 
   // 🖼️ visione / 📑 documenti: alias — se ci sono immagini il router del centralino
   // sceglie da solo un modello vision; i documenti vogliono ragionamento
   // 🤖 AGENTI: il nome dell'agente NON è un modello — ognuno ha il suo pilota vero.
-  // Senza questa mappa il motore riceveva «Libero» come nome di modello e la chat girava a vuoto.
-  let nomeAgente = '';
-  if (provider === 'agenti'){
-    nomeAgente = model;
-    const PIL = { 'Regista':'auto:smart', 'Lampo':'auto:fast', 'Fabbro':'sail',
-                  'Squadra':'fusion', 'Libero':'freeai', 'OpenCode':'sail', 'Goose':'blazeapi', 'Secondhand':'xkiro', 'Hermes':'llmtr', 'OpenClaw':'cohere', 'Gemini':'agnes' };
-    model = PIL[nomeAgente] || 'auto';
-  }
-  let dispModel = nomeAgente || model;
+  let dispModel = model;
   if (model==='vision') model = 'auto';
   else if (model==='docs') model = 'auto:smart';
   if (model==='tailor' && c.team && getTeams().some(t=>t.name===c.team)){ model = 'team::'+c.team; dispModel = model; } // chat legata alla sua squadra ⭐
@@ -1222,8 +1105,7 @@ async function runTurn(){
   ctrl = new AbortController();
   const sig = ctrl.signal;
   const nomeTeam = model.startsWith('team::') ? model.slice(6) : '';
-  const preLab = nomeAgente ? ((typeof PILOTI!=='undefined'&&PILOTI[nomeAgente]) ? PILOTI[nomeAgente].emo+' '+nomeAgente : nomeAgente)
-    : model==='trading' ? '📈 trading' : model==='code' ? '💻 fusion code' : model==='tailor' ? '🎯 new fusion' : nomeTeam ? '⭐ '+esc(nomeTeam) : model==='fusion' ? '✨ fusion' : esc(model);
+  const preLab = model==='trading' ? '📈 trading' : model==='code' ? '💻 fusion code' : model==='tailor' ? '🎯 new fusion' : nomeTeam ? '⭐ '+esc(nomeTeam) : model==='fusion' ? '✨ fusion' : esc(model);
   const live = document.createElement('div'); live.className = 'msg assistant';
   live.innerHTML = '<div class="who">'+preLab+'</div>'+dotsHTML();
   msgsEl.appendChild(live); msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -1252,7 +1134,7 @@ async function runTurn(){
   // fusion / code / trading → modello virtuale "fusion" del centralino
   let fusionCfg = null;
   let tradingAuto = false;                                // 📈 trading: istruzioni da analista
-  let godAuto = !!nomeAgente && nomeAgente==='Libero';    // 😈 Libero: senza filtri (ma NON è trading)
+  let godAuto = false;
   let whoFusion = '✨ fusion';
   let tailorTeam = null;
   let retryBuild = null; // pannello TUTTO a terra? ricostruisce la squadra (riserve dentro) e si riprova UNA volta
@@ -1426,10 +1308,10 @@ async function runTurn(){
       saveChats(); renderChat();
       return;
     }
-    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
+    c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null });
     if(fusionEv) suntoFusion(c.msgs[c.msgs.length-1]);   // squadra: se la risposta e' lunga, il sunto si prepara da solo
   } catch (e) {
-    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, agente: nomeAgente || undefined, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
+    if (e.name === 'AbortError'){ if (acc) c.msgs.push({ role:'assistant', content:acc, model: servedModel || dispModel, sel: dispModel, via, web: !!(webOn && turnSources), webq: webTentata ? String(q||'').slice(0,90) : '', webok: !!(turnSources&&turnSources.length), god, trading: tradingAuto, tailor: dispModel==='tailor', team: tailorTeam || undefined, sources: turnSources, fusion: fusionEv && fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preJudge || null) } : null }); } // stop a vuoto: nessun messaggio
     else { c.msgs.push({ role:'error', content: e.message }); }
   } finally {
     ctrl = null; uiBusy(false); // ■ stop → torna Invia al suo posto
@@ -2254,7 +2136,7 @@ optB.onclick = async ()=>{
   if (ctrl) return;
   const provOpt = (sel.value||'freellmapi/auto').split('/')[0];
   let model = (sel.value||'freellmapi/auto').split('/').slice(1).join('/');
-  if (provOpt !== 'freellmapi' || ['Regista','Lampo','Fabbro','Squadra','Libero'].includes(model)) model = 'auto'; // per ✨ serve un modello vero, non un agente
+  if (provOpt !== 'freellmapi' || ['Regista','Lampo','Fabbro','Squadra'].includes(model)) model = 'auto'; // per ✨ serve un modello vero, non un agente
   if (['fusion','code','trading','vision'].includes(model) || model.startsWith('team::')) model = 'auto'; // per l'ottimizzazione niente pannelli: gli alias dell'hub non esistono sul centralino
   else if (model==='tailor' || model==='docs') model = 'auto:smart';
   optB.disabled = true; optB.textContent = '…';
@@ -2366,7 +2248,6 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 (function(){
   try{ var _g=document.getElementById('god'); if(_g) _g.checked=true; lsSet('fh_god','1');
        var _gl=document.getElementById('godl'); if(_gl) _gl.style.display='none'; }catch(e){}
-  try{ lsSet('fh_key_agenti','locale'); }catch(e){}
 })();
 </script>
 

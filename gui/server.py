@@ -1416,6 +1416,7 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
     """Una chiamata DIRETTA al provider. Ritorna (testo, errore, secondi_da_aspettare)."""
     import urllib.request
     pid = m["id"]
+    # Per l'API agenti usiamo solo modelli allowlisted; il router normale resta invariato
     restanti = _freddo(pid)
     if restanti:
         return "", "in pausa ancora %ds" % restanti, restanti
@@ -1436,9 +1437,6 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
         k = solo_token.strip()      # nel «Bearer» va SOLO il token, l'account sta nell'indirizzo
         base = "https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc
     try:
-        # L'INTESTAZIONE «CHI SEI» CONTA (trovato il 21/10): xKiro, DreamPrompting e Gizmo
-        # rispondono 403 se la richiesta arriva come «Python-urllib». Con l'UA di un browser
-        # passano. È lo stesso quirk che FreeLLMAPI chiama «UA browser» nelle sue note.
         req = urllib.request.Request(
             base + "/chat/completions",
             data=json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
@@ -1450,8 +1448,6 @@ def _posta_diretta(m, messaggi, quanti=900, timeout=70):
         testo = ((scelta.get("message") or {}).get("content") or "").strip()
         if not testo and (scelta.get("finish_reason") == "length"
                           or (scelta.get("message") or {}).get("reasoning_content")):
-            # modello che «ragiona»: i token sono finiti dentro il ragionamento e la risposta
-            # è rimasta vuota (quirk Agnes/Logfare). Un secondo giro con più spazio.
             corpo2 = json.dumps({"model": m["modello"], "messages": ultimi(messaggi, 12),
                                  "max_tokens": max(800, quanti * 4)}).encode()
             req2 = urllib.request.Request(base + "/chat/completions", data=corpo2,
@@ -2152,8 +2148,43 @@ def messaggio_motori():
 # Il token si genera da sé al primo uso e resta sul PC: senza token non si passa.
 TOKEN_AGENTE = os.path.join(QUI, "agente_token.txt")
 
+# Allowlist fail-closed: IDs canonici "provider-id/model-id" aggiunti dall'amministratore
+# solo dopo verifica manuale di costo zero. Vuota per default; nessun modello esposto/invocato.
+HUB_AGENT_FREE_MODELS_VERIFIED = tuple(
+    x.strip() for x in os.environ.get("HUB_AGENT_FREE_MODELS_VERIFIED", "").split(",") if x.strip()
+)
+
+
+def modelli_agente_ammessi():
+    """Modelli pronti, verificati e presenti nell'allowlist esplicita a costo zero."""
+    allow = {str(x).strip() for x in HUB_AGENT_FREE_MODELS_VERIFIED if str(x).strip()}
+    if not allow:
+        return []
+    out = []
+    for m in modelli_nostri(False):
+        api_id = "%s/%s" % (m.get("id", ""), m.get("modello", ""))
+        if api_id in allow and m.get("verificato"):
+            out.append(dict(m, api_id=api_id))
+    return out
+
+
+def candidati_agente(modello, disponibili):
+    """Seleziona solo modelli allowlisted; per esplicito, eventuale riserva è tracciata."""
+    if not disponibili:
+        return []
+    richiesto = str(modello or "auto").strip()
+    if richiesto in ("auto", "auto:fast", "auto:smart"):
+        if richiesto == "auto:fast":
+            return sorted(disponibili, key=lambda m: m.get("ms", 99999))
+        return sorted(disponibili, key=lambda m: (-PESO.get(m.get("id", ""), 2), m.get("ms", 99999)))
+    scelto = next((m for m in disponibili if m.get("api_id") == richiesto), None)
+    if scelto is None:
+        raise ValueError("modello non allowlisted/verificato")
+    return [scelto] + [m for m in disponibili if m is not scelto]
+
 
 def token_agente():
+    # Token persistente unico (non per-agent, non revocabile) per compatibilità.
     try:
         t = open(TOKEN_AGENTE, encoding="utf-8").read().strip()
         if t:
@@ -2163,20 +2194,27 @@ def token_agente():
     import base64
     t = "hub-" + base64.urlsafe_b64encode(os.urandom(18)).decode().rstrip("=")
     try:
-        with open(TOKEN_AGENTE, "w", encoding="utf-8") as f:
+        with open(TOKEN_AGENTE, "x", encoding="utf-8") as f:
             f.write(t)
         os.chmod(TOKEN_AGENTE, 0o600)
+    except FileExistsError:
+        try:
+            return open(TOKEN_AGENTE, encoding="utf-8").read().strip()
+        except Exception:
+            return ""
     except Exception:
-        pass
+        return ""
     return t
 
 
 def agente_autorizzato(header):
-    """Solo chi ha il token di casa: l'endpoint non è per il mondo."""
-    dato = (header or "").replace("Bearer", "").strip()
-    buono = token_agente()
-    atteso = os.environ.get("HUB_TOKEN") or buono
-    return bool(dato) and dato == atteso
+    """Richiede esattamente Authorization: Bearer <token>; confronto constant-time."""
+    import hmac
+    parti = str(header or "").strip().split()
+    if len(parti) != 2 or parti[0].lower() != "bearer":
+        return False
+    atteso = (os.environ.get("HUB_TOKEN") or token_agente()).strip()
+    return bool(atteso) and hmac.compare_digest(parti[1], atteso)
 
 
 def chat_riposta(msgs, modello="auto", fusion=None):
@@ -2724,12 +2762,10 @@ class H(BaseHTTPRequestHandler):
             if not agente_autorizzato(self.headers.get("Authorization")):
                 self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
                 return
-            data = [{"id": "auto:smart", "object": "model", "owned_by": "hub"},
-                    {"id": "auto:fast", "object": "model", "owned_by": "hub"},
-                    {"id": "fusion", "object": "model", "owned_by": "hub"}]
-            for m in modelli_nostri(True):
-                data.append({"id": m["id"], "object": "model", "owned_by": m["provider"],
-                             "root": m["modello"]})
+            data = [{"id": m["api_id"], "object": "model", "owned_by": m["provider"],
+                     "root": m["modello"],
+                     "capabilities": {"chat": True, "streaming": False, "tools": False}}
+                    for m in modelli_agente_ammessi()]
             self._json({"object": "list", "data": data})
         elif self.path == "/api/agente-token":
             self._json({"token": token_agente(), "endpoint": "/v1/chat/completions"})
@@ -2779,9 +2815,18 @@ class H(BaseHTTPRequestHandler):
         if ctype and ctype != "application/json":
             self._json({"err": "il corpo deve essere JSON"}, 415)
             return
-        if origine and not any(a in origine for a in ("127.0.0.1", "localhost", "[::1]")):
-            self._json({"err": "origine non ammessa: questo hub risponde solo al tuo PC"}, 403)
-            return
+        if origine:
+            try:
+                from urllib.parse import urlparse
+                p = urlparse(origine)
+                host = (p.hostname or "").lower()
+                allowed = {"localhost", "127.0.0.1", "::1"}
+                if host not in allowed:
+                    self._json({"err": "origine non ammessa: questo hub risponde solo al tuo PC"}, 403)
+                    return
+            except Exception:
+                self._json({"err": "origine non ammessa: questo hub risponde solo al tuo PC"}, 403)
+                return
         if self.path == "/api/checkin":
             self._json(fai_checkin(forza=bool(self._body().get("forza"))))
         elif self.path == "/api/checkin/segna":
@@ -2838,61 +2883,68 @@ class H(BaseHTTPRequestHandler):
                 self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
                 return
             b = self._body()
-            msgs = b.get("messages") or []
-            if not msgs:
-                self._json({"error": {"message": 'manca "messages"'}}, 400)
+            if not isinstance(b, dict):
+                self._json({"error": {"message": "il corpo deve essere un oggetto JSON", "type": "invalid_request_error"}}, 400)
                 return
-            CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
-            testo, servito, via = chat_riposta(msgs, b.get("model") or "auto:smart")
+            msgs = b.get("messages") or []
+            if not isinstance(msgs, list) or not msgs:
+                self._json({"error": {"message": '"messages" deve essere un array non vuoto', "type": "invalid_request_error"}}, 400)
+                return
+            disponibili = modelli_agente_ammessi()
+            if not disponibili:
+                self._json({"error": {"message": "nessun modello agente verificato e allowlisted a costo zero", "type": "invalid_request_error"}}, 403)
+                return
+            if b.get("stream") is True or "tools" in b or "tool_choice" in b or "functions" in b or "function_call" in b:
+                self._json({"error": {"message": "streaming e tool/function calling non sono supportati", "type": "invalid_request_error"}}, 400)
+                return
+            non_supportati = ("temperature", "top_p", "n", "presence_penalty", "frequency_penalty", "logprobs", "top_logprobs", "response_format", "stop", "seed")
+            for bad in non_supportati:
+                if bad in b:
+                    self._json({"error": {"message": "parametro non supportato: " + bad, "type": "invalid_request_error"}}, 400)
+                    return
+            if "max_tokens" in b and "max_completion_tokens" in b:
+                self._json({"error": {"message": "specificare max_tokens oppure max_completion_tokens, non entrambi", "type": "invalid_request_error"}}, 400)
+                return
+            richiesto = str(b.get("model") or "auto").strip()
+            try:
+                candidati = candidati_agente(richiesto, disponibili)
+            except ValueError:
+                self._json({"error": {"message": "modello non allowlisted/verificato", "type": "invalid_request_error"}}, 403)
+                return
+            max_tokens = b.get("max_tokens", b.get("max_completion_tokens", 900))
+            try:
+                if isinstance(max_tokens, bool):
+                    raise ValueError("boolean")
+                max_tokens = max(1, min(4096, int(max_tokens)))
+            except (TypeError, ValueError):
+                self._json({"error": {"message": "max_tokens deve essere un intero tra 1 e 4096", "type": "invalid_request_error"}}, 400)
+                return
+            testo = ""
+            servito = None
+            errore = "nessun modello allowlisted ha risposto"
+            for modello in candidati:
+                testo, errore, _attesa = _posta_diretta(modello, msgs, quanti=max_tokens, timeout=70)
+                if testo:
+                    servito = modello
+                    break
+            if not testo or servito is None:
+                self._json({"error": {"message": errore or "errore upstream", "type": "api_error"}}, 502)
+                return
+            via = "router Hub diretto"
+            if richiesto not in ("auto", "auto:fast", "auto:smart") and servito["api_id"] != richiesto:
+                via += " · fallback allowlisted da " + richiesto
             self._json({"id": "chatcmpl-hub-%d" % int(time.time()), "object": "chat.completion",
-                        "created": int(time.time()), "model": servito, "via": via,
+                        "created": int(time.time()), "model": servito["api_id"], "via": via,
                         "choices": [{"index": 0, "finish_reason": "stop",
                                      "message": {"role": "assistant", "content": testo}}]})
         elif self.path == "/api/agente":
-            # l'AGENTE VERO sul PC (OpenCode, Goose, Secondhand, Hermes, OpenClaw, Gemini):
-            # il testo esce mentre lavora; se non è installato, la frase in chiaro dice cosa fare
-            b = self._body()
-            nome = (b.get("agente") or "").strip()
-            prompt = (b.get("prompt") or "").strip()
-            run_id = (b.get("id") or "").strip() or ("r%d" % int(time.time() * 1000))
-            manca = agente_manca(nome)
-            if manca:
-                self._json({"errore": manca}, 200)
-                return
-            if not prompt:
-                self._json({"errore": "scrivi prima cosa deve fare l'agente."}, 200)
-                return
-            self.send_response(200)
-            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
-            self.send_header("Cache-Control", "no-cache")
-            self.send_header("X-Accel-Buffering", "no")
-            self.end_headers()
-
-            def manda(obj):
-                self.wfile.write(("data: " + json.dumps(obj, ensure_ascii=False) + "\n\n").encode())
-                self.wfile.flush()
-
-            try:
-                manda({"avvio": nome, "fa": AGENTI_VERI[nome].get("fa", "")})
-                codice = agente_esegui(nome, prompt, manda, run_id)
-                manda({"fine": True, "codice": codice})
-            except (BrokenPipeError, ConnectionResetError):
-                agente_ferma(run_id)      # l'utente ha chiuso/fermato: si spegne anche il processo
-            except Exception as e:
-                try:
-                    manda({"errore": "l'agente si è fermato: %s" % e})
-                except Exception:
-                    pass
-            try:
-                self.wfile.write(b"data: [DONE]\n\n")
-                self.wfile.flush()
-            except Exception:
-                pass
+            # Disabilitato: non avvia più CLI locali (fail-closed)
+            self._json({"error": {"message": "endpoint disabilitato: nessun avvio CLI dall'hub"}}, 403)
+            return
         elif self.path == "/api/agente/stop":
-            b = self._body()
-            n = agente_ferma((b.get("id") or "").strip() or None)
-            self._json({"stato": "ok", "fermati": n,
-                        "msg": "■ fermato." if n else "non stava lavorando nessun agente"})
+            # Disabilitato: non ferma più CLI locali (fail-closed)
+            self._json({"error": {"message": "endpoint disabilitato: nessuna gestione CLI dall'hub"}}, 403)
+            return
         elif self.path == "/api/chat":
             CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
             _MOTIVI.clear()
@@ -3257,4 +3309,4 @@ if __name__ == "__main__":
         print("[gui] sveglia disattivata (CENTRALE_NO_SVEGLIA=1)")
     print(f"GUI CENTRALE su http://localhost:20200 · finestra bonus dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}")
     PORTA = int(os.environ.get("CENTRALE_PORTA") or 20200)
-    ThreadingHTTPServer(("0.0.0.0", PORTA), H).serve_forever()
+    ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
