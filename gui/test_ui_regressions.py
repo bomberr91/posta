@@ -6,9 +6,11 @@ from __future__ import annotations
 
 import http.client
 import os
+import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import unittest
@@ -49,7 +51,7 @@ class HubUiRegressionTests(unittest.TestCase):
             with self.subTest(path=path):
                 status, headers, body = self.get(path)
                 self.assertEqual(status, 302)
-                self.assertEqual(headers.get("Location"), "http://localhost:12777/")
+                self.assertEqual(headers.get("Location"), "http://localhost:3000/")
                 self.assertEqual(body, b"")
 
     def test_centrale_g_starts_bundled_standalone_hub(self):
@@ -57,16 +59,15 @@ class HubUiRegressionTests(unittest.TestCase):
         helper = (ROOT / "apri_free_llm_hub.sh").read_text(encoding="utf-8")
         self.assertIn('FREE_LLM_HUB_DIR:-$HOME/posta/free-llm-hub', helper)
         self.assertIn('bash "$HOME/posta/apri_free_llm_hub.sh"', source)
-        self.assertIn('FREE_LLM_HUB_PORT:-12777', helper)
+        self.assertIn('FREE_LLM_HUB_PORT:-3000', helper)
         self.assertNotIn('nohup python3 "$HOME/posta/gui/server.py"', source)
+        self.assertEqual((HUB / "SOURCE_COMMIT").read_text().strip(),
+                         "1277fefc33ecd6b6fdd1db2e0568713bbd941b3a")
         self.assertTrue((HUB / "dev.js").is_file())
 
     def test_standalone_hub_starts_and_serves_real_dashboard_offline(self):
         index = (HUB / "index.html").read_text(encoding="utf-8")
-        self.assertIn("['auto:fast'", index)
-        self.assertIn("['auto:smart'", index)
-        self.assertIn("includes('parlalibero')", index)
-        self.assertIn("function openSettings()", index)
+        self.assertIn("<title>⚡ Free LLM Hub</title>", index)
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
@@ -91,7 +92,7 @@ class HubUiRegressionTests(unittest.TestCase):
             self.assertIsNotNone(response, "Free LLM Hub non è diventato pronto")
             self.assertEqual(response.status, 200)
             self.assertIn("<title>⚡ Free LLM Hub</title>", body)
-            self.assertIn('name=\"posta-free-llm-hub-source\" content=\"1277fef\"', body)
+            self.assertEqual(body, index)
         finally:
             proc.terminate()
             try:
@@ -100,15 +101,73 @@ class HubUiRegressionTests(unittest.TestCase):
                 proc.kill()
                 proc.wait(timeout=3)
 
+    def test_launcher_replaces_stale_hub_instead_of_opening_a_second_version(self):
+        with tempfile.TemporaryDirectory(prefix="hub-stale-test-") as tmp:
+            home = Path(tmp) / "home"
+            stale = home / "free-llm-hub"
+            home.mkdir()
+            shutil.copytree(HUB, stale)
+            stale_index = stale / "index.html"
+            stale_index.write_text(stale_index.read_text(encoding="utf-8") + "\\n<!-- stale build -->\\n",
+                                   encoding="utf-8")
+            with socket.socket() as sock:
+                sock.bind(("127.0.0.1", 0))
+                port = sock.getsockname()[1]
+            stale_env = os.environ.copy()
+            stale_env.update({"HOME": str(home), "PORT": str(port)})
+            old = subprocess.Popen(["node", "dev.js"], cwd=stale, env=stale_env,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                for _ in range(40):
+                    if old.poll() is not None:
+                        self.fail("il server Hub obsoleto è terminato prima del test")
+                    try:
+                        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=1)
+                        conn.request("GET", "/")
+                        response = conn.getresponse()
+                        response.read()
+                        conn.close()
+                        break
+                    except OSError:
+                        time.sleep(0.1)
+                launcher_env = stale_env.copy()
+                launcher_env.update({"FREE_LLM_HUB_DIR": str(HUB),
+                                     "FREE_LLM_HUB_PORT": str(port),
+                                     "FREE_LLM_HUB_NO_OPEN": "1"})
+                subprocess.run(["bash", str(ROOT / "apri_free_llm_hub.sh")], env=launcher_env,
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                               timeout=20)
+                self.assertIsNotNone(old.poll(), "il processo obsoleto non è stato sostituito")
+                conn = http.client.HTTPConnection("127.0.0.1", port, timeout=2)
+                conn.request("GET", "/")
+                response = conn.getresponse()
+                body = response.read().decode("utf-8")
+                conn.close()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(body, (HUB / "index.html").read_text(encoding="utf-8"))
+            finally:
+                if old.poll() is None:
+                    old.terminate()
+                    old.wait(timeout=3)
+                for proc in Path("/proc").glob("[0-9]*"):
+                    try:
+                        if os.path.realpath(proc / "cwd") == str(HUB) and "dev.js" in (proc / "cmdline").read_bytes().decode(errors="ignore"):
+                            envtext = (proc / "environ").read_bytes().decode(errors="ignore")
+                            if f"PORT={port}" in envtext:
+                                os.kill(int(proc.name), 15)
+                    except (OSError, ValueError, PermissionError):
+                        pass
+
     def test_desktop_gui_shortcut_opens_pinned_standalone_hub(self):
         shortcut = (ROOT / "8_CENTRALE_GUI.bat").read_text(encoding="ascii")
         helper = (ROOT / "apri_free_llm_hub.sh").read_text(encoding="utf-8")
         self.assertIn("apri_free_llm_hub.sh", shortcut)
         self.assertNotIn("gui/server.py", shortcut)
-        self.assertIn('HUB_REVISION="1277fef"', helper)
-        self.assertIn('posta-free-llm-hub-source', helper)
-        self.assertIn('FREE_LLM_HUB_PORT:-12777', helper)
-        self.assertIn('if [[ "$HUB_HTML" == *"$HUB_MARKER"* ]]', helper)
+        self.assertIn('HUB_REVISION="1277fefc33ecd6b6fdd1db2e0568713bbd941b3a"', helper)
+        self.assertIn('FREE_LLM_HUB_PORT:-3000', helper)
+        self.assertIn('EXPECTED_SHA=', helper)
+        self.assertIn('LIVE_SHA="$(live_sha)"', helper)
+        self.assertIn('SOURCE_COMMIT', helper)
 
     def test_omniroute_has_no_background_autostart(self):
         source = (GUI / "server.py").read_text(encoding="utf-8")

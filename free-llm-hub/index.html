@@ -2,7 +2,6 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="posta-free-llm-hub-source" content="1277fef">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚡ Free LLM Hub</title>
 <style>
@@ -79,7 +78,7 @@ header .sp{flex:1}
 .atchip img{width:22px;height:22px;object-fit:cover;border-radius:4px}
 .atchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .atchip b{cursor:pointer;color:var(--mut)}
-#model{display:block;flex:0 1 320px;width:min(320px,100%);min-width:220px;max-width:100%;font-size:12px;padding:6px 8px}
+#model{max-width:220px;font-size:12px;padding:4px 6px}
 .mmeta{font-size:10.5px;color:var(--mut);margin-top:6px}
 .mmeta b{color:var(--blu);font-weight:600}
 .chips{margin:2px 0 6px}
@@ -149,7 +148,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
   <button class="newchat" id="newchat">＋ Nuova chat</button>
   <div class="ssearch"><span>🔍</span><input id="sbsearch" placeholder="cerca nelle chat…"><button class="icobtn" id="sbsclear">✕</button></div>
   <div id="sblist"></div>
-  <div class="sbottom"><button type="button" class="srowbtn" id="gear2">⚙ Chiavi e modelli</button></div>
+  <div class="sbottom"><button class="srowbtn" id="gear2">⚙ Chiavi e modelli</button></div>
 </aside>
 <div id="sbbk"></div>
 <div id="wrap">
@@ -163,7 +162,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
-        <button type="button" class="gear" id="gear" title="Impostazioni" aria-label="Apri impostazioni">⚙</button>
+        <button class="gear" id="gear" title="Impostazioni">⚙</button>
       </header>
       <div id="msgs"></div>
       <div id="bottom">
@@ -205,7 +204,7 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 const PROVIDERS = {
   freellmapi:{label:'FreeLLMAPI (centralino sul PC) 🔌',keyUrl:'http://127.0.0.1:31415',quota:'il TUO centralino: 34 provider impilati (~7,4B token/mese) · failover automatico · richiede FreeLLMAPI desktop ACCESO',warn:'la chiave è quella UNIFICATA del centralino (inizia per freellmapi-), non le chiave dei singoli provider',models:[['auto:fast','⚡ il più veloce'],['auto:smart','🧠 il più intelligente']]},
 };
-function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean).filter(s=>!s.toLowerCase().replace(/[\s._-]/g,'').includes('parlalibero')); }
+function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
 
 // ══════════ stato: chat multiple + cartelle (localStorage) ══════════
@@ -545,7 +544,7 @@ msgsEl.addEventListener('click', e=>{
   if (act==='edit') editLast();
   if (act==='saveteam') saveTeamFrom(+b.dataset.i, b);
 });
-function getTeams(){ try { const t=JSON.parse(lsGet('fh_teams')||'[]'); return Array.isArray(t) ? t : []; } catch { return []; } }
+function getTeams(){ try { return JSON.parse(lsGet('fh_teams')||'[]'); } catch { return []; } }
 function saveTeamFrom(i, btn){
   const m = cur().msgs[i]; if (!m || !m.team) return;
   const nome = (prompt('Come vuoi chiamare questa fusion? (la ritrovi nella tendina come 🧪 in prova — la approvi con ⚙ fusion quando ti convince)', '') || '').trim().slice(0,40);
@@ -1948,7 +1947,7 @@ function renderDrawer(){
       : `<div class="hint">Nessuna squadra salvata: usa 🎯 fusion su misura e premi "💾 salva squadra" sotto la risposta.</div>`) + `</div>`;
   h += `<details><summary>🤳 usalo dai tuoi agenti (OpenClaw, Hermes…)</summary>
     <p class="hint">Endpoint OpenAI-compatibile (dall'hub in locale):<br>
-    <code>POST http://localhost:12777/v1/chat/completions</code><br>
+    <code>POST http://localhost:3000/v1/chat/completions</code><br>
     model: <code>freellmapi/auto</code> (o <code>freellmapi/fusion</code>) · header <code>x-fh-web: 1</code> per la ricerca web.<br>
     Serve la chiave: imposta l'env <code>FREELLMAPI_KEY</code> quando avvii (<code>set FREELLMAPI_KEY=freellmapi-… &amp;&amp; node dev.js</code>) oppure manda l'header <code>x-fh-key</code>.</p>
   </details>`;
@@ -1957,16 +1956,8 @@ function renderDrawer(){
   drawer.querySelectorAll('[data-custom]').forEach(el=>el.addEventListener('input',()=>{ lsSet('fh_custom_'+el.dataset.custom, el.value.trim()); refreshModelSelect(); }));
   drawer.querySelectorAll('[data-delteam]').forEach(el=>el.addEventListener('click',(ev)=>{ ev.stopPropagation(); teamDeleteMenu(ev, el.dataset.delteam); }));
 }
-function openSettings(){
-  drawer.classList.add('open');
-  try { renderDrawer(); }
-  catch(e){
-    console.error('renderDrawer', e);
-    drawer.innerHTML = '<h2 style="font-size:14px">⚙ Impostazioni</h2><p class="hint">Non riesco a caricare i dettagli, ma le impostazioni sono aperte. Ricarica la pagina e riprova.</p>';
-  }
-}
-$('gear').onclick = ()=>{ if(drawer.classList.contains('open')) drawer.classList.remove('open'); else openSettings(); };
-$('gear2').onclick = ()=>{ openSettings(); closeSb(); };
+$('gear').onclick = ()=>{ drawer.classList.toggle('open'); renderDrawer(); };
+$('gear2').onclick = ()=>{ drawer.classList.add('open'); renderDrawer(); closeSb(); };
 
 // ══════════ init ══════════
 loadState();

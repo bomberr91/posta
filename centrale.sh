@@ -187,7 +187,7 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     g|G)
-      # Non riuso il vecchio server sulla 3000: avvio la build standalone 1277fef.
+      # Verifico la build standalone 1277fef ed evito la vecchia schermata sulla 3000.
       pkill -f "$HOME/posta/gui/server.py" 2>/dev/null || true
       bash "$HOME/posta/apri_free_llm_hub.sh"
       read -r -p "Premi INVIO per tornare al menu..." _
