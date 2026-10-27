@@ -2390,21 +2390,6 @@ def _avvio_automatico():
         pass
 
 
-def _sorveglianza():
-    """In sottofondo: se il motore è spento lo riaccende (come faceva prima)."""
-    time.sleep(5)
-    while True:
-        try:
-            if not omni_bin():          # motore non installato: non insisto
-                time.sleep(600)
-                continue
-            if not porta_viva(20128):
-                omniroute_avvia(attesa=30)
-        except Exception:
-            pass
-        time.sleep(120)
-
-
 def stato():
     fus = {}
     try:
@@ -2714,13 +2699,15 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path in ("/", "/index.html"):
-            b = leggi(os.path.join(QUI, "index.html"), "<h1>index mancante</h1>").encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(b)))
+            # La radice non deve aprire la vecchia pagina «Centrale»: la GUI richiesta è il Free LLM Hub.
+            self.send_response(302)
+            self.send_header("Location", "/hub")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", "0")
             self.end_headers()
-            self.wfile.write(b)
-        elif self.path == "/api/hub" or self.path == "/hub":
+            return
+        elif self.path in ("/api/hub", "/hub"):
+
             b = leggi(os.path.join(QUI, "hub.html"), "<h1>hub.html mancante</h1>").encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -3301,12 +3288,12 @@ if __name__ == "__main__":
     if not os.environ.get("CENTRALE_PORTA"):
         libera_porta_20200()
     postino_bg()
-    threading.Thread(target=_sorveglianza, daemon=True).start()   # il motore si accende da solo
+    # OmniRoute è opzionale: si avvia solo con un comando esplicito dell’utente.
     threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
     if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":
         threading.Thread(target=sveglia_checkin, daemon=True).start()
     else:
         print("[gui] sveglia disattivata (CENTRALE_NO_SVEGLIA=1)")
-    print(f"GUI CENTRALE su http://localhost:20200 · finestra bonus dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}")
+    print(f"Free LLM Hub su http://localhost:20200/hub · finestra bonus dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}")
     PORTA = int(os.environ.get("CENTRALE_PORTA") or 20200)
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()

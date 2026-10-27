@@ -78,7 +78,7 @@ header .sp{flex:1}
 .atchip img{width:22px;height:22px;object-fit:cover;border-radius:4px}
 .atchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .atchip b{cursor:pointer;color:var(--mut)}
-#model{max-width:220px;font-size:12px;padding:4px 6px}
+#model{display:block;flex:0 1 320px;width:min(320px,100%);min-width:220px;max-width:100%;font-size:12px;padding:6px 8px}
 .mmeta{font-size:10.5px;color:var(--mut);margin-top:6px}
 .mmeta b{color:var(--blu);font-weight:600}
 .chips{margin:2px 0 6px}
@@ -150,7 +150,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 #agCorpo{padding:11px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
 .agCol{display:flex;flex-direction:column;gap:8px;min-width:0}
 .agLargo{grid-column:1/-1}
-#agListaAgenti{display:none}
 .agCard{border:1px solid var(--border,#2a2f3a);border-radius:12px;padding:9px 10px;background:#0f131a}
 .agCard h3{font-size:11.5px;margin:0 0 6px;letter-spacing:.3px;color:var(--mut,#8b949e);text-transform:uppercase}
 /* i 3 pallini che girano mentre un motore si accende */
@@ -182,7 +181,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
   <button class="newchat" id="newchat">＋ Nuova chat</button>
   <div class="ssearch"><span>🔍</span><input id="sbsearch" placeholder="cerca nelle chat…"><button class="icobtn" id="sbsclear">✕</button></div>
   <div id="sblist"></div>
-  <div class="sbottom"><button class="srowbtn" id="gear2">⚙ Chiavi e modelli</button></div>
+  <div class="sbottom"><button type="button" class="srowbtn" id="gear2">⚙ Chiavi e modelli</button></div>
 </aside>
 <div id="sbbk"></div>
 <div id="wrap">
@@ -197,7 +196,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <span id="agBoot" style="display:inline-flex;gap:9px;align-items:center;font-size:11px;color:var(--mut)"></span>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
-        <button class="gear" id="gear" title="Impostazioni">⚙</button>
+        <button type="button" class="gear" id="gear" title="Impostazioni" aria-label="Apri impostazioni">⚙</button>
       </header>
       <div id="msgs"></div>
       <div id="bottom">
@@ -224,7 +223,7 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
     </div>
     <div id="drawer"></div>
   </div>
-  <footer>Free LLM Hub · gira sul TUO PC (node dev.js) · chat e chiavi solo nel browser (localStorage) · endpoint agenti: <b>/v1/chat/completions</b> (formato OpenAI) · questo tool NON è un prodotto Google/OpenAI/ecc.</footer>
+  <footer>Free LLM Hub · dashboard locale del PC · Router Hub primario, OmniRoute opzionale · endpoint agenti: <b>/v1/chat/completions</b> (formato OpenAI) · questo tool NON è un prodotto Google/OpenAI/ecc.</footer>
 </div>
 <div id="agentiPanel" aria-hidden="true">
   <div id="agentiBox">
@@ -274,16 +273,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
       </section>
       </div>
       <div class="agCol">
-      <section class="agCard" id="agAgentiCard">
-        <h3>🤖 Agenti</h3>
-        <div class="agRiga"><span>pronti<span class="agDots" id="agAgDots" style="display:none"><i></i><i></i><i></i></span></span><b><span id="agAgentiSpia">⚪</span> <span id="agAgentiNum" style="font-size:16px">—</span></b></div>
-        <div id="agListaAgenti" style="display:none"></div>
-        <div class="agBottoni">
-          <button class="agB" id="agRicontrollaAg">Ricontrolla</button>
-          <button class="agB pri" id="agInstalla">Installa</button>
-        </div>
-        <div class="agDim" style="margin-top:6px" id="agAgentiNota">—</div>
-      </section>
       <section class="agCard">
         <h3>📮 Postino e ponte</h3>
         <div class="agRiga"><span>Postino (ponte GitHub)<span class="agDots" id="agPosDots" style="display:none"><i></i><i></i><i></i></span></span><b id="agPostino">—</b></div>
@@ -390,8 +379,10 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
-  freellmapi:{label:'Motori del PC (Portiere · OmniRoute · chiavi nostre) 🔌',keyUrl:'',quota:'la chat va sui NOSTRI motori e sulle NOSTRE chiavi: Portiere (:20129) → OmniRoute (:20128) → router nostro (rotazione, riserve, contabilità). Nessun centralino obbligatorio: le chiavi stanno nel portachiavi del PC',warn:'',models:[]},
+  freellmapi:{label:'Router Hub (chiavi del PC) 🔌',keyUrl:'',quota:'La chat usa il Router Hub come motore principale. OmniRoute resta opzionale e non si avvia da solo.',warn:'',models:[['auto:smart','automatico · migliore'],['auto:fast','automatico · più veloce']]},
 };
+let hubModels = [];
+let hubModelsLoaded = false;
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
 
@@ -799,22 +790,55 @@ function refreshModelSelect(){
     trading: '📈 fusion trading — esperto di trading'
   };
   sel.innerHTML = '';
+  const optionValues = new Set();
+  const aggiungiModello = (provider, id, label) => {
+    id = String(id || '').trim();
+    if (!id) return;
+    const value = provider + '/' + id;
+    if (optionValues.has(value)) return;
+    optionValues.add(value);
+    const o = document.createElement('option');
+    o.value = value;
+    o.textContent = label;
+    sel.appendChild(o);
+  };
   for (const [p,cfg] of Object.entries(PROVIDERS)){
     for (const [id,note] of [...cfg.models, ...[] /* vecchi extra pensionati: gli agenti li coprono con le skill */, ...customModels(p).map(m=>[m,'custom'])]){
-      const o = document.createElement('option'); o.value = p+'/'+id;
       const mE = String(note).match(/^(\S{1,4})\s+(.+)$/); // «⚡ il più veloce» → emoji portata IN TESTA, come tutte le altre voci della tendina (richiesta utente 12/10)
-      o.textContent = extra[id] || ((mE && !/[\p{L}\p{N}]/u.test(mE[1])) ? mE[1]+' '+id+' — '+mE[2] : id+' — '+note);
-      sel.appendChild(o); // niente intestazione: una lista sola, asciutta
+      const label = extra[id] || ((mE && !/[\p{L}\p{N}]/u.test(mE[1])) ? mE[1]+' '+id+' — '+mE[2] : id+' — '+note);
+      aggiungiModello(p, id, label);
     }
+  }
+  for (const m of hubModels){
+    if (!m || typeof m !== 'object') continue;
+    const id = String(m.id || m.modello || '').trim();
+    if (!id || id === 'auto:smart' || id === 'auto:fast') continue;
+    const descr = [m.provider, m.modello || id].filter(Boolean).join(' · ');
+    const stato = m.verificato ? 'verificato' : (m.stato || 'da provare');
+    aggiungiModello('freellmapi', id, descr + ' — ' + stato);
   }
   const tms = getTeams();
   for (const t of tms.filter(t=>t.approved!==false)){ const o = document.createElement('option'); o.value = 'freellmapi/team::'+t.name; o.textContent = '⭐ '+t.name+(t.desc?' — '+t.desc:' — fusion'); sel.appendChild(o); }
   for (const t of tms.filter(t=>t.approved===false)){ const o = document.createElement('option'); o.value = 'freellmapi/team::'+t.name; o.textContent = '🧪 '+t.name+(t.desc?' — '+t.desc:' — fusion in prova'); sel.appendChild(o); }
-  if (![...sel.options].some(o=>o.value===start)) start = [...sel.options].some(o=>o.value===def) ? def : (sel.options[0]?.value || ''); // evita selezioni obsolete; fallback al primo modello disponibile
+  if (![...sel.options].some(o=>o.value===start)) start = [...sel.options].some(o=>o.value===def) ? def : (sel.options[0]?.value || ''); // fallback visibile anche se il router è offline
   sel.value = start;
-  lsSet('fh_model', sel.value);
+  // La prima renderizzazione precede la risposta async /api/modelli: non cancellare
+  // la scelta salvata finché non sappiamo se il modello esiste ancora.
+  if (hubModelsLoaded || !prev || prev === sel.value) lsSet('fh_model', sel.value);
   $('modelbadge').textContent = sel.value.split('/').slice(1).join('/');
   syncTeamBtn();
+}
+async function caricaModelliHub(){
+  try {
+    const r = await fetch('/api/modelli', { cache:'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const dati = await r.json();
+    hubModels = Array.isArray(dati.data) ? dati.data : [];
+  } catch (e) {
+    hubModels = []; // i due modelli automatici restano disponibili anche offline
+  }
+  hubModelsLoaded = true;
+  refreshModelSelect();
 }
 // click su una chat salvata: rimetti il modello con cui proseguivi quella conversazione.
 // Il modello SERVITO (es. qwen3.8-27b quando avevi scelto auto) NON si aggiunge alla tendina:
@@ -2152,7 +2176,7 @@ qEl.addEventListener('input', ()=>{ optOrig = null; undoB.style.display = 'none'
 
 // ══════════ drawer impostazioni ══════════
 function renderDrawer(){
-  let h = '<h2 style="font-size:14px;margin:0 0 10px">⚙ Chiavi & modelli</h2><p class="hint">Tutto gira sul tuo PC: l\'hub (node dev.js) parla col centralino via Node. Le chiavi restano SOLO nel tuo browser.</p>';
+  let h = '<h2 style="font-size:14px;margin:0 0 10px">⚙ Chiavi & modelli</h2><p class="hint">Tutto gira sul tuo PC: la dashboard parla col Router Hub locale. Le chiavi restano nel portachiavi del PC; OmniRoute è opzionale.</p>';
   for (const [p,cfg] of Object.entries(PROVIDERS)){
     const k = getKey(p);
     h += `<div class="prov"><h3><span class="dot ${k?'ok':''}"></span>${cfg.label}</h3>
@@ -2225,8 +2249,9 @@ $('gear').onclick = ()=>{ drawer.classList.toggle('open'); renderDrawer(); };
 $('gear2').onclick = ()=>{ drawer.classList.add('open'); renderDrawer(); closeSb(); };
 
 // ══════════ init ══════════
-// la TENDINA per prima: se qualcosa più sotto va storto, almeno i modelli ci sono sempre
+// la TENDINA per prima: mostra subito Auto; poi aggiunge i modelli veri del Router Hub.
 refreshModelSelect();
+caricaModelliHub();
 try { loadState(); } catch(e){ console.error('loadState', e); }
 try { renderSidebar(); } catch(e){ console.error('renderSidebar', e); }
 try { renderChat(); } catch(e){ console.error('renderChat', e); }
@@ -2435,7 +2460,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
       if(avv.length !== (window._avvVisti ?? 0)){
         window._avvVisti = avv.length;
         const a = avv[avv.length - 1];
-        if(a) log('⚠️ ' + a.nome + ' non risponde (' + a.motivo + '). Prova «Ricontrolla» e poi «Installa» sulla scheda 🤖 Agenti.');
+        if(a) log('⚠️ ' + a.nome + ' non risponde (' + a.motivo + '). Apri Centrale → [7] Stato agenti per i dettagli; se manca il programma, usa il relativo installatore.');
       }
       // i 3 pallini: girano mentre il motore si accende (anche quello che parte da solo)
       const staPartendo = !s.omniroute && (mot.avvio_in_corso || !!accendo);
@@ -2730,80 +2755,22 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 })();
 </script>
 <script>
-// ─── scheda AGENTI (dentro il pannello 🤖) ───
+// Stato minimo per la spia in testata; niente riquadro duplicato nella scheda Agenti.
 (function(){
-  const VIVO = (location.port === '20200') || (location.hostname === 'localhost' && location.port);
-  const $ = id => document.getElementById(id);
-  if(!$('agListaAgenti')) return;
-
-  function rigaAgente(a){
-    const col = !a.installato ? 'no' : (a.pronto ? 'ok' : 'att');
-    const icona = !a.installato ? '✗' : (a.pronto ? '🟢' : '⚠');
-    const testo = !a.installato ? 'manca' : (a.pronto ? 'pronto' : (a.nota || 'da sistemare'));
-    return '<div class="agRiga"><span>' + icona + ' <b>' + a.nome + '</b>' +
-           (a.versione ? ' <span class="agDim">' + a.versione + '</span>' : '') + '</span>' +
-           '<span class="' + col + '" style="font-size:12px">' + testo + '</span></div>';
-  }
-
-  async function carica(){
-    try{
-      const r = await fetch('/api/agenti');
+  const vivo = location.port === '20200' || (location.hostname === 'localhost' && !!location.port);
+  if (!vivo) { window._agenti = []; return; }
+  async function aggiornaAgenti(){
+    try {
+      const r = await fetch('/api/agenti', { cache:'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       const d = await r.json();
-      const lista = d.agenti || [];   // solo agenti veri: il motore sta nella sua scheda
-      const vecchio = $('agListaAgenti').innerHTML;
-      $('agListaAgenti').innerHTML = lista.length ? lista.map(rigaAgente).join('')
-        : (vecchio && vecchio.indexOf('nessun dato') < 0 ? vecchio : '<div class="agDim">nessun dato</div>');
-      const mancano = lista.filter(a => !a.installato).length;
-      const pronti = lista.filter(a => a.pronto).length;
-      const num = document.getElementById('agAgentiNum');
-      if(num) num.textContent = pronti + '/' + lista.length;
-      // spia: verde se ci sono tutti, rossa se ne manca uno
-      const spia = document.getElementById('agAgentiSpia');
-      if(spia){
-        const tutti = lista.length && pronti === lista.length;
-        spia.textContent = lista.length ? (tutti ? '🟢' : '🔴') : '⚪';
-      }
-      window._agenti = lista;
-      if((window._prova || {}).in_corso) gira('agAgDots', true); else gira('agAgDots', false);
-      $('agAgentiNota').textContent = pronti + ' pronti su ' + lista.length +
-        (mancano ? ' · ' + mancano + ' da installare' : ' · nessuno manca') +
-        (d.portiere || d.cervello ? ' · portiere: ' + (d.portiere || d.cervello) : '');
-    }catch(e){
-      const el = $('agListaAgenti');
-      if(!el.innerHTML || el.innerHTML.indexOf('agRiga') < 0)
-        el.innerHTML = '<div class="agDim">non riesco a leggere lo stato (il motore potrebbe essere occupato: riprovo)</div>';
+      window._agenti = Array.isArray(d.agenti) ? d.agenti : [];
+    } catch (_) {
+      if (!Array.isArray(window._agenti)) window._agenti = [];
     }
   }
-
-  $('agRicontrollaAg') && $('agRicontrollaAg').addEventListener('click', async () => {
-    if(window.bootAggiorna) window.bootAggiorna();
-    gira('agAgDots', true);
-    $('agAgentiNota').textContent = 'Ricontrollo…';
-    await carica();
-    gira('agAgDots', false);
-    $('agAgentiNota').textContent = 'Ricontrollato.';
-  });
-  $('agInstalla') && $('agInstalla').addEventListener('click', async () => {
-    if(window.bootAggiorna) window.bootAggiorna();
-    gira('agAgDots', true);
-    $('agAgentiNota').textContent = 'Installo / sistemo i mancanti… (1-5 minuti)';
-    const r = await fetch('/api/agenti/installa', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})});
-    const d = await r.json();
-    nota(d.msg || 'Installazione avviata.');
-    const gira2 = setInterval(async () => {
-      const a = await (await fetch('/api/agenti/andamento')).json();
-      if(String(a.log || '').trim()) nota(String(a.log || '').trim().split('\n').pop());
-      if(!a.in_corso){
-        clearInterval(gira2); gira('agAgDots', false);
-        await carica();
-        $('agAgentiNota').textContent = 'Installazione finita: guarda la spia.';
-      }
-    }, 4000);
-  });
-  // primo caricamento quando si apre il pannello
-  const b = $('btnAgenti');
-  if(b) b.addEventListener('click', () => setTimeout(carica, 300));
-  setTimeout(carica, 1200);
+  aggiornaAgenti();
+  setInterval(() => { if (!document.hidden) aggiornaAgenti(); }, 15000);
 })();
 </script>
 

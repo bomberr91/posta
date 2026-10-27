@@ -68,7 +68,7 @@ while :; do
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
   echo "  [9] 🧠 MOTORE OMNIROUTE — HUB V2 (359 provider, 90+ GRATIS, dashboard web)"
   echo "  [v] 🩺 CONTROLLO SALUTE (2 secondi: dice subito se qualcosa è rotto, non installa niente)"
-  echo "  [g] 🖥️  GUI CENTRALE (interfaccia web: Hub + Agenti + check-in automatico)"
+  echo "  [g] 🌐 FREE LLM HUB (dashboard chat e modelli)"
   echo ""
   echo "  [0] Esci"
   echo "======================================================================"
@@ -187,11 +187,11 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     g|G)
-      pkill -f "gui/server.py" 2>/dev/null
+      pkill -f "gui/server.py" 2>/dev/null || true
       nohup python3 "$HOME/posta/gui/server.py" >/tmp/gui.log 2>&1 &
       sleep 2
-      cmd.exe /c start "" "http://localhost:20200" 2>/dev/null || echo "Apri a mano: http://localhost:20200"
-      echo "🖥️ GUI avviata su http://localhost:20200 (il check-in parte da solo)"
+      cmd.exe /c start "" "http://localhost:20200/hub" 2>/dev/null || echo "Apri a mano: http://localhost:20200/hub"
+      echo "🌐 Free LLM Hub avviato su http://localhost:20200/hub"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     v|V)
