@@ -189,7 +189,9 @@ while :; do
     g|G)
       # Chiudo l'interfaccia legacy: non serve per la dashboard Free LLM Hub.
       pkill -f "$HOME/posta/gui/server.py" 2>/dev/null || true
-      HUB_DIR="${FREE_LLM_HUB_DIR:-$HOME/free-llm-hub}"
+      HUB_DIR="${FREE_LLM_HUB_DIR:-$HOME/posta/free-llm-hub}"
+      # Compatibilità: usa anche la copia affiancata alla home, se esiste.
+      if [ -z "${FREE_LLM_HUB_DIR:-}" ] && [ ! -f "$HUB_DIR/dev.js" ] && [ -f "$HOME/free-llm-hub/dev.js" ]; then HUB_DIR="$HOME/free-llm-hub"; fi
       HUB_NODE="$NODE22_BIN/node"
       [ -x "$HUB_NODE" ] || HUB_NODE=$(command -v node || true)
       HUB_PRONTO=0
