@@ -2699,9 +2699,9 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path in ("/", "/index.html", "/hub", "/api/hub"):
-            # Tutte le vecchie URL della GUI portano alla dashboard effettiva (Node, porta 3000).
+            # Tutte le vecchie URL della GUI portano alla dashboard standalone 1277fef (porta 12777).
             self.send_response(302)
-            self.send_header("Location", "http://localhost:3000/")
+            self.send_header("Location", "http://localhost:12777/")
             self.send_header("Cache-Control", "no-store")
             self.send_header("Content-Length", "0")
             self.end_headers()

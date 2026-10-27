@@ -187,43 +187,9 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     g|G)
-      # Chiudo l'interfaccia legacy: non serve per la dashboard Free LLM Hub.
+      # Non riuso il vecchio server sulla 3000: avvio la build standalone 1277fef.
       pkill -f "$HOME/posta/gui/server.py" 2>/dev/null || true
-      HUB_DIR="${FREE_LLM_HUB_DIR:-$HOME/posta/free-llm-hub}"
-      # Compatibilità: usa anche la copia affiancata alla home, se esiste.
-      if [ -z "${FREE_LLM_HUB_DIR:-}" ] && [ ! -f "$HUB_DIR/dev.js" ] && [ -f "$HOME/free-llm-hub/dev.js" ]; then HUB_DIR="$HOME/free-llm-hub"; fi
-      HUB_NODE="$NODE22_BIN/node"
-      [ -x "$HUB_NODE" ] || HUB_NODE=$(command -v node || true)
-      HUB_PRONTO=0
-      HUB_ERRORE=""
-      if [ ! -f "$HUB_DIR/dev.js" ]; then
-        HUB_ERRORE="Free LLM Hub non trovato: $HUB_DIR (manca dev.js)."
-      elif [ -z "$HUB_NODE" ]; then
-        HUB_ERRORE="Node.js non trovato: non posso avviare Free LLM Hub."
-      elif ! command -v curl >/dev/null 2>&1; then
-        HUB_ERRORE="curl non è installato: non posso verificare la porta 3000."
-      else
-        HUB_HTML=$(curl -fsS --max-time 2 http://127.0.0.1:3000/ 2>/dev/null || true)
-        if [[ "$HUB_HTML" == *"<title>⚡ Free LLM Hub</title>"* ]]; then
-          HUB_PRONTO=1
-        elif (exec 3<>/dev/tcp/127.0.0.1/3000) 2>/dev/null; then
-          HUB_ERRORE="La porta 3000 è occupata da un servizio diverso dal Free LLM Hub."
-        else
-          (cd "$HUB_DIR" && nohup "$HUB_NODE" dev.js >/tmp/free-llm-hub.log 2>&1 </dev/null &)
-          for _ in {1..20}; do
-            HUB_HTML=$(curl -fsS --max-time 2 http://127.0.0.1:3000/ 2>/dev/null || true)
-            if [[ "$HUB_HTML" == *"<title>⚡ Free LLM Hub</title>"* ]]; then HUB_PRONTO=1; break; fi
-            sleep 1
-          done
-          [ "$HUB_PRONTO" -eq 1 ] || HUB_ERRORE="Free LLM Hub non si è avviato. Controlla /tmp/free-llm-hub.log."
-        fi
-      fi
-      if [ "$HUB_PRONTO" -eq 1 ]; then
-        cmd.exe /c start "" "http://localhost:3000/" 2>/dev/null || echo "Apri a mano: http://localhost:3000/"
-        echo "🌐 Free LLM Hub aperto su http://localhost:3000/"
-      else
-        echo "❌ $HUB_ERRORE"
-      fi
+      bash "$HOME/posta/apri_free_llm_hub.sh"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     v|V)

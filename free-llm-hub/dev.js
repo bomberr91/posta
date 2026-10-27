@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // dev.js — test LOCALE senza Vercel: serve index.html e monta le funzioni api/ alla stessa maniera
-// Uso: node dev.js  →  http://localhost:3000
+// Uso: PORT=12777 node dev.js  →  http://localhost:12777 (porta Centrale; modificabile con PORT)
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

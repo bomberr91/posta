@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="posta-free-llm-hub-source" content="1277fef">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚡ Free LLM Hub</title>
 <style>
@@ -1947,7 +1948,7 @@ function renderDrawer(){
       : `<div class="hint">Nessuna squadra salvata: usa 🎯 fusion su misura e premi "💾 salva squadra" sotto la risposta.</div>`) + `</div>`;
   h += `<details><summary>🤳 usalo dai tuoi agenti (OpenClaw, Hermes…)</summary>
     <p class="hint">Endpoint OpenAI-compatibile (dall'hub in locale):<br>
-    <code>POST http://localhost:3000/v1/chat/completions</code><br>
+    <code>POST http://localhost:12777/v1/chat/completions</code><br>
     model: <code>freellmapi/auto</code> (o <code>freellmapi/fusion</code>) · header <code>x-fh-web: 1</code> per la ricerca web.<br>
     Serve la chiave: imposta l'env <code>FREELLMAPI_KEY</code> quando avvii (<code>set FREELLMAPI_KEY=freellmapi-… &amp;&amp; node dev.js</code>) oppure manda l'header <code>x-fh-key</code>.</p>
   </details>`;
