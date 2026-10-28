@@ -1,4 +1,4 @@
-# ✅ Aggiornamento FilippoPC — 27/10/2026 23:13
+# ✅ Aggiornamento FilippoPC — 28/10/2026 11:27
 
 ## Novità applicate in questo giro (1)
 
@@ -7,8 +7,3 @@
 ## Saltati perché già a posto: 4
 
 - Skill: 28
-- OpenCode: 1.19.3
-- Goose:  1.55.0
-- Secondhand: interpreter 0.0.56
-- Hermes: presente in ~/.hermes
-- OpenClaw: (node:28681) ExperimentalWarning: SQLite is an experimental feature and might change at any time
