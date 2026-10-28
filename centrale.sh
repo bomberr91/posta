@@ -139,9 +139,24 @@ while :; do
       fi
       ;;
     8)
-      cd "$HOME/posta" && git fetch origin main && git reset --hard origin/main && bash "$HOME/posta/aggiorna_tutto.sh"
+      if cd "$HOME/posta" && git fetch origin main && git reset --hard origin/main && bash "$HOME/posta/aggiorna_tutto.sh"; then
+        echo "✅ Centrale aggiornata da posta/main."
+      else
+        echo "❌ Aggiornamento di posta non riuscito: controlla il messaggio Git sopra; non considero l'update completato."
+      fi
+      # La GUI g reindirizza al Free LLM Hub separato su :3000: aggiorna anche quel checkout,
+      # ma solo con fast-forward (mai reset hard, così le modifiche locali non vengono cancellate).
+      if git -C "$HOME/free-llm-hub" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        if git -C "$HOME/free-llm-hub" fetch origin main && git -C "$HOME/free-llm-hub" merge --ff-only origin/main; then
+          echo "✅ Interfaccia Free LLM Hub aggiornata da free-llm-hub/main."
+        else
+          echo "⚠️ Interfaccia Free LLM Hub NON aggiornata: merge non fast-forward o modifiche locali; nessun reset eseguito."
+        fi
+      else
+        echo "⚠️ Checkout ~/free-llm-hub non trovato: la GUI su :3000 non è stata aggiornata."
+      fi
       pulisci_desktop
-      read -r -p "Aggiornato! Premi INVIO per ricaricare la Centrale..." _
+      read -r -p "Aggiornamento completato (o avvisi sopra). Premi INVIO per ricaricare la Centrale..." _
       exec bash "$HOME/posta/centrale.sh"
       ;;
     9)
