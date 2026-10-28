@@ -144,29 +144,12 @@ while :; do
       else
         echo "❌ Aggiornamento di posta non riuscito: controlla il messaggio Git sopra; non considero l'update completato."
       fi
-      # g reindirizza al Free LLM Hub separato su :3000. Cerca il checkout vero per dev.js
-      # + index.html, sia in HOME sia nel profilo Windows montato; mai assumere un path fisso.
-      HUB_DIR=""
-      for ROOT in "$HOME" /mnt/c/Users; do
-        [ -d "$ROOT" ] || continue
-        while IFS= read -r -d '' DEVJS; do
-          CANDIDATO="${DEVJS%/dev.js}"
-          if [ -f "$CANDIDATO/index.html" ] && grep -q "Free LLM Hub" "$CANDIDATO/index.html" && git -C "$CANDIDATO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-            HUB_DIR="$CANDIDATO"
-            break
-          fi
-        done < <(find "$ROOT" -maxdepth 6 \( -type d \( -name .git -o -name node_modules -o -name .next -o -name .venv \) -prune \) -o \( -type f -name dev.js -print0 \) 2>/dev/null)
-        [ -n "$HUB_DIR" ] && break
-      done
-      if [ -n "$HUB_DIR" ]; then
-        echo "Checkout UI trovato: $HUB_DIR"
-        if git -C "$HUB_DIR" fetch origin main && git -C "$HUB_DIR" merge --ff-only origin/main; then
-          echo "✅ Interfaccia Free LLM Hub aggiornata da origin/main."
-        else
-          echo "⚠️ Interfaccia Free LLM Hub NON aggiornata: merge non fast-forward/modifiche locali o remote assente; nessun reset eseguito."
-        fi
+      # La UI standalone è incorporata in posta/free-llm-hub e viene aggiornata insieme al repo.
+      if [ -f "$HOME/posta/free-llm-hub/SOURCE_COMMIT" ] && \
+         [ "$(tr -d '\r\n' < "$HOME/posta/free-llm-hub/SOURCE_COMMIT")" = "bbc524fb0d67b563d0fd1f9d2b52445b4d84523e" ]; then
+        echo "✅ UI standalone incorporata aggiornata (Free LLM Hub bbc524f)."
       else
-        echo "⚠️ Checkout Free LLM Hub (dev.js + index.html) non trovato in HOME o /mnt/c/Users: UI su :3000 non aggiornata."
+        echo "⚠️ Bundle UI standalone mancante o non allineato: controlla free-llm-hub/SOURCE_COMMIT."
       fi
       pulisci_desktop
       read -r -p "Aggiornamento completato (o avvisi sopra). Premi INVIO per ricaricare la Centrale..." _

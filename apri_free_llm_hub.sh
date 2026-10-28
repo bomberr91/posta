@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Avvia la copia standalone del Free LLM Hub dal commit upstream 1277fef.
+# Avvia la copia standalone del Free LLM Hub dal commit upstream bbc524f.
 set -u
-HUB_REVISION="1277fefc33ecd6b6fdd1db2e0568713bbd941b3a"
+HUB_REVISION="bbc524fb0d67b563d0fd1f9d2b52445b4d84523e"
 HUB_PORT="${FREE_LLM_HUB_PORT:-3000}"
 HUB_DIR="${FREE_LLM_HUB_DIR:-$HOME/posta/free-llm-hub}"
 HUB_URL="http://localhost:$HUB_PORT/"
 
 if [ ! -f "$HUB_DIR/dev.js" ] || [ ! -f "$HUB_DIR/index.html" ] || [ ! -f "$HUB_DIR/SOURCE_COMMIT" ]; then
-  echo "❌ Free LLM Hub 1277fef non trovato in $HUB_DIR"
+  echo "❌ Free LLM Hub bbc524f non trovato in $HUB_DIR"
   exit 1
 fi
 if [ "$(tr -d '\r\n' < "$HUB_DIR/SOURCE_COMMIT")" != "$HUB_REVISION" ]; then
-  echo "❌ La copia in $HUB_DIR non corrisponde al commit Free LLM Hub 1277fef."
+  echo "❌ La copia in $HUB_DIR non corrisponde al commit Free LLM Hub bbc524f."
   exit 1
 fi
 HUB_NODE="$HOME/.nvm/versions/node/v22.22.2/bin/node"
@@ -78,7 +78,7 @@ if [ "$LIVE_SHA" != "$EXPECTED_SHA" ]; then
     sleep 0.25
   done
   if [ "$HUB_PRONTO" -ne 1 ]; then
-    echo "❌ Free LLM Hub 1277fef non si è avviato. Controlla /tmp/free-llm-hub.log."
+    echo "❌ Free LLM Hub bbc524f non si è avviato. Controlla /tmp/free-llm-hub.log."
     exit 1
   fi
 fi
@@ -86,4 +86,4 @@ fi
 if [ "${FREE_LLM_HUB_NO_OPEN:-0}" != "1" ]; then
   cmd.exe /c start "" "$HUB_URL" 2>/dev/null || echo "Apri nel browser: $HUB_URL"
 fi
-echo "🌐 Free LLM Hub verificato — commit 1277fef — $HUB_URL"
+echo "🌐 Free LLM Hub verificato — commit bbc524f — $HUB_URL"

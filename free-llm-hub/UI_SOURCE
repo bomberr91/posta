@@ -1,3 +1,4 @@
-Base UI: _MISSIONI/HUB_CENTRALE/ANTEPRIME/ANTEPRIMA_HUB_AGENTI.html
-SHA256: 83ed42a7f133b4a450a0d58e3b7fd712b3ad2dabdf6b8a1d89aaf6f627fd623a
-Applied: removed the Libero model option and its demo branch; removed the 24-hour usage counter, tracker, and API endpoint.
+Upstream: https://github.com/bomberr91/free-llm-hub
+Commit: bbc524fb0d67b563d0fd1f9d2b52445b4d84523e (bbc524f)
+Applied: Focus kept; Approfondisci and its related flow removed. Existing mock labels remain explicitly marked as previews.
+Bundle in posta/free-llm-hub for the Centrale standalone launcher.
