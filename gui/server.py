@@ -1515,15 +1515,17 @@ def _candidati(modello="auto", quanti=6):
     elif m in ("auto:smart", "smart", "auto:best"):
         ordine = sorted(tutti, key=lambda x: (-PESO.get(x["id"], 2), x["ms"]))
     else:
-        # un provider preciso (id) oppure un id di modello: quello davanti, poi il resto
-        davanti = [x for x in tutti if m == x["id"].lower() or m == str(x["modello"]).lower()
-                   or str(x["modello"]).lower().endswith("/" + m)]
-        resto = [x for x in tutti if x not in davanti]
-        ordine = (davanti or []) + sorted(resto, key=lambda x: x["ms"])
-        if davanti:
-            # BUG trovato il 21/10: se scegli TU un provider, comanda la tua scelta.
-            # Il riordino per «verificato» vale solo per auto / auto:fast / auto:smart.
-            return ordine[:max(1, quanti)]
+        # Una scelta esplicita identifica un solo modello: mai allargare la selezione.
+        per_id = [x for x in tutti if m == str(x.get("id", "")).lower()]
+        if per_id:
+            return per_id[:1] if len(per_id) == 1 else []
+        per_nome = [x for x in tutti if m == str(x.get("modello", "")).lower()]
+        if per_nome:
+            return per_nome[:1] if len(per_nome) == 1 else []
+        # Il suffisso del nome modello è accettato solo se univoco.
+        per_suffisso = [x for x in tutti
+                        if str(x.get("modello", "")).lower().endswith("/" + m)]
+        return per_suffisso[:1] if len(per_suffisso) == 1 else []
     # tre livelli, poi l'ordine della strategia: verificato+risponde · risponde · da provare
     def livello(x):
         if x.get("verificato") and (x.get("stato") or "") == "risponde":
@@ -2180,13 +2182,15 @@ def candidati_agente(modello, disponibili):
     scelto = next((m for m in disponibili if m.get("api_id") == richiesto), None)
     if scelto is None:
         raise ValueError("modello non allowlisted/verificato")
-    return [scelto] + [m for m in disponibili if m is not scelto]
+    # Richiesta esplicita: non ripiegare silenziosamente su un altro ID allowlisted.
+    return [scelto]
 
 
 def token_agente():
     # Token persistente unico (non per-agent, non revocabile) per compatibilità.
     try:
-        t = open(TOKEN_AGENTE, encoding="utf-8").read().strip()
+        with open(TOKEN_AGENTE, encoding="utf-8") as f:
+            t = f.read().strip()
         if t:
             return t
     except Exception:
@@ -2199,7 +2203,8 @@ def token_agente():
         os.chmod(TOKEN_AGENTE, 0o600)
     except FileExistsError:
         try:
-            return open(TOKEN_AGENTE, encoding="utf-8").read().strip()
+            with open(TOKEN_AGENTE, encoding="utf-8") as f:
+                return f.read().strip()
         except Exception:
             return ""
     except Exception:
@@ -2234,7 +2239,9 @@ def chat_riposta(msgs, modello="auto", fusion=None):
     key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
     for nome_motore, porta in vivi:
         # il nome del modello può non piacere al motore: si riprova con «auto» (e senza squadra)
-        candidati = [modello] if modello == "auto" else [modello, "auto"]
+        candidati = ([modello, "auto"] if modello.lower() in
+                     ("auto", "auto:fast", "fast", "auto:smart", "smart", "auto:best", "")
+                     else [modello])
         for m in candidati:
             corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": False}
             if fusion and m == modello:
@@ -2268,7 +2275,10 @@ def chat_stream(msgs, modello, fusion, scrivi):
     modello = str(modello or "auto")
     key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
     for nome_motore, porta in [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]:
-        for m in ([modello] if modello == "auto" else [modello, "auto"]):
+        candidati = ([modello, "auto"] if modello.lower() in
+                     ("auto", "auto:fast", "fast", "auto:smart", "smart", "auto:best", "")
+                     else [modello])
+        for m in candidati:
             corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": True}
             if fusion and m == modello:
                 corpo["fusion"] = fusion
@@ -2747,6 +2757,44 @@ class H(BaseHTTPRequestHandler):
                     for m in modelli_agente_ammessi()]
             self._json({"object": "list", "data": data})
         elif self.path == "/api/agente-token":
+            # Unicamente peer loopback + authority locale; Origin, da sola, non prova il peer.
+            import ipaddress
+            import urllib.parse
+            try:
+                peer = ipaddress.ip_address(self.client_address[0].split("%", 1)[0])
+                peer_locale = peer.is_loopback or bool(
+                    getattr(peer, "ipv4_mapped", None) and peer.ipv4_mapped.is_loopback)
+            except (AttributeError, ValueError, IndexError):
+                peer_locale = False
+            host_header = (self.headers.get("Host") or "").strip()
+            origin = (self.headers.get("Origin") or "").strip()
+            try:
+                authority = urllib.parse.urlsplit("//" + host_header)
+                host_name = authority.hostname or ""
+                port = authority.port  # valida anche range e sintassi della porta
+                try:
+                    host_ip = ipaddress.ip_address(host_name)
+                    host_ip_local = host_ip.is_loopback or bool(
+                        getattr(host_ip, "ipv4_mapped", None) and host_ip.ipv4_mapped.is_loopback)
+                except ValueError:
+                    host_ip_local = False
+                host_local = (not authority.username and not authority.password
+                              and not authority.path and not authority.query and not authority.fragment
+                              and (host_name.lower() == "localhost" or host_ip_local))
+            except (ValueError, TypeError):
+                host_local = False
+            origin_ok = True
+            if origin:
+                try:
+                    parsed = urllib.parse.urlsplit(origin)
+                    origin_ok = (parsed.scheme == "http" and parsed.path in ("", "/")
+                                 and not parsed.query and not parsed.fragment
+                                 and parsed.netloc.lower() == host_header.lower())
+                except Exception:
+                    origin_ok = False
+            if not peer_locale or not host_local or not origin_ok:
+                self._json({"err": "richiesta locale non verificata"}, 403)
+                return
             self._json({"token": token_agente(), "endpoint": "/v1/chat/completions"})
         elif self.path == "/api/contabilita":
             self._json(contabilita())
