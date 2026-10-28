@@ -144,16 +144,29 @@ while :; do
       else
         echo "❌ Aggiornamento di posta non riuscito: controlla il messaggio Git sopra; non considero l'update completato."
       fi
-      # La GUI g reindirizza al Free LLM Hub separato su :3000: aggiorna anche quel checkout,
-      # ma solo con fast-forward (mai reset hard, così le modifiche locali non vengono cancellate).
-      if git -C "$HOME/free-llm-hub" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        if git -C "$HOME/free-llm-hub" fetch origin main && git -C "$HOME/free-llm-hub" merge --ff-only origin/main; then
-          echo "✅ Interfaccia Free LLM Hub aggiornata da free-llm-hub/main."
+      # g reindirizza al Free LLM Hub separato su :3000. Cerca il checkout vero per dev.js
+      # + index.html, sia in HOME sia nel profilo Windows montato; mai assumere un path fisso.
+      HUB_DIR=""
+      for ROOT in "$HOME" /mnt/c/Users; do
+        [ -d "$ROOT" ] || continue
+        while IFS= read -r -d '' DEVJS; do
+          CANDIDATO="${DEVJS%/dev.js}"
+          if [ -f "$CANDIDATO/index.html" ] && grep -q "Free LLM Hub" "$CANDIDATO/index.html" && git -C "$CANDIDATO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            HUB_DIR="$CANDIDATO"
+            break
+          fi
+        done < <(find "$ROOT" -maxdepth 6 \( -type d \( -name .git -o -name node_modules -o -name .next -o -name .venv \) -prune \) -o \( -type f -name dev.js -print0 \) 2>/dev/null)
+        [ -n "$HUB_DIR" ] && break
+      done
+      if [ -n "$HUB_DIR" ]; then
+        echo "Checkout UI trovato: $HUB_DIR"
+        if git -C "$HUB_DIR" fetch origin main && git -C "$HUB_DIR" merge --ff-only origin/main; then
+          echo "✅ Interfaccia Free LLM Hub aggiornata da origin/main."
         else
-          echo "⚠️ Interfaccia Free LLM Hub NON aggiornata: merge non fast-forward o modifiche locali; nessun reset eseguito."
+          echo "⚠️ Interfaccia Free LLM Hub NON aggiornata: merge non fast-forward/modifiche locali o remote assente; nessun reset eseguito."
         fi
       else
-        echo "⚠️ Checkout ~/free-llm-hub non trovato: la GUI su :3000 non è stata aggiornata."
+        echo "⚠️ Checkout Free LLM Hub (dev.js + index.html) non trovato in HOME o /mnt/c/Users: UI su :3000 non aggiornata."
       fi
       pulisci_desktop
       read -r -p "Aggiornamento completato (o avvisi sopra). Premi INVIO per ricaricare la Centrale..." _
