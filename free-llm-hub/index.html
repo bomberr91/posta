@@ -194,6 +194,45 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
 <div id="ctxmenu"></div>
 
 <script>
+/* ===== SOLO ANTEPRIMA: motore finto, nessuna rete ===== */
+(function(){
+  function j(o){return new Response(JSON.stringify(o),{status:200,headers:{'Content-Type':'application/json'}})}
+  function sse(testo, servito){
+    const enc=new TextEncoder(); const pezzi=testo.match(/[\s\S]{1,26}/g)||[];
+    const st=new ReadableStream({async start(c){
+      for(const p of pezzi){ c.enqueue(enc.encode('data: '+JSON.stringify({model:servito,choices:[{delta:{content:p}}]})+'\n\n')); await new Promise(r=>setTimeout(r,22)); }
+      c.enqueue(enc.encode('data: [DONE]\n\n')); c.close();
+    }});
+    return new Response(st,{status:200,headers:{'Content-Type':'text/event-stream'}});
+  }
+  const PC="📋 Piano (3 passi): 1) creo lo script 2) lo provo 3) spedisco sul ponte.\n\n✅ Creato salva_gruppi.py sul PC\n✅ Test superato: 3 gruppi inseriti in database_pagine.md\n✅ Commit a1b2c3d pushato sul ponte GitHub\n\n🧪 (ANTEPRIMA: nella versione vera qui vedi i passi dell'agente OpenCode uno a uno, con i file e i commit veri — e questa chat resta salvata a sinistra, la riprendi quando vuoi)";
+  const SQ="🔥 Missione distribuita a 5 agenti in parallelo…\n\n🏆 RISPOSTA FUSA (il meglio di ognuna):\n1. Ricette Veloci Italia — 180K membri, 40 post/giorno\n2. Cucina Furba — 95K, moderazione attiva\n3. Food Reels ITA — 40K, perfetto per i reel\n\n⚖️ Giudice Supremo: claude-opus-5 via AgentRouter — «la 2 è la più sicura per iniziare»\n\n🧪 (ANTEPRIMA: nella versione vera vedi anche la barra 0→100% mentre lavorano)";
+  const GI="⚖️ VERDETTO (claude-opus-5 via AgentRouter)\n\nPromossa con riserva: l'idea regge, ma 2 correzioni prima di partire:\n1. il titolo è debole — rifallo con il numero davanti\n2. manca la fonte del dato principale\n\nVoto: 7,5/10 · Costo: $0.04 dal saldo bonus\n\n🧪 (ANTEPRIMA: il Giudice vero si usa solo per lavori di pregio, mai chat quotidiane)";
+  window.fetch = async function(url,opt){
+    const u=String(url);
+    try{
+      if(u.includes('/api/chat')||u.includes('/chat/completions')){
+        let b={}; try{b=JSON.parse((opt&&opt.body)||'{}')}catch(e){}
+        const m=String(b.model||'');
+        let t,sv;
+        if(m.indexOf('Regista')>-1){t=PC;sv='🧠 Regista · claude-opus-5 (riserva pronta: opus-4.8)';}
+        else if(m.indexOf('Lampo')>-1){t='⚡ Fatto subito: ecco la risposta, diretta e senza giri.\n\n🧪 (ANTEPRIMA: Lampo gira su deepseek-v4-flash, la linea sempre viva — per le cose di tutti i giorni)';sv='⚡ Lampo · deepseek-v4-flash';}
+        else if(m.indexOf('Fabbro')>-1){t='💻 Ho letto il codice, trovato il bug alla riga 42, corretto, test superato, commit b4c5d6e sul ponte.\n\n🧪 (ANTEPRIMA: il Fabbro scrive E prova il codice sul PC, non te lo incolla soltanto)';sv='💻 Fabbro · qwen3-coder via OmniRoute';}
+        else if(m.indexOf('Libero')>-1){t='😈 Qui nessun argomento è vietato: rispondo diretto e tu valuti da solo rischi e convenienza.\n\n🧪 (ANTEPRIMA: questa chat userà SOLO piloti senza guinzaglio — Venice / modello locale — mai le chiavi dei provider seri, così niente ban)';sv='😈 Libero · venice-uncensored';}
+        else if(m.indexOf('Squadra')>-1){t=SQ;sv='🔥 Squadra · il Regista ha scelto 3 agenti · giudice claude-opus-5';}
+        else {t='🧪 (ANTEPRIMA) Risposta di prova del modello «'+m+'» — nella versione vera risponde il tuo centralino, identico a oggi.';sv='deepseek-v4-flash (prova)';}
+        if(b.stream===false) return j({model:sv,choices:[{message:{content:t}}]});
+        return sse(t,sv);
+      }
+      if(u.includes('/models')) return j({data:[{id:'auto:smart'},{id:'auto:fast'},{id:'deepseek-v4-flash'},{id:'glm-5-air'},{id:'qwen3.8-27b'}]});
+      if(u.includes('/usage')) return j({ok:true});
+      if(u.includes('/api/search')) return j({results:[{title:'Risultato di prova',url:'https://esempio.it',snippet:'(anteprima)'}]});
+      return j({});
+    }catch(e){ return j({error:{message:String(e)}}); }
+  };
+})();
+</script>
+<script>
 'use strict';
 // ══════════ storage sicuro (localStorage con fallback in memoria) ══════════
 const MEM = {};
@@ -202,7 +241,8 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
-  freellmapi:{label:'FreeLLMAPI (centralino sul PC) 🔌',keyUrl:'http://127.0.0.1:31415',quota:'il TUO centralino: 34 provider impilati (~7,4B token/mese) · failover automatico · richiede FreeLLMAPI desktop ACCESO',warn:'la chiave è quella UNIFICATA del centralino (inizia per freellmapi-), non le chiave dei singoli provider',models:[['auto:fast','⚡ il più veloce'],['auto:smart','🧠 il più intelligente']]},
+  freellmapi:{label:'FreeLLMAPI (centralino sul PC) 🔌',keyUrl:'http://127.0.0.1:31415',quota:'il TUO centralino: 34 provider impilati (~7,4B token/mese) · failover automatico · richiede FreeLLMAPI desktop ACCESO',warn:'la chiave è quella UNIFICATA del centralino (inizia per freellmapi-), non le chiave dei singoli provider',models:[]},
+  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto']]},
 };
 function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
@@ -593,7 +633,7 @@ async function serverSearch(q, ext){
 // ══════════ select modelli ══════════
 function refreshModelSelect(){
   const prev = lsGet('fh_model');
-  const def = 'freellmapi/auto:smart';
+  const def = 'agenti/Regista';
   let start = (!prev || prev==='freellmapi/auto' || prev==='freellmapi/auto:cheap') ? def : prev; // chi aveva 'auto' o 'auto:cheap' finisce su auto:smart
   const extra = {
     tailor: '🎯 new fusion — fusion su misura',
@@ -604,7 +644,7 @@ function refreshModelSelect(){
   };
   sel.innerHTML = '';
   for (const [p,cfg] of Object.entries(PROVIDERS)){
-    for (const [id,note] of [...cfg.models, ...Object.entries(extra), ...customModels(p).map(m=>[m,'custom'])]){
+    for (const [id,note] of [...cfg.models, ...[] /* vecchi extra pensionati: gli agenti li coprono con le skill */, ...customModels(p).map(m=>[m,'custom'])]){
       const o = document.createElement('option'); o.value = p+'/'+id;
       const mE = String(note).match(/^(\S{1,4})\s+(.+)$/); // «⚡ il più veloce» → emoji portata IN TESTA, come tutte le altre voci della tendina (richiesta utente 12/10)
       o.textContent = extra[id] || ((mE && !/[\p{L}\p{N}]/u.test(mE[1])) ? mE[1]+' '+id+' — '+mE[2] : id+' — '+note);
@@ -1976,6 +2016,41 @@ refreshUsageReal();
 const sysEl = $('sys');
 sysEl.value = lsGet('fh_sys') || '';
 sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
+</script>
+<script>
+/* ===== INNESTO ANTEPRIMA: menu Agenti in alto + avvisi ===== */
+(function(){
+  try{ var _g=document.getElementById('god'); if(_g) _g.checked=true; lsSet('fh_god','1'); var _gl=document.getElementById('godl'); if(_gl) _gl.style.display='none'; }catch(e){}
+  try{ lsSet('fh_key_agenti','locale'); if(!getKey('freellmapi')) lsSet('fh_key_freellmapi','freellmapi-anteprima'); }catch(e){}
+  const tst=document.createElement('div');
+  tst.style.cssText='position:fixed;bottom:52px;right:14px;background:#161b22;border:1px solid #d29922;border-radius:10px;padding:11px 14px;font:13px system-ui;color:#e6edf3;max-width:360px;display:none;z-index:10000;box-shadow:0 10px 36px #000a';
+  document.body.appendChild(tst);
+  window.agT=function(m){tst.textContent=m;tst.style.display='block';clearTimeout(tst._x);tst._x=setTimeout(()=>tst.style.display='none',6000)};
+  const bn=document.createElement('div');
+  bn.textContent='🔍 ANTEPRIMA — il tuo Hub + innesto agenti · motore finto · dimmi cosa cambiare';
+  bn.style.cssText='position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#3d2e00;color:#f0d060;border:1px solid #d29922;border-radius:16px;padding:4px 14px;font:12px system-ui;z-index:9999;pointer-events:none;opacity:.95;white-space:nowrap';
+  document.body.appendChild(bn);
+  const anc=document.getElementById('usage')||document.getElementById('gear'); if(!anc) return;
+  const b=document.createElement('button');
+  b.textContent='🤖 Agenti'; b.title='Gli EXTRA degli agenti: tutto quello che non è chat';
+  b.style.cssText='background:#1f6feb;border:1px solid #1f6feb;color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font:600 13px system-ui;margin-right:6px';
+  anc.parentNode.insertBefore(b,anc);
+  const p=document.createElement('div');
+  p.style.cssText='position:fixed;top:52px;right:12px;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:10px;z-index:9998;display:none;width:330px;font:13px system-ui;color:#e6edf3;box-shadow:0 10px 36px #000a';
+  function riga(tit,sotto,bt){return '<div style="padding:8px 6px;border-bottom:1px solid #21262d"><div style="display:flex;justify-content:space-between;align-items:center"><b>'+tit+'</b><span>'+bt+'</span></div><div style="color:#8b949e;font-size:12px;margin-top:2px">'+sotto+'</div></div>'}
+  function mb(et,msg){return '<button onclick="agT(\''+msg+'\')" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:7px;padding:2px 9px;font-size:12px;cursor:pointer;margin-left:4px">'+et+'</button>'}
+  p.innerHTML='<div style="color:#8b949e;font-size:11.5px;padding:0 6px 6px">EXTRA AGENTI — vivono qui, fuori dalle chat</div>'
+   +riga('💰 AgentRouter','saldo <b style=\'color:#d29922\'>$148.75</b> · oggi ✅ · si rinnova alle 18:00 da solo',mb('Riscatta ora','💰 Forza il riscatto +25$ col browser invisibile (di solito fa tutto da solo alle 18)'))
+   +riga('🧠 OmniRoute','🟢 acceso (parte da solo all\'avvio) · 142 modelli · 17 linee',mb('Riavvia','🧠 Riavvia il motore')+mb('Spegni','🔴 Solo per emergenza: all\'avvio si riaccende da solo'))
+   +riga('🌐 Browser agenti','🟢 attivo, nascosto · GitHub ✅ AgentRouter ✅',mb('👁 Mostra','🌐 Porta la finestra del browser in primo piano per vederla o usarla tu')+mb('Nascondi','🙈 Torna dietro le quinte, continua a lavorare'))
+   +riga('🔑 Chiavi &amp; linee','ultimo giro: <b>12/17</b> superano il test · 142 modelli usabili',mb('Rifai il giro','🔑 Innesta le chiavi e rifà il conteggio x/y')+mb('Rapporto','📄 Apre il rapporto completo'))
+   +riga('📬 Risultati agenti','3 nuovi: FUSION_skill.md · checkin.md · chiavi.md',mb('Apri','📬 Archivio RISPOSTE_AGENTI, leggibili qui dentro'))
+   +riga('🔄 Aggiorna PC','ponte: c2b9c99 · ultimo giro 11:40',mb('Aggiorna','🔄 git pull dal ponte + icone Desktop (il tasto [8] del terminale)'))
+   +riga('😈 Senza filtri','SEMPRE attivo dietro le quinte quando gli agenti parlano coi modelli — tolto dall\'interfaccia come chiesto',mb('Info','😈 GOD_SYS iniettato in ogni chiamata agente→modello. I filtri DURI dei provider restano: si aggirano solo scegliendo modelli aperti più liberi'))+riga('📜 Postino','🟢 in servizio · ultimo giro 2 min fa',mb('Log','📜 Il giornale di bordo del postino'));
+  document.body.appendChild(p);
+  b.onclick=()=>{p.style.display=p.style.display==='none'?'block':'none'};
+  document.addEventListener('click',e=>{if(!p.contains(e.target)&&e.target!==b)p.style.display='none'});
+})();
 </script>
 </body>
 </html>

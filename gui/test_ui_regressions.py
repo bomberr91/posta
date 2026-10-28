@@ -4,6 +4,7 @@ All tests are local/offline; no provider calls are made.
 """
 from __future__ import annotations
 
+import hashlib
 import http.client
 import os
 import shutil
@@ -64,6 +65,12 @@ class HubUiRegressionTests(unittest.TestCase):
         self.assertEqual((HUB / "SOURCE_COMMIT").read_text().strip(),
                          "1277fefc33ecd6b6fdd1db2e0568713bbd941b3a")
         self.assertTrue((HUB / "dev.js").is_file())
+
+    def test_bundled_ui_is_the_selected_hub_centrale_preview(self):
+        source = (HUB / "UI_SOURCE").read_text(encoding="utf-8")
+        digest = hashlib.sha256((HUB / "index.html").read_bytes()).hexdigest()
+        self.assertIn("HUB_CENTRALE/ANTEPRIME/ANTEPRIMA_HUB_AGENTI.html", source)
+        self.assertEqual(digest, "8a3714bbc2f874522c07b910b4af5628ecd6083e2589e43eb8cfbced835d4835")
 
     def test_standalone_hub_starts_and_serves_real_dashboard_offline(self):
         index = (HUB / "index.html").read_text(encoding="utf-8")
