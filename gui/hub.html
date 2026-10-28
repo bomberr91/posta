@@ -2262,15 +2262,6 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
 </script>
 
 <script>
-// avviso in basso: rosso/giallo solo se NON stiamo girando sul PC vero
-(function(){
-  if (window.__LIVE) return;
-  const bn = document.createElement('div');
-  bn.textContent = '🔍 ANTEPRIMA (dimostrativa) — sul PC questo pannello comanda davvero';
-  bn.style.cssText = 'position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#3d2e00;color:#f0d060;border:1px solid #d29922;border-radius:16px;padding:4px 14px;font:12px system-ui;z-index:9999;pointer-events:none;opacity:.95;white-space:nowrap';
-  const metti = () => document.body && document.body.appendChild(bn);
-  if (document.body) metti(); else document.addEventListener('DOMContentLoaded', metti);
-})();
 </script>
 
 <script>
