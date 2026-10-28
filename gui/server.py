@@ -9,8 +9,7 @@
 #     «Riscatta ora» non forza il giro)
 #   · "ho già riscattato a mano" → segna il giorno senza toccare il browser
 #   · saldo letto solo se la risposta è JSON (il WAF Aliyun restituisce HTML)
-import glob
-import json, os, re, shutil, subprocess, sys, time, threading
+import json, os, re, subprocess, sys, time, threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 class _Rifiutato(Exception):
@@ -222,247 +221,36 @@ def saldo_ultimo():
     return m[-1] if m else None
 
 
-def omni_bin():
-    """Il programma del motore, se c'è: altrimenti stringa vuota."""
-    p = shutil.which("omniroute")
-    if p:
-        return p
-    for p in sorted(glob.glob(os.path.join(HOME, ".nvm", "versions", "node", "*", "bin", "omniroute")))[::-1]:
-        if os.access(p, os.X_OK):
-            return p
-    return ""
 
 
-def _niente_schede():
-    """OmniRoute, quando parte, apre la sua Dashboard nel browser: due avvii = due schede
-    (il fastidio che si è visto). Qui gli mettiamo davanti un «apri browser» finto, così
-    la scheda la apre solo la GUI quando la chiedi tu."""
-    d = "/tmp/omni_senza_schede"
-    try:
-        os.makedirs(d, exist_ok=True)
-        for nome in ("xdg-open", "wslview", "sensible-browser", "x-www-browser",
-                     "open", "powershell.exe", "cmd.exe"):
-            f = os.path.join(d, nome)
-            if not os.path.exists(f):
-                with open(f, "w") as fh:
-                    fh.write("#!/bin/sh\nexit 0\n")
-                os.chmod(f, 0o755)
-        return d
-    except Exception:
-        return ""
 
 
-_PREFISSO_SENZA_SCHEDE = ('export PATH="' + _niente_schede() + ':$PATH"; '
-                          if _niente_schede() else "")
 
 
-_avvio_motore = {"in_corso": False, "dal": 0.0, "tentato": False}
-_prova_agenti = {"quando": 0.0, "in_corso": False, "log": ""}
-_avvisi_agenti = {}          # (nome, giorno) → avviso, per non ripeterlo ogni volta
 
 
-def avvisa_agente(nome, motivo):
-    """Segna un avviso in chiaro: un agente ha smesso di rispondere (uno al giorno per agente)."""
-    k = (nome or "?", time.strftime("%Y-%m-%d"))
-    if k in _avvisi_agenti:
-        return
-    _avvisi_agenti[k] = {"nome": nome or "?", "motivo": motivo or "", "quando": time.strftime("%H:%M")}
 
 
-def prova_agenti_avvio():
-    """All'accensione: chiedo a ogni agente «rispondi OK» senza premere niente.
-    Così la scheda Agenti sa subito chi risponde e chi no. Nessun tasto da premere."""
-    if _prova_agenti["in_corso"]:
-        return
-    _prova_agenti.update(in_corso=True)
-    try:
-        p = subprocess.run(["bash", os.path.join(POSTA, "prova_agenti.sh"), "--svelto"],
-                           capture_output=True, text=True, timeout=240, cwd=POSTA)
-        _prova_agenti["log"] = ((p.stdout or "") + (p.stderr or ""))[-4000:]
-    except Exception as e:
-        _prova_agenti["log"] = f"prova non riuscita: {e}"
-    finally:
-        _prova_agenti["quando"] = time.time()
-        _prova_agenti["in_corso"] = False
-        # chi non risponde → avviso in chiaro (non un tasto da premere: te lo dico e basta)
-        try:
-            for a in (agenti_stato().get("agenti") or []):
-                if a.get("installato") and not a.get("pronto"):
-                    avvisa_agente(a.get("nome"), a.get("nota") or "non ha risposto alla prova")
-        except Exception:
-            pass
 
 
-def omniroute_avvia(attesa=25):
-    """Accende OmniRoute se è spento e aspetta che risponda (era il comportamento di prima)."""
-    if porta_viva(20128):
-        return True
-    _avvio_motore.update(in_corso=True, dal=time.time())
-    try:
-        return _omniroute_avvia_davvero(attesa)
-    finally:
-        _avvio_motore["in_corso"] = False
-        _avvio_motore["tentato"] = True
 
 
-def motore_in_avvio():
-    """Sto lavorando per accendere il motore? Vero se lo sto accendendo adesso, se non
-    l'ho ancora provato, o se l'ultimo tentativo è di meno di 2 minuti (sta partendo)."""
-    if porta_viva(20128) or not omni_bin():
-        return False
-    if _avvio_motore["in_corso"] or not _avvio_motore["tentato"]:
-        return True
-    return (time.time() - _avvio_motore["dal"]) < 120
 
 
-def _omniroute_avvia_davvero(attesa=25):
-    script = (_PREFISSO_SENZA_SCHEDE +
-              "export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; "
-              "B=$(ls -d $HOME/.nvm/versions/node/v22*/bin 2>/dev/null | sort -V | tail -1); "
-              "[ -x \"$B/omniroute\" ] || B=$(dirname \"$(command -v omniroute)\") ; "
-              "cd \"$HOME\" ; nohup \"$B/omniroute\" >/tmp/omniroute.log 2>&1 &")
-    try:
-        subprocess.Popen(["bash", "-lc", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
-        return False
-    for _ in range(attesa):
-        if porta_viva(20128):
-            return True
-        time.sleep(1)
-    return porta_viva(20128)
 
 
-_omni_lav = {"quando": 0.0, "cosa": ""}
 
 
-def lavoro_omni():
-    """Cosa sta facendo il motore ADESSO. Guardo i processi veri e il registro,
-    così anche se la GUI si riavvia non si perde il conto."""
-    r = {"cosa": "", "secondi": 0, "log": ""}
-    for nome, etichetta in (("omni_free.sh", "provider gratis"), ("omni_chiavi.sh", "chiavi")):
-        try:
-            out = subprocess.run(["pgrep", "-af", nome], capture_output=True,
-                                 text=True, timeout=8).stdout
-        except Exception:
-            out = ""
-        trovato = False
-        for riga in out.splitlines():
-            pid, _, cmd = riga.partition(" ")
-            if not pid.isdigit():
-                continue
-            # deve essere proprio «... /omni_free.sh» (non una shell che lo nomina)
-            if cmd.strip().endswith(nome):
-                trovato = True
-                break
-        if not trovato:
-            continue
-        r["cosa"] = etichetta
-        log = "/tmp/omni_lav_" + ("free" if nome == "omni_free.sh" else "chiavi") + ".log"
-        try:
-            r["secondi"] = int(time.time() - os.path.getmtime(log))
-            righe = [l.strip() for l in open(log, encoding="utf-8", errors="replace").read().splitlines() if l.strip()]
-            r["log"] = " · ".join(righe[-2:])[-220:]
-        except Exception:
-            pass
-        return r
-    return r
 
 
-def omni_pids():
-    """I processi VERI di OmniRoute. Prima si usava «pkill -f omniroute», che ammazzava
-    anche il curl che stava chiamando /api/omniroute (l'indirizzo contiene la parola):
-    risultato, la GUI sembrava bloccarsi. Qui si guarda il comando, non l'indirizzo."""
-    pids = []
-    try:
-        out = subprocess.run(["pgrep", "-af", "omniroute"], capture_output=True,
-                             text=True, timeout=10).stdout
-    except Exception:
-        return pids
-    for riga in out.splitlines():
-        pid, _, cmd = riga.partition(" ")
-        if not pid.isdigit():
-            continue
-        if int(pid) in (os.getpid(), os.getppid()):
-            continue
-        if ("gui/server.py" in cmd or "curl" in cmd or "wget" in cmd
-                or "prova_agenti" in cmd or "agenti_stato" in cmd):
-            continue
-        if "omniroute" in cmd.lower():
-            pids.append(int(pid))
-    return pids
 
 
-def omni_spegni(attesa=6):
-    """Spegne il motore senza toccare altro."""
-    pids = omni_pids()
-    for sig in ("TERM", "KILL"):
-        if not pids:
-            break
-        for p in pids:
-            try:
-                os.kill(p, getattr(__import__("signal"), sig))
-            except Exception:
-                pass
-        for _ in range(attesa):
-            if not porta_viva(20128):
-                return True
-            time.sleep(1)
-        pids = omni_pids()
-    return not porta_viva(20128)
 
 
-def omniroute_riavvia():
-    omni_spegni()
-    time.sleep(2)
-    return omniroute_avvia(attesa=30)
 
 
-def chiave_omni():
-    """La chiave che OmniRoute si aspetta, se ne ha una configurata."""
-    k = chiave(r"omniroute", r"sk-[A-Za-z0-9-]{12,}")
-    if k:
-        return k
-    for f in (os.path.join(HOME, ".omniroute", "config.json"),
-              os.path.join(HOME, ".config", "omniroute", "config.json")):
-        try:
-            dati = json.loads(open(f, encoding="utf-8").read())
-            for campo in ("apiKey", "key", "token", "masterKey"):
-                if isinstance(dati.get(campo), str) and dati[campo]:
-                    return dati[campo]
-        except Exception:
-            pass
-    return ""
 
 
-def modelli_omni():
-    v = _cache.get("mod")
-    if v and time.time() - v[0] < 30:
-        return v[1]
-    r = {"modelli": 0, "linee": 0, "errore": ""}
-    if not porta_viva(20128):
-        r["errore"] = "motore spento"
-        _cache["mod"] = (time.time(), r)
-        return r
-    import urllib.request
-    for k in [chiave_omni(), "sk-omniroute", ""]:
-        try:
-            intest = {"Accept": "application/json"}
-            if k:
-                intest["Authorization"] = "Bearer " + k
-            req = urllib.request.Request("http://127.0.0.1:20128/v1/models", headers=intest)
-            dati = json.loads(urllib.request.urlopen(req, timeout=12).read().decode())
-            lista = dati.get("data", dati if isinstance(dati, list) else [])
-            if lista:
-                r["modelli"] = len(lista)
-                r["linee"] = len({(m.get("owned_by") or "?") for m in lista if isinstance(m, dict)})
-                r["errore"] = ""
-                _cache["mod"] = (time.time(), r)
-                return r
-            r["errore"] = "il motore è acceso ma non ha modelli: attiva i provider col [9] (voce f)"
-        except Exception as e:
-            r["errore"] = "non riesco a leggere i modelli (" + type(e).__name__ + ")"
-    _cache["mod"] = (time.time(), r)
-    return r
 
 
 # ───────────────────────────── check-in ─────────────────────────────────────
@@ -521,19 +309,6 @@ _chk_lock = threading.Lock()
 _ultimo_tentativo = [0.0]
 
 
-def sveglia_checkin():
-    """Riscatta da solo, una volta al giorno, SOLO dalle 18:05 italiane.
-    Se il PC era spento alle 18:05, riscatta appena lo accendi. Max 3 tentativi."""
-    while True:
-        try:
-            if (finestra_aperta() and not os.path.exists(flag_checkin())
-                    and not serve_login_manuale() and tentativi_oggi() < MAX_TENTATIVI
-                    and time.time() - _ultimo_tentativo[0] > 1800):
-                _ultimo_tentativo[0] = time.time()
-                fai_checkin(forza=False)
-        except Exception:
-            pass
-        time.sleep(60)
 
 
 def fai_checkin(forza=False):
@@ -669,19 +444,12 @@ def salute(fresco=False):
 
 # cosa vuol dire ogni controllo rosso, in italiano, e cosa fare
 SPIEGAZIONE = {
-    "Skill": ("le skill degli agenti (le istruzioni che si portano dietro)",
-              "non serve per chattare: si sistema con l'aggiornamento del PC ([8]). "
-              "Se ti serve solo la chat, puoi ignorarlo."),
-    "OpenClaw": ("l'assistente OpenClaw",
-                 "si sistema con ./openclaw_fix.sh oppure col pulsante «Accendi» nella sua scheda."),
-    "Node v22": ("il programma che fa girare l'Hub",
-                 "serve per il motore: si sistema con l'aggiornamento del PC ([8])."),
-    "motore": ("OmniRoute, il cervello degli agenti",
-               "parte da solo: se è spento, aspetta un minuto. Se resta spento, premi Avvia."),
-    "chiavi": ("il portachiavi delle chiavi API",
-               "controlla che ~/CHIAVI_LOCALI.md esista e sia leggibile (chmod 600)."),
-    "postino": ("il postino che porta le novità sul ponte GitHub",
-                "si riaccende da solo; se resta spento, riapri la Centrale."),
+    "Node v22": ("il runtime della Centrale locale",
+                 "si sistema con la manutenzione confermata del PC."),
+    "chiavi": ("il portachiavi locale dei provider",
+               "controlla che il file di chiavi locale sia leggibile; nessuna chiave viene inviata al browser."),
+    "postino": ("la sincronizzazione GitHub locale",
+                "avviala manualmente dalla sezione Repository dopo aver controllato le modifiche."),
 }
 
 
@@ -744,368 +512,47 @@ def avvisi_accensione():
 _avvisi = {"fatto": False, "lista": []}
 
 
-NOMI_SCORTA = {
-    "groq": "Groq", "gemini": "Google AI Studio", "mistral": "Mistral", "cohere": "Cohere",
-    "openrouter": "OpenRouter", "nvidia": "NVIDIA", "huggingface": "HuggingFace Router",
-    "pollinations": "Pollinations", "githubmodels": "GitHub Models", "agentrouter": "AgentRouter",
-    "opencode": "OpenCode Zen", "aihorde": "AI Horde",
-}
 
 
-def _norm(x):
-    return re.sub(r"[^a-z0-9]", "", (x or "").lower())
 
 
-_chiave_di_mod = {"m": None, "cache": {}, "t": 0.0}
 
 
-def _modulo_chiave_di():
-    """Carica chiave_di.py: è l'unico estrattore di chiavi del sistema."""
-    if _chiave_di_mod["m"] is None:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "chiave_di", os.path.join(POSTA, "chiave_di.py"))
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        _chiave_di_mod["m"] = mod
-    return _chiave_di_mod["m"]
 
 
-def ha_chiave(nome):
-    """True se nel portachiavi c'è davvero una chiave per quel provider."""
-    cache = _chiave_di_mod["cache"]
-    if nome in cache:
-        return cache[nome]
-    try:
-        k, _ = _modulo_chiave_di().chiave(nome, os.path.join(HOME, "CHIAVI_LOCALI.md"))
-        cache[nome] = bool(k)
-    except Exception:
-        cache[nome] = True
-    return cache[nome]
 
-
-def contatori_chiavi():
-    """Dove può lavorare ogni chiave del portachiavi.
-    1) dentro OmniRoute (motore 1)
-    2) nel Portiere (motore 2, porta 20129) — le doppie restano contate in OmniRoute
-    3) fuori da tutti e due: strumenti (voce/immagini/video/database/visione),
-       provider morti, o provider di cui non abbiamo mai scritto l'indirizzo.
-    """
-    omni_nomi = {}          # nome normalizzato → id omniroute
-    try:
-        for riga in open(os.path.join(POSTA, "mappa_innesto.txt"), encoding="utf-8"):
-            riga = riga.strip()
-            if not riga or riga.startswith("#"):
-                continue
-            pezzi = riga.split("|")
-            if len(pezzi) >= 2:
-                omni_nomi[_norm(pezzi[1])] = pezzi[0]
-    except Exception:
-        pass
-    # la lista del Portiere è una sola: portiere_lista.txt
-    port_nomi = {}
-    for pid, v in lista_portiere().items():
-        nome = v[3]
-        if nome == "SENZA":                     # provider senza chiave (es. AI Horde)
-            nome = v[2].split("(")[0].strip()
-        if nome:
-            port_nomi[_norm(nome)] = pid
-
-    nomi, senza_chiave = [], set()
-    try:
-        testo = open(os.path.join(HOME, "CHIAVI_LOCALI.md"), encoding="utf-8",
-                     errors="replace").read()
-        a = testo.find("## 4 · PROVIDER LLM")
-        b = testo.find("## 5 · STRUMENTI")
-        sez = testo[a:b if b > a else len(testo)]
-        for riga in sez.splitlines():
-            m = re.match(r"\s*[-*]\s+\*\*(.+?)\*\*", riga)
-            if m:
-                nome = m.group(1).strip()
-                if nome and nome not in nomi:
-                    nomi.append(nome)
-                if not ha_chiave(nome):          # domanda al vero estrattore (chiave_di.py)
-                    senza_chiave.add(nome)
-    except Exception:
-        pass
-
-    in_omni, in_port, fuori = [], [], []
-    for nome in nomi:
-        n = _norm(nome)
-        preso_omni = any(n == k or (len(n) > 5 and (k.startswith(n[:6]) or n.startswith(k[:6])))
-                         for k in omni_nomi)
-        preso_port = any(n == k or (len(n) > 5 and (k.startswith(n[:5]) or n.startswith(k[:5])))
-                         for k in port_nomi)
-        if preso_omni:
-            in_omni.append(nome)
-            if preso_port:
-                in_port.append(nome)        # doppia: conta in OmniRoute, usabile nel Portiere
-        elif preso_port:
-            in_port.append(nome)            # solo Portiere: è lei la chiave di scorta vera
-        else:
-            fuori.append(nome)
-
-    # i provider già preimpostati in OmniRoute che funzionano senza chiave
-    try:
-        noauth_omni = sum(1 for riga in open(os.path.join(POSTA, "dal_pc", "omni_catalogo.txt"),
-                                             encoding="utf-8", errors="replace")
-                          if " noauth " in riga)
-    except Exception:
-        noauth_omni = 10
-
-    port_totali = len(lista_portiere())
-    return {"omniroute": len(in_omni), "omniroute_totali": len(in_omni) + noauth_omni,
-            "noauth_omni": noauth_omni,
-            "cervello_totali": port_totali, "portiere_totali": port_totali,
-            "doppie": len([x for x in in_omni if x in in_port]),
-            "scorta": len(in_port), "portiere": len(in_port),
-            "scorta_solo": len([x for x in in_port if x not in in_omni and x not in senza_chiave]),
-            "fuori": len(fuori), "fuori_nomi": fuori,
-            "totali_portachiavi": len(nomi),
-            "omni_nomi": in_omni, "scorta_nomi": in_port}
 
 
 _oc_cmd_cache = {"t": 0.0, "cmd": ""}
 
-def openclaw_cmd():
-    """Il comando openclaw eseguibile da qui (Ubuntu, Bun o Windows), con cache 5 min."""
-    if time.time() - _oc_cmd_cache["t"] < 300 and _oc_cmd_cache["cmd"]:
-        return _oc_cmd_cache["cmd"]
-    cmd = ""
-    try:
-        fuori = subprocess.run(["bash", os.path.join(POSTA, "apri_openclaw.sh"), "--trova"],
-                               capture_output=True, text=True, timeout=20).stdout.strip()
-        if "(installato su Windows):" in fuori:
-            cmd = fuori.split(":", 1)[1].strip()
-        elif fuori and "non è ancora installato" not in fuori:
-            # "OpenClaw (dentro Ubuntu): /percorso" / "runtime Bun"
-            for marca in ("Ubuntu):", "Bun):"):
-                if marca in fuori:
-                    cmd = fuori.split(marca, 1)[1].strip()
-                    break
-    except Exception:
-        cmd = ""
-    _oc_cmd_cache.update(t=time.time(), cmd=cmd)
-    return cmd
 
 
-def openclaw_stato():
-    """Stato OpenClaw per la scheda della GUI."""
-    v = {"installato": False, "versione": "", "dove": "", "gateway": False, "configurato": False,
-         "porta": 18789, "url": "http://localhost:18789", "base_api": "http://127.0.0.1:18789/v1"}
-    try:
-        out = subprocess.run(["bash", os.path.join(POSTA, "openclaw_stato.sh"), "--json"],
-                             capture_output=True, text=True, timeout=30).stdout.strip()
-        d = json.loads(out) if out.startswith("{") else {}
-        v.update({"installato": d.get("tipo", "no") != "no", "versione": d.get("versione", ""),
-                  "dove": d.get("dove", ""), "gateway": bool(d.get("gateway")),
-                  "configurato": bool(d.get("configurato")), "porta": d.get("porta", 18789),
-                  "url": f"http://localhost:{d.get('porta', 18789)}",
-                  "base_api": d.get("base_api", "")})
-    except Exception as e:
-        v["errore"] = str(e)
-    if not v["gateway"]:
-        v["gateway"] = porta_viva(v["porta"])
-    return v
 
 
-def _utente_windows(cmd_in_corso=None):
-    """Cartella utente di Windows in forma Linux (/mnt/c/Users/xxx)."""
-    winroot = os.environ.get("WINROOT", "/mnt/c")
-    try:
-        r = subprocess.run(["cmd.exe", "/c", "echo", "%USERPROFILE%"], capture_output=True,
-                           text=True, timeout=15, cwd=winroot)
-        prof = (r.stdout or "").strip().splitlines()[-1].strip()
-        lin = _w2l(prof) if prof and ":" in prof else ""
-        if lin and os.path.isdir(lin):
-            return lin
-    except Exception:
-        pass
-    for d in sorted(glob.glob(os.path.join(winroot, "Users", "*"))):
-        if os.path.isdir(os.path.join(d, "AppData", "Roaming")):
-            return d
-    return None
 
 
-def _l2w(percorso):
-    """percorso Linux -> percorso Windows (se wslpath non c'è, restituisce l'originale)."""
-    if not percorso or not percorso.startswith("/mnt/"):
-        return percorso
-    try:
-        r = subprocess.run(["wslpath", "-w", percorso], capture_output=True, text=True, timeout=5).stdout.strip()
-        return r or percorso
-    except Exception:
-        return percorso
 
 
-def _w2l(percorso):
-    """percorso Windows -> percorso Linux."""
-    if not percorso or percorso.startswith("/mnt/"):
-        return percorso
-    try:
-        r = subprocess.run(["wslpath", "-u", percorso], capture_output=True, text=True, timeout=5).stdout.strip()
-        return r or percorso
-    except Exception:
-        return percorso
 
 
-def _oc_bat(cmd, argomenti, pausa=False, nome="_posta_openclaw.bat"):
-    """Scrive un .bat con dentro la riga giusta e restituisce il suo percorso WINDOWS.
-    Serve perché cmd.exe sbaglia sempre con le virgolette annidate passate da Linux."""
-    cmd_lin = _w2l(cmd)                       # il comando in forma Linux (per copiarne la cartella)
-    cmd_win = _l2w(cmd_lin)                   # ... e in forma Windows (per scriverlo dentro il .bat)
-    cartella = os.environ.get("OC_BAT_DIR") or os.path.dirname(cmd_lin) or "/mnt/c/Windows/Temp"
-    bat_lin = os.path.join(cartella, nome)
-    righe = ["@echo off", "chcp 65001 >nul", "title OpenClaw",
-             f'call "{cmd_win}" {" ".join(argomenti)}']
-    if pausa:
-        righe += ["echo.", "echo  Fatto. Puoi chiudere questa finestra.", "pause"]
-    try:
-        with open(bat_lin, "w", encoding="utf-8", newline="\r\n") as f:
-            f.write("\n".join(righe) + "\n")
-    except Exception:
-        return None
-    return _l2w(bat_lin)
 
 
 _oc_in_corso = {"quando": 0.0, "azione": ""}
 
 
-def _oc_libero(azione):
-    """True se possiamo partire: evita che dieci clic aprano dieci terminali."""
-    ora = time.time()
-    if _oc_in_corso["azione"] and ora - _oc_in_corso["quando"] < 90:
-        return False
-    _oc_in_corso["azione"] = azione
-    _oc_in_corso["quando"] = ora
-    return True
 
 
-def _oc_win(argomenti, attesa=45, titolo="OpenClaw"):
-    """Lancia un comando OpenClaw su Windows in modo pulito.
-
-    Perché così: se gli passiamo stdout/stderr di Linux, il node di Windows muore con
-    "Error: open EISDIR" (si porta dietro le nostre prese). Allora scriviamo un .bat che
-    manda tutto in un file di log e lo lanciamo con 'start': il processo nasce con le sue
-    prese di Windows, e l'output ce lo leggiamo dal log.
-    """
-    cmd = openclaw_cmd()
-    if not cmd:
-        return 127, "OpenClaw non risulta installato."
-    base = _utente_windows()
-    if not base:
-        return 1, "Non trovo la cartella utente di Windows."
-    log_lin = os.path.join(base, "openclaw_gui.log")
-    bat_lin = os.path.join(base, "_posta_openclaw_run.bat")
-    cmd_win, log_win, bat_win = _l2w(cmd), _l2w(log_lin), _l2w(bat_lin)
-    arg = " ".join(argomenti)
-    righe = ["@echo off", "chcp 65001 >nul", f"title {titolo}",
-             f'echo ==== {arg} ==== > "{log_win}"',
-             f'call "{cmd_win}" {arg} >> "{log_win}" 2>&1',
-             f'echo EXIT=%ERRORLEVEL% >> "{log_win}"']
-    try:
-        with open(bat_lin, "w", encoding="utf-8", newline="") as f:
-            f.write("\r\n".join(righe) + "\r\n")
-    except Exception as e:
-        return 1, f"Non riesco a scrivere il comando su Windows: {e}"
-    try:
-        # start "" /min = titolo vuoto e finestra ridotta a icona.
-        # (con un titolo contenente spazi Windows cercava un programma chiamato cosi'
-        #  e apriva/chIudeva terminali a raffica)
-        subprocess.Popen(["cmd.exe", "/c", "start", "", "/min", bat_win],
-                         cwd=os.environ.get("WINROOT", "/mnt/c"),
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception as e:
-        return 1, f"Windows non ha accettato il comando: {e}"
-    # aspetto che finiscano e leggo il log
-    finito = False
-    for _ in range(int(attesa)):
-        time.sleep(1)
-        try:
-            testo = open(log_lin, encoding="utf-8", errors="replace").read()
-        except Exception:
-            testo = ""
-        if "EXIT=" in testo:
-            finito = True
-            break
-    try:
-        testo = open(log_lin, encoding="utf-8", errors="replace").read()
-    except Exception:
-        testo = "(nessun log)"
-    return (0 if finito else 2), testo[-2500:]
 
 
-def _oc_esegui(argomenti, attesa=90):
-    """Esegue un comando openclaw: su Windows passa da _oc_win, dentro Ubuntu usa i pipe normali."""
-    cmd = openclaw_cmd()
-    if not cmd:
-        return 127, "OpenClaw non risulta installato."
-    if cmd.startswith("/mnt/") or (len(cmd) > 2 and cmd[1] == ":" and cmd[2] in "\\/"):
-        return _oc_win(argomenti, attesa=min(attesa, 60))
-    try:
-        p = subprocess.run([cmd] + list(argomenti), capture_output=True, text=True,
-                           timeout=attesa, cwd=POSTA)
-        return p.returncode, (p.stdout or "") + (p.stderr or "")
-    except subprocess.TimeoutExpired:
-        return 124, f"Tempo scaduto dopo {attesa}s."
-    except Exception as e:
-        return 1, str(e)
 
 
 _inst_agenti = {"in_corso": False, "log": "", "quando": ""}
 
 
-def agenti_stato():
-    """Stato di TUTTI gli agenti (installato? chiave? pronto?) — dal file agenti_stato.sh."""
-    base = {"agenti": [], "chiavi": {}, "cervello": ""}
-    try:
-        out = subprocess.run(["bash", os.path.join(POSTA, "agenti_stato.sh"), "--json"],
-                             capture_output=True, text=True, timeout=60).stdout.strip()
-        if out.startswith("{"):
-            base = json.loads(out)
-    except Exception as e:
-        base["errore"] = str(e)
-    return base
 
 
-def installa_agenti(quali=None):
-    """Installa gli agenti mancanti in sottofondo (una volta per volta)."""
-    if _inst_agenti["in_corso"]:
-        return {"stato": "in_corso", "msg": "Sto già installando: aspetta (può volerci qualche minuto).",
-                "log": _inst_agenti["log"][-2000:]}
-    _inst_agenti.update({"in_corso": True, "log": "", "quando": time.strftime("%H:%M")})
-    argomenti = ["bash", os.path.join(POSTA, "installa_agenti.sh")] + (list(quali) if quali else [])
-
-    def _lavoro():
-        try:
-            p = subprocess.run(argomenti, capture_output=True, text=True, timeout=1800, cwd=POSTA)
-            _inst_agenti["log"] = ((p.stdout or "") + (p.stderr or ""))[-3000:]
-        except Exception as e:
-            _inst_agenti["log"] = f"Errore: {e}"
-        finally:
-            _inst_agenti["in_corso"] = False
-    threading.Thread(target=_lavoro, daemon=True).start()
-    return {"stato": "avviato", "msg": "Installazione partita: 1-5 minuti. Puoi continuare a chattare.",
-            "log": _inst_agenti["log"]}
 
 
-def chiavi_conteggio():
-    """Quante chiavi ci sono nel portachiavi (attive / totali) — senza mostrarle."""
-    f = os.path.join(HOME, "CHIAVI_LOCALI.md")
-    tot = att = 0
-    try:
-        for riga in open(f, encoding="utf-8", errors="replace"):
-            # righe del tipo:  - **Nome** — chiave... — [data] — ✅ ...
-            if not riga.lstrip().startswith(("-", "*", "|")):
-                continue
-            if re.search(r"(sk-|gsk_|ghp_|xai-|AIza|jina_|sk-or-|sk-orca|thk_|blaze-|cfut_|hf_)", riga) \
-               or re.search(r"\b[0-9a-f]{32}\b", riga):
-                tot += 1
-                if "❌" not in riga and "morto" not in riga.lower() and "RITIRATO" not in riga:
-                    att += 1
-    except Exception:
-        return {"attive": 0, "totali": 0}
-    return {"attive": att, "totali": tot}
 
 
 def postino_acceso():
@@ -1178,7 +625,8 @@ def lista_portiere():
     """id → (indirizzo, modello, etichetta, nome nel portachiavi, modo)."""
     out = {}
     try:
-        righe = open(LISTA_PORTIERE, encoding="utf-8", errors="replace").read().splitlines()
+        with open(LISTA_PORTIERE, encoding="utf-8", errors="replace") as f:
+            righe = f.read().splitlines()
     except Exception:
         return out
     for riga in righe:
@@ -1387,7 +835,7 @@ def _congela(pid, secondi, motivo=""):
 
 
 def _retry_after(e):
-    """Il back-off ALTRUI, come lo legge FreeLLMAPI (base.ts): Retry-After, «try again in 30s»."""
+    """Interpreta Retry-After e messaggi di rate-limit dei provider upstream."""
     try:
         ra = e.headers.get("Retry-After") if getattr(e, "headers", None) else None
         if ra:
@@ -1600,28 +1048,12 @@ def capacita():
             "nota": "tetti dichiarati nel registro, non misurati: la verità è il primo giro reale"}
 
 
-def chat_riserva(messaggi, esclusi=(), fretta=False):
-    """Quando i motori non rispondono: le NOSTRE chiavi, con rotazione e riserve.
-    Ritorna (testo, nome, modello) oppure None."""
-    r = chat_diretta(messaggi, "auto", 900, 2 if fretta else 5, 20 if fretta else 70)
-    if not r:
-        return None
-    return r[0], r[1], r[2]
 
 
 VIRTUALI = {"fusion", "code", "trading", "tailor", "vision", "docs", ""}
 
-# la chiave UNIFICATA del centralino: l'Hub la manda nell'intestazione x-fh-key
-CHIAVE_HUB = {"k": ""}
-
-# I motori della chat, nell'ordine deciso il 16/10: SOLO I NOSTRI.
-# «L'hub prende vita propria: i provider si chiamano direttamente, con le NOSTRE chiavi.
-#  FreeLLMAPI non è più un componente obbligatorio.»
-# 1) Portiere (:20129) = il nostro cervello, ha tutte le nostre chiavi e sceglie da sé
-# 2) OmniRoute (:20128) = il nostro gateway locale
-# 3) il ROUTER NOSTRO (chat_diretta): chiavi dirette, rotazione, riserve, contabilità
-# FreeLLMAPI (:31415) NON è più nella catena: se è acceso lo si interroga solo a mano.
-MOTORI_CHAT = [("Portiere", 20129), ("OmniRoute", 20128)]
+# Il router diretto risolve ogni richiesta con i provider configurati e le chiavi locali;
+# Fusion usa solo i modelli scelti e invoca un giudice locale, senza avviare agenti.
 
 
 # ── RICERCA WEB (senza chiavi): DDG lite → DDG via r.jina.ai → Wikipedia IT ──
@@ -2012,14 +1444,8 @@ def segna_motivo(nome, errore):
     _MOTIVI[nome] = (str(e) or e.__class__.__name__)[:160]
 
 
-def chiave_chat():
-    """La chiave unificata del centralino che manda l'Hub (x-fh-key), se c'è."""
-    return (CHIAVE_HUB.get("k") or "").strip()
 
 
-def chiave_per_motore(nome, chiave_omni):
-    """Ogni motore vuole la SUA chiave (Portiere e OmniRoute: quella del gateway locale)."""
-    return chiave_omni
 
 
 def modelli_nostri(solo_pronti=True):
@@ -2055,118 +1481,125 @@ def chiama_diretto(m, messaggi, quanti=900, timeout=70):
     return testo
 
 
-def fusion_nostra(messaggi, quanti=3):
-    """La squadra la facciamo NOI: più modelli delle nostre chiavi in parallelo + un giudice che fonde.
-    Ritorna (testo, etichetta, elenco dei modelli usati) oppure None."""
-    panel = modelli_nostri(True)[:quanti]
-    if len(panel) < 2:
-        # l'appello può essere vecchio o parziale: si prova comunque con le chiavi di chat che abbiamo
-        panel = modelli_nostri(False)[:quanti]
-    if len(panel) < 2:
+def _risolvi_modello_nostro(riferimento, disponibili):
+    """Risoluzione stretta degli ID fusion: solo modelli/provider già nel catalogo locale."""
+    ref=str(riferimento or "").strip().lower()
+    if not ref:
+        return None
+    def canon(m):
+        return (str(m.get("id", "")) + "/" + str(m.get("modello", ""))).lower()
+    exact=[m for m in disponibili if canon(m)==ref or str(m.get("id", "")).lower()==ref
+           or str(m.get("modello", "")).lower()==ref]
+    if len(exact)==1:
+        return exact[0]
+    suffix=[m for m in disponibili if canon(m).endswith("/"+ref)]
+    return suffix[0] if len(suffix)==1 else None
+
+
+def fusion_nostra(messaggi, quanti=3, modelli=None, giudice_rif=None, on_event=None):
+    """Fusion locale con pannello e giudice espliciti; non avvia agenti né sonda il catalogo."""
+    disponibili=modelli_nostri(False)
+    for entry in modelli_agente_ammessi():
+        if not any(str(x.get("id"))+"/"+str(x.get("modello")) == str(entry.get("api_id")) for x in disponibili):
+            disponibili.append(entry)
+    if modelli:
+        panel=[]
+        for riferimento in modelli:
+            scelto=_risolvi_modello_nostro(riferimento, disponibili)
+            if scelto and scelto not in panel:
+                panel.append(scelto)
+            if len(panel)>=max(2,int(quanti or 3)):
+                break
+        if len(panel)<2:
+            return None
+    else:
+        panel=modelli_nostri(True)[:max(2,int(quanti or 3))]
+        if len(panel)<2:
+            panel=disponibili[:max(2,int(quanti or 3))]
+    if len(panel)<2:
         return None
     import concurrent.futures as cf
-    risposte = []
+    risposte=[]
     with cf.ThreadPoolExecutor(max_workers=len(panel)) as ex:
-        futs = {ex.submit(chiama_diretto, m, messaggi, 900): m for m in panel}
-        for f in cf.as_completed(futs, timeout=120):
-            m = futs[f]
-            try:
-                testo = f.result()
-            except Exception:
-                testo = ""
-            if testo:
-                risposte.append((m, testo))
-    if len(risposte) < 2:
+        futs={ex.submit(chiama_diretto,m,messaggi,900):m for m in panel}
+        for future in cf.as_completed(futs,timeout=120):
+            m=futs[future]
+            try: testo=future.result()
+            except Exception: testo=""
+            canon=str(m.get("id",""))+"/"+str(m.get("modello",""))
+            if on_event:
+                try: on_event({"_fusion":{"event":"panel","model":canon,"status":"ok" if testo else "error"}})
+                except Exception: pass
+            if testo: risposte.append((m,testo))
+    if len(risposte)<2:
         return None
-    blocco = "\n\n".join("### Risposta di %s (%s):\n%s" % (m["provider"], m["modello"], testo)
-                          for m, testo in risposte)
-    domanda = ""
-    for x in reversed(messaggi):
-        if x.get("role") == "user":
-            domanda = x.get("content") if isinstance(x.get("content"), str) else ""
+    blocco="\n\n".join("### Risposta di %s (%s):\n%s"%(m.get("provider",m.get("id","?")),m.get("modello",""),testo)
+                       for m,testo in risposte)
+    domanda=""
+    for item in reversed(messaggi):
+        if isinstance(item,dict) and item.get("role")=="user":
+            domanda=item.get("content") if isinstance(item.get("content"),str) else ""
             break
-    giudice = [{"role": "system",
-                "content": "Sei il giudice di una squadra di modelli. Fondi le risposte in UNA sola risposta "
-                           "in italiano: tieni il meglio di ognuna, correggi ciò che è in contrasto scegliendo il "
-                           "dato più solido, niente premesse, niente elenco dei modelli, massimo 350 parole."},
-               {"role": "user", "content": "DOMANDA:\n%s\n\n%s" % (domanda[:1500], blocco[:9000])}]
-    fuso = ""
-    # il giudice: il Portiere se è acceso (ha tutte le chiavi), altrimenti il primo modello della squadra
-    if porta_viva(20129):
-        try:
-            import urllib.request
-            req = urllib.request.Request("http://127.0.0.1:20129/v1/chat/completions",
-                                         data=json.dumps({"model": "auto", "messages": giudice,
-                                                          "max_tokens": 900}).encode(),
-                                         headers={"Content-Type": "application/json"})
-            d = json.loads(urllib.request.urlopen(req, timeout=90).read().decode())
-            fuso = (((d.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
-        except Exception:
-            fuso = ""
+    prompt=[{"role":"system","content":"Sei il giudice di una squadra di modelli. Fondi le risposte in una risposta italiana precisa; correggi i contrasti, niente premesse né elenco dei modelli."},
+            {"role":"user","content":"DOMANDA:\n%s\n\n%s"%(domanda[:1500],blocco[:9000])}]
+    judge=_risolvi_modello_nostro(giudice_rif,disponibili) if giudice_rif else None
+    if judge is None:
+        judge=risposte[0][0]
+    fuso=chiama_diretto(judge,prompt,900,90)
+    if on_event and fuso:
+        try: on_event({"_fusion":{"event":"judge","model":str(judge.get("id",""))+"/"+str(judge.get("modello","")),"platform":"Router Hub"}})
+        except Exception: pass
     if not fuso:
-        # giudice di riserva: si prova ognuno dei modelli della squadra finché uno fonde
-        for m, _ in risposte:
-            fuso = chiama_diretto(m, giudice, 900, 90)
-            if fuso:
-                break
-    etichetta = " + ".join(m["provider"] for m, _ in risposte)
-    if not fuso:
-        # senza giudice si consegna comunque il meglio che c'è, dicendolo
-        fuso = risposte[0][1] + "\n\n(giudice non disponibile: ho tenuto la risposta di %s)" % risposte[0][0]["provider"]
-    return fuso, etichetta, [m["id"] for m, _ in risposte]
+        fuso=risposte[0][1]+"\n\n(giudice non disponibile: risposta parziale di %s)"%risposte[0][0].get("provider",risposte[0][0].get("id","?"))
+    label=" + ".join(str(m.get("provider",m.get("id","?"))) for m,_ in risposte)
+    used=[str(m.get("id",""))+"/"+str(m.get("modello","")) for m,_ in risposte]
+    return fuso,label,used
 
 
-def motori_in_chiaro():
-    """Com'è andata a ogni motore: acceso/spento e, se acceso, perché non ha risposto."""
-    righe = []
-    for nome, porta in MOTORI_CHAT:
-        if not porta_viva(porta):
-            righe.append("%s (%d): spento" % (nome, porta))
-        elif _MOTIVI.get(nome):
-            righe.append("%s (%d): acceso, ma non ha risposto — %s" % (nome, porta, _MOTIVI[nome]))
-        else:
-            righe.append("%s (%d): acceso, nessuna risposta" % (nome, porta))
-    return "\n".join("  · " + r for r in righe)
 
 
-def messaggio_motori():
-    stato = motori_in_chiaro()
-    if any(_MOTIVI.get(n) for n, _ in MOTORI_CHAT):
-        fare = ("Cosa fare: il motore è acceso ma non ha risposto. Riprova una volta; se rifà lo stesso, "
-                "apri 🤖 Agenti → 🧠 Motori e premi «Spegni» poi «Avvia».")
-    else:
-        fare = ("Cosa fare: nessun motore è acceso e le chiavi del portachiavi non hanno risposto. "
-                "Apri 🤖 Agenti → 🧠 Motori e premi «Avvia» (Portiere), oppure in ⚙ premi «Ricontrolla».")
-    if _ROTA["provider"]:
-        perche = "; ".join("%s: %s" % (v, (d.get("ultimo_errore") or "?"))
-                           for v, d in list(_ROTA["provider"].items())[:4] if d.get("errori"))
-        if perche:
-            fare += "\nUltimo motivo dalle chiavi — " + perche
-    return "⚠️ La chat non è passata. Stato dei motori:\n" + stato + "\n" + fare
 
 
 # ── ENDPOINT PER GLI AGENTI (OpenAI-compatibile) ────────────────────────────
 # «L'hub offre un endpoint OpenAI-compatibile ad agenti locali» (missione hub).
 # Il token si genera da sé al primo uso e resta sul PC: senza token non si passa.
-TOKEN_AGENTE = os.path.join(QUI, "agente_token.txt")
-
 # Allowlist fail-closed: IDs canonici "provider-id/model-id" aggiunti dall'amministratore
 # solo dopo verifica manuale di costo zero. Vuota per default; nessun modello esposto/invocato.
+_DEFAULT_HUB_AGENT_FREE_MODELS_VERIFIED = ("nara/laguna-s-2.1",)
 HUB_AGENT_FREE_MODELS_VERIFIED = tuple(
-    x.strip() for x in os.environ.get("HUB_AGENT_FREE_MODELS_VERIFIED", "").split(",") if x.strip()
+    x.strip() for x in os.environ.get(
+        "HUB_AGENT_FREE_MODELS_VERIFIED", ",".join(_DEFAULT_HUB_AGENT_FREE_MODELS_VERIFIED)
+    ).split(",") if x.strip()
 )
 
 
 def modelli_agente_ammessi():
-    """Modelli pronti, verificati e presenti nell'allowlist esplicita a costo zero."""
+    """Modelli allowlisted, a costo zero verificato, su provider locali configurati."""
     allow = {str(x).strip() for x in HUB_AGENT_FREE_MODELS_VERIFIED if str(x).strip()}
     if not allow:
         return []
+    presenti = modelli_nostri(False)
     out = []
-    for m in modelli_nostri(False):
-        api_id = "%s/%s" % (m.get("id", ""), m.get("modello", ""))
-        if api_id in allow and m.get("verificato"):
-            out.append(dict(m, api_id=api_id))
+    gia = set()
+    for api_id in sorted(allow):
+        provider_id, sep, model_id = api_id.partition("/")
+        if not sep or not provider_id or not model_id:
+            continue
+        # Prima preferisci il modello già rilevato dal catalogo/appello.
+        match = next((m for m in presenti
+                      if m.get("id") == provider_id and m.get("modello") == model_id
+                      and m.get("verificato")), None)
+        # Le alias libere verificate vengono aggiunte solo sul provider già configurato e
+        # con una chiave registrata. Questo consente un modello gratuito noto anche quando
+        # il provider usa "auto" come modello generico nel catalogo storico.
+        if match is None:
+            provider = next((m for m in presenti
+                             if m.get("id") == provider_id and m.get("verificato")), None)
+            if provider is not None and chiave_provider(provider_id):
+                match = dict(provider, modello=model_id)
+        if match is not None and api_id not in gia:
+            out.append(dict(match, api_id=api_id))
+            gia.add(api_id)
     return out
 
 
@@ -2186,506 +1619,178 @@ def candidati_agente(modello, disponibili):
     return [scelto]
 
 
-def token_agente():
-    # Token persistente unico (non per-agent, non revocabile) per compatibilità.
+
+
+TOKEN_REGISTRY = os.path.join(HOME, ".hub_agent_tokens.json")
+_TOKEN_REGISTRY_LOCK = threading.RLock()
+
+
+def _leggi_registry_token():
     try:
-        with open(TOKEN_AGENTE, encoding="utf-8") as f:
-            t = f.read().strip()
-        if t:
-            return t
-    except Exception:
-        pass
-    import base64
-    t = "hub-" + base64.urlsafe_b64encode(os.urandom(18)).decode().rstrip("=")
+        with open(TOKEN_REGISTRY, encoding="utf-8") as f:
+            raw = json.load(f)
+        return raw if isinstance(raw, dict) and isinstance(raw.get("tokens"), list) else {"tokens": []}
+    except (OSError, ValueError, TypeError):
+        return {"tokens": []}
+
+
+def _scrivi_registry_token(registry):
+    """Scrittura atomica e privata; nel registro sono conservati solo hash, mai token."""
+    import tempfile
+    directory = os.path.dirname(TOKEN_REGISTRY) or "."
+    os.makedirs(directory, mode=0o700, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(prefix=".hub-agent-token-", dir=directory, text=True)
     try:
-        with open(TOKEN_AGENTE, "x", encoding="utf-8") as f:
-            f.write(t)
-        os.chmod(TOKEN_AGENTE, 0o600)
-    except FileExistsError:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(registry, f, ensure_ascii=False, separators=(",", ":"))
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, TOKEN_REGISTRY)
+        os.chmod(TOKEN_REGISTRY, 0o600)
+    finally:
         try:
-            with open(TOKEN_AGENTE, encoding="utf-8") as f:
-                return f.read().strip()
-        except Exception:
-            return ""
-    except Exception:
-        return ""
-    return t
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+
+
+def crea_token_agente(nome, modelli):
+    """Crea credenziale revocabile; il segreto viene restituito solo in questa risposta."""
+    import base64
+    import hashlib
+    import secrets
+    import uuid
+    nome = str(nome or "").strip()[:64]
+    richiesti = sorted({str(x).strip() for x in (modelli or []) if str(x).strip()})
+    disponibili = {m["api_id"] for m in modelli_agente_ammessi()}
+    if not nome:
+        raise ValueError("specificare un nome per l'agente")
+    if not richiesti or not set(richiesti).issubset(disponibili):
+        raise ValueError("selezionare solo modelli attualmente verificati e consentiti")
+    token = "huba-" + base64.urlsafe_b64encode(secrets.token_bytes(32)).decode("ascii").rstrip("=")
+    ident = uuid.uuid4().hex[:16]
+    record = {"id": ident, "name": nome, "models": richiesti,
+              "sha256": hashlib.sha256(token.encode("utf-8")).hexdigest(),
+              "created_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+    with _TOKEN_REGISTRY_LOCK:
+        registry = _leggi_registry_token()
+        registry["tokens"].append(record)
+        _scrivi_registry_token(registry)
+    return {"id": ident, "name": nome, "models": richiesti, "token": token}
+
+
+def lista_token_agente():
+    with _TOKEN_REGISTRY_LOCK:
+        return [{k: v for k, v in item.items() if k != "sha256"}
+                for item in _leggi_registry_token()["tokens"] if isinstance(item, dict)]
+
+
+def revoca_token_agente(ident):
+    with _TOKEN_REGISTRY_LOCK:
+        registry = _leggi_registry_token()
+        prima = len(registry["tokens"])
+        registry["tokens"] = [x for x in registry["tokens"]
+                               if not (isinstance(x, dict) and x.get("id") == str(ident))]
+        if len(registry["tokens"]) == prima:
+            return False
+        _scrivi_registry_token(registry)
+        return True
+
+
+def dettaglio_token_agente(header):
+    """Valida il Bearer con confronto constant-time e restituisce solo autorizzazioni non segrete."""
+    import hashlib
+    import hmac
+    parti = str(header or "").strip().split()
+    if len(parti) != 2 or parti[0].lower() != "bearer":
+        return None
+    candidato = parti[1]
+    digest = hashlib.sha256(candidato.encode("utf-8")).hexdigest()
+    with _TOKEN_REGISTRY_LOCK:
+        for item in _leggi_registry_token()["tokens"]:
+            if not isinstance(item, dict) or not hmac.compare_digest(digest, str(item.get("sha256", ""))):
+                continue
+            scope = item.get("models")
+            if not isinstance(scope, list) or not scope or any(not isinstance(x, str) or not x for x in scope):
+                return None
+            return {"id": item.get("id"), "models": list(scope)}
+    return None
 
 
 def agente_autorizzato(header):
     """Richiede esattamente Authorization: Bearer <token>; confronto constant-time."""
-    import hmac
-    parti = str(header or "").strip().split()
-    if len(parti) != 2 or parti[0].lower() != "bearer":
-        return False
-    atteso = (os.environ.get("HUB_TOKEN") or token_agente()).strip()
-    return bool(atteso) and hmac.compare_digest(parti[1], atteso)
+    return dettaglio_token_agente(header) is not None
 
 
-def chat_riposta(msgs, modello="auto", fusion=None):
-    """La chat dell'Hub: passa dal motore (OmniRoute) con TUTTI i messaggi — istruzioni di
-    sistema comprese (godmode, trading, ✨ ottimizza, documenti) — e, se il motore è giù,
-    dal Portiere o dalle chiavi dell'appello. Ritorna (testo, modello_servito, via)."""
-    import urllib.request
-    _MOTIVI.clear()            # mai motivi vecchi: si riparte puliti a ogni domanda
-    modello = str(modello or "auto")
-    if modello in ("fusion", "code", "trading") or modello.startswith("team::"):
-        # la squadra è NOSTRA: modelli delle nostre chiavi + giudice (missione: indipendenza dal centralino)
-        fatta = fusion_nostra(msgs, 3)
+def chat_riposta(msgs, modello="auto", fusion=None, on_event=None):
+    """Router Hub locale: provider diretti, Fusion esplicita e nessun fallback remoto silenzioso."""
+    _MOTIVI.clear()
+    modello=str(modello or "auto")
+    if modello in ("fusion","code","trading","tailor") or modello.startswith("team::"):
+        cfg=fusion if isinstance(fusion,dict) else {}
+        fatta=fusion_nostra(msgs,3,cfg.get("models"),cfg.get("judge"),on_event)
         if fatta:
-            return fatta[0], "fusion nostra · " + fatta[1], "fusion"
-    # la chat non si impunta MAI su un motore spento: si prova solo quello che è acceso
-    vivi = [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]
-    key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
-    for nome_motore, porta in vivi:
-        # il nome del modello può non piacere al motore: si riprova con «auto» (e senza squadra)
-        candidati = ([modello, "auto"] if modello.lower() in
-                     ("auto", "auto:fast", "fast", "auto:smart", "smart", "auto:best", "")
-                     else [modello])
-        for m in candidati:
-            corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": False}
-            if fusion and m == modello:
-                corpo["fusion"] = fusion
-            try:
-                req = urllib.request.Request(
-                    "http://127.0.0.1:%d/v1/chat/completions" % porta,
-                    data=json.dumps(corpo).encode(),
-                    headers={"Authorization": "Bearer " + chiave_per_motore(nome_motore, key),
-                             "x-fh-key": CHIAVE_HUB["k"], "Content-Type": "application/json"})
-                d = json.loads(urllib.request.urlopen(req, timeout=180).read().decode())
-                testo = ((d.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
-                if testo.strip():
-                    return testo, d.get("model") or m, nome_motore
-            except Exception as e:
-                segna_motivo(nome_motore, e)
-                continue
-    # nessun motore acceso: il ROUTER NOSTRO — chiavi dirette, rotazione, riserve, contabilità
-    r = chat_diretta(msgs, modello, 900, 4, 70)
-    if r:
-        return r[0], f"{r[2]} · diretto {r[1]}", "diretto " + r[1]
-    testo = messaggio_motori()
-    avvisa_agente("I motori", "la chat non è passata: " + "; ".join(_MOTIVI.values() or ["nessun motore acceso"]))
-    return testo, "-", "nessuno"
+            return fatta[0],"fusion Hub · "+fatta[1],"router Hub"
+        return ("⚠️ Fusion non disponibile: almeno due modelli della squadra devono essere presenti e rispondere.","fusion","router Hub")
+    risultato=chat_diretta(msgs,modello,900,4,70)
+    if risultato:
+        return risultato[0],risultato[2],"router Hub diretto · "+risultato[1]
+    return ("⚠️ Nessun provider diretto ha risposto. Controlla il catalogo o avvia una verifica manuale nelle Impostazioni. Non è stato usato un router alternativo.","—","router Hub")
 
 
 def chat_stream(msgs, modello, fusion, scrivi):
-    """Manda avanti la risposta pezzo per pezzo (come fa il centralino), appena arriva.
-    Ritorna (testo, modello_servito, motore) oppure None se nessun motore l'ha presa."""
-    import urllib.request
-    modello = str(modello or "auto")
-    key = chiave(r"^omniroute", r"sk-[A-Za-z0-9-]+") or ""
-    for nome_motore, porta in [(n, p) for (n, p) in MOTORI_CHAT if porta_viva(p)]:
-        candidati = ([modello, "auto"] if modello.lower() in
-                     ("auto", "auto:fast", "fast", "auto:smart", "smart", "auto:best", "")
-                     else [modello])
-        for m in candidati:
-            corpo = {"model": m, "messages": ultimi(msgs, 24), "stream": True}
-            if fusion and m == modello:
-                corpo["fusion"] = fusion
-            testo, servito = "", m
-            try:
-                req = urllib.request.Request(
-                    "http://127.0.0.1:%d/v1/chat/completions" % porta,
-                    data=json.dumps(corpo).encode(),
-                    headers={"Authorization": "Bearer " + chiave_per_motore(nome_motore, key),
-                             "x-fh-key": CHIAVE_HUB["k"], "Content-Type": "application/json"})
-                with urllib.request.urlopen(req, timeout=180) as r:
-                    for riga in r:
-                        riga = riga.decode("utf-8", "replace").rstrip("\n")
-                        if not riga.startswith("data:"):
-                            continue
-                        dato = riga[5:].strip()
-                        if dato == "[DONE]":
-                            break
-                        try:
-                            j = json.loads(dato)
-                        except Exception:
-                            continue
-                        if j.get("model"):
-                            servito = j["model"]
-                        pezzo = ((j.get("choices") or [{}])[0].get("delta") or {}).get("content") or ""
-                        if pezzo:
-                            testo += pezzo
-                        if pezzo or j.get("_fusion"):
-                            scrivi(riga)
-            except Exception as e:
-                segna_motivo(nome_motore, e)
-            if testo.strip():
-                return testo, servito, nome_motore
-    return None
+    """Compatibilità SSE: inoltra eventi fusion e poi il testo del provider diretto a blocchi."""
+    eventi=[]
+    def emit(obj):
+        eventi.append(obj)
+        scrivi("data: "+json.dumps(obj,ensure_ascii=False))
+    risultato=chat_riposta(msgs,modello,fusion,emit)
+    if not risultato: return None
+    testo,servito,via=risultato
+    for i in range(0,len(testo),120):
+        payload={"model":servito,"choices":[{"delta":{"content":testo[i:i+120]}}]}
+        scrivi("data: "+json.dumps(payload,ensure_ascii=False))
+    return testo,servito,via
 
 
-def omni_spegni_porta(porta):
-    """Chiude il processo che ascolta su una porta (serve per riavviare il portiere)."""
-    try:
-        out = subprocess.run(["pgrep", "-af", "cervello.py"], capture_output=True,
-                             text=True, timeout=8).stdout
-        for riga in out.splitlines():
-            pid, _, cmd = riga.partition(" ")
-            if pid.isdigit() and cmd.strip().endswith("cervello.py") and int(pid) != os.getpid():
-                try:
-                    os.kill(int(pid), 15)
-                except Exception:
-                    pass
-        for _ in range(6):
-            if not porta_viva(porta):
-                return True
-            time.sleep(1)
-    except Exception:
-        pass
-    return not porta_viva(porta)
 
 
-def cervello_avvia():
-    """Accende il portiere (cervello.py, porta 20129): è lui che fa continuare gli agenti
-    a lavorare se OmniRoute cade. Nessun terminale, nessuna finestra."""
-    if porta_viva(20129):
-        return True
-    script = os.path.join(POSTA, "cervello.py")
-    if not os.path.exists(script):
-        return False
-    try:
-        subprocess.Popen(["python3", script], stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL, start_new_session=True)
-    except Exception:
-        return False
-    for _ in range(10):
-        if porta_viva(20129):
-            return True
-        time.sleep(1)
-    return porta_viva(20129)
 
 
-def _avvio_automatico():
-    """All'accensione, senza che tu prema niente:
-    1) se il motore è su ma ha 0 modelli, gli innesto io le chiavi (una volta per avvio);
-    2) faccio l'appello delle chiavi, così la riserva è pronta da subito."""
-    time.sleep(8)
-    try:
-        if omni_bin() and porta_viva(20128) and (modelli_omni().get("modelli") or 0) == 0:
-            flag = os.path.join(HOME, ".stato_appello", "chiavi_innestate_" + time.strftime("%Y%m%d"))
-            os.makedirs(os.path.dirname(flag), exist_ok=True)
-            if not os.path.exists(flag):
-                scrivi(flag, time.strftime("%H:%M"))
-                log = "/tmp/omni_lav_chiavi.log"
-                subprocess.Popen(["bash", os.path.join(POSTA, "omni_chiavi.sh")],
-                                 stdout=open(log, "w"), stderr=subprocess.STDOUT,
-                                 start_new_session=True)
-    except Exception:
-        pass
-    # il Portiere NON deve trovarsi acceso: se è rimasto su dalla volta prima, lo spengo
-    try:
-        if porta_viva(20129):
-            omni_spegni_porta(20129)
-    except Exception:
-        pass
-    # il browser degli agenti invece serve sempre: si accende da solo (dietro le quinte)
-    try:
-        if not porta_viva(9222):
-            chrome_headless_avvia()
-    except Exception:
-        pass
-    try:
-        if os.path.exists(os.path.join(POSTA, "prova_agenti.sh")):
-            threading.Thread(target=prova_agenti_avvio, daemon=True).start()
-    except Exception:
-        pass
-    try:
-        vecchio = True
-        if os.path.exists(APPELLO_JSON):
-            vecchio = (time.time() - os.path.getmtime(APPELLO_JSON)) > 3 * 3600
-        if vecchio:
-            appello_lancia(svelto=True)
-    except Exception:
-        pass
 
 
-def stato():
-    fus = {}
-    try:
-        fus = json.loads(leggi(os.path.join(POSTA, "stato_fusion.json"), "{}"))
-    except Exception:
-        pass
-    ris_dir = os.path.join(POSTA, "RISPOSTE_AGENTI")
-    ultimi = sorted(os.listdir(ris_dir), reverse=True)[:8] if os.path.isdir(ris_dir) else []
-    if serve_login_manuale() and not os.path.exists(flag_checkin()) \
-            and porta_viva(9222) and time.time() - _ultima_verifica[0] > 120:
-        threading.Thread(target=verifica_sessione, daemon=True).start()
-    sl = salute()             # 0,1 s: il verdetto deve arrivare prima di tutto il resto
-    sv = saldo_istantaneo()
-    mo = modelli_omni()
-    lo = lavoro_omni()
-    ap = appello_dati()
-    motori = {n: porta_viva(p) for n, p in MOTORI_CHAT}   # chi può rispondere ADESSO
-    posta = postino_acceso()                              # il postino (ponte GitHub) è acceso? (pgrep: leggerissimo)
-    return {"omniroute": porta_viva(20128), "browser_agenti": porta_viva(9222),
-            "motori": motori, "motori_nessuno": not any(motori.values()), "postino": posta,
-            "checkin_oggi": os.path.exists(flag_checkin()),
-            "checkin_ora": leggi(flag_checkin(), "").strip(),
-            "login_manuale": serve_login_manuale() and not os.path.exists(flag_checkin()),
-            "login_motivo": leggi(file_login_manuale(), "").strip(),
-            "tentativi": tentativi_oggi(), "max_tentativi": MAX_TENTATIVI,
-            "finestra_aperta": finestra_aperta(), "finestra": f"{FINESTRA[0]:02d}:{FINESTRA[1]:02d}",
-            "adesso": adesso_hhmm(),
-            "saldo": sv or saldo_ultimo(), "saldo_vivo": bool(sv),
-            "modelli": mo["modelli"], "linee": mo["linee"],
-            "motore": {"acceso": porta_viva(20128), "errore": mo.get("errore", ""),
-                       "avvio_in_corso": motore_in_avvio(),
-                       "installato": bool(omni_bin()), "nome": "OmniRoute",
-                       "lavoro": lo["cosa"], "lavoro_secondi": lo["secondi"],
-                       "lavoro_log": lo["log"]},
-            "appello": {"quando": ap.get("quando", ""),
-                        "riserva": ap.get("riserva", []),
-                        "pronti": sum(1 for v in ap.get("voci", []) if v.get("esito") == "risponde"),
-                        "totali": len([v for v in ap.get("voci", []) if v.get("esito") != "no-chiave"]),
-                        "in_corso": _appello_stato["in_corso"],
-                        "portiere": porta_viva(20129)},
-            "fusion": fus, "risultati": ultimi, "salute": sl,
-            "salute_chiara": salute_chiara(), "avvisi": avvisi_accensione(),
-            "contatori": contatori_chiavi(), "openclaw": openclaw_stato(),
-            "prova_agenti": {"quando": _prova_agenti["quando"], "in_corso": _prova_agenti["in_corso"]},
-            "avvisi_agenti": list(_avvisi_agenti.values())[-6:],
-            "ora": time.strftime("%H:%M:%S")}
 
 
 # ─────────────────────────────── HTTP ───────────────────────────────────────
-# ═══════════════ GLI AGENTI VERI, DALLA CHAT E SENZA TERMINALE ═══════════════
-# Le voci della tendina che sono AGENTI VERI (OpenCode, Goose, Secondhand, Hermes,
-# OpenClaw, Gemini) non passano dal router: qui c'è il loro comando "senza terminale",
-# preso dalla documentazione ufficiale (verificata il 22/10/2026):
-#   OpenCode   → opencode run "<prompt>"          («run: non-interactive mode»)
-#   Goose      → goose run -t "<prompt>"          («Text in the command» + GOOSE_MODE=auto)
-#   Hermes     → hermes -z "<prompt>"             («scripted one-shot: final response text out»)
-#   Gemini CLI → gemini -p "<prompt>"             («Headless mode: -p/--prompt»)
-#   OpenClaw   → openclaw agent exec "<prompt>"   («recommended headless entry point»)
-#   Secondhand → interpreter.chat("<prompt>")      (API Python di Open Interpreter)
-# Se in quella versione la forma non esiste, si prova la successiva: è una differenza di
-# versione, non un guasto. La forma che funziona resta in memoria (_FORMA_OK).
-import shlex as _shlex
-
-_SECONDHAND_PY = (
-    "import sys\n"
-    "prompt = sys.argv[1]\n"
-    "try:\n"
-    "    from interpreter import interpreter\n"
-    "except Exception:\n"
-    "    print('⚠️ Secondhand (Open Interpreter) non risponde: nella scheda 🤖 Agenti premi Installa.')\n"
-    "    raise SystemExit(3)\n"
-    "interpreter.auto_run = True\n"
-    "interpreter.chat(prompt)\n"
-)
-
-AGENTI_VERI = {
-    "OpenCode": {
-        "bin": "opencode",
-        "forma": [["opencode", "run", "--auto", "{p}"], ["opencode", "run", "{p}"],
-                  ["opencode", "-p", "{p}"]],
-        "fa": "architetto & codice: legge e scrive i file, lancia i comandi, committa",
-    },
-    "Goose": {
-        "bin": "goose",
-        "forma": [["goose", "run", "-t", "{p}"], ["goose", "run", "--text", "{p}"]],
-        "env": {"GOOSE_MODE": "auto", "GOOSE_DISABLE_SESSION_NAMING": "1"},
-        "fa": "automazione: esegue istruzioni a più passi con i suoi strumenti",
-    },
-    "Secondhand": {
-        "bin": "interpreter",
-        "forma": [["python3", "-c", _SECONDHAND_PY, "{p}"]],
-        "fa": "revisore: scrive ed esegue codice per controllare le cose",
-    },
-    "Hermes": {
-        "bin": "hermes",
-        # Hermes usa la porta OpenAI-compatible che il portachiavi ha selezionato (OmniRoute/Portiere).
-        # openai-api onora OPENAI_BASE_URL + OPENAI_API_KEY; niente OAuth o chiave extra da inserire.
-        # --yolo consente i suoi tool nel turno headless: l'utente lo avvia dalla chat e può fermarlo con ■.
-        "forma": [["hermes", "chat", "--oneshot", "--quiet", "-q", "{p}",
-                   "--provider", "openai-api", "--model", "auto", "--yolo"],
-                  ["hermes", "-z", "{p}", "--provider", "openai-api", "--model", "auto"]],
-        "fa": "strategia & ricerca: usa il cervello del PC, poi agisce con i suoi strumenti",
-    },
-    "OpenClaw": {
-        "bin": "openclaw",
-        "forma": [["openclaw", "agent", "exec", "{p}"],
-                  ["openclaw", "agent", "--message", "{p}", "--local"],
-                  ["openclaw", "agent", "--message", "{p}"]],
-        "fa": "operatore del PC: tocca file e browser e lavora H24",
-    },
-    "Gemini": {
-        "bin": "gemini",
-        "forma": [["gemini", "-p", "{p}"], ["gemini", "--prompt", "{p}"]],
-        "fa": "l'agente Google da terminale: legge i file del progetto e li modifica",
-    },
-}
-AGENTE_TIMEOUT = int(os.environ.get("AGENTE_TIMEOUT") or 600)   # un agente vero può lavorare a lungo
-_FORMA_OK = {}      # agente → indice della forma che ha funzionato
-_RUN_VIVI = {}      # id del giro → Popen (per il ■ stop)
-
-# le stesse cartelle di agenti_stato.sh: gli agenti stanno lì, non sempre nel PATH della GUI
-_PATH_AGENTI = ('export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$HOME/.bun/bin:'
-                '$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:'
-                '$HOME/bin:$HOME/.nvm/versions/node/'
-                '$(ls "$HOME/.nvm/versions/node" 2>/dev/null | sort -V | tail -1)/bin:$PATH"')
-
-
-def _guscio_agente(argv, env_extra=None, cartella=True):
-    """Il comando dell'agente dentro un bash pulito: PATH giusto, chiavi del portachiavi,
-    cartella di lavoro ~/posta. Le chiavi non finiscono mai nei log."""
-    righe = [_PATH_AGENTI,
-             'set -a; . "$HOME/posta/chiavi_env.sh" >/dev/null 2>&1 || true; set +a']
-    for k, v in (env_extra or {}).items():
-        righe.append("export %s=%s" % (k, _shlex.quote(str(v))))
-    if cartella:
-        righe.append('cd "$HOME/posta" 2>/dev/null || true')
-    righe.append("exec " + " ".join(_shlex.quote(a) for a in argv))
-    return ["bash", "-c", "\n".join(righe)]
-
-
-def agente_installato(nome):
-    """Il binario c'è? (stesse cartelle di agenti_stato.sh)."""
-    cfg = AGENTI_VERI.get(nome)
-    if not cfg:
-        return False
-    binario = cfg["bin"]
-    if nome == "Secondhand":
-        cmd = ["bash", "-c", _PATH_AGENTI + '\npython3 -c "import interpreter" >/dev/null 2>&1']
-        try:
-            return subprocess.run(cmd, capture_output=True, timeout=25).returncode == 0
-        except Exception:
-            return False
-    cmd = ["bash", "-c", _PATH_AGENTI + '\ncommand -v %s >/dev/null 2>&1' % binario]
+def _richiesta_loopback_locale(handler):
+    """Blocca gestione token da rete e da pagine web di origine diversa."""
+    import ipaddress
+    import urllib.parse
     try:
-        return subprocess.run(cmd, capture_output=True, timeout=25).returncode == 0
-    except Exception:
+        peer = ipaddress.ip_address(handler.client_address[0].split("%", 1)[0])
+        locale = peer.is_loopback or bool(getattr(peer, "ipv4_mapped", None)
+                                           and peer.ipv4_mapped.is_loopback)
+        host_raw = (handler.headers.get("Host") or "").strip()
+        host = urllib.parse.urlsplit("//" + host_raw)
+        name = host.hostname or ""
+        host.port
+        try:
+            ip = ipaddress.ip_address(name)
+            host_local = ip.is_loopback or bool(getattr(ip, "ipv4_mapped", None)
+                                                and ip.ipv4_mapped.is_loopback)
+        except ValueError:
+            host_local = name.lower() == "localhost"
+        host_local = host_local and not (host.username or host.password or host.path or host.query or host.fragment)
+        origin = (handler.headers.get("Origin") or "").strip()
+        if origin:
+            parsed = urllib.parse.urlsplit(origin)
+            if (parsed.scheme != "http" or parsed.path not in ("", "/") or parsed.query
+                    or parsed.fragment or parsed.netloc.lower() != host_raw.lower()):
+                return False
+        return bool(locale and host_local)
+    except (AttributeError, TypeError, ValueError, IndexError):
         return False
-
-
-def agente_manca(nome):
-    """Se non si può partire: la frase in chiaro da mostrare (niente terminale, niente JSON)."""
-    if nome not in AGENTI_VERI:
-        return "Questo agente non esiste più nella tendina: scegline un altro."
-    if nome == "OpenClaw":
-        if not agente_installato(nome):
-            return ("OpenClaw non è installato su questo PC. Apri 🤖 Agenti → Installa "
-                    "(oppure il file INSTALLA_OPENCLAW.bat): poi riprova da qui.")
-    if nome == "Hermes" and not agente_installato(nome):
-        return ("Hermes non è installato su questo PC. Per installare SOLO Hermes, apri la cartella posta "
-                "dal menu Centrale [6], apri la cartella 00_INSTALLA_AGENTI e fai doppio clic su 01_HERMES.bat. "
-                "OpenClaw non viene toccato. "
-                "Poi torna al menu e premi g per riavviare la GUI.")
-    if not agente_installato(nome):
-        return ("%s non è installato su questo PC. Apri 🤖 Agenti e premi Installa: "
-                "quando è pronto riprovi da qui, senza terminale." % nome)
-    return ""
-
-
-def agente_stato_elenco():
-    """Per la GUI: chi c'è, come si chiama il suo comando, cosa fa meglio."""
-    out = {}
-    for nome, cfg in AGENTI_VERI.items():
-        out[nome] = {"installato": agente_installato(nome), "comando": " ".join(cfg["forma"][0][:2]),
-                     "fa": cfg.get("fa", ""), "manca": agente_manca(nome)}
-    return out
-
-
-# quando un agente si ferma per un accesso che manca: la frase dice cosa fare (niente terminale a caso)
-_CONSIGLI = {
-    "OpenCode": "🏗️ OpenCode non è passato: ha bisogno della sua chiave (OpenCode Zen, sta nel portachiavi). "
-                "Guarda 🤖 Agenti → 📋 Dettagli e riprova.",
-    "Goose": "🪿 Goose parla col motore di casa: se OmniRoute è spento (🤖 Agenti → 🧠 Motori) Goose non risponde. "
-             "Accendilo e riprova.",
-    "Secondhand": "🦀 Secondhand (Open Interpreter) non è a posto: 🤖 Agenti → Installa. "
-                  "Su WSL1 a volte non si installa: in quel caso resta sui modelli, non è un guasto.",
-    "Hermes": "🧭 Hermes ha bisogno del suo accesso: la prima volta va aperto «hermes» da terminale e fatto il login "
-              "(una volta sola). Poi da qui funziona.",
-    "OpenClaw": "🦾 OpenClaw lavora col suo gateway (porta 18789): accendilo dalla sua scheda in 🤖 Agenti e riprova.",
-    "Gemini": "♊ Gemini ha bisogno dell'accesso Google: la prima volta va aperto «gemini» da terminale e fatto il login "
-              "(una volta sola), oppure la chiave GEMINI_API_KEY nel portachiavi. Poi riprova da qui.",
-}
-_ACCESSO = re.compile(r"not authenticated|unauthenticated|unauthorized|forbidden|\b401\b|\b403\b|"
-                      r"api[_ -]?key|login|sign in|credential|not logged|auth token", re.I)
-_ERRORE_FORMA = re.compile(r"unknown|unrecognized|unexpected|invalid|no such|usage:|option", re.I)
-_SPORCO = re.compile(r"\x1b\[[0-9;?]*[a-zA-Z]|\x1b\][^\x07]*\x07|\r")
-
-
-def agente_esegui(nome, prompt, manda, run_id):
-    """Lancia l'agente vero e manda le righe appena arrivano. manda({"riga": testo}) / {"fine": True}.
-    Ritorna il codice d'uscita. Il processo sta in un gruppo suo: il ■ stop lo spegne davvero."""
-    cfg = AGENTI_VERI[nome]
-    forme = cfg["forma"]
-    ordine = [ _FORMA_OK[nome] ] + [i for i in range(len(forme)) if i != _FORMA_OK.get(nome)] \
-             if nome in _FORMA_OK else list(range(len(forme)))
-    ultimo = None
-    for indice in ordine:
-        argv = [prompt if a == "{p}" else a for a in forme[indice]]
-        cmd = _guscio_agente(argv, cfg.get("env"))
-        try:
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 text=True, bufsize=1, cwd=POSTA, start_new_session=True)
-        except Exception as e:
-            manda({"errore": "non riesco a far partire %s: %s" % (nome, e)})
-            return -1
-        _RUN_VIVI[run_id] = p
-        inizio = time.time()
-        primo = []          # righe tenute da parte finché non capiamo se la forma è giusta
-        tutto = []          # tutto quello che l'agente ha detto in questo giro (per capire il motivo)
-        avviato = False
-        try:
-            for riga in p.stdout:
-                riga = _SPORCO.sub("", riga)
-                if not avviato:
-                    primo.append(riga); tutto.append(riga)
-                    # una riga "vera" (non un errore di sintassi del CLI) sblocca lo streaming;
-                    # dopo 6 secondi di silenzio si mostra comunque quello che c'è (sta pensando)
-                    if (riga.strip() and not _ERRORE_FORMA.search(riga)) or (time.time() - inizio) > 6:
-                        avviato = True
-                        for r in primo:
-                            manda({"riga": r})
-                        primo = []
-                else:
-                    tutto.append(riga); manda({"riga": riga})
-                if time.time() - inizio > AGENTE_TIMEOUT:
-                    try:
-                        os.killpg(os.getpgid(p.pid), 15)
-                    except Exception:
-                        p.terminate()
-                    manda({"riga": "\n⏱ Tempo massimo (%d secondi) raggiunto: ho fermato %s. "
-                                    "Se serve più tempo, chiedi un lavoro più corto.\n" % (AGENTE_TIMEOUT, nome)})
-                    break
-        finally:
-            codice = p.wait()
-            _RUN_VIVI.pop(run_id, None)
-        testo = "".join(primo)
-        # forma sbagliata (versione del CLI diversa): si passa alla successiva, senza mostrare l'errore
-        if (not avviato and codice != 0 and indice != ordine[-1] and _ERRORE_FORMA.search(testo)):
-            ultimo = codice
-            continue
-        _FORMA_OK[nome] = indice
-        if not avviato and primo:      # non ha prodotto niente: almeno si vede cosa ha detto
-            for r in primo:
-                manda({"riga": r})
-        # se si è fermato per un accesso che manca, la frase dice cosa fare (una volta, in chiaro)
-        if codice != 0 and re.search(_ACCESSO, "".join(tutto)) and _CONSIGLI.get(nome):
-            manda({"riga": "\n" + _CONSIGLI[nome] + "\n"})
-        return codice
-    return ultimo if ultimo is not None else -1
-
-
-def agente_ferma(run_id=None):
-    """Il ■ stop: spegne il processo dell'agente sul PC (gruppo suo, figli compresi)."""
-    fermati = 0
-    for k, p in list(_RUN_VIVI.items()):
-        if run_id and k != run_id:
-            continue
-        try:
-            os.killpg(os.getpgid(p.pid), 15)
-        except Exception:
-            try:
-                p.terminate()
-            except Exception:
-                pass
-        _RUN_VIVI.pop(k, None)
-        fermati += 1
-    return fermati
 
 
 class H(BaseHTTPRequestHandler):
@@ -2696,6 +1801,7 @@ class H(BaseHTTPRequestHandler):
         b = json.dumps(obj).encode()
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(b)))
         self.end_headers()
         self.wfile.write(b)
@@ -2709,30 +1815,50 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path in ("/", "/index.html", "/hub", "/api/hub"):
-            # Tutte le vecchie URL della GUI portano alla dashboard standalone 1277fef (porta 3000).
-            self.send_response(302)
-            self.send_header("Location", "http://localhost:3000/")
+            # La dashboard storica completa resta l'unica UI principale del Router Hub.
+            try:
+                with open(os.path.join(QUI, "hub.html"), "rb") as f:
+                    page = f.read()
+            except OSError:
+                self._json({"err": "dashboard non disponibile"}, 500)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Cache-Control", "no-store")
-            self.send_header("Content-Length", "0")
+            self.send_header("Content-Length", str(len(page)))
             self.end_headers()
+            self.wfile.write(page)
             return
         elif self.path.startswith("/api/salute"):
             self._json(salute(fresco=True))
-        elif self.path.startswith("/api/agenti/andamento"):
-            self._json({"in_corso": _inst_agenti["in_corso"], "log": _inst_agenti["log"][-2500:],
-                        "quando": _inst_agenti["quando"]})
-        elif self.path == "/api/agente/stato":
-            self._json({"agenti": agente_stato_elenco()})
-        elif self.path.startswith("/api/agenti"):
-            self._json(agenti_stato())
-        elif self.path.startswith("/api/chiavi"):
-            self._json(chiavi_conteggio())
+        elif self.path == "/api/risultati":
+            directory = os.path.join(POSTA, "RISPOSTE_AGENTI")
+            try:
+                nomi = sorted((n for n in os.listdir(directory)
+                               if n.lower().endswith(".md") and n.startswith("FUSION_")), reverse=True)
+            except OSError:
+                nomi = []
+            self._json({"data": nomi})
+        elif self.path == "/api/checkin/stato":
+            fatto = os.path.exists(flag_checkin())
+            self._json({"fatto_oggi": fatto, "ora": leggi(flag_checkin(), "").strip() if fatto else "",
+                        "saldo_locale": saldo_ultimo(),
+                        "login_manuale": serve_login_manuale() and not fatto,
+                        "finestra_aperta": finestra_aperta(), "tentativi": tentativi_oggi(),
+                        "max_tentativi": MAX_TENTATIVI})
+        elif self.path == "/api/agente-token":
+            self._json({"err": "endpoint legacy disabilitato; usa token separati revocabili"}, 410)
+        elif self.path.startswith("/api/agenti") or self.path == "/api/agente/stato":
+            self._json({"err": "endpoint disabilitato: gli agenti sono client dell'Hub"}, 404)
         elif self.path.startswith("/api/ponte"):
             self._json(ponte_stato())
         elif self.path == "/api/modelli":
             # i NOSTRI modelli (chiavi nostre, niente centralino): la tendina e le squadre leggono qui
             lista = modelli_nostri(False)
             pronti = modelli_nostri(True)
+            for m in modelli_agente_ammessi():
+                if not any(x.get("id") == m.get("id") and x.get("modello") == m.get("modello") for x in lista):
+                    lista.append(m)
             self._json({"data": [{"id": m["id"], "provider": m["provider"], "modello": m["modello"],
                                   "stato": m.get("stato", ""), "chiamate": m.get("chiamate", 0),
                                   "errori": m.get("errori", 0),
@@ -2748,60 +1874,29 @@ class H(BaseHTTPRequestHandler):
                         "appello_quando": appello_dati().get("quando", ""),
                         "appello_voci": len(appello_dati().get("voci", []))})
         elif self.path in ("/v1/models", "/v1/models/"):
-            if not agente_autorizzato(self.headers.get("Authorization")):
+            auth = dettaglio_token_agente(self.headers.get("Authorization"))
+            if auth is None:
                 self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
                 return
+            ammessi = modelli_agente_ammessi()
+            scope = auth.get("models")
+            if scope is not None:
+                ammessi = [m for m in ammessi if m["api_id"] in scope]
             data = [{"id": m["api_id"], "object": "model", "owned_by": m["provider"],
                      "root": m["modello"],
                      "capabilities": {"chat": True, "streaming": False, "tools": False}}
-                    for m in modelli_agente_ammessi()]
+                    for m in ammessi]
             self._json({"object": "list", "data": data})
-        elif self.path == "/api/agente-token":
-            # Unicamente peer loopback + authority locale; Origin, da sola, non prova il peer.
-            import ipaddress
-            import urllib.parse
-            try:
-                peer = ipaddress.ip_address(self.client_address[0].split("%", 1)[0])
-                peer_locale = peer.is_loopback or bool(
-                    getattr(peer, "ipv4_mapped", None) and peer.ipv4_mapped.is_loopback)
-            except (AttributeError, ValueError, IndexError):
-                peer_locale = False
-            host_header = (self.headers.get("Host") or "").strip()
-            origin = (self.headers.get("Origin") or "").strip()
-            try:
-                authority = urllib.parse.urlsplit("//" + host_header)
-                host_name = authority.hostname or ""
-                port = authority.port  # valida anche range e sintassi della porta
-                try:
-                    host_ip = ipaddress.ip_address(host_name)
-                    host_ip_local = host_ip.is_loopback or bool(
-                        getattr(host_ip, "ipv4_mapped", None) and host_ip.ipv4_mapped.is_loopback)
-                except ValueError:
-                    host_ip_local = False
-                host_local = (not authority.username and not authority.password
-                              and not authority.path and not authority.query and not authority.fragment
-                              and (host_name.lower() == "localhost" or host_ip_local))
-            except (ValueError, TypeError):
-                host_local = False
-            origin_ok = True
-            if origin:
-                try:
-                    parsed = urllib.parse.urlsplit(origin)
-                    origin_ok = (parsed.scheme == "http" and parsed.path in ("", "/")
-                                 and not parsed.query and not parsed.fragment
-                                 and parsed.netloc.lower() == host_header.lower())
-                except Exception:
-                    origin_ok = False
-            if not peer_locale or not host_local or not origin_ok:
+        elif self.path == "/api/agent-tokens":
+            if not _richiesta_loopback_locale(self):
                 self._json({"err": "richiesta locale non verificata"}, 403)
                 return
-            self._json({"token": token_agente(), "endpoint": "/v1/chat/completions"})
+            self._json({"tokens": lista_token_agente(),
+                        "models": [m["api_id"] for m in modelli_agente_ammessi()]})
         elif self.path == "/api/contabilita":
             self._json(contabilita())
         elif self.path == "/api/capacita":
             self._json(capacita())
-        elif self.path == "/api/stato":
-            self._json(stato())
         elif self.path.startswith("/api/risultato/raw"):
             import urllib.parse
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
@@ -2854,7 +1949,20 @@ class H(BaseHTTPRequestHandler):
             except Exception:
                 self._json({"err": "origine non ammessa: questo hub risponde solo al tuo PC"}, 403)
                 return
-        if self.path == "/api/checkin":
+        if self.path in ("/api/agent-tokens", "/api/agent-tokens/revoke"):
+            if not _richiesta_loopback_locale(self):
+                self._json({"err": "richiesta locale non verificata"}, 403)
+                return
+            body = self._body()
+            if self.path.endswith("/revoke"):
+                revoked = revoca_token_agente(body.get("id", ""))
+                self._json({"revoked": bool(revoked)}, 200 if revoked else 404)
+            else:
+                try:
+                    self._json(crea_token_agente(body.get("name"), body.get("models")))
+                except ValueError as e:
+                    self._json({"err": str(e)}, 400)
+        elif self.path == "/api/checkin":
             self._json(fai_checkin(forza=bool(self._body().get("forza"))))
         elif self.path == "/api/checkin/segna":
             if os.path.exists(flag_checkin()):
@@ -2875,28 +1983,6 @@ class H(BaseHTTPRequestHandler):
                         "msg": ("✅ Sessione valida: ho tolto l'avviso. Ora puoi premere «Riscatta ora»."
                                 if v else ("⚠️ Sessione non valida: fai il login in BROWSER_AGENTI."
                                            if v is False else "Apri prima il BROWSER_AGENTI."))})
-        elif self.path == "/api/fusion":
-            missione = (self._body().get("missione") or "").strip()
-            if len(missione) < 5:
-                self._json({"stato": "errore", "msg": "missione troppo corta"})
-                return
-            out = os.path.join(POSTA, "RISPOSTE_AGENTI", f"FUSION_GUI_{time.strftime('%Y%m%d_%H%M%S')}.md")
-            json.dump({"percentuale": 1, "fase": "Avvio dalla GUI...", "stato": "in_corso"},
-                      open(os.path.join(POSTA, "stato_fusion.json"), "w"))
-            subprocess.Popen(["bash", os.path.join(POSTA, "squadra.sh"), missione, out],
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            self._json({"stato": "avviata", "out": os.path.basename(out)})
-        elif self.path in ("/api/freellmapi/models", "/api/freellmapi/usage"):
-            import urllib.request
-            k = (self.headers.get("x-fh-key") or "").strip() or chiave(r"^freellmapi", r"freellmapi-[A-Za-z0-9-]+")
-            coda = self.path.rsplit("/", 1)[-1]
-            try:
-                req = urllib.request.Request("http://127.0.0.1:31415/v1/" + coda,
-                                             headers={"Authorization": "Bearer " + k, "x-fh-key": k})
-                self.wfile.write(urllib.request.urlopen(req, timeout=20).read())
-                return
-            except Exception as e:
-                self._json({"error": {"message": "centralino non raggiungibile su :31415 (%s)" % e.__class__.__name__}})
         elif self.path == "/api/search":
             q = str((self._body().get("q") or "")).strip()[:400]
             if not q:
@@ -2906,7 +1992,8 @@ class H(BaseHTTPRequestHandler):
             self._json({"q": q, "context": risultati_in_testo(res, q),
                         "results": [{"title": r["title"], "url": r["url"]} for r in res]})
         elif self.path in ("/v1/chat/completions", "/v1/chat/completions/"):
-            if not agente_autorizzato(self.headers.get("Authorization")):
+            auth = dettaglio_token_agente(self.headers.get("Authorization"))
+            if auth is None:
                 self._json({"error": {"message": "manca il token dell'agente (Authorization: Bearer …)"}}, 401)
                 return
             b = self._body()
@@ -2918,6 +2005,9 @@ class H(BaseHTTPRequestHandler):
                 self._json({"error": {"message": '"messages" deve essere un array non vuoto', "type": "invalid_request_error"}}, 400)
                 return
             disponibili = modelli_agente_ammessi()
+            scope = auth.get("models")
+            if scope is not None:
+                disponibili = [m for m in disponibili if m["api_id"] in scope]
             if not disponibili:
                 self._json({"error": {"message": "nessun modello agente verificato e allowlisted a costo zero", "type": "invalid_request_error"}}, 403)
                 return
@@ -2964,16 +2054,7 @@ class H(BaseHTTPRequestHandler):
                         "created": int(time.time()), "model": servito["api_id"], "via": via,
                         "choices": [{"index": 0, "finish_reason": "stop",
                                      "message": {"role": "assistant", "content": testo}}]})
-        elif self.path == "/api/agente":
-            # Disabilitato: non avvia più CLI locali (fail-closed)
-            self._json({"error": {"message": "endpoint disabilitato: nessun avvio CLI dall'hub"}}, 403)
-            return
-        elif self.path == "/api/agente/stop":
-            # Disabilitato: non ferma più CLI locali (fail-closed)
-            self._json({"error": {"message": "endpoint disabilitato: nessuna gestione CLI dall'hub"}}, 403)
-            return
         elif self.path == "/api/chat":
-            CHIAVE_HUB["k"] = (self.headers.get("x-fh-key") or "").strip()
             _MOTIVI.clear()
             b = self._body()
             msgs = b.get("messages") or b.get("messaggi") or []
@@ -2997,11 +2078,10 @@ class H(BaseHTTPRequestHandler):
                 self.end_headers()
                 try:
                     fatto = chat_stream(msgs, b.get("model") or "auto", fusione, _scrivi)
-                    if not fatto:                     # nessun motore ha risposto: chiavi, in fretta
-                        r2 = chat_riserva(msgs, fretta=True)
-                        testo2 = r2[0] if r2 else messaggio_motori()
+                    if not fatto:
+                        testo2 = "⚠️ Il Router Hub non ha prodotto una risposta. Verifica il provider nelle Impostazioni."
                         for i in range(0, len(testo2), 120):
-                            pezzo = json.dumps({"model": (r2[2] if r2 else "-"),
+                            pezzo = json.dumps({"model": "—",
                                                 "choices": [{"delta": {"content": testo2[i:i + 120]}}]})
                             self.wfile.write(("data: " + pezzo + "\n\n").encode())
                             self.wfile.flush()
@@ -3013,155 +2093,8 @@ class H(BaseHTTPRequestHandler):
             self._json({"testo": testo, "modello": servito, "via": via, "model": servito,
                         "choices": [{"index": 0, "finish_reason": "stop",
                                      "message": {"role": "assistant", "content": testo}}]})
-        elif self.path == "/api/agenti/prova":
-            svelto = bool(self._body().get("svelto"))
-            argomenti = ["bash", os.path.join(POSTA, "prova_agenti.sh")] + (["--svelto"] if svelto else [])
-            _prova_agenti.update(in_corso=True)
-            try:
-                p = subprocess.run(argomenti, capture_output=True, text=True, timeout=300, cwd=POSTA)
-                testo = ((p.stdout or "") + (p.stderr or ""))
-                _prova_agenti.update(quando=time.time(), in_corso=False, log=testo[-4000:])
-            except subprocess.TimeoutExpired:
-                testo = "Tempo scaduto: la prova è troppo lunga (usa la versione svelta)."
-            self._json({"stato": "ok", "log": testo[-4000:]})
-        elif self.path == "/api/agenti/installa":
-            b = self._body()
-            quali = b.get("quali") or None
-            self._json(installa_agenti(quali))
         elif self.path == "/api/pc/aggiorna":
             self._json(aggiorna_pc())
-        elif self.path == "/api/openclaw":
-            b = self._body()
-            az = (b.get("azione") or "stato").strip()
-            if az == "stato":
-                self._json(openclaw_stato())
-            elif az == "avvia":
-                if not _oc_libero("avvia"):
-                    self._json({"stato": "in_corso",
-                                "msg": "⏳ Sto già accendendo OpenClaw: aspetta una trentina di secondi "
-                                       "senza premere altro.", "gateway": porta_viva(18789)})
-                    return
-                porta = openclaw_stato().get("porta", 18789)
-                rc, log = _oc_win(["gateway", "install"], attesa=45, titolo="accendo")
-                acceso = porta_viva(porta)
-                if not acceso:                      # aspetto che parta, senza lanciare altro
-                    for _ in range(25):
-                        if porta_viva(porta):
-                            acceso = True
-                            break
-                        time.sleep(1)
-                msg = (f"🟢 Gateway acceso su :{porta} — da adesso parte da solo col PC") if acceso else \
-                      ("⚠️ Servizio registrato ma non risponde ancora: aspetta 30 secondi e premi "
-                       "«Ricontrolla», non «Accendi».")
-                self._json({"stato": "ok" if acceso else "attenzione", "msg": msg,
-                            "gateway": acceso, "log": (log or "")[-2000:]})
-            elif az == "riavvia":
-                if not _oc_libero("riavvia"):
-                    self._json({"stato": "in_corso", "msg": "⏳ Già un comando in corso: aspetta.",
-                                "gateway": porta_viva(18789)})
-                    return
-                porta = openclaw_stato().get("porta", 18789)
-                rc, log = _oc_win(["gateway", "restart"], attesa=45, titolo="OpenClaw - riavvio")
-                for _ in range(15):
-                    if porta_viva(porta):
-                        break
-                    time.sleep(1)
-                self._json({"stato": "ok", "msg": "Riavvio fatto.", "log": (log or "")[-2000:],
-                            "gateway": porta_viva(porta)})
-            elif az == "doctor":
-                if not _oc_libero("doctor"):
-                    self._json({"stato": "in_corso", "msg": "⏳ Già un comando in corso: aspetta.",
-                                "gateway": porta_viva(18789)})
-                    return
-                rc, log = _oc_win(["doctor"], attesa=60, titolo="diagnostica")
-                self._json({"stato": "ok", "msg": "Diagnostica completata (vedi sotto).",
-                            "log": (log or "")[-3000:]})
-            elif az == "cartella":
-                # apre la cartella posta in Esplora Risorse di Windows
-                try:
-                    subprocess.Popen(["explorer.exe", _l2w(POSTA)], cwd="/mnt/c",
-                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    self._json({"stato": "ok", "msg": "Ho aperto la cartella posta in una finestra di Windows."})
-                except Exception as e:
-                    self._json({"stato": "errore", "msg": f"Non riesco ad aprire la cartella ({e})."})
-            elif az == "prepara":
-                # NON dipende da file/cartelle/git: il .bat lo scrivo io, qui, adesso.
-                contenuto = (
-                    "@echo off\r\n"
-                    "chcp 65001 >nul 2>&1\r\n"
-                    "setlocal EnableExtensions\r\n"
-                    "title OpenClaw - configurazione iniziale\r\n"
-                    "color 0B\r\n"
-                    "cd /d \"%USERPROFILE%\" 2>nul\r\n"
-                    "set \"OC=\"\r\n"
-                    "for /f \"delims=\" %%i in ('where openclaw.cmd 2^>nul') do if not defined OC set \"OC=%%i\"\r\n"
-                    "if not defined OC for /f \"delims=\" %%i in ('where openclaw 2^>nul') do if not defined OC set \"OC=%%i\"\r\n"
-                    "if not defined OC if exist \"%APPDATA%\\npm\\openclaw.cmd\" set \"OC=%APPDATA%\\npm\\openclaw.cmd\"\r\n"
-                    "if not defined OC goto NON_TROVATO\r\n"
-                    "echo.\r\n"
-                    "echo   OpenClaw: %OC%\r\n"
-                    "echo.\r\n"
-                    "echo   Rispondi alle domande (lingua, provider, canali).\r\n"
-                    "echo   Se non sai una cosa, premi INVIO e la salti.\r\n"
-                    "echo   ------------------------------------------------------------\r\n"
-                    "call \"%OC%\" onboard\r\n"
-                    "echo   ------------------------------------------------------------\r\n"
-                    "echo   Finito. Torna nella GUI e premi Accendi.\r\n"
-                    "pause\r\n"
-                    "exit /b 0\r\n"
-                    ":NON_TROVATO\r\n"
-                    "echo   OpenClaw non risulta installato su questo PC.\r\n"
-                    "echo   Una volta sola: doppio clic su INSTALLA_OPENCLAW.bat\r\n"
-                    "pause\r\n"
-                    "exit /b 1\r\n"
-                )
-                # dove scriverlo: la home di Windows dell'utente
-                dest_dir = None
-                winroot = os.environ.get("WINROOT", "/mnt/c")
-                try:
-                    r = subprocess.run(["cmd.exe", "/c", "echo", "%USERPROFILE%"], capture_output=True,
-                                       text=True, timeout=15, cwd=winroot)
-                    prof = (r.stdout or "").strip().splitlines()[-1].strip()
-                    lin = _w2l(prof) if prof and ":" in prof else ""
-                    if lin and os.path.isdir(lin):
-                        dest_dir = lin
-                except Exception:
-                    dest_dir = None
-                if not dest_dir:
-                    for d in sorted(glob.glob(os.path.join(winroot, "Users", "*"))):
-                        if os.path.isdir(os.path.join(d, "AppData", "Roaming")):
-                            dest_dir = d
-                            break
-                if not dest_dir:
-                    self._json({"stato": "errore",
-                                "msg": "Non trovo la cartella utente di Windows. Usa il comando a mano: "
-                                       "apri il Prompt dei comandi e scrivi  openclaw onboard"}, 400)
-                    return
-                dest = os.path.join(dest_dir, "CONFIGURA_OPENCLAW.bat")
-                try:
-                    with open(dest, "w", encoding="utf-8", newline="") as f:
-                        f.write(contenuto)
-                except Exception as e:
-                    self._json({"stato": "errore", "msg": f"Non riesco a scrivere il file: {e}"}, 500)
-                    return
-                dest_win = _l2w(dest)
-                aperto = False
-                try:
-                    subprocess.Popen(["cmd.exe", "/c", "start", "", dest_win], cwd=winroot,
-                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    aperto = True
-                except Exception:
-                    aperto = False
-                if aperto:
-                    msg = ("Si è aperta una finestra su Windows con le domande di OpenClaw. "
-                           "Rispondi, poi chiudila e torna qui.")
-                else:
-                    msg = ("Non sono riuscito ad aprirla da qui. Il file però È SCRITTO: "
-                           f"apri il Prompt dei comandi e incolla questa riga:  {dest_win}")
-                self._json({"stato": "ok", "msg": msg, "bat": dest_win,
-                            "comando": "openclaw onboard"})
-            else:
-                self._json({"stato": "errore", "msg": f"Azione sconosciuta: {az}"}, 400)
         elif self.path == "/api/ponte":
             az = (self._body().get("azione") or "stato").strip()
             if az != "avvia":
@@ -3189,41 +2122,6 @@ class H(BaseHTTPRequestHandler):
                                    "che manca (token scaduto). Controlla il box qui sotto."})
             except Exception as e:
                 self._json({"stato": "ko", "msg": f"⚠️ Non sono riuscito ad avviarlo: {e}"})
-        elif self.path == "/api/cervello":
-            az = (self._body().get("azione") or "stato").strip()
-            if az == "avvia":
-                su = cervello_avvia()
-                self._json({"stato": "ok" if su else "ko", "acceso": su,
-                            "msg": "🟢 Portiere acceso (porta 20129)" if su else
-                                   "⚠️ Non sono riuscito ad accenderlo: manca cervello.py"})
-            elif az == "riavvia":
-                omni_spegni_porta(20129)
-                time.sleep(1)
-                su = cervello_avvia()
-                self._json({"stato": "ok" if su else "ko", "acceso": su,
-                            "msg": "🔄 Portiere riavviato" if su else
-                                   "⚠️ Non è ripartito"})
-            elif az == "spegni":
-                self._json({"stato": "ok", "acceso": not omni_spegni_porta(20129),
-                            "msg": "🔴 Portiere spento"})
-            else:
-                su = porta_viva(20129)
-                tot = contatori_chiavi().get("cervello_totali", len(APP_BASE))
-                d = {"acceso": su, "porta": 20129, "totali": tot, "pronti": 0, "nome": "Portiere"}
-                if su:      # le chiamate le fa SOLO se è acceso
-                    try:
-                        import urllib.request
-                        info = json.loads(urllib.request.urlopen(
-                            "http://127.0.0.1:20129/cervello", timeout=8).read().decode())
-                        d["pronti"] = len(info.get("riserva", []))
-                        d["motore"] = bool(info.get("motore"))
-                        capo = info.get("capo") or {}
-                        if capo:
-                            d["capo"] = "%s · %s" % (capo.get("nome", ""), capo.get("modello", ""))
-                        d["sostituti"] = len(info.get("sostituti") or [])
-                    except Exception:
-                        pass
-                self._json(d)
         elif self.path == "/api/browser":
             az = (self._body().get("azione") or "stato").strip()
             if az == "stato":
@@ -3245,61 +2143,10 @@ class H(BaseHTTPRequestHandler):
                 d = appello_dati()
                 d["in_corso"] = _appello_stato["in_corso"]
                 self._json(d)
-        elif self.path == "/api/omniroute":
-            az = self._body().get("azione")
-            if az in ("avvia", "riavvia") and not omni_bin():
-                self._json({"stato": "ko", "gateway": False,
-                            "msg": "⚠️ OmniRoute non è installato su questo PC: aprilo una volta col [9] "
-                                   "(voce Motore). Dopo parte da solo."})
-                return
-            if az == "avvia":
-                su = omniroute_avvia()
-                self._json({"stato": "ok" if su else "ko", "gateway": su,
-                            "msg": "🟢 Motore acceso" if su else "⚠️ Non si è acceso: vedi /tmp/omniroute.log"})
-            elif az == "riavvia":
-                su = omniroute_riavvia()
-                self._json({"stato": "ok" if su else "ko", "gateway": su,
-                            "msg": "🔄 Motore riavviato" if su else "⚠️ Non è ripartito: vedi /tmp/omniroute.log"})
-            elif az in ("free", "chiavi"):
-                if porta_viva(20128) and az == "free":
-                    # omni_free.sh spegne e riaccende il motore da sé: nessun blocco
-                    pass
-                if _omni_lav["quando"] and time.time() - _omni_lav["quando"] < 420:
-                    self._json({"stato": "in_corso",
-                                "msg": f"⏳ Sto già lavorando ({_omni_lav['cosa']}): 2-5 minuti, non premere altro."})
-                    return
-                script = os.path.join(POSTA, "omni_free.sh" if az == "free" else "omni_chiavi.sh")
-                if not os.path.exists(script):
-                    self._json({"stato": "ko", "msg": f"⚠️ Manca {os.path.basename(script)}"})
-                    return
-                _omni_lav["quando"] = time.time()
-                _omni_lav["cosa"] = "provider gratis" if az == "free" else "chiavi"
-                log = os.path.join("/tmp", "omni_lav_" + az + ".log")
-                subprocess.Popen(["bash", script], stdout=open(log, "w"), stderr=subprocess.STDOUT,
-                                 start_new_session=True)
-                self._json({"stato": "avviato",
-                            "msg": ("⏳ Attivo i provider gratis (2-5 minuti). Il motore si spegne e si "
-                                    "riaccende da solo; a fine lavoro ricontrollo i modelli."
-                                    if az == "free" else
-                                    "⏳ Innesto le tue chiavi nei provider (2-3 minuti). Il motore si spegne e "
-                                    "si riaccende da solo.")})
-            elif az == "spegni":
-                spento = omni_spegni()
-                self._json({"stato": "ok" if spento else "ko", "gateway": porta_viva(20128),
-                            "msg": "🔴 Motore spento (si riaccende da solo con la Centrale)"
-                                   if spento else "⚠️ Non sono riuscito a spegnerlo: riprova"})
-            else:
-                self._json({"err": "azione?"}, 400)
         else:
             self._json({"err": "not found"}, 404)
 
 
-def postino_bg():
-    if TEST or os.environ.get("AR_IGNORA_FINESTRA") == "1":
-        return                          # in collaudo non deve committare/pushare nulla
-    if subprocess.run(["pgrep", "-f", "postino.sh"], capture_output=True).returncode != 0:
-        subprocess.Popen(["bash", os.path.join(POSTA, "postino.sh"), "--loop"],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def libera_porta_20200():
@@ -3327,13 +2174,6 @@ def libera_porta_20200():
 if __name__ == "__main__":
     if not os.environ.get("CENTRALE_PORTA"):
         libera_porta_20200()
-    postino_bg()
-    # OmniRoute è opzionale: si avvia solo con un comando esplicito dell’utente.
-    threading.Thread(target=_avvio_automatico, daemon=True).start()  # chiavi + appello, senza premere niente
-    if os.environ.get("CENTRALE_NO_SVEGLIA") != "1":
-        threading.Thread(target=sveglia_checkin, daemon=True).start()
-    else:
-        print("[gui] sveglia disattivata (CENTRALE_NO_SVEGLIA=1)")
-    print(f"Free LLM Hub su http://localhost:20200/hub · finestra bonus dalle {FINESTRA[0]:02d}:{FINESTRA[1]:02d}")
+    print(f"Posta Router Hub su http://localhost:20200/hub · check-in solo manuale")
     PORTA = int(os.environ.get("CENTRALE_PORTA") or 20200)
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()

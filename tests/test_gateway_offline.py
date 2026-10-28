@@ -7,6 +7,7 @@ network calls.
 from __future__ import annotations
 
 import email.message
+import hashlib
 import importlib.util
 import io
 import json
@@ -81,18 +82,18 @@ class GatewayOfflineTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="hub-gateway-test-")
         self.addCleanup(self.temp.cleanup)
-        self.token_path = Path(self.temp.name) / "agent-token.txt"
-        self.token_path.write_text("unit-test-token", encoding="utf-8")
-        self.old_token_path = hub.TOKEN_AGENTE
-        hub.TOKEN_AGENTE = str(self.token_path)
-        self.addCleanup(setattr, hub, "TOKEN_AGENTE", self.old_token_path)
+        self.registry_path = Path(self.temp.name) / "agent-tokens.json"
+        self.old_registry_path = hub.TOKEN_REGISTRY
+        hub.TOKEN_REGISTRY = str(self.registry_path)
+        self.addCleanup(setattr, hub, "TOKEN_REGISTRY", self.old_registry_path)
+        hub._scrivi_registry_token({"tokens": [{"id": "test-agent", "name": "test agent",
+            "sha256": hashlib.sha256(b"unit-test-token").hexdigest(),
+            "models": ["test/test-model", "provider/model-a", "provider/model-b"]}]})
         self.old_hub_token = os.environ.pop("HUB_TOKEN", None)
         self.addCleanup(self._restore_hub_token)
         no_network = patch("urllib.request.urlopen", side_effect=AssertionError("offline test attempted urlopen"))
         no_network.start()
         self.addCleanup(no_network.stop)
-        self.old_key = hub.CHIAVE_HUB.get("k", "")
-        self.addCleanup(hub.CHIAVE_HUB.__setitem__, "k", self.old_key)
         self.old_rota = hub._ROTA
         hub._ROTA = {"giorno": "", "provider": {}, "storia": {}}
         self.addCleanup(setattr, hub, "_ROTA", self.old_rota)
@@ -106,13 +107,6 @@ class GatewayOfflineTests(unittest.TestCase):
         self.assertEqual(len(handler.responses), 1)
         return handler.responses[0]
 
-    def test_token_generated_with_restrictive_file_permissions(self):
-        self.token_path.unlink()
-        token = hub.token_agente()
-        self.assertTrue(token.startswith("hub-"))
-        self.assertEqual(stat.S_IMODE(self.token_path.stat().st_mode), 0o600)
-        self.assertEqual(hub.token_agente(), token)
-
     def test_bearer_auth_accepts_valid_token_and_case_insensitive_scheme(self):
         self.assertTrue(hub.agente_autorizzato("Bearer unit-test-token"))
         self.assertTrue(hub.agente_autorizzato("bEaReR   unit-test-token"))
@@ -125,16 +119,30 @@ class GatewayOfflineTests(unittest.TestCase):
                 self.assertFalse(hub.agente_autorizzato(header))
         self.assertFalse(hub.agente_autorizzato("Bearer other-token"))
 
-    def test_token_file_replacement_revokes_old_token_immediately(self):
+    def test_registry_revocation_invalidates_token_immediately(self):
         self.assertTrue(hub.agente_autorizzato("Bearer unit-test-token"))
-        self.token_path.write_text("rotated-test-token\n", encoding="utf-8")
+        self.assertTrue(hub.revoca_token_agente("test-agent"))
         self.assertFalse(hub.agente_autorizzato("Bearer unit-test-token"))
-        self.assertTrue(hub.agente_autorizzato("Bearer rotated-test-token"))
 
-    def test_environment_token_overrides_file_token(self):
+    def test_legacy_environment_global_token_is_not_accepted(self):
         os.environ["HUB_TOKEN"] = "environment-test-token"
-        self.assertFalse(hub.agente_autorizzato("Bearer unit-test-token"))
-        self.assertTrue(hub.agente_autorizzato("Bearer environment-test-token"))
+        self.assertFalse(hub.agente_autorizzato("Bearer environment-test-token"))
+        self.assertTrue(hub.agente_autorizzato("Bearer unit-test-token"))
+
+    def test_hub_model_catalog_surfaces_configured_free_alias_for_teams(self):
+        base = [{"id": "nara", "provider": "NaraRouter", "modello": "auto",
+                 "verificato": True, "stato": "risponde"}]
+        alias = {"id": "nara", "provider": "NaraRouter", "modello": "laguna-s-2.1",
+                 "verificato": True, "api_id": "nara/laguna-s-2.1"}
+        handler = FakeHandler("/api/modelli")
+        with (patch.object(hub, "modelli_nostri", side_effect=[base, base]),
+              patch.object(hub, "modelli_agente_ammessi", return_value=[alias]),
+              patch.object(hub, "lista_portiere", return_value={}),
+              patch.object(hub, "appello_dati", return_value={"quando": "", "voci": []})):
+            hub.H.do_GET(handler)
+        code, payload = self.response(handler)
+        self.assertEqual(code, 200)
+        self.assertEqual([x["modello"] for x in payload["data"]], ["auto", "laguna-s-2.1"])
 
     def test_models_route_requires_auth_before_listing_models(self):
         handler = FakeHandler("/v1/models")
@@ -155,50 +163,18 @@ class GatewayOfflineTests(unittest.TestCase):
         self.assertEqual({m["id"] for m in payload["data"]}, {"test/test-model"})
         listing.assert_called_once_with()
 
-    def test_token_copy_endpoint_allows_local_same_origin_request(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "localhost:20200", "Origin": "http://localhost:20200"})
+
+
+
+
+
+
+    def test_legacy_global_token_copy_endpoint_is_retired(self):
+        handler = FakeHandler("/api/agente-token", {"Host": "localhost:20200"})
         hub.H.do_GET(handler)
         code, payload = self.response(handler)
-        self.assertEqual(code, 200)
-        self.assertEqual(payload["token"], "unit-test-token")
-
-    def test_token_copy_endpoint_blocks_foreign_origin(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "localhost:20200", "Origin": "https://remote.invalid"})
-        hub.H.do_GET(handler)
-        code, _ = self.response(handler)
-        self.assertEqual(code, 403)
-
-    def test_token_copy_endpoint_blocks_remote_peer_even_with_forged_local_headers(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "localhost:20200", "Origin": "http://localhost:20200"})
-        handler.client_address = ("203.0.113.9", 54321)
-        hub.H.do_GET(handler)
-        code, _ = self.response(handler)
-        self.assertEqual(code, 403)
-
-    def test_token_copy_endpoint_blocks_host_origin_mismatch(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "localhost:20200", "Origin": "http://127.0.0.1:20200"})
-        hub.H.do_GET(handler)
-        code, _ = self.response(handler)
-        self.assertEqual(code, 403)
-
-    def test_token_copy_endpoint_blocks_nonlocal_host_even_with_local_peer(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "attacker.invalid", "Origin": "http://attacker.invalid"})
-        hub.H.do_GET(handler)
-        code, _ = self.response(handler)
-        self.assertEqual(code, 403)
-
-    def test_token_copy_endpoint_normalizes_ipv4_mapped_loopback_peer(self):
-        handler = FakeHandler("/api/agente-token", {
-            "Host": "localhost:20200", "Origin": "http://localhost:20200"})
-        handler.client_address = ("::ffff:127.0.0.1", 54321)
-        hub.H.do_GET(handler)
-        code, _ = self.response(handler)
-        self.assertEqual(code, 200)
+        self.assertEqual(code, 410)
+        self.assertNotIn("token", payload)
 
     def test_chat_route_rejects_unauthorized_request_without_calling_router(self):
         handler = FakeHandler("/v1/chat/completions", {"Content-Type": "application/json"},
@@ -231,6 +207,49 @@ class GatewayOfflineTests(unittest.TestCase):
         code, payload = self.response(handler)
         self.assertEqual(code, 200)
         self.assertEqual(payload["choices"][0]["message"]["content"], "mock answer")
+
+    def test_fusion_honors_explicit_team_and_judge_and_reports_events(self):
+        models = [
+            {"id": "a", "provider": "A", "modello": "model-a", "verificato": True},
+            {"id": "b", "provider": "B", "modello": "model-b", "verificato": True},
+            {"id": "c", "provider": "C", "modello": "model-c", "verificato": True},
+        ]
+        calls = []
+        events = []
+        def direct(model, messages, *args):
+            calls.append(model["id"])
+            return "fusion answer" if model["id"] == "c" else "panel " + model["id"]
+        with (patch.object(hub, "modelli_nostri", side_effect=lambda ready: models),
+              patch.object(hub, "modelli_agente_ammessi", return_value=[]),
+              patch.object(hub, "chiama_diretto", side_effect=direct)):
+            result = hub.fusion_nostra(
+                [{"role": "user", "content": "question"}], 3,
+                ["a/model-a", "b/model-b"], "c/model-c", events.append)
+        self.assertEqual(set(calls), {"a", "b", "c"})
+        self.assertEqual(result[0], "fusion answer")
+        self.assertEqual(result[2], ["a/model-a", "b/model-b"])
+        self.assertEqual([e["_fusion"]["event"] for e in events].count("panel"), 2)
+        self.assertEqual([e["_fusion"]["event"] for e in events].count("judge"), 1)
+
+    def test_fusion_does_not_replace_missing_explicit_team_members(self):
+        models = [
+            {"id": "a", "provider": "A", "modello": "model-a", "verificato": True},
+            {"id": "b", "provider": "B", "modello": "model-b", "verificato": True},
+        ]
+        with (patch.object(hub, "modelli_nostri", side_effect=lambda ready: models),
+              patch.object(hub, "modelli_agente_ammessi", return_value=[]),
+              patch.object(hub, "chiama_diretto", side_effect=AssertionError("must not call a fallback"))):
+            self.assertIsNone(hub.fusion_nostra(
+                [{"role": "user", "content": "question"}], 3,
+                ["a/model-a", "missing/model-x"], None))
+
+    def test_chat_riposta_passes_team_to_fusion(self):
+        with patch.object(hub, "fusion_nostra", return_value=("fused", "A + B", ["a/model-a", "b/model-b"])) as run:
+            result = hub.chat_riposta([], "fusion", {"models": ["a/model-a", "b/model-b"], "judge": "c/model-c"})
+        run.assert_called_once_with([], 3, ["a/model-a", "b/model-b"], "c/model-c", None)
+        self.assertEqual(result[0], "fused")
+        with patch.object(hub, "fusion_nostra", return_value=None):
+            self.assertIn("Fusion non disponibile", hub.chat_riposta([], "fusion", {"models": ["bad"]})[0])
 
     def test_wrong_post_content_type_is_rejected_before_body_parse(self):
         handler = FakeHandler("/v1/chat/completions", {"Content-Type": "text/plain"})
@@ -296,44 +315,20 @@ class GatewayOfflineTests(unittest.TestCase):
                          {"test/a", "test/b"})
 
     def test_explicit_live_model_error_does_not_retry_as_auto(self):
-        calls = []
+        messages = [{"role": "user", "content": "offline"}]
+        with patch.object(hub, "chat_diretta", return_value=None) as direct:
+            result = hub.chat_riposta(messages, "explicit-id")
+        direct.assert_called_once_with(messages, "explicit-id", 900, 4, 70)
+        self.assertIn("Non è stato usato un router alternativo", result[0])
 
-        def fake_urlopen(request, timeout=None):
-            model = json.loads(request.data.decode("utf-8"))["model"]
-            calls.append(model)
-            raise urllib.error.HTTPError(request.full_url, 400, "bad model", {}, io.BytesIO(b"{}"))
 
-        with patch.object(hub, "fusion_nostra", return_value=None), \
-             patch.object(hub, "MOTORI_CHAT", [("mock-motor", 9999)]), \
-             patch.object(hub, "porta_viva", return_value=True), \
-             patch.object(hub, "chiave", return_value=""), \
-             patch.object(hub, "chiave_per_motore", return_value="mock-key"), \
-             patch.object(hub, "chat_diretta", return_value=None), \
-             patch.object(hub, "messaggio_motori", return_value="mock unavailable"), \
-             patch.object(hub, "avvisa_agente"), \
-             patch("urllib.request.urlopen", side_effect=fake_urlopen):
-            hub.chat_riposta([{"role": "user", "content": "offline"}], "explicit-id")
-        self.assertEqual(calls, ["explicit-id"])
+    def test_auto_smart_is_sent_once_to_the_local_router_without_alias_fallback(self):
+        messages = [{"role": "user", "content": "offline"}]
+        with patch.object(hub, "chat_diretta", return_value=None) as direct:
+            result = hub.chat_riposta(messages, "auto:smart")
+        direct.assert_called_once_with(messages, "auto:smart", 900, 4, 70)
+        self.assertIn("Nessun provider diretto", result[0])
 
-    def test_auto_smart_may_fall_back_to_auto_after_mock_error(self):
-        calls = []
-
-        def fake_urlopen(request, timeout=None):
-            model = json.loads(request.data.decode("utf-8"))["model"]
-            calls.append(model)
-            if model == "auto:smart":
-                raise urllib.error.HTTPError(request.full_url, 503, "temporary", {}, io.BytesIO(b"{}"))
-            return FakeResponse({"model": "auto", "choices": [{"message": {"content": "mock answer"}}]})
-
-        with patch.object(hub, "fusion_nostra", return_value=None), \
-             patch.object(hub, "MOTORI_CHAT", [("mock-motor", 9999)]), \
-             patch.object(hub, "porta_viva", return_value=True), \
-             patch.object(hub, "chiave", return_value=""), \
-             patch.object(hub, "chiave_per_motore", return_value="mock-key"), \
-             patch("urllib.request.urlopen", side_effect=fake_urlopen):
-            answer = hub.chat_riposta([{"role": "user", "content": "offline"}], "auto:smart")
-        self.assertEqual(calls, ["auto:smart", "auto"])
-        self.assertEqual(answer[0], "mock answer")
 
     def test_cooldown_expires_without_sleeping(self):
         now = [1000.0]
@@ -359,6 +354,104 @@ class GatewayOfflineTests(unittest.TestCase):
             text, error, seconds = hub._posta_diretta(candidate, [{"role": "user", "content": "x"}])
         self.assertEqual((text, seconds), ("", 12))
         self.assertIn("pausa", error)
+
+    def test_revocable_agent_token_is_hashed_scoped_and_revoked(self):
+        models = [
+            {"api_id": "provider/model-a", "id": "provider", "provider": "Provider",
+             "modello": "model-a", "verificato": True},
+            {"api_id": "provider/model-b", "id": "provider", "provider": "Provider",
+             "modello": "model-b", "verificato": True},
+        ]
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models):
+            created = hub.crea_token_agente("agent test", ["provider/model-a"])
+        self.assertTrue(created["token"].startswith("huba-"))
+        self.assertEqual(["provider/model-a"], created["models"])
+        stored = self.registry_path.read_text(encoding="utf-8")
+        self.assertNotIn(created["token"], stored)
+        self.assertEqual(stat.S_IMODE(self.registry_path.stat().st_mode), 0o600)
+        self.assertIn(created["id"], [x["id"] for x in hub.lista_token_agente()])
+        header = "Bearer " + created["token"]
+        self.assertEqual(["provider/model-a"], hub.dettaglio_token_agente(header)["models"])
+        self.assertTrue(hub.revoca_token_agente(created["id"]))
+        self.assertIsNone(hub.dettaglio_token_agente(header))
+        self.assertFalse(hub.revoca_token_agente(created["id"]))
+
+    def test_token_creation_rejects_unverified_or_unavailable_models(self):
+        with patch.object(hub, "modelli_agente_ammessi", return_value=[]):
+            with self.assertRaises(ValueError):
+                hub.crea_token_agente("agent", ["provider/model-a"])
+
+    def test_scoped_token_models_route_only_lists_its_models(self):
+        models = [
+            {"api_id": "provider/model-a", "id": "provider", "provider": "Provider", "modello": "model-a"},
+            {"api_id": "provider/model-b", "id": "provider", "provider": "Provider", "modello": "model-b"},
+        ]
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models):
+            created = hub.crea_token_agente("agent", ["provider/model-a"])
+        handler = FakeHandler("/v1/models", {"Authorization": "Bearer " + created["token"]})
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models):
+            hub.H.do_GET(handler)
+        code, payload = self.response(handler)
+        self.assertEqual(code, 200)
+        self.assertEqual(["provider/model-a"], [m["id"] for m in payload["data"]])
+
+    def test_local_management_endpoint_creates_and_revokes_token(self):
+        models = [{"api_id": "provider/model-a", "id": "provider", "provider": "Provider",
+                   "modello": "model-a", "verificato": True}]
+        headers = {"Host": "localhost:20200", "Origin": "http://localhost:20200",
+                   "Content-Type": "application/json"}
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models):
+            create = FakeHandler("/api/agent-tokens", headers, {"name": "manual agent", "models": ["provider/model-a"]})
+            hub.H._do_POST(create)
+        code, payload = self.response(create)
+        self.assertEqual(code, 200)
+        token = payload["token"]
+        revoke = FakeHandler("/api/agent-tokens/revoke", headers, {"id": payload["id"]})
+        hub.H._do_POST(revoke)
+        self.assertEqual(200, self.response(revoke)[0])
+        self.assertIsNone(hub.dettaglio_token_agente("Bearer " + token))
+
+    def test_token_management_endpoint_blocks_remote_peer(self):
+        headers = {"Host": "localhost:20200", "Origin": "http://localhost:20200",
+                   "Content-Type": "application/json"}
+        handler = FakeHandler("/api/agent-tokens", headers, {"name": "remote", "models": ["x/y"]})
+        handler.client_address = ("203.0.113.10", 1234)
+        with patch.object(hub, "crea_token_agente", side_effect=AssertionError("must not create")):
+            hub.H._do_POST(handler)
+        self.assertEqual(403, self.response(handler)[0])
+
+    def test_free_allowlisted_alias_uses_configured_verified_provider(self):
+        provider = {"id": "nara", "provider": "NaraRouter", "modello": "auto",
+                    "base": "https://router.bynara.id/v1", "verificato": True, "stato": "strano"}
+        with patch.object(hub, "HUB_AGENT_FREE_MODELS_VERIFIED", ("nara/laguna-s-2.1",)), \
+             patch.object(hub, "modelli_nostri", return_value=[provider]), \
+             patch.object(hub, "chiave_provider", return_value="test-provider-key"):
+            allowed = hub.modelli_agente_ammessi()
+        self.assertEqual(["nara/laguna-s-2.1"], [m["api_id"] for m in allowed])
+        self.assertEqual("laguna-s-2.1", allowed[0]["modello"])
+
+    def test_unconfigured_provider_is_not_enabled_by_free_alias_allowlist(self):
+        with patch.object(hub, "HUB_AGENT_FREE_MODELS_VERIFIED", ("nara/laguna-s-2.1",)), \
+             patch.object(hub, "modelli_nostri", return_value=[]):
+            self.assertEqual([], hub.modelli_agente_ammessi())
+
+    def test_scoped_token_cannot_call_model_outside_its_scope(self):
+        models = [
+            {"api_id": "provider/model-a", "id": "provider", "provider": "Provider", "modello": "model-a"},
+            {"api_id": "provider/model-b", "id": "provider", "provider": "Provider", "modello": "model-b"},
+        ]
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models):
+            created = hub.crea_token_agente("agent", ["provider/model-a"])
+        handler = FakeHandler("/v1/chat/completions", {
+            "Content-Type": "application/json", "Authorization": "Bearer " + created["token"]},
+            {"model": "provider/model-b", "messages": [{"role": "user", "content": "offline"}]})
+        with patch.object(hub, "modelli_agente_ammessi", return_value=models), \
+             patch.object(hub, "_posta_diretta") as upstream:
+            hub.H._do_POST(handler)
+        code, payload = self.response(handler)
+        self.assertEqual(code, 403)
+        self.assertIn("modello non allowlisted", payload["error"]["message"])
+        upstream.assert_not_called()
 
     def test_retry_after_seconds_are_parsed_without_transport(self):
         headers = email.message.Message()
