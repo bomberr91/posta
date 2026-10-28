@@ -8,7 +8,6 @@ const path = require('path');
 const chat = require('./api/chat');
 const search = require('./api/search');
 const fllmModels = require('./api/freellmapi/models');
-const fllmUsage = require('./api/freellmapi/usage');
 const completions = require('./api/v1/chat/completions');
 const models = require('./api/v1/models');
 
@@ -37,7 +36,6 @@ const server = http.createServer((req, res) => {
   if (url === '/api/chat') return chat(req, res);
   if (url === '/api/search') return search(req, res);
   if (url === '/api/freellmapi/models') return fllmModels(req, res);
-  if (url === '/api/freellmapi/usage') return fllmUsage(req, res);
   if (url === '/api/v1/chat/completions') return completions(req, res);
   if (url === '/api/v1/models' || url === '/v1/models') return models(req, res);
   res.statusCode = 404;

@@ -97,8 +97,6 @@ header .sp{flex:1}
 #opt{background:rgba(163,113,247,.15);border-color:#a371f7;color:#d2a8ff;font-weight:700}
 #undo{display:none;font-size:11px;color:var(--mut)}
 label.webt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mut);cursor:pointer}
-#usage{font-size:11px;padding:4px 9px;background:var(--bg);color:var(--mut)}
-#usage:hover{color:var(--txt)}
 #web{accent-color:var(--verde)}
 #god{accent-color:var(--rosso)}
 #godl.on{color:var(--rosso)}
@@ -159,7 +157,6 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         <h1>⚡ Free LLM Hub</h1>
         <label class="webt" id="godl" title="Godmode: risposte dirette senza prediche, disclaimer o rifiuti da eccesso di zelo. Vale per il modello, la fusion e la code. (I filtri DURI dei provider restano: non sono nei nostri computer)"><input type="checkbox" id="god">😈 senza filtri</label>
         <label class="webt" id="keepl" title="Se acceso, cambiando modello RESTI in questa chat (non se ne crea una nuova)"><input type="checkbox" id="keep">📌 mantieni la chat</label>
-        <button id="usage" title="Uso REALE delle ultime 24h letto dal centralino (token inviati+ricevuti) — clicca per il dettaglio">📊 <span id="usageN">—</span></button>
         <span class="sp"></span>
         <span class="badge" id="modelbadge">—</span>
         <button class="gear" id="gear" title="Impostazioni">⚙</button>
@@ -218,14 +215,12 @@ footer{padding:6px 16px;font-size:10px;color:var(--mut);border-top:1px solid var
         if(m.indexOf('Regista')>-1){t=PC;sv='🧠 Regista · claude-opus-5 (riserva pronta: opus-4.8)';}
         else if(m.indexOf('Lampo')>-1){t='⚡ Fatto subito: ecco la risposta, diretta e senza giri.\n\n🧪 (ANTEPRIMA: Lampo gira su deepseek-v4-flash, la linea sempre viva — per le cose di tutti i giorni)';sv='⚡ Lampo · deepseek-v4-flash';}
         else if(m.indexOf('Fabbro')>-1){t='💻 Ho letto il codice, trovato il bug alla riga 42, corretto, test superato, commit b4c5d6e sul ponte.\n\n🧪 (ANTEPRIMA: il Fabbro scrive E prova il codice sul PC, non te lo incolla soltanto)';sv='💻 Fabbro · qwen3-coder via OmniRoute';}
-        else if(m.indexOf('Libero')>-1){t='😈 Qui nessun argomento è vietato: rispondo diretto e tu valuti da solo rischi e convenienza.\n\n🧪 (ANTEPRIMA: questa chat userà SOLO piloti senza guinzaglio — Venice / modello locale — mai le chiavi dei provider seri, così niente ban)';sv='😈 Libero · venice-uncensored';}
         else if(m.indexOf('Squadra')>-1){t=SQ;sv='🔥 Squadra · il Regista ha scelto 3 agenti · giudice claude-opus-5';}
         else {t='🧪 (ANTEPRIMA) Risposta di prova del modello «'+m+'» — nella versione vera risponde il tuo centralino, identico a oggi.';sv='deepseek-v4-flash (prova)';}
         if(b.stream===false) return j({model:sv,choices:[{message:{content:t}}]});
         return sse(t,sv);
       }
       if(u.includes('/models')) return j({data:[{id:'auto:smart'},{id:'auto:fast'},{id:'deepseek-v4-flash'},{id:'glm-5-air'},{id:'qwen3.8-27b'}]});
-      if(u.includes('/usage')) return j({ok:true});
       if(u.includes('/api/search')) return j({results:[{title:'Risultato di prova',url:'https://esempio.it',snippet:'(anteprima)'}]});
       return j({});
     }catch(e){ return j({error:{message:String(e)}}); }
@@ -242,9 +237,9 @@ function lsSet(k,v){ try { localStorage.setItem(k,v); } catch { MEM[k]=v; } }
 // ══════════ provider (specchio di lib/providers.js) — SOLO il centralino di casa ══════════
 const PROVIDERS = {
   freellmapi:{label:'FreeLLMAPI (centralino sul PC) 🔌',keyUrl:'http://127.0.0.1:31415',quota:'il TUO centralino: 34 provider impilati (~7,4B token/mese) · failover automatico · richiede FreeLLMAPI desktop ACCESO',warn:'la chiave è quella UNIFICATA del centralino (inizia per freellmapi-), non le chiave dei singoli provider',models:[]},
-  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],['Libero','😈 parla di tutto']]},
+  agenti:{label:'🤖 Agenti sul PC (FilippoPC)',keyUrl:'',quota:'gli agenti VERI sul tuo computer: non solo rispondono, AGISCONO (file, comandi, browser, commit sul ponte)',warn:'',models:[['Regista','🧠 il più intelligente'],['Lampo','⚡ il più veloce'],['Fabbro','💻 l\'esperto di codice'],['Squadra','🔥 la fusione di agenti'],]},
 };
-function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean); }
+function customModels(p){ return (lsGet('fh_custom_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean).filter(m=>!(p==='agenti' && m.toLowerCase()==='libero')); }
 function getKey(p){ return lsGet('fh_key_'+p)||''; }
 
 // ══════════ stato: chat multiple + cartelle (localStorage) ══════════
@@ -792,96 +787,6 @@ async function getFusionPanel(squad, selKey, noRefresh, ext, onProg){
   } catch { return null; }
 }
 
-// ══════════ contatore USO REALE: numeri del centralino via MCP + richieste di quest'hub ══════════
-function usageAll(){ try { return JSON.parse(lsGet('fh_usage')||'{}'); } catch { return {}; } }
-function todayKey(){ return new Date().toISOString().slice(0,10); }
-function bumpUsage(key, n){
-  if (!key) return;
-  const all = usageAll();
-  const days = Object.keys(all).sort();
-  while (days.length > 7) delete all[days.shift()];
-  const k = todayKey();
-  all[k] = all[k] || {};
-  all[k][key] = (all[k][key]||0) + n;
-  try { lsSet('fh_usage', JSON.stringify(all)); } catch {}
-}
-let usageReal = null;
-async function refreshUsageReal(){
-  try {
-    const cache = sessionStorage.getItem('fh_usagereal');
-    if (cache){ const j = JSON.parse(cache); if (Date.now()-j.t < 30000){ usageReal = j.d; renderUsage(); return; } }
-  } catch {}
-  try {
-    const r = await fetch('/api/freellmapi/usage', { headers:{ 'x-fh-key': getKey('freellmapi') } });
-    if (!r.ok){ usageReal = null; renderUsage(); return; }
-    const j = await r.json();
-    usageReal = j;
-    try { sessionStorage.setItem('fh_usagereal', JSON.stringify({t:Date.now(), d:j})); } catch {}
-    renderUsage();
-  } catch { usageReal = null; renderUsage(); }
-}
-function fmtTok(n){
-  n = Number(n)||0;
-  if (n >= 1e6) return (n/1e6).toFixed(1).replace('.',',')+'M';
-  if (n >= 1e3) return (n/1e3).toFixed(1).replace('.',',')+'K';
-  return String(n);
-}
-function renderUsage(){
-  const el = document.getElementById('usageN'); if (!el) return;
-  const u = usageReal && usageReal.usage;
-  const tot = u && (u.totals || u);
-  const tok = tot ? ((tot.input_tokens||0)+(tot.output_tokens||0)) : null;
-  el.textContent = tok === null ? '—' : fmtTok(tok);
-  const t = usageAll()[todayKey()] || {};
-  let calls = 0;
-  for (const [k,v] of Object.entries(t)) if (k.startsWith('call:')) calls += v;
-  window.__hubCalls = calls;
-}
-$('usage').onclick = (ev)=>{
-  const items = [];
-  const u = usageReal && usageReal.usage;
-  const tot = u && (u.totals || u);
-  if (tot && (tot.requests !== undefined)){
-    items.push({ label:'📞 <b>ULTIME 24H — numeri REALI del centralino</b>' });
-    items.push({ label:'&nbsp;&nbsp;richieste: <b>'+(tot.requests||0)+'</b> · errori: <b>'+(tot.errors||0)+'</b> · successo: <b>'+(tot.successes||0)+'</b>' });
-    items.push({ label:'&nbsp;&nbsp;token in: <b>'+fmtTok(tot.input_tokens)+'</b> · out: <b>'+fmtTok(tot.output_tokens)+'</b> · tot: <b>'+fmtTok((tot.input_tokens||0)+(tot.output_tokens||0))+'</b>' });
-    const tops = (u.topModels||u.top_models||[]).slice(0,6);
-    if (tops.length){
-      items.push({ sep:true });
-      items.push({ label:'🏆 <b>TOP MODELLI (24h)</b>' });
-      for (const m of tops) items.push({ label:'&nbsp;&nbsp;'+esc(shortName(m.model_id||m.modelId||m.model))+' … <b>'+(m.requests||0)+'</b> req' });
-    }
-  } else {
-    items.push({ label:'⚠️ Centralino non raggiunto (serve FreeLLMAPI acceso + MCP attivo: Keys → Agent compatibility)' });
-  }
-  const t = usageAll()[todayKey()] || {};
-  const models = [], combos = [];
-  for (const [k,v] of Object.entries(t)){
-    if (k.startsWith('call:')) models.push([k.slice(5), v]);
-    else if (k.startsWith('combo:')) combos.push([k.slice(6), v]);
-  }
-  models.sort((a,b)=>b[1]-a[1]); combos.sort((a,b)=>b[1]-a[1]);
-  if (models.length || combos.length){
-    items.push({ sep:true });
-    items.push({ label:'🧭 <b>QUESTO HUB, oggi</b> (le tue richieste da qui)' });
-    for (const [m,n] of combos) items.push({ label:'&nbsp;&nbsp;'+esc(m)+' … <b>'+n+'</b>' });
-    for (const [m,n] of models.slice(0,8)) items.push({ label:'&nbsp;&nbsp;'+esc(shortName(m))+' … <b>'+n+'</b> chiamate' });
-  }
-  const qb = quotaBenchInfo();
-  if (qb.length){
-    items.push({ sep:true });
-    items.push({ label:'⏰ <b>PANCHINA QUOTA</b> — rientrano alle <b>9:00</b> (ora italiana, mezzanotte Pacifica)' });
-    for (const x of qb) items.push({ label:'&nbsp;&nbsp;'+esc(x) });
-  }
-  if (usageReal && usageReal.health){
-    items.push({ sep:true });
-    items.push({ label:'ℹ️ i numeri in alto vivono nel centralino · questi dell\'hub nel browser' });
-  }
-  if (!items.length) items.push({ label:'Nessun dato ancora' });
-  openMenu(ev, items);
-  refreshUsageReal();
-};
-
 // ══════════ invio ══════════// ══════════ invio ══════════
 let ctrl = null;
 qEl.addEventListener('keydown', e=>{ if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
@@ -1121,8 +1026,8 @@ async function runTurn(){
         const cambiata = !!(rmod && rmod.length && rmod.some(m=>!prePanel.some(x=>sameModel(x, m)))); // se non entra nessun modello NUOVO il ricambio non serve
         if (rmod && rmod.length >= 2 && cambiata){
           try { // i contatori non perdono il giro buttato: le chiamate sono state fatte davvero
-            for (const p of fusionEv.panel){ bumpUsage('call:'+p.model, 1); if (p.status==='ok') countQuota(p.model, 1); }
-            if (fusionEv.judge){ bumpUsage('call:'+fusionEv.judge, 1); countQuota(fusionEv.judge, 1); }
+            for (const p of fusionEv.panel){ if (p.status==='ok') countQuota(p.model, 1); }
+            if (fusionEv.judge){ countQuota(fusionEv.judge, 1); }
           } catch {}
           fixes++;
           draft = acc; // se il giro rifatto non produce nulla, torna il testo del primo (l'errore, se c'era)
@@ -1153,13 +1058,6 @@ async function runTurn(){
     ctrl = null; uiBusy(false); // ■ stop → torna Invia al suo posto
     const lastm = c.msgs[c.msgs.length-1];
     if (lastm && lastm.role === 'assistant'){
-      bumpUsage('combo:' + provider + '/' + dispModel, 1);
-      if (lastm.fusion){
-        for (const p of lastm.fusion.panel) bumpUsage('call:' + p.model, 1);
-        if (lastm.fusion.judge) bumpUsage('call:' + lastm.fusion.judge, 1);
-      } else if (lastm.model){
-        bumpUsage('call:' + lastm.model, 1);
-      }
       if (lastm.fusion){ // le riuscite contano sulla quota del giorno (i fallite no: rifiutate = non consumate)
         for (const p of lastm.fusion.panel) if (p.status==='ok') countQuota(p.model, 1);
         if (lastm.fusion.judge) countQuota(lastm.fusion.judge, 1);
@@ -1167,8 +1065,6 @@ async function runTurn(){
     }
     touch(c); saveChats(); renderSidebar(); renderChat();
     if (fusionEv && fusionEv.panel.length) markFusionDead(fusionEv.panel);
-    sessionStorage.removeItem('fh_usagereal');
-    refreshUsageReal();
   }
 }
 
@@ -1223,13 +1119,12 @@ async function callModel(model, sysStack, userContent, comboLabel){
   const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify(payload) });
   if (!res.ok){ const j = await res.json().catch(()=>({})); throw new Error(j.error?.message || ('HTTP '+res.status)); }
   const j = await res.json();
-  bumpUsage('combo:'+comboLabel, 1);
   const f = j._fusion;
   if (f && Array.isArray(f.panel)) markFusionDead(f.panel);
-  if (f && Array.isArray(f.panel)){ for (const p of f.panel) bumpUsage('call:'+(p.model||'?'), 1); if (f.judge && f.judge.model) bumpUsage('call:'+f.judge.model, 1); }
-  else bumpUsage('call:'+disp, 1);
-  if (f && Array.isArray(f.panel)){ for (const p of f.panel) if (p.status==='ok') countQuota(p.model, 1); if (f.judge && f.judge.model) countQuota(f.judge.model, 1); }
-  else if (j.model) countQuota(j.model, 1);
+  if (f && Array.isArray(f.panel)){
+    for (const p of f.panel) if (p.status==='ok') countQuota(p.model, 1);
+    if (f.judge && f.judge.model) countQuota(f.judge.model, 1);
+  } else if (j.model) countQuota(j.model, 1);
   return (j.choices?.[0]?.message?.content || '').trim();
 }
 
@@ -1349,8 +1244,8 @@ async function deriveFrom(idx, kind){
             fixes++;
             draftF = acc; // se il giro rifatto non produce nulla, torna il testo del primo
             try { // i contatori non perdono il giro buttato: le chiamate sono state fatte davvero
-              for (const pm of fusionEv.panel){ bumpUsage('call:'+pm.model, 1); if (pm.status==='ok') countQuota(pm.model, 1); }
-              if (fusionEv.judge){ bumpUsage('call:'+fusionEv.judge, 1); countQuota(fusionEv.judge, 1); }
+              for (const pm of fusionEv.panel){ if (pm.status==='ok') countQuota(pm.model, 1); }
+              if (fusionEv.judge){ countQuota(fusionEv.judge, 1); }
             } catch {}
             fusionEv.panel = []; fusionEv.judge = null;
             team = rb; // anche la riga live dice la squadra giusta
@@ -1366,10 +1261,7 @@ async function deriveFrom(idx, kind){
       if (!String(txt||'').trim() && draftF) txt = draftF; // il giro rifatto non ha prodotto nulla: torna il primo testo
       markFusionDead(fusionEv.panel);
       if (!String(txt||'').trim() || /every panel model failed/i.test(txt)) throw new Error('il focus non ha prodotto una risposta: gli analisti sono caduti in partita' + (fusionEv.panel.length ? ' (caduti: ' + fusionEv.panel.map(p=>shortName(p.model)).join(', ') + ')' : '') + ' — i caduti restano segnati e rientrano da soli appena rispondono: riprova tra poco'); // mai un messaggio vuoto
-      bumpUsage('combo:🔍 focus', 1);
-      for (const pm of fusionEv.panel) bumpUsage('call:'+pm.model, 1);
-      if (fusionEv.judge) bumpUsage('call:'+fusionEv.judge, 1);
-      for (const pm of fusionEv.panel) if (pm.status==='ok') countQuota(pm.model, 1);
+      for (const pm of fusionEv.panel) if (fusionEv.judge) for (const pm of fusionEv.panel) if (pm.status==='ok') countQuota(pm.model, 1);
       if (fusionEv.judge) countQuota(fusionEv.judge, 1);
       c.msgs.push({ role:'assistant', content: txt, model:'🔍 focus (di '+shortName(m.model)+')', derived:'focus', fusion: fusionEv.panel.length ? { panel: panelMostra(fusionEv.panel, POSTI), judge: fusionEv.judge, judgePinned: fusionEv.judge ? null : (preTeam ? preTeam.judge : null) } : null });
     } else if (kind==='deep'){
@@ -1692,7 +1584,6 @@ async function pickTailorPanel(taskText, selSys, ext, onProg, selKey){
     const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify({ provider:'freellmapi', model:'auto:fast', web:false, stream:false, messages:[{role:'system',content: selSys || TAILOR_SYS},{role:'user',content:'COMPITO:\n'+String(taskText||'').slice(0,2000)+'\n\nCATALOGO dei modelli disponibili (un id per riga):\n'+lista}] }) });
     if (!res.ok) return null;
     const j = await res.json();
-    bumpUsage('combo:🎯 selezione fusion', 1); bumpUsage('call:auto:fast', 1);
     const team = parseTailor(j.choices?.[0]?.message?.content, ids);
     if (!team) return null;
     let cfg = applyTeamWithReserves(team, ids);
@@ -1944,8 +1835,6 @@ async function apiChatOnce({provider, model, messages}){
   const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json','x-fh-key':key}, body: JSON.stringify({ provider, model, messages, web:false, stream:false }) });
   if (!res.ok){ const j = await res.json().catch(()=>({})); throw new Error(j.error?.message || ('HTTP '+res.status)); }
   const j = await res.json();
-  bumpUsage('combo:✨ ottimizza', 1);
-  bumpUsage('call:' + provider + '/' + model, 1);
   return (j.choices?.[0]?.message?.content || '').trim();
 }
 optB.onclick = async ()=>{
@@ -2012,7 +1901,6 @@ const keepEl = $('keep');
 keepEl.checked = lsGet('fh_keep') === '1';
 keepEl.onchange = () => lsSet('fh_keep', keepEl.checked ? '1' : '0');
 syncGodUI();
-refreshUsageReal();
 const sysEl = $('sys');
 sysEl.value = lsGet('fh_sys') || '';
 sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
@@ -2030,7 +1918,7 @@ sysEl.oninput = () => lsSet('fh_sys', sysEl.value);
   bn.textContent='🔍 ANTEPRIMA — il tuo Hub + innesto agenti · motore finto · dimmi cosa cambiare';
   bn.style.cssText='position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#3d2e00;color:#f0d060;border:1px solid #d29922;border-radius:16px;padding:4px 14px;font:12px system-ui;z-index:9999;pointer-events:none;opacity:.95;white-space:nowrap';
   document.body.appendChild(bn);
-  const anc=document.getElementById('usage')||document.getElementById('gear'); if(!anc) return;
+  const anc=document.getElementById('gear'); if(!anc) return;
   const b=document.createElement('button');
   b.textContent='🤖 Agenti'; b.title='Gli EXTRA degli agenti: tutto quello che non è chat';
   b.style.cssText='background:#1f6feb;border:1px solid #1f6feb;color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font:600 13px system-ui;margin-right:6px';

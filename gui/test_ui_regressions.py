@@ -70,7 +70,20 @@ class HubUiRegressionTests(unittest.TestCase):
         source = (HUB / "UI_SOURCE").read_text(encoding="utf-8")
         digest = hashlib.sha256((HUB / "index.html").read_bytes()).hexdigest()
         self.assertIn("HUB_CENTRALE/ANTEPRIME/ANTEPRIMA_HUB_AGENTI.html", source)
-        self.assertEqual(digest, "8a3714bbc2f874522c07b910b4af5628ecd6083e2589e43eb8cfbced835d4835")
+        self.assertEqual(digest, "83ed42a7f133b4a450a0d58e3b7fd712b3ad2dabdf6b8a1d89aaf6f627fd623a")
+
+    def test_removed_model_and_24h_usage_counter_are_absent_from_ui_and_runtime(self):
+        index = (HUB / "index.html").read_text(encoding="utf-8")
+        dev = (HUB / "dev.js").read_text(encoding="utf-8")
+        self.assertNotIn("['Libero'", index)
+        self.assertNotIn("parla di tutto", index.lower())
+        self.assertNotIn("indexOf('Libero')", index)
+        for marker in ('id="usage"', 'usageN', 'refreshUsageReal', 'usageReal',
+                       'bumpUsage', 'fh_usagereal', '/api/freellmapi/usage', 'Uso REALE'):
+            self.assertNotIn(marker, index)
+        self.assertNotIn('fllmUsage', dev)
+        self.assertNotIn("/api/freellmapi/usage", dev)
+        self.assertFalse((HUB / "api/freellmapi/usage.js").exists())
 
     def test_standalone_hub_starts_and_serves_real_dashboard_offline(self):
         index = (HUB / "index.html").read_text(encoding="utf-8")

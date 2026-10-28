@@ -1,2 +1,3 @@
-Missione HUB_CENTRALE/ANTEPRIME/ANTEPRIMA_HUB_AGENTI.html
-sha256 8a3714bbc2f874522c07b910b4af5628ecd6083e2589e43eb8cfbced835d4835
+Base UI: _MISSIONI/HUB_CENTRALE/ANTEPRIME/ANTEPRIMA_HUB_AGENTI.html
+SHA256: 83ed42a7f133b4a450a0d58e3b7fd712b3ad2dabdf6b8a1d89aaf6f627fd623a
+Applied: removed the Libero model option and its demo branch; removed the 24-hour usage counter, tracker, and API endpoint.
