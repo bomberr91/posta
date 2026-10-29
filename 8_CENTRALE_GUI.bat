@@ -1,3 +1,5 @@
 @echo off
-title Free LLM Hub 1277fef
-powershell -WindowStyle Hidden -Command "Start-Process wsl.exe -ArgumentList '-d','Ubuntu','-u','agenti','--','bash','-lc','exec bash ~/posta/apri_free_llm_hub.sh' -WindowStyle Hidden"
+title Centrale Posta - Router Hub
+powershell -WindowStyle Hidden -Command "Start-Process wsl.exe -ArgumentList '-d','Ubuntu','-u','agenti','--','bash','-lc','exec python3 ~/posta/gui/server.py' -WindowStyle Hidden"
+timeout /t 4 /nobreak >nul
+start "" "http://localhost:20200"

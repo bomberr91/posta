@@ -76,6 +76,20 @@ class HubUiRegressionTests(unittest.TestCase):
                 self.assertNotIn(marker, source)
         self.assertIn("agenti → router hub", source)
 
+    def test_centrale_launchers_open_the_integrated_dashboard(self):
+        menu = (ROOT / "centrale.sh").read_text(encoding="utf-8")
+        start = menu.index("    g|G)")
+        end = menu.index("    v|V)", start)
+        block = menu[start:end]
+        self.assertIn('python3 "$HOME/posta/gui/server.py"', block)
+        self.assertIn("http://localhost:20200", block)
+        self.assertNotIn("apri_free_llm_hub.sh", block)
+        self.assertIn("GUI CENTRALE POSTA", menu)
+        shortcut = (ROOT / "8_CENTRALE_GUI.bat").read_text(encoding="utf-8")
+        self.assertIn("~/posta/gui/server.py", shortcut)
+        self.assertIn("http://localhost:20200", shortcut)
+        self.assertNotIn("apri_free_llm_hub.sh", shortcut)
+
     def test_tokens_list_is_loopback_only_and_does_not_call_keyring(self):
         with patch.object(server, "modelli_agente_ammessi", return_value=[
                 {"api_id": "nara/laguna-s-2.1"}]), \

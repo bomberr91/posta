@@ -68,7 +68,7 @@ while :; do
   echo "  [8] 🔄 AGGIORNA CENTRALE E NUOVE FUNZIONI DA GITHUB (1 secondo)"
   echo "  [9] 🧠 MOTORE OMNIROUTE — HUB V2 (359 provider, 90+ GRATIS, dashboard web)"
   echo "  [v] 🩺 CONTROLLO SALUTE (2 secondi: dice subito se qualcosa è rotto, non installa niente)"
-  echo "  [g] 🌐 FREE LLM HUB (dashboard chat e modelli)"
+  echo "  [g] 🖥️ GUI CENTRALE POSTA (Router Hub e dashboard storica)"
   echo ""
   echo "  [0] Esci"
   echo "======================================================================"
@@ -198,9 +198,12 @@ while :; do
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     g|G)
-      # Verifico la build standalone 1277fef ed evito la vecchia schermata sulla 3000.
-      pkill -f "$HOME/posta/gui/server.py" 2>/dev/null || true
-      bash "$HOME/posta/apri_free_llm_hub.sh"
+      # Avvia la dashboard storica integrata; non usare il prototipo standalone sulla porta 3000.
+      pkill -f '[g]ui/server.py' 2>/dev/null || true
+      nohup python3 "$HOME/posta/gui/server.py" >/tmp/gui.log 2>&1 </dev/null &
+      sleep 2
+      cmd.exe /c start "" "http://localhost:20200" 2>/dev/null || echo "Apri nel browser: http://localhost:20200"
+      echo "🖥️ Router Hub locale avviato su http://localhost:20200"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
     v|V)
