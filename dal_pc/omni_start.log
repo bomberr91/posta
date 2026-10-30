@@ -1,0 +1,63 @@
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+  [33m⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first[0m
+  [33m⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.[0m
+error: too many arguments for 'serve'. Expected 0 arguments but got 1: start.
+
+Usage: omniroute serve [options]
+
+Start the OmniRoute server (default action)
+
+Options:
+  --port <port>         Port to listen on (default: 20128)
+  --no-open             Do not open browser automatically
+  --daemon              Run server as a background daemon
+  --log                 Show server logs inline
+  --no-recovery         Disable auto-restart on crash (debugging mode)
+  --max-restarts <n>    Max crash restarts within 30s before giving up (default:
+                        2) (default: 2)
+  --tray                Start in the system tray (desktop only, opt-in)
+  --no-tray             Disable system tray icon
+  --ready-timeout <ms>  Readiness probe timeout in ms (also
+                        OMNIROUTE_READY_TIMEOUT_MS, default 60000)
+  --tls-cert <path>     Path to a TLS certificate (PEM) to serve HTTPS (also
+                        OMNIROUTE_TLS_CERT)
+  --tls-key <path>      Path to the TLS private key (PEM) to serve HTTPS (also
+                        OMNIROUTE_TLS_KEY)
+  -h, --help            display help for command
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+  [33m⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first[0m
+  [33m⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.[0m
+
+[36m   ____                  _ ____              _
+   / __ \                (_) __ \            | |
+  | |  | |_ __ ___  _ __ _| |__) |___  _   _| |_ ___
+  | |  | | '_ ` _ \| '_ \ |  _  // _ \| | | | __/ _ \
+  | |__| | | | | | | | | | | | \ \ (_) | |_| | ||  __/
+   \____/|_| |_| |_|_| |_|_|_|  \_\___/ \__,_|\__\___|
+[0m
+[2m  v3.8.51[0m
+
+[33m  ⚠  SECURITY: listening on 0.0.0.0 with NO API-key requirement — the inference plane (/v1/*) is reachable by ANY device that can route to this host, and requests are billed to your configured providers. This local-first default is intentional, but on an untrusted network either set REQUIRE_API_KEY=true or bind loopback with OMNIROUTE_SERVER_HOST=127.0.0.1.[0m
+
+  [2m⏳ Starting server...[0m
+
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+  [33m⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first[0m
+  [33m⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.[0m
+
+[36m   ____                  _ ____              _
+   / __ \                (_) __ \            | |
+  | |  | |_ __ ___  _ __ _| |__) |___  _   _| |_ ___
+  | |  | | '_ ` _ \| '_ \ |  _  // _ \| | | | __/ _ \
+  | |__| | | | | | | | | | | | \ \ (_) | |_| | ||  __/
+   \____/|_| |_| |_|_| |_|_|_|  \_\___/ \__,_|\__\___|
+[0m
+[2m  v3.8.51[0m
+
+[33m  ⚠  SECURITY: listening on 0.0.0.0 with NO API-key requirement — the inference plane (/v1/*) is reachable by ANY device that can route to this host, and requests are billed to your configured providers. This local-first default is intentional, but on an untrusted network either set REQUIRE_API_KEY=true or bind loopback with OMNIROUTE_SERVER_HOST=127.0.0.1.[0m
+
+  [2m⏳ Starting server...[0m
+
