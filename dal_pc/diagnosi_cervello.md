@@ -10,3 +10,6 @@
 30404 python3 cervello.py
 10169 timeout 1800 bash da_me/diagnosi_cervello.sh
 10170 bash da_me/diagnosi_cervello.sh
+diagnosi scritta e pushata
+
+<!-- fine diagnosi_cervello -->
