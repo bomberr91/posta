@@ -12,3 +12,6 @@ ANCORA GIU' — coda del log di avvio:
 [INFO] [MEMORY_MANAGER] Initialized backend {"id":"sqlite"}
 --- End recent output ---
 
+fatto
+
+<!-- fine accendi_omniroute_2 -->
