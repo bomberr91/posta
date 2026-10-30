@@ -1,5 +1,4 @@
-avvio Fri Oct 30 17:59:50 CET 2026 motore richiesto: freebuff
-error: too many arguments. Expected 1 argument but got 2.
-[91m[1mError: [0mUnexpected error
-
-locking protocol
+avvio Fri Oct 30 18:06:28 CET 2026 motore richiesto: opencode
+[0m
+> build · auto
+[0m
