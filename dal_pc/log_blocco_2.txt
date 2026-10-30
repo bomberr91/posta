@@ -1,1 +1,4 @@
 avvio Fri Oct 30 18:28:16 CET 2026 motore richiesto: opencode
+[0m
+> build · auto
+[0m
