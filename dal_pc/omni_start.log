@@ -61,3 +61,79 @@ Options:
 
   [2m⏳ Starting server...[0m
 
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+  [33m⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first[0m
+  [33m⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.[0m
+
+[36m   ____                  _ ____              _
+   / __ \                (_) __ \            | |
+  | |  | |_ __ ___  _ __ _| |__) |___  _   _| |_ ___
+  | |  | | '_ ` _ \| '_ \ |  _  // _ \| | | | __/ _ \
+  | |__| | | | | | | | | | | | \ \ (_) | |_| | ||  __/
+   \____/|_| |_| |_|_| |_|_|_|  \_\___/ \__,_|\__\___|
+[0m
+[2m  v3.8.51[0m
+
+  [2m⏳ Starting server...[0m
+
+
+[33m⚠ Server did not respond within 60s.[0m It may still be starting, or may have failed silently.
+  Port 20128 IS accepting connections, so the server is probably up and still warming up. Check the dashboard before restarting it.
+  Tip:  set OMNIROUTE_READY_TIMEOUT_MS=120000 or --ready-timeout 120000 for slower cold starts.
+  Try:  curl -I http://localhost:20128/api/monitoring/health
+  Or:   rerun with [36m--log[0m to see live server output.
+
+--- Recent server output ---
+[Shutdown] Graceful shutdown handlers registered.
+[STARTUP] Spend batch writer started
+[STARTUP] Guardrail registry initialized
+[STARTUP] Builtin skill handlers registered
+[STARTUP] Quota cache background refresh started
+[ProviderLimitsSync] Scheduler started — interval: 70m
+[STARTUP] Provider limits sync scheduler started
+[INFO] [QuotaAutoPing] scheduler started
+[STARTUP] Quota auto-ping scheduler started (opt-in, no-op until enabled)
+[ModelSync] Scheduler started — interval: 6h (phase offset +45m)
+[STARTUP] Cloud/model sync background bootstrap initialized
+[BATCH] Initializing batch processor polling...
+[STARTUP] Batch processor started
+[STARTUP] Runtime settings hydrated: payloadRules, modelAliases, backgroundDegradation, cliCompatProviders, cacheControl, usageTracking, healthCheckLogs, thoughtSignature, modelsDevSync, corsOrigins, ccBridgeTransforms, systemTransforms, systemPrompt, authzBypass, bannedSignals
+[STARTUP] Model alias seed: applied=0, skipped=5, removed=0, failed=0
+[HOT_RELOAD] Runtime config hot-reload started (poll=5000ms, fsWatch=on)
+[CredentialHealth] Starting credential health check (initial delay 30s, interval 3600s)
+[STARTUP] Credential health scheduler started
+[COMPLIANCE] Audit log table initialized
+[COMPLIANCE] Expired log cleanup: {
+  deletedUsage: 0,
+  deletedCallLogs: 0,
+  deletedProxyLogs: 0,
+  deletedRequestDetailLogs: 0,
+  deletedAuditLogs: 9,
+  deletedMcpAuditLogs: 0,
+  trimmedCallLogs: 0,
+  trimmedProxyLogs: 0,
+  appRetentionDays: 7,
+  callRetentionDays: 7,
+  callLogsMaxRows: 100000,
+  proxyLogsMaxRows: 100000
+}
+[STARTUP] Scheduled VACUUM initialized (#4437)
+[Cleanup] Background cleanup scheduler started (every 6 hours).
+[REDIS] REDIS_URL is not set in production. Using in-memory rate limiting.
+[INFO] [MEMORY_MANAGER] Registered backend {"id":"sqlite","displayName":"SQLite"}
+[AutoRefreshDaemon] Started — checking 0 credentials every 900s
+[ARENA_ELO_SYNC] Starting periodic sync every 86400s
+[PRICING_SYNC] Disabled (set PRICING_SYNC_ENABLED=true to enable)
+[STARTUP] Arena ELO sync initialized
+[ConnectionRecovery] Starting proactive cooldown recovery (tick every 60s)
+[OpenRouterProviderStats] Starting periodic sync every 86400s
+[STARTUP] OpenRouter provider stats sync initialized
+[STARTUP] Live dashboard WebSocket daemon bootstrap invoked
+[MODELS_DEV] Disabled (enable via Settings > AI or MODELS_DEV_SYNC_ENABLED=1)
+[STARTUP] Embedded services bootstrap complete
+[INFO] [MEMORY_MANAGER] Configured backends {"primary":"sqlite","fallbacks":[]}
+[INFO] [SQLITE_BACKEND] sqlite.backend.initialized
+[INFO] [MEMORY_MANAGER] Initialized backend {"id":"sqlite"}
+--- End recent output ---
+
