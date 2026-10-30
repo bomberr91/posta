@@ -5,3 +5,6 @@
 - lanciatore in Esecuzione automatica (parte a ogni avvio di Windows)
 - widget AVVIATO adesso (si fara' vivo alle 18:05)
 - widget AVVIATO adesso (si fara' vivo alle 18:05)
+FINITO
+
+<!-- fine sveglia_agentrouter -->
