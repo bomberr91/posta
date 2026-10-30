@@ -4,3 +4,6 @@
 LINK_CREATO
 - collegamento Freebuff.lnk creato sul Desktop (con logo)
 - collegamento Freebuff.lnk creato sul Desktop (con logo)
+FINITO
+
+<!-- fine link_freebuff -->
