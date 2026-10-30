@@ -1,1 +1,4 @@
-avvio Fri Oct 30 17:59:47 CET 2026 motore richiesto: goose
+avvio Fri Oct 30 18:03:11 CET 2026 motore richiesto: opencode
+[0m
+> build · auto
+[0m

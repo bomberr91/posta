@@ -1,0 +1,33 @@
+Usage: freebuff [options] [command]
+
+Freebuff - Free AI coding assistant
+
+Arguments:
+  command                       Command to run (choices: "login")
+
+Options:
+  -v, --version                 Print the CLI version
+  --continue [conversation-id]  Continue from a previous conversation
+                                (optionally specify a conversation id)
+  --cwd <directory>             Set the working directory (default: current
+                                directory)
+  --trust-agents                Load this repository's .agents files and
+                                mcp.json without asking (for CI)
+  -h, --help                    Show this help message
+=== run --help ===
+Usage: freebuff [options] [command]
+
+Freebuff - Free AI coding assistant
+
+Arguments:
+  command                       Command to run (choices: "login")
+
+Options:
+  -v, --version                 Print the CLI version
+  --continue [conversation-id]  Continue from a previous conversation
+                                (optionally specify a conversation id)
+  --cwd <directory>             Set the working directory (default: current
+                                directory)
+  --trust-agents                Load this repository's .agents files and
+                                mcp.json without asking (for CI)
+  -h, --help                    Show this help message
