@@ -1,5 +1,1 @@
-avvio Fri Oct 30 18:06:28 CET 2026 motore richiesto: opencode
-[0m
-> build · auto
-[0m
-[91m[1mError: [0mmotore giù e nessuna chiave di riserva ha risposto. Apri la Centrale → 🤖 Agenti → 🗣️ Appello delle chiavi.
+avvio Fri Oct 30 18:29:03 CET 2026 motore richiesto: opencode
