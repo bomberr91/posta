@@ -9,3 +9,6 @@ added 7 packages in 39s
 - binario: /home/agenti/.nvm/versions/node/v22.23.3/bin/freebuff
 - versione: Download complete! Starting Freebuff...
 - versione: Download complete! Starting Freebuff...
+FINITO
+
+<!-- fine installa_freebuff -->
