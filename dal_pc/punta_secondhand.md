@@ -71,3 +71,6 @@ CERVELLO OK
 ```
 ```
 error: could not lock config file .git/config: File exists
+FINITO
+
+<!-- fine punta_secondhand -->
