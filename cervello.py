@@ -315,6 +315,34 @@ class H(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(corpo)
 
+    def _rispondi(self, d, stream):
+        """Risposta normale, oppure confezionata in streaming (SSE) se il
+        client l'ha chiesta cosi: alcuni agenti (OpenCode, ai-sdk) parlano
+        SOLO a pezzetti e con la risposta in blocco restano appesi."""
+        if not stream:
+            self._json(d)
+            return
+        msg = (d.get("choices") or [{}])[0].get("message", {})
+        delta = {"role": "assistant", "content": msg.get("content", "") or ""}
+        tc = msg.get("tool_calls") or []
+        if tc:
+            delta["tool_calls"] = [dict(v, index=i) for i, v in enumerate(tc)]
+        base = {"id": d.get("id", "cervello"), "object": "chat.completion.chunk",
+                "created": d.get("created", int(time.time())), "model": d.get("model", "")}
+        fine = (d.get("choices") or [{}])[0].get("finish_reason") or "stop"
+        pezzo1 = dict(base, choices=[{"index": 0, "delta": delta, "finish_reason": None}])
+        pezzo2 = dict(base, choices=[{"index": 0, "delta": {}, "finish_reason": fine}])
+        if d.get("usage"):
+            pezzo2["usage"] = d["usage"]
+        corpo = ("data: %s\n\ndata: %s\n\ndata: [DONE]\n\n" % (
+            json.dumps(pezzo1, ensure_ascii=False), json.dumps(pezzo2, ensure_ascii=False))).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Content-Length", str(len(corpo)))
+        self.end_headers()
+        self.wfile.write(corpo)
+
     def do_GET(self):
         if self.path.startswith("/portiere") and not self.path.startswith("/portiere.json"):
             b = pagina().encode()
@@ -348,7 +376,8 @@ class H(BaseHTTPRequestHandler):
             if d:
                 self._json(d)
                 return
-            modelli = [{"id": v.get("modello") or BASE.get(v.get("id"), ("", "auto"))[1],
+            modelli = [{"id": "auto", "object": "model", "owned_by": "cervello"}]
+            modelli += [{"id": v.get("modello") or BASE.get(v.get("id"), ("", "auto"))[1],
                         "object": "model", "owned_by": "riserva"}
                        for v in appello() if v.get("esito") == "risponde" and v.get("id") in BASE]
             self._json({"object": "list", "data": modelli})
@@ -379,15 +408,17 @@ class H(BaseHTTPRequestHandler):
         except Exception:
             self._json({"error": {"message": "corpo non valido"}}, 400)
             return
+        vuole_stream = bool(payload.pop("stream", False))
+        payload.pop("stream_options", None)
         corpo = json.dumps(payload).encode()
         if vivo(MOTORE):
             d = inoltra(corpo)
             if d:
-                self._json(d)
+                self._rispondi(d, vuole_stream)
                 return
         d = riserva(payload)
         if d:
-            self._json(d)
+            self._rispondi(d, vuole_stream)
             return
         self._json({"error": {"message": "motore giù e nessuna chiave di riserva ha risposto. "
                                          "Apri la Centrale → 🤖 Agenti → 🗣️ Appello delle chiavi."}}, 503)
