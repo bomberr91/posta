@@ -1,1 +1,4 @@
 avvio Fri Oct 30 17:59:53 CET 2026 motore richiesto: opencode
+[91m[1mError: [0mUnexpected error
+
+locking protocol
