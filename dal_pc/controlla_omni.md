@@ -6,3 +6,6 @@
 ## porte in ascolto (2012x):
 ## risponde?
 SI' ✓ :20128 VIVO — LANCIO LA CATENA DEI 4 BLOCCHI
+fatto
+
+<!-- fine controlla_omni -->
