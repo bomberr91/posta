@@ -1,69 +1,69 @@
-# 🗣️ Appello delle chiavi — 27/10/2026 20:32
+# 🗣️ Appello delle chiavi — 30/10/2026 09:27
 
 Chiavi provate: 63
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
 | AgentRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Agnes AI | 🟡 strano | 1285 | elenco modelli: risposta 404 |
-| AI Horde (senza chiave) | 🟡 strano | 1085 | elenco modelli: risposta 404 |
-| Aion Labs | 🟡 strano | 1102 | elenco modelli: risposta 404 |
-| AnyAPI | 🔴 chiave rifiutata | 586 | chiave rifiutata (403) |
-| Api.Airforce | 🟡 strano | 2087 | elenco modelli: risposta 404 |
-| BazaarLink | 🟡 strano | 4146 | elenco modelli: risposta 404 |
-| BlazeAPI | 🟡 strano | 998 | elenco modelli: risposta 302 |
-| BlockRun | 🟡 strano | 1048 | elenco modelli: risposta 404 |
-| Chutes | 🟡 strano | 1333 | elenco modelli: risposta 404 |
-| CLōD | 🟡 strano | 1084 | elenco modelli: risposta 404 |
-| Cloudflare Workers AI | ✅ risponde | 1330 | chiave valida · modello visto: @cf/meta/llama-3.3-70b-instruct-fp8-fast |
-| Cohere | 🟡 strano | 1335 | elenco modelli: risposta 404 |
-| DreamPrompting | 🟡 strano | 1295 | elenco modelli: risposta 404 |
-| ElectronHub | 🔴 chiave rifiutata | 480 | chiave rifiutata (403) |
+| Agnes AI | 🟡 strano | 1176 | elenco modelli: risposta 404 |
+| AI Horde (senza chiave) | 🟡 strano | 693 | elenco modelli: risposta 404 |
+| Aion Labs | ⚪ non raggiungibile | 313 | non raggiungibile |
+| AnyAPI | 🔴 chiave rifiutata | 1882 | chiave rifiutata (403) |
+| Api.Airforce | ⚪ non raggiungibile | 258 | non raggiungibile |
+| BazaarLink | ⚪ non raggiungibile | 485 | non raggiungibile |
+| BlazeAPI | 🟡 strano | 3070 | elenco modelli: risposta 302 |
+| BlockRun | 🟡 strano | 2331 | elenco modelli: risposta 404 |
+| Chutes | 🟡 strano | 1496 | elenco modelli: risposta 404 |
+| CLōD | ⚪ non raggiungibile | 494 | non raggiungibile |
+| Cloudflare Workers AI | ✅ risponde | 1352 | chiave valida · modello visto: @cf/meta/llama-3.3-70b-instruct-fp8-fast |
+| Cohere | 🟡 strano | 2006 | elenco modelli: risposta 404 |
+| DreamPrompting | 🟡 strano | 1168 | elenco modelli: risposta 404 |
+| ElectronHub | 🔴 chiave rifiutata | 966 | chiave rifiutata (403) |
 | fal.ai | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| FreeAI | 🟡 strano | 1610 | elenco modelli: risposta 404 |
-| Google AI Studio | 🟡 strano | 1424 | elenco modelli: risposta 404 |
-| GitHub Models | ✅ risponde | 1139 | chiave valida · modello visto: openai/gpt-4o-mini |
-| Gizmo | 🟡 strano | 1157 | elenco modelli: risposta 404 |
-| Groq | 🟡 strano | 1639 | elenco modelli: risposta 404 |
-| HuggingFace Router | 🟡 strano | 841 | elenco modelli: risposta 404 |
-| Inferbase | 🟡 strano | 998 | elenco modelli: risposta 404 |
-| Jina AI | 🟡 strano | 1187 | elenco modelli: risposta 404 |
-| Kilo (senza chiave) | 🟡 strano | 833 | elenco modelli: risposta 308 |
-| LLM7 | 🟡 strano | 1050 | elenco modelli: risposta 404 |
-| LLMTR | 🟡 strano | 1542 | elenco modelli: risposta 301 |
-| Logfare | 🟡 strano | 1232 | elenco modelli: risposta 404 |
-| LongCat | 🟡 strano | 1728 | elenco modelli: risposta 404 |
-| Lucidity | 🟡 strano | 1015 | elenco modelli: risposta 404 |
-| Mistral | 🟡 strano | 1221 | elenco modelli: risposta 404 |
-| Moondream | 🟡 strano | 774 | elenco modelli: risposta 404 |
-| NaraRouter | 🟡 strano | 5369 | elenco modelli: risposta 404 |
-| NavyAI | 🔴 chiave rifiutata | 704 | chiave rifiutata (403) |
-| Nscale | 🔴 chiave rifiutata | 693 | chiave rifiutata (401) |
-| NVIDIA | 🟡 strano | 1327 | elenco modelli: risposta 404 |
-| Ollama Cloud | 🟡 strano | 968 | elenco modelli: risposta 404 |
-| OpenCode Zen | 🟡 strano | 1140 | elenco modelli: risposta 404 |
-| OpenRouter | 🟡 strano | 1488 | elenco modelli: risposta 404 |
-| OrcaRouter | 🟡 strano | 2126 | elenco modelli: risposta 404 |
-| OVH | 🔴 chiave rifiutata | 953 | chiave rifiutata (403) |
-| Plugsky | 🟡 strano | 1019 | elenco modelli: risposta 404 |
-| Pollinations | ✅ risponde | 779 | chiave valida · modello visto: openai-fast |
-| Pollinations (senza chiave) | ✅ risponde | 925 | chiave valida · modello visto: openai-fast |
-| Pollinations (immagini, senza chiave) | ✅ risponde | 1180 | chiave valida · modello visto: flux |
-| Qdrant Cloud | ✅ risponde | 837 | chiave valida · modello visto: — |
-| Requesty | 🟡 strano | 822 | elenco modelli: risposta 404 |
-| Router9 | 🟡 strano | 1039 | elenco modelli: risposta 404 |
-| Routeway | 🔴 chiave rifiutata | 858 | chiave rifiutata (403) |
-| Sail | 🟡 strano | 1382 | elenco modelli: risposta 404 |
-| SeaLION | 🟡 strano | 1180 | elenco modelli: risposta 404 |
-| Septor Labs | 🟡 strano | 1114 | elenco modelli: risposta 404 |
-| SimpleLLM | 🟡 strano | 808 | elenco modelli: risposta 404 |
-| Speechify | 🟡 strano | 1073 | elenco modelli: risposta 404 |
-| Speka | 🟡 strano | 2245 | elenco modelli: risposta 404 |
+| FreeAI | 🟡 strano | 2184 | elenco modelli: risposta 404 |
+| Google AI Studio | 🟡 strano | 1993 | elenco modelli: risposta 404 |
+| GitHub Models | ⚪ non raggiungibile | 422 | non raggiungibile |
+| Gizmo | 🟡 strano | 888 | elenco modelli: risposta 404 |
+| Groq | 🟡 strano | 2158 | elenco modelli: risposta 404 |
+| HuggingFace Router | ⚪ non raggiungibile | 496 | non raggiungibile |
+| Inferbase | 🟡 strano | 2323 | elenco modelli: risposta 404 |
+| Jina AI | 🟡 strano | 1796 | elenco modelli: risposta 404 |
+| Kilo (senza chiave) | 🟡 strano | 876 | elenco modelli: risposta 308 |
+| LLM7 | 🟡 strano | 1683 | elenco modelli: risposta 404 |
+| LLMTR | ⚪ non raggiungibile | 12453 | non raggiungibile |
+| Logfare | 🟡 strano | 1745 | elenco modelli: risposta 404 |
+| LongCat | 🟡 strano | 2448 | elenco modelli: risposta 404 |
+| Lucidity | 🟡 strano | 2157 | elenco modelli: risposta 404 |
+| Mistral | 🟡 strano | 1972 | elenco modelli: risposta 404 |
+| Moondream | 🟡 strano | 1155 | elenco modelli: risposta 404 |
+| NaraRouter | ⚪ non raggiungibile | 39750975 | non raggiungibile |
+| NavyAI | ⚪ non raggiungibile | 39747623 | non raggiungibile |
+| Nscale | 🔴 chiave rifiutata | 1401 | chiave rifiutata (401) |
+| NVIDIA | 🟡 strano | 2012 | elenco modelli: risposta 404 |
+| Ollama Cloud | 🟡 strano | 1360 | elenco modelli: risposta 404 |
+| OpenCode Zen | ⚪ non raggiungibile | 381 | non raggiungibile |
+| OpenRouter | 🟡 strano | 2185 | elenco modelli: risposta 404 |
+| OrcaRouter | ⚪ non raggiungibile | 39747726 | non raggiungibile |
+| OVH | 🔴 chiave rifiutata | 428 | chiave rifiutata (403) |
+| Plugsky | ⚪ non raggiungibile | 12337 | non raggiungibile |
+| Pollinations | ⚪ non raggiungibile | 485 | non raggiungibile |
+| Pollinations (senza chiave) | ✅ risponde | 741 | chiave valida · modello visto: openai-fast |
+| Pollinations (immagini, senza chiave) | ✅ risponde | 2595 | chiave valida · modello visto: flux |
+| Qdrant Cloud | ✅ risponde | 1752 | chiave valida · modello visto: — |
+| Requesty | 🟡 strano | 1331 | elenco modelli: risposta 404 |
+| Router9 | ⚪ non raggiungibile | 12315 | non raggiungibile |
+| Routeway | ⚪ non raggiungibile | 39750951 | non raggiungibile |
+| Sail | 🟡 strano | 2256 | elenco modelli: risposta 404 |
+| SeaLION | 🟡 strano | 964 | elenco modelli: risposta 404 |
+| Septor Labs | ⚪ non raggiungibile | 2988 | non raggiungibile |
+| SimpleLLM | ⚪ non raggiungibile | 13236 | non raggiungibile |
+| Speechify | 🟡 strano | 888 | elenco modelli: risposta 404 |
+| Speka | 🟡 strano | 2338 | elenco modelli: risposta 404 |
 | TeamoRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Token Harbor | ✅ risponde | 1361 | chiave valida · modello visto: auto |
-| Typhoon | 🟡 strano | 1217 | elenco modelli: risposta 404 |
-| UnoRouter | 🔴 chiave rifiutata | 419 | chiave rifiutata (403) |
-| Waterfall | 🟡 strano | 927 | elenco modelli: risposta 404 |
-| WaveSpeedAI | 🟡 strano | 857 | elenco modelli: risposta 404 |
-| xKiro | 🟡 strano | 1431 | elenco modelli: risposta 404 |
-| Zhipu | 🟡 strano | 1589 | elenco modelli: risposta 404 |
+| Token Harbor | ⚪ non raggiungibile | 10387 | non raggiungibile |
+| Typhoon | ⚪ non raggiungibile | 2935 | non raggiungibile |
+| UnoRouter | ⚪ non raggiungibile | 10331 | non raggiungibile |
+| Waterfall | 🟡 strano | 847 | elenco modelli: risposta 404 |
+| WaveSpeedAI | 🟡 strano | 1604 | elenco modelli: risposta 404 |
+| xKiro | 🟡 strano | 1157 | elenco modelli: risposta 404 |
+| Zhipu | 🟡 strano | 1331 | elenco modelli: risposta 404 |
