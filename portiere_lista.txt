@@ -16,7 +16,6 @@ openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|ch
 nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|meta/llama-3.1-8b-instruct|chat
 huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
 pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat
-githubmodels|GitHub Models|GitHub Models|https://models.github.ai/inference|openai/gpt-4o-mini|chat
 agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli
 opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat
 aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat
