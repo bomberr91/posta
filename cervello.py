@@ -877,6 +877,12 @@ def riserva(payload, politica="auto", sessione=""):
                     d["model"] = "%s (riserva %s)" % (modello, nome)
                     return d, {"provider": pid, "modello": modello, "ms": ms,
                                "tentativi": tentativi}
+                # ragionatore strozzato dal budget (reasoning pieno, content vuoto,
+                # finish=length): non e' colpa sua — failover SENZA castigo
+                if msg0.get("reasoning") or msg0.get("reasoning_content"):
+                    logga(tipo="igiene", provider=pid, modello=modello,
+                          nota="ragionatore senza budget (finish=length), nessun castigo")
+                    break
                 segna(pid, False)                         # 200 ma vuoto: failover (idea 18)
                 castiga(pid, modello, CONFIG["cooldown_passeggero"])
                 break
