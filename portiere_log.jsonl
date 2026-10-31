@@ -18,3 +18,5 @@
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "cloudflare", "modello": "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "ms": 7855, "tentativi": 1, "quando": "2026-10-31 16:24:49"}
 {"tipo": "cache", "agente": "cervello-2de5c12e398bc6e0", "rotta": "cache", "ms": 0, "quando": "2026-10-31 16:24:51"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 7359, "tentativi": 1, "quando": "2026-10-31 16:56:15"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gruppo:forte", "rotta": "riserva", "provider": "llmtr", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 3075, "tentativi": 1, "quando": "2026-10-31 17:16:22"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 7731, "tentativi": 1, "quando": "2026-10-31 17:16:53"}
