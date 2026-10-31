@@ -40,6 +40,14 @@ FASE 2 · BLOCCO 1 (31/10 pomeriggio) — pagella adulta + retry furbo:
   60  velocita' = media mobile EWMA (70% storia, 30% ultima prova)
   61  periodo di grazia: niente giudizi sotto le 5 prove
 
+FASE 2 · BLOCCO 2 — chiavi e quote:
+   7  bilanciamento: stessa fascia di velocita' (250ms) → vince chi ha lavorato meno
+  12  rotazione a quota esaurita: la gemella subentra da sola (castigo + ordine)
+  26  conto per agente (chi consuma quanto, al giorno) + tetto opzionale
+  31  routing per consumo osservato (il contatore comanda dentro la fascia)
+  43  contatore quote per chiave con azzeramento giornaliero + countdown castighi
+  44  multi-account: due righe in lista stesso indirizzo = round-robin automatico
+
   python3 cervello.py            resta acceso sulla porta 20129
   python3 cervello.py --stato    dice chi sta rispondendo adesso
   python3 cervello.py --sonda    controlla le chiavi senza spendere token
@@ -85,6 +93,10 @@ CONFIG = {
     "fila_ko_max": 3,            # idea 9: 3 errori DI FILA → interruttore
     "cooldown_fila": 60,         # idea 9: ...e il canale riposa 60s
     "retry_after_max": 300,      # idea 51: rispetta Retry-After, ma mai oltre 5 min
+    # — FASE 2 · BLOCCO 2 —
+    "fascia_ms": 250,            # idea 7/31: provider nella stessa fascia di velocita'
+                                 #   (250ms) si alternano per consumo, round-robin
+    "tetto_agente": 0,           # idea 26: tetto richieste/giorno per agente (0 = spento)
 }
 
 # ── LA LISTA SUA (portiere_lista.txt) ─────────────────────────────────────────
@@ -302,6 +314,46 @@ def in_salute(pid):
     return time.time() - p.get("ultimo_ko", 0) > CONFIG["riposo_malato"]
 
 
+def oggi():
+    return time.strftime("%Y-%m-%d")
+
+
+def conta_uso(pid, token=0):
+    """Idea 43: contatore di consumo per chiave, azzerato ogni giorno (lazy, niente thread)."""
+    u = STATO.setdefault("uso", {}).setdefault(pid, {})
+    if u.get("giorno") != oggi():
+        u.clear()
+        u.update(giorno=oggi(), n=0, token=0)
+    u["n"] += 1
+    u["token"] += int(token or 0)
+    stato_salva()
+
+
+def uso_oggi(pid):
+    u = (STATO.get("uso") or {}).get(pid) or {}
+    return u.get("n", 0) if u.get("giorno") == oggi() else 0
+
+
+def conta_agente(sess, token=0):
+    """Idea 26: quanto lavora ogni agente, al giorno (per capire chi consuma)."""
+    a = STATO.setdefault("agenti", {}).setdefault((sess or "ignoto")[:24], {})
+    if a.get("giorno") != oggi():
+        a.clear()
+        a.update(giorno=oggi(), n=0, token=0)
+    a["n"] += 1
+    a["token"] += int(token or 0)
+    stato_salva()
+
+
+def agente_oltre(sess):
+    """Idea 26: se il tetto per agente e' acceso e superato, si ferma qui."""
+    tetto = CONFIG.get("tetto_agente") or 0
+    if not tetto:
+        return False
+    a = (STATO.get("agenti") or {}).get((sess or "ignoto")[:24]) or {}
+    return a.get("giorno") == oggi() and a.get("n", 0) >= tetto
+
+
 def classifica_errore(codice, testo):
     """Idea 18 · tassonomia: ogni errore ha la sua medicina."""
     t = (testo or "").lower()
@@ -429,9 +481,12 @@ def riserva(payload, politica="auto", sessione=""):
     capo, sostituti = classifica()
     ordine = ([capo] if capo else []) + sostituti
     ordine = ordina_per_politica(ordine, politica)
-    if politica in ("auto", "veloce", "gratis", "keyless"):   # idee 5+19+60
+    if politica in ("auto", "veloce", "gratis", "keyless"):   # idee 5+19+60+7+31+44
+        # salute prima; poi fascia di velocita' (250ms); dentro la stessa fascia
+        # vince chi ha LAVORATO MENO oggi → le chiavi gemelle si alternano da sole
         ordine.sort(key=lambda v: (not in_salute(v["id"]),
-                                   velocita(v["id"], v.get("ms") or 9999)))
+                                   velocita(v["id"], v.get("ms") or 9999) // CONFIG["fascia_ms"],
+                                   uso_oggi(v["id"])))
     chiesto = (payload.get("model") or "").strip().lower()
     if chiesto and chiesto not in POLITICHE and not chiesto.startswith("cervello/"):
         for v in ordine:
@@ -478,6 +533,7 @@ def riserva(payload, politica="auto", sessione=""):
                 if (d.get("choices") or [{}])[0].get("message", {}).get("content"):
                     ms = int((time.time() - inizio) * 1000)
                     segna(pid, True, ms)                  # idea 60: nutre l'EWMA
+                    conta_uso(pid, (d.get("usage") or {}).get("total_tokens", 0))
                     nome = v.get("nome") or pid
                     d["model"] = "%s (riserva %s)" % (modello, nome)
                     return d, {"provider": pid, "modello": modello, "ms": ms,
@@ -673,7 +729,13 @@ def pagina():
             if p.get("ms_ewma") is not None:
                 nota += " · ~%dms" % p["ms_ewma"]
         if punito(pid, modello):
-            nota += " · ⏸ in castigo"
+            resta = max((v2 - ora) for k2, v2 in STATO["castighi"].items()
+                        if v2 > ora and (k2.startswith(pid + "|") or
+                                         k2 == "*|" + (modello or "")))
+            nota += " · ⏸ castigo (%ds)" % int(resta)          # idea 43: countdown
+        n_oggi = uso_oggi(pid)
+        if n_oggi:
+            nota += " · oggi %d" % n_oggi
         corpo.append(
             '<tr><td style="padding:7px 10px;border-bottom:1px solid #ffffff12">'
             f'<span style="color:{colore}">{icona}</span> <b>{ETICHETTE.get(pid, pid)}</b> '
@@ -691,7 +753,7 @@ def pagina():
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
 <div style="max-width:1000px;margin:0 auto;padding:26px 20px">
-  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B1</span></h1>
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B2</span></h1>
   <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
     quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.
     Modelli-politica: <b>auto</b> · <b>gratis</b> · <b>veloce</b> · <b>migliore</b>.</div>
@@ -708,6 +770,9 @@ def pagina():
     <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
       <div style="color:#9aa4b2;font-size:12px">in castigo adesso</div>
       <div style="font-size:20px">{castigati or '—'}</div></div>
+    <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
+      <div style="color:#9aa4b2;font-size:12px">riserva oggi</div>
+      <div style="font-size:20px"><b>{sum(u.get('n', 0) for u in (STATO.get('uso') or {}).values() if u.get('giorno') == oggi())}</b> richieste</div></div>
   </div>
   <table style="width:100%;border-collapse:collapse;background:#161b22;border:1px solid #ffffff14;border-radius:10px;overflow:hidden">
     <tr style="background:#1c2430;text-align:left;color:#9aa4b2;font-size:12px">
@@ -851,6 +916,12 @@ class H(BaseHTTPRequestHandler):
         if politica.startswith("cervello/"):
             politica = politica[len("cervello/"):]
 
+        if agente_oltre(sess):                            # idea 26: tetto per agente
+            logga(tipo="tetto-agente", agente=sess, rotta="fermato")
+            self._json({"error": {"message": "Tetto giornaliero dell'agente raggiunto "
+                                             "(CONFIG tetto_agente). Riparte domani."}}, 429)
+            return
+
         # idea 21: la guardia solo-gratis ferma i modelli a pagamento sul portone
         if CONFIG["solo_gratis"] and a_pagamento(modello_chiesto):
             logga(tipo="bloccato", agente=sess, modello=modello_chiesto, rotta="guardia")
@@ -872,6 +943,7 @@ class H(BaseHTTPRequestHandler):
         if politica in POLITICHE and politica != "auto":
             d, rotta = riserva(payload, politica, sess)
             if d:
+                conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
                 logga(tipo="richiesta", agente=sess, politica=politica, rotta="riserva",
                       **dict(rotta, ms=int((time.time() - inizio) * 1000)))
                 self._rispondi(d, vuole_stream)
@@ -885,6 +957,7 @@ class H(BaseHTTPRequestHandler):
         if vivo(MOTORE):
             d = inoltra(corpo, sessione=sess)
             if d:
+                conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
                 logga(tipo="richiesta", agente=sess, politica=politica or "auto",
                       rotta="motore", modello=modello_chiesto or "auto",
                       ms=int((time.time() - inizio) * 1000))
@@ -892,6 +965,7 @@ class H(BaseHTTPRequestHandler):
                 return
         d, rotta = riserva(payload, "auto", sess)
         if d:
+            conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
             logga(tipo="richiesta", agente=sess, politica="auto", rotta="riserva",
                   **dict(rotta, ms=int((time.time() - inizio) * 1000)))
             self._rispondi(d, vuole_stream)
@@ -931,7 +1005,7 @@ if __name__ == "__main__":
         print("Perdonati %d castighi. Se il Portiere è acceso, riavvialo per" % quanti)
         print("fargliela leggere (ACCENDI_CERVELLO.bat lo fa in un colpo).")
         sys.exit(0)
-    print("Portiere FASE 2·B1 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s"
+    print("Portiere FASE 2·B2 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s"
           % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless")))
     appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
