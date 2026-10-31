@@ -137,3 +137,52 @@ Options:
 [INFO] [MEMORY_MANAGER] Initialized backend {"id":"sqlite"}
 --- End recent output ---
 
+  [2m📋 Loaded env from /home/agenti/.omniroute/.env[0m
+  [2m📋 Loaded env from /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env[0m
+  [33m⚠ STORAGE_ENCRYPTION_KEY in /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env is ignored, /home/agenti/.omniroute/.env set it first[0m
+  [33m⚠ /home/agenti/.nvm/versions/node/v22.23.3/lib/node_modules/omniroute/.env lives inside the installed package: updating OmniRoute replaces it. Move the values you set to /home/agenti/.omniroute/.env, which updates leave alone.[0m
+
+[36m   ____                  _ ____              _
+   / __ \                (_) __ \            | |
+  | |  | |_ __ ___  _ __ _| |__) |___  _   _| |_ ___
+  | |  | | '_ ` _ \| '_ \ |  _  // _ \| | | | __/ _ \
+  | |__| | | | | | | | | | | | \ \ (_) | |_| | ||  __/
+   \____/|_| |_| |_|_| |_|_|_|  \_\___/ \__,_|\__\___|
+[0m
+[2m  v3.8.51[0m
+
+  [2m⏳ Starting server...[0m
+
+
+[33m⚠ Server did not respond within 60s.[0m It may still be starting, or may have failed silently.
+  Port 20128 IS accepting connections, so the server is probably up and still warming up. Check the dashboard before restarting it.
+  Tip:  set OMNIROUTE_READY_TIMEOUT_MS=120000 or --ready-timeout 120000 for slower cold starts.
+  Try:  curl -I http://localhost:20128/api/monitoring/health
+  Or:   rerun with [36m--log[0m to see live server output.
+
+--- Recent server output ---
+▲ Next.js 16.3.5
+- Local:         http://127.0.0.1:20128
+- Network:       http://127.0.0.1:20128
+✓ Ready in 0ms
+✓ Running next.config took 176ms
+[DB] Driver: better-sqlite3 | file: /home/agenti/.omniroute/storage.sqlite
+[DB] Changing cache_size from 65536KB to 16384KB
+[DB] cache_size changed to 16384KB
+[DB] SQLite database ready: /home/agenti/.omniroute/storage.sqlite (DATA_DIR=/home/agenti/.omniroute, SQLITE_FILE=/home/agenti/.omniroute/storage.sqlite)
+[STARTUP] Global fetch proxy patch initialized
+[STARTUP] Quota fetchers registered
+[STARTUP] JWT_SECRET restored from persistent store
+[proxyLogger] Loaded 200 proxy logs from SQLite
+[Shutdown] Graceful shutdown handlers registered.
+[STARTUP] Spend batch writer started
+[STARTUP] Guardrail registry initialized
+[STARTUP] Builtin skill handlers registered
+[STARTUP] Quota cache background refresh started
+[ProviderLimitsSync] Scheduler started — interval: 70m
+[STARTUP] Provider limits sync scheduler started
+[INFO] [QuotaAutoPing] scheduler started
+[STARTUP] Quota auto-ping scheduler started (opt-in, no-op until enabled)
+[ModelSync] Scheduler started — interval: 6h (phase offset +45m)
+--- End recent output ---
+
