@@ -150,11 +150,12 @@ except Exception:
 def indirizzo(pid, k):
     """Indirizzo e intestazioni per quel provider (Cloudflare ha un formato suo)."""
     url, _ = BASE[pid]
+    UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1"}
     if url == "SPECIALE-CLOUDFLARE":
         acc, _, tok = (k or "").partition(":")
         return ("https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc,
-                {"Authorization": "Bearer " + tok})
-    return url, {"Authorization": "Bearer " + k}
+                dict(UA, Authorization="Bearer " + tok))
+    return url, dict(UA, Authorization="Bearer " + k)
 
 NOME = "Portiere"
 
@@ -619,7 +620,19 @@ def sonda():
     for pid, (url, modello) in BASE.items():
         eti = ETICHETTE.get(pid, pid)
         if NOMI.get(pid) == "SENZA":
-            print("  — %-22s senza chiave (keyless, salto)" % eti)
+            url_k = url if url != "SPECIALE-CLOUDFLARE" else ""
+            if not url_k:
+                print("  — %-22s keyless (formato suo, salto)" % eti)
+                continue
+            try:
+                urllib.request.urlopen(urllib.request.Request(url_k + "/models",
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1"}),
+                    timeout=8).read(200)
+                print("  ✅ %-22s keyless RAGGIUNGIBILE" % eti)
+            except urllib.error.HTTPError as e:
+                print("  🟡 %-22s keyless risponde %d" % (eti, e.code))
+            except Exception:
+                print("  ⚪ %-22s keyless non raggiungibile" % eti)
             continue
         k = chiave(pid)
         if not k:
