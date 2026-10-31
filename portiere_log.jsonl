@@ -9,3 +9,11 @@
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "migliore", "rotta": "motore-mappato", "modello": "auto/best-reasoning", "ms": 6263, "quando": "2026-10-31 15:58:12"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1748, "quando": "2026-10-31 16:12:47"}
 {"tipo": "cache", "agente": "cervello-2de5c12e398bc6e0", "rotta": "cache", "ms": 0, "quando": "2026-10-31 16:12:49"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 6572, "tentativi": 1, "quando": "2026-10-31 16:24:34"}
+{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 2, "quando": "2026-10-31 16:24:37"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "migliore", "rotta": "riserva", "provider": "cloudflare", "modello": "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "ms": 3461, "tentativi": 3, "quando": "2026-10-31 16:24:38"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 2, "quando": "2026-10-31 16:24:41"}
+{"tipo": "fallita", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "quando": "2026-10-31 16:24:41"}
+{"tipo": "banale", "agente": "cervello-2de5c12e398bc6e0", "rotta": "locale", "ms": 0, "quando": "2026-10-31 16:24:41"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "cloudflare", "modello": "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "ms": 7855, "tentativi": 1, "quando": "2026-10-31 16:24:49"}
+{"tipo": "cache", "agente": "cervello-2de5c12e398bc6e0", "rotta": "cache", "ms": 0, "quando": "2026-10-31 16:24:51"}
