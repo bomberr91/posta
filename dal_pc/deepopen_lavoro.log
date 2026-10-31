@@ -4,3 +4,11 @@ python: 3.12
 ## 2. torch CPU (puo' metterci 10-20 min)
 ## 3. deepopen da git
 ## 4. banco di prova
+versione: 0.3.4
+contenuto modulo: ['Agent', 'DEFAULT_MODELS', 'QTYPES', 'QTYPE_NAMES', 'RLAgent', 'RouteDecision', 'Router', 'agent', 'clean_email_body', 'common', 'confidence_from_probs', 'detect_language', 'detect_script', 'ece_score', 'email', 'email_questions', 'email_state', 'guard_questions', 'is_english', 'lang', 'load', 'moderation_questions', 'presets', 'proper_reward', 'render_options', 'router', 'router_questions', 'td_lambda_targets', 'triage_questions']
+firma load : (model_id_or_path: str = 'convaiinnovations/laya', device: Optional[str] = None, token: Optional[str] = None, subfolder: Optional[str] = None) -> deepopen.agent.Agent
+firma Router : (models: Optional[Dict[str, str]] = None, device: Optional[str] = None, token: Optional[str] = None, max_loaded: int = 1, default: str = 'english', auto_task_detection: bool = False, standalone_repos: bool = False, preload: bool = False)
+firma router : (classe)
+caricato via: router
+metodi oggetto: ['attach', 'auto_task_detection', 'default', 'device', 'load', 'loaded', 'max_loaded', 'models', 'predict', 'preload', 'route', 'system_one', 'token', 'unload']
+## 5. fine lavoro 21:49
