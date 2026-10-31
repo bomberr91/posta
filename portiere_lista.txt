@@ -60,7 +60,7 @@ inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
 blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
 sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat
 anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
-kilo|Kilo (senza chiave)|SENZA|https://kilocode.ai/api/openrouter/v1|auto|modelli
+kilo|Kilo (senza chiave)|SENZA|https://kilo.ai/api/openrouter/v1|nvidia/nemotron-3.5-lightning:free|modelli
 cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat
 #   Cloudflare: la chiave nel registro è «account_id:token», e il router ricava l'indirizzo da lì
 #   (https://api.cloudflare.com/client/v4/accounts/<account_id>/ai/v1). L'elenco modelli NON sta su
