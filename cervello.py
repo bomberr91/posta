@@ -138,8 +138,9 @@ CONFIG = {
     # — FASE 2 · BLOCCO 4 —
     "cache_ttl": 600,            # idea 3: risposta identica entro 10 min = cache (0 = spenta)
     "cache_max": 200,            # idea 3: quante risposte tenere in pancia
-    # — SENTINELLA QUOTE (31/10): il tracker CYBIRD-D aggiorna ogni ~2-10 giorni —
-    "sentinella_repo": "CYBIRD-D/FREE-LLM-API-Provider",
+    # — SENTINELLA QUOTE (31/10, 2 occhi): fonti sorvegliate una volta al giorno —
+    "sentinella_repos": ["CYBIRD-D/FREE-LLM-API-Provider",
+                         "open-free-llm-api/awesome-freellm-apis"],
     "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
     # — FASE 3 (idee 1-2: compressione · 13+16: profili per-agente) —
     "comprimi_riserva": True,    # la dieta vale SOLO per la riserva (il motore fa da se')
@@ -503,29 +504,36 @@ LOG_FILE = os.path.join(QUI, "portiere_log.jsonl")
 
 
 def sentinella():
-    """Una volta al giorno guarda se il tracker delle quote (fonte di
-    portiere_quote.txt) ha pubblicato aggiornamenti. Niente thread: controllo
-    pigro sul primo traffico utile della giornata."""
+    """Una volta al giorno guarda se le FONTI delle quote (CYBIRD-D +
+    awesome-freellm-apis/freellm.net) hanno pubblicato aggiornamenti.
+    Niente thread: controllo pigro sul primo traffico utile della giornata."""
     if not CONFIG.get("sentinella_ore"):
         return
     st = STATO.setdefault("sentinella", {})
     if time.time() - st.get("controllo", 0) < CONFIG["sentinella_ore"] * 3600:
         return
     st["controllo"] = time.time()
-    try:
-        req = urllib.request.Request(
-            "https://api.github.com/repos/" + CONFIG["sentinella_repo"],
-            headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
-        d = json.loads(urllib.request.urlopen(req, timeout=6).read().decode())
-        push = (d.get("pushed_at") or "")[:10]
-        if push and st.get("push_visto") and push != st["push_visto"]:
-            st["avviso"] = "il tracker delle quote si e' aggiornato il %s: ricontrollare portiere_quote.txt" % push
-            logga(tipo="sentinella", nota=st["avviso"])
-        if push:
-            st["push_visto"] = push
-        stato_salva(forza=True)
-    except Exception:
-        pass
+    visti = st.setdefault("visti", {})
+    if st.get("push_visto"):                              # migrazione dal 1° occhio
+        visti.setdefault(CONFIG["sentinella_repos"][0], st.pop("push_visto"))
+    avvisi = []
+    for repo in CONFIG.get("sentinella_repos", []):
+        try:
+            req = urllib.request.Request("https://api.github.com/repos/" + repo,
+                                         headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
+            d = json.loads(urllib.request.urlopen(req, timeout=6).read().decode())
+            push = (d.get("pushed_at") or "")[:10]
+            if push and visti.get(repo) and push != visti[repo]:
+                avvisi.append("%s (push %s)" % (repo.split("/")[-1], push))
+            if push:
+                visti[repo] = push
+        except Exception:
+            continue
+    if avvisi:
+        st["avviso"] = "fonti quote aggiornate: " + " · ".join(avvisi) + \
+            " — ricontrollare portiere_quote.txt"
+        logga(tipo="sentinella", nota=st["avviso"])
+    stato_salva(forza=True)
 
 
 def logga(**voce):
