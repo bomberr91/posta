@@ -2,3 +2,6 @@
 {"tipo": "bloccato", "agente": "cervello-2de5c12e398bc6e0", "modello": "gpt-5", "rotta": "guardia", "quando": "2026-10-31 09:58:24"}
 {"tipo": "banale", "agente": "cervello-2de5c12e398bc6e0", "rotta": "locale", "ms": 0, "quando": "2026-10-31 12:48:28"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1366, "quando": "2026-10-31 12:48:30"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 4055, "tentativi": 1, "quando": "2026-10-31 13:43:43"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "altro", "codice": 402, "tentativo": 1, "quando": "2026-10-31 13:43:46"}
+{"tipo": "fallita", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "quando": "2026-10-31 13:43:46"}
