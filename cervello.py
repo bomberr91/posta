@@ -30,6 +30,16 @@ FASE 1 (31/10/2026) — cosa è stato aggiunto, con il numero dell'idea:
 
 Aggiunte del saggio: cooldown statici, retry con jitter, log chiari, timeout brevi.
 
+FASE 2 · BLOCCO 1 (31/10 pomeriggio) — pagella adulta + retry furbo:
+   5  pagella = salute + velocita' (l'ordine della riserva lo decide lei)
+   9  interruttore: 3 errori DI FILA → il canale riposa 60s
+  15  il voto e' per chiave (ogni riga della lista ha la sua pagella)
+  19  classifica latenze con SCADENZA 10 min (poi si torna all'appello)
+  24  retry esponenziale con jitter SOLO sui codici giusti (429/5xx/rete; mai 400/401/404)
+  51  429 intelligenti: se il provider manda Retry-After, obbediamo (max 5 min)
+  60  velocita' = media mobile EWMA (70% storia, 30% ultima prova)
+  61  periodo di grazia: niente giudizi sotto le 5 prove
+
   python3 cervello.py            resta acceso sulla porta 20129
   python3 cervello.py --stato    dice chi sta rispondendo adesso
   python3 cervello.py --sonda    controlla le chiavi senza spendere token
@@ -66,6 +76,15 @@ CONFIG = {
     "riposo_malato": 120,        # il canale malato riprova ogni 2 minuti
     "intercetta_banali": True,   # idea 46 (metti False per spegnere)
     "solo_gratis": True,         # idea 21: guardia anti-spesa
+    # — FASE 2 · BLOCCO 1 —
+    "max_tentativi": 5,          # idea 24: al massimo 5 tentativi totali per richiesta
+    "retry_stesso": 1,           # idea 24: 1 ritento sullo STESSO provider (poi si cambia)
+    "backoff_base": 2,           # idea 24: attesa 2^n secondi prima del ritento...
+    "backoff_max": 8,            # ...ma mai piu' di 8s (+ jitter del saggio)
+    "latenza_scadenza": 600,     # idea 19: la velocita' osservata vale 10 minuti
+    "fila_ko_max": 3,            # idea 9: 3 errori DI FILA → interruttore
+    "cooldown_fila": 60,         # idea 9: ...e il canale riposa 60s
+    "retry_after_max": 300,      # idea 51: rispetta Retry-After, ma mai oltre 5 min
 }
 
 # ── LA LISTA SUA (portiere_lista.txt) ─────────────────────────────────────────
@@ -236,16 +255,40 @@ def punito(pid, modello):
     return False
 
 
-def segna(pid, ok):
-    """Idea 27: pagella col tasso di successo. La memoria sbiadisce (dimezza a 50 prove)."""
-    p = STATO["pagella"].setdefault(pid, {"ok": 0, "ko": 0, "ultimo_ko": 0})
+def segna(pid, ok, ms=None):
+    """Idee 27+5+60+9: pagella con tasso di successo E velocita' osservata (media
+    mobile EWMA), piu' l'interruttore: 3 errori di fila → il canale riposa 60s.
+    La memoria sbiadisce (dimezza a 50 prove). Idea 61: niente giudizi sotto le
+    5 prove (periodo di grazia, gia' garantito da in_salute)."""
+    p = STATO["pagella"].setdefault(pid, {"ok": 0, "ko": 0, "ultimo_ko": 0, "fila_ko": 0})
     p["ok" if ok else "ko"] += 1
-    if not ok:
+    if ok:
+        p["fila_ko"] = 0
+        if ms is not None:                               # idea 60: EWMA della velocita'
+            vecchio = p.get("ms_ewma")
+            p["ms_ewma"] = int(ms) if vecchio is None else round(0.7 * vecchio + 0.3 * ms)
+            p["ms_quando"] = time.time()
+    else:
         p["ultimo_ko"] = time.time()
+        p["fila_ko"] = p.get("fila_ko", 0) + 1
+        if p["fila_ko"] >= CONFIG["fila_ko_max"]:        # idea 9: circuit breaker
+            p["fila_ko"] = 0
+            castiga(pid, None, CONFIG["cooldown_fila"] + random.randint(0, 10))
     if p["ok"] + p["ko"] > 50:
         p["ok"] //= 2
         p["ko"] //= 2
     stato_salva(forza=not ok)            # i voti negativi vanno su disco subito
+
+
+def velocita(pid, altrimenti):
+    """Idea 19: la velocita' osservata (EWMA) comanda, ma SCADE dopo 10 minuti:
+    poi si torna ai tempi dell'appello. Niente thread di pulizia (avviso saggio
+    su WSL1): la scadenza si controlla al momento della lettura."""
+    p = STATO["pagella"].get(pid) or {}
+    if p.get("ms_ewma") is not None and \
+            time.time() - p.get("ms_quando", 0) < CONFIG["latenza_scadenza"]:
+        return p["ms_ewma"]
+    return altrimenti
 
 
 def in_salute(pid):
@@ -376,12 +419,18 @@ PARAMETRI_SICURI = ("temperature", "top_p", "stop", "presence_penalty",
 
 
 def riserva(payload, politica="auto", sessione=""):
-    """Manda la richiesta alla riserva, in ordine di velocità e salute.
+    """Manda la richiesta alla riserva. FASE 2·B1: l'ordine lo decide la PAGELLA
+    (salute prima, poi velocita' osservata EWMA con scadenza 10 min); sui codici
+    che lo meritano (429 semplice, 5xx, rete) si ritenta UNA volta sullo stesso
+    provider con attesa esponenziale + jitter; massimo 5 tentativi per richiesta.
     Ritorna (risposta, rotta) — rotta dice chi ha risposto, per il log glass-box."""
     messaggi = payload.get("messages") or []
     capo, sostituti = classifica()
     ordine = ([capo] if capo else []) + sostituti
     ordine = ordina_per_politica(ordine, politica)
+    if politica in ("auto", "veloce", "gratis", "keyless"):   # idee 5+19+60
+        ordine.sort(key=lambda v: (not in_salute(v["id"]),
+                                   velocita(v["id"], v.get("ms") or 9999)))
     chiesto = (payload.get("model") or "").strip().lower()
     if chiesto and chiesto not in POLITICHE and not chiesto.startswith("cervello/"):
         for v in ordine:
@@ -389,13 +438,16 @@ def riserva(payload, politica="auto", sessione=""):
                 ordine.remove(v)
                 ordine.insert(0, v)
                 break
+    tentativi = 0                                         # idea 24: budget totale
     for v in ordine:
+        if tentativi >= CONFIG["max_tentativi"]:
+            break
         pid = v["id"]
         _, modello = BASE[pid]
         modello = v.get("modello") or modello
         if punito(pid, modello):                          # idea 17
             continue
-        if not in_salute(pid):                            # idee 14+27
+        if not in_salute(pid):                            # idee 14+27 (61: grazia <5 prove)
             continue
         if CONFIG["solo_gratis"] and a_pagamento(modello):  # idea 21
             continue
@@ -412,52 +464,79 @@ def riserva(payload, politica="auto", sessione=""):
             if p in payload:
                 dati[p] = payload[p]
         corpo = json.dumps(dati).encode()
-        inizio = time.time()
-        try:
-            req = urllib.request.Request(base + "/chat/completions", data=corpo,
-                                         headers=intestazioni)
-            d = json.loads(urllib.request.urlopen(
-                req, timeout=CONFIG["timeout_riserva"]).read().decode())
-            if (d.get("choices") or [{}])[0].get("message", {}).get("content"):
-                segna(pid, True)
-                nome = v.get("nome") or pid
-                d["model"] = "%s (riserva %s)" % (modello, nome)
-                return d, {"provider": pid, "modello": modello,
-                           "ms": int((time.time() - inizio) * 1000)}
-            segna(pid, False)                             # 200 ma vuoto: failover (idea 18)
-            castiga(pid, modello, CONFIG["cooldown_passeggero"])
-        except urllib.error.HTTPError as e:
+        per_questo = 0                                    # ritenti su QUESTO provider
+        while tentativi < CONFIG["max_tentativi"]:
+            tentativi += 1
+            per_questo += 1
+            inizio = time.time()
             try:
-                testo = e.read(500).decode(errors="replace")
-            except Exception:
-                testo = ""
-            tipo = classifica_errore(e.code, testo)
-            jitter = random.randint(0, 10)                # il saggio: retry con jitter
-            if tipo == "breve":
-                castiga(pid, modello, CONFIG["cooldown_breve"] + jitter)
+                req = urllib.request.Request(base + "/chat/completions", data=corpo,
+                                             headers=intestazioni)
+                d = json.loads(urllib.request.urlopen(
+                    req, timeout=CONFIG["timeout_riserva"]).read().decode())
+                if (d.get("choices") or [{}])[0].get("message", {}).get("content"):
+                    ms = int((time.time() - inizio) * 1000)
+                    segna(pid, True, ms)                  # idea 60: nutre l'EWMA
+                    nome = v.get("nome") or pid
+                    d["model"] = "%s (riserva %s)" % (modello, nome)
+                    return d, {"provider": pid, "modello": modello, "ms": ms,
+                               "tentativi": tentativi}
+                segna(pid, False)                         # 200 ma vuoto: failover (idea 18)
+                castiga(pid, modello, CONFIG["cooldown_passeggero"])
+                break
+            except urllib.error.HTTPError as e:
+                try:
+                    testo = e.read(500).decode(errors="replace")
+                except Exception:
+                    testo = ""
+                tipo = classifica_errore(e.code, testo)
+                jitter = random.randint(0, 10)            # il saggio: sempre col jitter
+                # idea 24: on_status_codes — si RITENTA solo dove ha senso
+                if tipo in ("breve", "passeggero") and \
+                        per_questo <= CONFIG["retry_stesso"] and \
+                        tentativi < CONFIG["max_tentativi"]:
+                    time.sleep(min(CONFIG["backoff_base"] ** per_questo,
+                                   CONFIG["backoff_max"]) + random.uniform(0, 1))
+                    continue
+                if tipo == "breve":
+                    # idea 51: se il provider dice QUANDO tornare, obbediamo
+                    ra = 0
+                    try:
+                        ra = int(float(e.headers.get("Retry-After") or 0))
+                    except Exception:
+                        ra = 0
+                    riposo = min(ra, CONFIG["retry_after_max"]) if ra > 0 \
+                        else CONFIG["cooldown_breve"]
+                    castiga(pid, modello, riposo + jitter)
+                    segna(pid, False)
+                elif tipo == "quota":                     # idea 22
+                    castiga(pid, None, CONFIG["cooldown_quota"] + jitter)
+                    segna(pid, False)
+                elif tipo == "chiave":
+                    castiga(pid, None, CONFIG["cooldown_chiave"] + jitter)
+                    segna(pid, False)
+                elif tipo == "pensionato":                # idea 18
+                    castiga(pid, modello, CONFIG["cooldown_pensionato"], globale=True)
+                elif tipo == "contesto":                  # idee 18+32: nessun castigo
+                    pass
+                else:
+                    castiga(pid, modello, CONFIG["cooldown_passeggero"] + jitter)
+                    segna(pid, False)
+                logga(tipo="errore-riserva", provider=pid, modello=modello,
+                      errore=tipo, codice=e.code, tentativo=tentativi)
+                break
+            except Exception as e:
+                # rete: merita UN ritento (idea 24), poi castigo passeggero
+                if per_questo <= CONFIG["retry_stesso"] and \
+                        tentativi < CONFIG["max_tentativi"]:
+                    time.sleep(min(CONFIG["backoff_base"] ** per_questo,
+                                   CONFIG["backoff_max"]) + random.uniform(0, 1))
+                    continue
+                castiga(pid, modello, CONFIG["cooldown_passeggero"])
                 segna(pid, False)
-            elif tipo == "quota":                         # idea 22
-                castiga(pid, None, CONFIG["cooldown_quota"] + jitter)
-                segna(pid, False)
-            elif tipo == "chiave":
-                castiga(pid, None, CONFIG["cooldown_chiave"] + jitter)
-                segna(pid, False)
-            elif tipo == "pensionato":                    # idea 18
-                castiga(pid, modello, CONFIG["cooldown_pensionato"], globale=True)
-            elif tipo == "contesto":                      # idee 18+32: nessun castigo
-                pass
-            else:
-                castiga(pid, modello, CONFIG["cooldown_passeggero"] + jitter)
-                segna(pid, False)
-            logga(tipo="errore-riserva", provider=pid, modello=modello,
-                  errore=tipo, codice=e.code)
-            continue
-        except Exception as e:
-            castiga(pid, modello, CONFIG["cooldown_passeggero"])
-            segna(pid, False)
-            logga(tipo="errore-riserva", provider=pid, modello=modello,
-                  errore="rete", nota=str(e)[:120])
-            continue
+                logga(tipo="errore-riserva", provider=pid, modello=modello,
+                      errore="rete", nota=str(e)[:120], tentativo=tentativi)
+                break
     return None, None
 
 
@@ -578,6 +657,8 @@ def pagina():
         p = STATO["pagella"].get(pid)
         if p and p["ok"] + p["ko"] >= CONFIG["min_prove"]:
             nota += " · pagella %d%%" % round(100 * p["ok"] / (p["ok"] + p["ko"]))
+            if p.get("ms_ewma") is not None:
+                nota += " · ~%dms" % p["ms_ewma"]
         if punito(pid, modello):
             nota += " · ⏸ in castigo"
         corpo.append(
@@ -597,7 +678,7 @@ def pagina():
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
 <div style="max-width:1000px;margin:0 auto;padding:26px 20px">
-  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 1</span></h1>
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B1</span></h1>
   <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
     quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.
     Modelli-politica: <b>auto</b> · <b>gratis</b> · <b>veloce</b> · <b>migliore</b>.</div>
@@ -837,7 +918,7 @@ if __name__ == "__main__":
         print("Perdonati %d castighi. Se il Portiere è acceso, riavvialo per" % quanti)
         print("fargliela leggere (ACCENDI_CERVELLO.bat lo fa in un colpo).")
         sys.exit(0)
-    print("Portiere FASE 1 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s"
+    print("Portiere FASE 2·B1 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s"
           % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless")))
     appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
