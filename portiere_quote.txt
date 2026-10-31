@@ -1,0 +1,15 @@
+# pid|al_minuto|al_giorno|distanza_secondi   (0 = nessun freno su quella voce)
+# fonti: mappa-modelli-e-squadre 12/10 + collaudi 31/10. Numeri PRUDENTI.
+groq|25|950|0
+openrouter|15|45|0
+gemini|10|1300|0
+cohere|8|30|0
+nvidia|35|0|0
+ovh|0|0|31
+pollinations|0|0|4
+pollinationsfree|0|0|4
+electronhub|2|20|0
+agentrouter|0|0|5
+inferbase|5|90|0
+gizmo|2|30|0
+kilo|3|0|0
