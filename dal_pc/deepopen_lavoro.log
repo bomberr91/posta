@@ -2,3 +2,4 @@
 python: 3.12
 ## 1. ambiente
 ## 2. torch CPU (puo' metterci 10-20 min)
+## 3. deepopen da git
