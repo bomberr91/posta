@@ -124,6 +124,9 @@ CONFIG = {
     # — FASE 2 · BLOCCO 4 —
     "cache_ttl": 600,            # idea 3: risposta identica entro 10 min = cache (0 = spenta)
     "cache_max": 200,            # idea 3: quante risposte tenere in pancia
+    # — SENTINELLA QUOTE (31/10): il tracker CYBIRD-D aggiorna ogni ~2-10 giorni —
+    "sentinella_repo": "CYBIRD-D/FREE-LLM-API-Provider",
+    "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
 }
 
 # aggancio al motore nuovo (3.8.52): le nostre politiche sulle sue auto/best-*
@@ -479,6 +482,32 @@ def classifica_errore(codice, testo):
 
 # ── FASE 1 · LOG GLASS-BOX (idea 50 + logger del saggio) ─────────────────────
 LOG_FILE = os.path.join(QUI, "portiere_log.jsonl")
+
+
+def sentinella():
+    """Una volta al giorno guarda se il tracker delle quote (fonte di
+    portiere_quote.txt) ha pubblicato aggiornamenti. Niente thread: controllo
+    pigro sul primo traffico utile della giornata."""
+    if not CONFIG.get("sentinella_ore"):
+        return
+    st = STATO.setdefault("sentinella", {})
+    if time.time() - st.get("controllo", 0) < CONFIG["sentinella_ore"] * 3600:
+        return
+    st["controllo"] = time.time()
+    try:
+        req = urllib.request.Request(
+            "https://api.github.com/repos/" + CONFIG["sentinella_repo"],
+            headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
+        d = json.loads(urllib.request.urlopen(req, timeout=6).read().decode())
+        push = (d.get("pushed_at") or "")[:10]
+        if push and st.get("push_visto") and push != st["push_visto"]:
+            st["avviso"] = "il tracker delle quote si e' aggiornato il %s: ricontrollare portiere_quote.txt" % push
+            logga(tipo="sentinella", nota=st["avviso"])
+        if push:
+            st["push_visto"] = push
+        stato_salva(forza=True)
+    except Exception:
+        pass
 
 
 def logga(**voce):
@@ -1148,6 +1177,7 @@ def pagina():
     <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
       <div style="color:#9aa4b2;font-size:12px">in castigo adesso</div>
       <div style="font-size:20px">{castigati or '—'}</div></div>
+    {('<div style="background:#2d1f00;border:1px solid #f5c45155;border-radius:10px;padding:10px 14px;color:#f5c451">📡 ' + STATO.get("sentinella", {}).get("avviso", "") + '</div>') if STATO.get("sentinella", {}).get("avviso") else ''}
     <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
       <div style="color:#9aa4b2;font-size:12px">riserva oggi</div>
       <div style="font-size:20px"><b>{sum(u.get('n', 0) for u in (STATO.get('uso') or {}).values() if u.get('giorno') == oggi())}</b> richieste</div></div>
@@ -1269,6 +1299,7 @@ class H(BaseHTTPRequestHandler):
         ricarica_gruppi()                                 # idee 30+45
         ricarica_quote()                                  # idea 48
         ricarica_regole()                                 # idea 38
+        sentinella()                                      # tracker quote, 1 volta/giorno
         inizio = time.time()
         if self.path.startswith("/v1/images/generations"):
             n = int(self.headers.get("Content-Length") or 0)
