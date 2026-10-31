@@ -63,6 +63,12 @@ FASE 2 · BLOCCO 4 — finezze:
   53  --statistiche: il riassunto del glass-box
    +  igiene: risposta vuota dal motore → si passa alla riserva
 
+FASE 3 — le ultime 4 idee del quaderno (moduli gemelli compressione.py + per_agente.py):
+   1  system grassi → TOON · storia chilometrica → taglio protetto (mai coi tool-call)
+   2  tools alleggeriti per la riserva (solo required, descrizioni a 110 char)
+  13+16  profili per-agente (portiere_profili.json): max_tokens, temperature,
+         politica di default, compressione on/off — hot-reload, default robusti
+
 FASE 2 · BLOCCO 3 — scoperta e nomi:
    4  sessione appiccicosa: stesso agente → stesso provider per 15 min (prefix-cache)
   11  punteggio complessita': richiesta lunga o con codice → l'auto sceglie i FORTI
@@ -83,6 +89,14 @@ import time
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+# ── FASE 3: i due moduli gemelli (se mancano, il Portiere va come prima) ────
+try:
+    from compressione import alleggerisci_tools, comprimi_system, taglia_storia
+    from per_agente import carica_profili, profilo_di, applica_profilo
+    F3_OK = True
+except Exception:
+    F3_OK = False
 
 QUI = os.path.dirname(os.path.abspath(__file__))
 MOTORE = "http://127.0.0.1:20128/v1"
@@ -127,6 +141,10 @@ CONFIG = {
     # — SENTINELLA QUOTE (31/10): il tracker CYBIRD-D aggiorna ogni ~2-10 giorni —
     "sentinella_repo": "CYBIRD-D/FREE-LLM-API-Provider",
     "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
+    # — FASE 3 (idee 1-2: compressione · 13+16: profili per-agente) —
+    "comprimi_riserva": True,    # la dieta vale SOLO per la riserva (il motore fa da se')
+    "system_min_car": 1200,      # system sotto questa taglia: non si tocca
+    "storia_max_car": 24000,     # storia oltre questa taglia: si taglia (mai con tool-call in mezzo)
 }
 
 # aggancio al motore nuovo (3.8.52): le nostre politiche sulle sue auto/best-*
@@ -770,6 +788,65 @@ PARAMETRI_SICURI = ("temperature", "top_p", "stop", "presence_penalty",
                     "frequency_penalty", "seed")
 
 
+def f3_prepara(payload, comprimi):
+    """FASE 3 · idee 1-2: mette a dieta la richiesta PRIMA della riserva.
+    System grassi → TOON · storia chilometrica → taglio (MAI se ci sono
+    tool-call in mezzo: il formato va preservato) · tools → alleggeriti.
+    Ritorna (messaggi, tools, caratteri_risparmiati). Mai distruttivo."""
+    messaggi = payload.get("messages") or []
+    tools = payload.get("tools")
+    if not (F3_OK and comprimi and CONFIG.get("comprimi_riserva")):
+        return messaggi, tools, 0
+    risparmio = 0
+    try:
+        nuovi = []
+        for m in messaggi:
+            c = m.get("content")
+            if m.get("role") == "system" and isinstance(c, str) and \
+                    len(c) >= CONFIG["system_min_car"]:
+                c2, r = comprimi_system(c)
+                m = dict(m, content=c2)
+                risparmio += r
+            nuovi.append(m)
+        ha_tool_msg = any(m.get("tool_calls") or m.get("role") == "tool" for m in nuovi)
+        tot = sum(len(str(m.get("content") or "")) for m in nuovi)
+        if tot > CONFIG["storia_max_car"] and not ha_tool_msg and \
+                all(isinstance(m.get("content"), str) for m in nuovi):
+            nuovi2 = taglia_storia(nuovi, CONFIG["storia_max_car"])
+            risparmio += tot - sum(len(m.get("content") or "") for m in nuovi2)
+            nuovi = nuovi2
+        if tools:
+            tools, r2 = alleggerisci_tools(tools)
+            risparmio += r2
+        return nuovi, tools, risparmio
+    except Exception:
+        return payload.get("messages") or [], payload.get("tools"), 0
+
+
+# ── FASE 3 · idee 13+16: profili per-agente (portiere_profili.json) ─────────
+PROFILI_FILE = os.path.join(QUI, "portiere_profili.json")
+PROFILI = {}
+_profili_mtime = [0.0]
+
+
+def ricarica_profili():
+    global PROFILI
+    if not F3_OK:
+        return
+    try:
+        m = os.path.getmtime(PROFILI_FILE)
+    except Exception:
+        PROFILI = {}
+        return
+    if m != _profili_mtime[0]:
+        _profili_mtime[0] = m
+        esito = carica_profili(PROFILI_FILE)
+        prof, err = esito if isinstance(esito, tuple) else (esito, None)
+        PROFILI = prof if isinstance(prof, dict) else {}
+        if err:
+            logga(tipo="profili", nota="file profili rotto: %s" % str(err)[:120])
+
+
 def complessita(messaggi):
     """Idea 11: punteggio semplice — quanti caratteri e se c'e' codice."""
     testo = " ".join(str(m.get("content", ""))[:3000] for m in (messaggi or []))
@@ -788,13 +865,13 @@ def forza_modello(v):
     return len(FORTI)
 
 
-def riserva(payload, politica="auto", sessione=""):
+def riserva(payload, politica="auto", sessione="", comprimi=True):
     """Manda la richiesta alla riserva. FASE 2·B1: l'ordine lo decide la PAGELLA
     (salute prima, poi velocita' osservata EWMA con scadenza 10 min); sui codici
     che lo meritano (429 semplice, 5xx, rete) si ritenta UNA volta sullo stesso
     provider con attesa esponenziale + jitter; massimo 5 tentativi per richiesta.
     Ritorna (risposta, rotta) — rotta dice chi ha risposto, per il log glass-box."""
-    messaggi = payload.get("messages") or []
+    messaggi, tools_f3, risparmio_f3 = f3_prepara(payload, comprimi)   # FASE 3
     capo, sostituti = classifica()
     ordine = ([capo] if capo else []) + sostituti
     ordine = ordina_per_politica(ordine, politica)
@@ -875,8 +952,8 @@ def riserva(payload, politica="auto", sessione=""):
         for p in PARAMETRI_SICURI:                        # idea 33: drop_params gentile
             if p in payload:
                 dati[p] = payload[p]
-        if payload.get("tools"):                          # idea 47: i tools ora viaggiano
-            dati["tools"] = payload["tools"]
+        if tools_f3:                                      # idea 47 + F3: alleggeriti
+            dati["tools"] = tools_f3
             if payload.get("tool_choice"):
                 dati["tool_choice"] = payload["tool_choice"]
         corpo = json.dumps(dati).encode()
@@ -904,8 +981,11 @@ def riserva(payload, politica="auto", sessione=""):
                             ses.pop(min(ses, key=lambda k2: ses[k2].get("quando", 0)))
                     nome = v.get("nome") or pid
                     d["model"] = "%s (riserva %s)" % (modello, nome)
-                    return d, {"provider": pid, "modello": modello, "ms": ms,
-                               "tentativi": tentativi}
+                    rotta = {"provider": pid, "modello": modello, "ms": ms,
+                             "tentativi": tentativi}
+                    if risparmio_f3 > 0:
+                        rotta["risparmio_car"] = risparmio_f3
+                    return d, rotta
                 # ragionatore strozzato dal budget (reasoning pieno, content vuoto,
                 # finish=length): non e' colpa sua — failover SENZA castigo
                 if msg0.get("reasoning") or msg0.get("reasoning_content"):
@@ -1160,7 +1240,7 @@ def pagina():
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
 <div style="max-width:1000px;margin:0 auto;padding:26px 20px">
-  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B4</span></h1>
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 3</span></h1>
   <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
     quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.
     Modelli-politica: <b>auto</b> · <b>gratis</b> · <b>veloce</b> · <b>migliore</b>.</div>
@@ -1327,6 +1407,19 @@ class H(BaseHTTPRequestHandler):
         vuole_stream = bool(payload.pop("stream", False))
         payload.pop("stream_options", None)
         sess = self._sessione()
+        ricarica_profili()                                # FASE 3: idee 13+16
+        comprimi_agente = True
+        if F3_OK and PROFILI:
+            prof = profilo_di(sess, PROFILI)
+            if prof:
+                try:
+                    payload, note = applica_profilo(payload, prof)
+                    if note:
+                        logga(tipo="profilo", agente=sess, nota="; ".join(map(str, note)))
+                except Exception as e:
+                    logga(tipo="profili", nota="applica_profilo fallita: %s" % str(e)[:80])
+                if prof.get("comprimi") is False:
+                    comprimi_agente = False
         modello_chiesto = (payload.get("model") or "").strip()
         politica = modello_chiesto.lower()
         if politica.startswith("cervello/"):
@@ -1393,7 +1486,7 @@ class H(BaseHTTPRequestHandler):
 
         # i GRUPPI con nome vanno dritti in riserva (sanno loro chi chiamare)
         if politica in GRUPPI:
-            d, rotta = riserva(payload, "auto", sess)
+            d, rotta = riserva(payload, "auto", sess, comprimi_agente)
             if d:
                 conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
                 logga(tipo="richiesta", agente=sess, politica="gruppo:" + politica,
@@ -1406,7 +1499,7 @@ class H(BaseHTTPRequestHandler):
 
         # idea 6: le politiche diverse da "auto" scelgono direttamente dalla riserva
         if politica in POLITICHE and politica != "auto":
-            d, rotta = riserva(payload, politica, sess)
+            d, rotta = riserva(payload, politica, sess, comprimi_agente)
             if d:
                 conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
                 logga(tipo="richiesta", agente=sess, politica=politica, rotta="riserva",
@@ -1435,7 +1528,7 @@ class H(BaseHTTPRequestHandler):
                       ms=int((time.time() - inizio) * 1000))
                 self._rispondi(d, vuole_stream)
                 return
-        d, rotta = riserva(payload, "auto", sess)
+        d, rotta = riserva(payload, "auto", sess, comprimi_agente)
         if d:
             conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
             cache_scrivi(ck, d)                           # idea 3
@@ -1524,7 +1617,7 @@ if __name__ == "__main__":
     ricarica_gruppi()
     ricarica_quote()
     ricarica_regole()
-    print("Portiere FASE 2·B4 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s · gruppi: %d"
+    print("Portiere FASE 3 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s · gruppi: %d"
           % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless"), len(GRUPPI)))
     appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
