@@ -276,6 +276,19 @@ def vivo(url, secondi=1):
         return False
 
 
+# ── INTERRUTTORE DI INDIPENDENZA ─────────────────────────────────────────────
+# Se esiste il file SOLO_CERVELLO.txt accanto a cervello.py, il Portiere IGNORA
+# OmniRoute anche se acceso: fa tutto da solo con la riserva. Cancella il file
+# e torna a usare il motore. Acceso/spento come una lampadina, zero riavvii.
+SOLO_CERVELLO = os.path.join(QUI, "SOLO_CERVELLO.txt")
+
+
+def motore_vivo():
+    if os.path.exists(SOLO_CERVELLO):
+        return False
+    return vivo(MOTORE)
+
+
 def appello():
     try:
         d = json.loads(open(APPELLO, encoding="utf-8").read())
@@ -1070,7 +1083,7 @@ def scopri():
 def pagina():
     """La pagina del Portiere: la SUA lista, provider per provider."""
     voci = {v.get("id"): v for v in appello()}
-    su_motore = vivo(MOTORE)
+    su_motore = motore_vivo()
     pronti = sum(1 for pid in BASE if (voci.get(pid) or {}).get("esito") == "risponde")
     ora = time.time()
     castigati = sum(1 for v in STATO["castighi"].values() if v > ora)
@@ -1217,9 +1230,10 @@ class H(BaseHTTPRequestHandler):
                         "da_confermare": da_confermare()})
             return
         if self.path.startswith("/cervello"):
-            su = vivo(MOTORE)
+            su = motore_vivo()
             capo, sost = classifica()
             self._json({"motore": su, "nome": NOME,
+                        "interruttore_solo_cervello": os.path.exists(SOLO_CERVELLO),
                         "capo": capo, "sostituti": [v["nome"] for v in sost],
                         "riserva": [v["id"] for v in appello() if v.get("esito") == "risponde"],
                         "risponde": (len([1 for v in appello() if v.get("esito") == "risponde"])),
@@ -1231,7 +1245,7 @@ class H(BaseHTTPRequestHandler):
                          for p in POLITICHE if p != "keyless"]
             politiche += [{"id": g, "object": "model", "owned_by": "cervello-gruppo"}
                           for g in GRUPPI]
-            d = inoltra(None, "models", secondi=10) if vivo(MOTORE) else None
+            d = inoltra(None, "models", secondi=10) if motore_vivo() else None
             if d and isinstance(d.get("data"), list):
                 d["data"] = politiche + d["data"]        # idea 6: le politiche in testa
                 self._json(d)
@@ -1328,7 +1342,7 @@ class H(BaseHTTPRequestHandler):
             return
 
         # aggancio B3: migliore/veloce passano dal MOTORE con le sue auto/best-*
-        if politica in MAPPA_MOTORE and vivo(MOTORE):
+        if politica in MAPPA_MOTORE and motore_vivo():
             p2 = dict(payload, model=MAPPA_MOTORE[politica])
             d = inoltra(json.dumps(p2).encode(), sessione=sess)
             if d:
@@ -1368,7 +1382,7 @@ class H(BaseHTTPRequestHandler):
             return
 
         corpo = json.dumps(payload).encode()
-        if vivo(MOTORE):
+        if motore_vivo():
             d = inoltra(corpo, sessione=sess)
             msg0 = (d.get("choices") or [{}])[0].get("message", {}) if d else {}
             if d and not msg0.get("content") and not msg0.get("tool_calls"):
@@ -1436,7 +1450,7 @@ def statistiche():
 
 def stato():
     voci = appello()
-    su = vivo(MOTORE)
+    su = motore_vivo()
     print("Motore OmniRoute (20128):", "🟢 vivo" if su else "🔴 spento")
     pronti = [v for v in voci if v.get("esito") == "risponde"]
     print("Riserva pronta:", len(pronti), "provider")
