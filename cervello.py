@@ -53,6 +53,15 @@ FASE 2 · BLOCCO 2 — chiavi e quote:
   python3 cervello.py --sonda    controlla le chiavi senza spendere token
   python3 cervello.py --perdona  amnistia: azzera tutti i castighi
   python3 cervello.py --scopri   scopre i modelli di ogni provider (catalogo)
+  python3 cervello.py --statistiche  il riassunto del lavoro (rotte, errori, agenti)
+
+FASE 2 · BLOCCO 4 — finezze:
+   3  cache locale: stessa domanda entro 10 min = risposta subito, 0 token
+  38  regole per agente (portiere_regole.txt): politiche permesse + tetto
+  47  tools inoltrati alla riserva + parser euristico dei tool-call nel testo
+  48  freno preventivo (portiere_quote.txt): al_minuto / al_giorno / distanza
+  53  --statistiche: il riassunto del glass-box
+   +  igiene: risposta vuota dal motore → si passa alla riserva
 
 FASE 2 · BLOCCO 3 — scoperta e nomi:
    4  sessione appiccicosa: stesso agente → stesso provider per 15 min (prefix-cache)
@@ -112,6 +121,9 @@ CONFIG = {
     "complessita_soglia": 4000,  # idea 11: sopra questi caratteri (o con codice) l'auto
                                  #   preferisce i modelli FORTI
     "scoperta_timeout": 6,       # idea 36: timeout BREVI sulla scoperta (il saggio)
+    # — FASE 2 · BLOCCO 4 —
+    "cache_ttl": 600,            # idea 3: risposta identica entro 10 min = cache (0 = spenta)
+    "cache_max": 200,            # idea 3: quante risposte tenere in pancia
 }
 
 # aggancio al motore nuovo (3.8.52): le nostre politiche sulle sue auto/best-*
@@ -441,9 +453,9 @@ def classifica_errore(codice, testo):
         return "pensionato"
     if codice == 413 or "context" in t or "too long" in t or "token limit" in t:
         return "contesto"
-    if codice == 429:
+    if codice == 429 or codice == 402:    # 402 = "payment required" dei piani
         if any(s in t for s in ("day", "daily", "quota", "exceeded", "per-day")):
-            return "quota"
+            return "quota"                # gratis a raffica (es. Pollinations)
         return "breve"
     if codice in (401, 403) or "unauthorized" in t or "no access" in t:
         return "chiave"
@@ -500,6 +512,171 @@ def banale(payload):
         parole = re.sub(r"[^\w\s\u00c0-\u00ff]", " ", ultimo).split()
         return risposta_locale(" ".join(parole[:6]) or "Conversazione", "titolo")
     return None
+
+
+# ── FASE 2 · B4 · CACHE LOCALE (idea 3, versione onesta: esatta normalizzata) ──
+# Stessa domanda, stessa risposta, entro 10 minuti: 0 token spesi.
+# Niente cache se ci sono tools o temperature alta (risposte volutamente varie).
+_CACHE = {}
+
+
+def cache_chiave(payload):
+    if not CONFIG["cache_ttl"] or payload.get("tools") or             (payload.get("temperature") or 0) > 0.3:
+        return None
+    base = json.dumps([payload.get("model", ""),
+                       [[m.get("role"), " ".join(str(m.get("content", "")).split())]
+                        for m in payload.get("messages") or []],
+                       payload.get("max_tokens")], ensure_ascii=False)
+    return hashlib.sha1(base.encode()).hexdigest()
+
+
+def cache_leggi(k):
+    if not k:
+        return None
+    v = _CACHE.get(k)
+    if v and time.time() - v[0] < CONFIG["cache_ttl"]:
+        d = json.loads(v[1])
+        d["model"] = str(d.get("model", "")) + " (cache)"
+        return d
+    _CACHE.pop(k, None)
+    return None
+
+
+def cache_scrivi(k, d):
+    if not k:
+        return
+    _CACHE[k] = (time.time(), json.dumps(d, ensure_ascii=False))
+    while len(_CACHE) > CONFIG["cache_max"]:
+        _CACHE.pop(min(_CACHE, key=lambda x: _CACHE[x][0]))
+
+
+# ── FASE 2 · B4 · QUOTE PREVENTIVE (idea 48): frenare PRIMA del 429 ──────────
+# file portiere_quote.txt:  pid|al_minuto|al_giorno|distanza_secondi  (0 = senza freno)
+QUOTE_FILE = os.path.join(QUI, "portiere_quote.txt")
+QUOTE = {}
+_quote_mtime = [0.0]
+_battiti = {}            # pid → ultimi istanti di chiamata (finestra 60s)
+
+
+def ricarica_quote():
+    global QUOTE
+    try:
+        m = os.path.getmtime(QUOTE_FILE)
+    except Exception:
+        QUOTE = {}
+        return
+    if m != _quote_mtime[0]:
+        _quote_mtime[0] = m
+        q = {}
+        try:
+            for riga in open(QUOTE_FILE, encoding="utf-8", errors="replace").read().splitlines():
+                r = riga.strip()
+                if not r or r.startswith("#"):
+                    continue
+                p = r.split("|")
+                if len(p) >= 2:
+                    q[p[0].strip()] = (int(p[1] or 0), int(p[2] or 0) if len(p) > 2 else 0,
+                                       float(p[3] or 0) if len(p) > 3 else 0.0)
+        except Exception:
+            pass
+        QUOTE = q
+
+
+def freno(pid):
+    """True = NON chiamare adesso questo provider (sarebbe sopra i suoi limiti)."""
+    lim = QUOTE.get(pid)
+    if not lim:
+        return False
+    al_min, al_giorno, distanza = lim
+    ora = time.time()
+    batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
+    _battiti[pid] = batt
+    if al_min and len(batt) >= al_min:
+        return True
+    if distanza and batt and ora - batt[-1] < distanza:
+        return True
+    if al_giorno and uso_oggi(pid) >= al_giorno:
+        return True
+    return False
+
+
+def batte(pid):
+    _battiti.setdefault(pid, []).append(time.time())
+
+
+# ── FASE 2 · B4 · REGOLE PER AGENTE (idea 38, disegno S4/otari in piccolo) ───
+# file portiere_regole.txt:  inizio-id-agente = politiche:gratis,auto · tetto:200
+REGOLE_FILE = os.path.join(QUI, "portiere_regole.txt")
+REGOLE = {}
+_regole_mtime = [0.0]
+
+
+def ricarica_regole():
+    global REGOLE
+    try:
+        m = os.path.getmtime(REGOLE_FILE)
+    except Exception:
+        REGOLE = {}
+        return
+    if m != _regole_mtime[0]:
+        _regole_mtime[0] = m
+        rg = {}
+        try:
+            for riga in open(REGOLE_FILE, encoding="utf-8", errors="replace").read().splitlines():
+                r = riga.strip()
+                if not r or r.startswith("#") or "=" not in r:
+                    continue
+                chi, _, resto = r.partition("=")
+                regola = {}
+                for pezzo in resto.split("·"):
+                    pezzo = pezzo.strip()
+                    if pezzo.startswith("politiche:"):
+                        regola["politiche"] = [x.strip().lower() for x in
+                                               pezzo[len("politiche:"):].split(",") if x.strip()]
+                    elif pezzo.startswith("tetto:"):
+                        regola["tetto"] = int(pezzo[len("tetto:"):].strip() or 0)
+                if regola:
+                    rg[chi.strip()] = regola
+        except Exception:
+            pass
+        REGOLE = rg
+
+
+def regola_di(sess):
+    for chi, regola in REGOLE.items():
+        if (sess or "").startswith(chi):
+            return regola
+    return None
+
+
+# ── FASE 2 · B4 · PARSER TOOL-CALL EURISTICO (idea 47) ───────────────────────
+def ripara_tool_call(d, payload):
+    """Se l'agente aveva chiesto dei TOOLS e il modello ha risposto col JSON nel
+    testo invece che nel campo giusto, lo rimettiamo al suo posto."""
+    if not payload.get("tools"):
+        return d
+    msg = (d.get("choices") or [{}])[0].get("message", {})
+    if msg.get("tool_calls") or not msg.get("content"):
+        return d
+    testo = msg["content"].strip()
+    m = re.search(r"\{.*\}", testo, re.S)
+    if not m:
+        return d
+    try:
+        j = json.loads(m.group(0))
+    except Exception:
+        return d
+    nome = j.get("name")
+    argomenti = j.get("arguments", j.get("parameters"))
+    if not nome or not isinstance(argomenti, (dict, str)):
+        return d
+    if isinstance(argomenti, dict):
+        argomenti = json.dumps(argomenti, ensure_ascii=False)
+    msg["tool_calls"] = [{"id": "rip-%d" % int(time.time() * 1000), "type": "function",
+                          "function": {"name": nome, "arguments": argomenti}}]
+    msg["content"] = ""
+    d["choices"][0]["finish_reason"] = "tool_calls"
+    return d
 
 
 # ── FASE 1 · GUARDIA SOLO-GRATIS (idea 21) ───────────────────────────────────
@@ -642,6 +819,8 @@ def riserva(payload, politica="auto", sessione=""):
             continue
         if CONFIG["solo_gratis"] and a_pagamento(modello):  # idea 21
             continue
+        if freno(pid):                                    # idea 48: freno PRIMA del 429
+            continue
         k = chiave(pid)
         if not k:
             continue
@@ -654,18 +833,25 @@ def riserva(payload, politica="auto", sessione=""):
         for p in PARAMETRI_SICURI:                        # idea 33: drop_params gentile
             if p in payload:
                 dati[p] = payload[p]
+        if payload.get("tools"):                          # idea 47: i tools ora viaggiano
+            dati["tools"] = payload["tools"]
+            if payload.get("tool_choice"):
+                dati["tool_choice"] = payload["tool_choice"]
         corpo = json.dumps(dati).encode()
         per_questo = 0                                    # ritenti su QUESTO provider
         while tentativi < CONFIG["max_tentativi"]:
             tentativi += 1
             per_questo += 1
             inizio = time.time()
+            batte(pid)                                    # idea 48: segna il battito
             try:
                 req = urllib.request.Request(base + "/chat/completions", data=corpo,
                                              headers=intestazioni)
                 d = json.loads(urllib.request.urlopen(
                     req, timeout=CONFIG["timeout_riserva"]).read().decode())
-                if (d.get("choices") or [{}])[0].get("message", {}).get("content"):
+                msg0 = (d.get("choices") or [{}])[0].get("message", {})
+                if msg0.get("content") or msg0.get("tool_calls"):
+                    d = ripara_tool_call(d, payload)      # idea 47
                     ms = int((time.time() - inizio) * 1000)
                     segna(pid, True, ms)                  # idea 60: nutre l'EWMA
                     conta_uso(pid, (d.get("usage") or {}).get("total_tokens", 0))
@@ -926,7 +1112,7 @@ def pagina():
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
 <div style="max-width:1000px;margin:0 auto;padding:26px 20px">
-  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B3</span></h1>
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B4</span></h1>
   <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
     quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.
     Modelli-politica: <b>auto</b> · <b>gratis</b> · <b>veloce</b> · <b>migliore</b>.</div>
@@ -1061,6 +1247,8 @@ class H(BaseHTTPRequestHandler):
     def do_POST(self):
         ricarica()                                        # idea 10
         ricarica_gruppi()                                 # idee 30+45
+        ricarica_quote()                                  # idea 48
+        ricarica_regole()                                 # idea 38
         inizio = time.time()
         if self.path.startswith("/v1/images/generations"):
             n = int(self.headers.get("Content-Length") or 0)
@@ -1093,6 +1281,20 @@ class H(BaseHTTPRequestHandler):
         if politica.startswith("cervello/"):
             politica = politica[len("cervello/"):]
 
+        regola = regola_di(sess)                          # idea 38: regole per agente
+        if regola and regola.get("politiche") and politica and \
+                politica in POLITICHE and politica not in regola["politiche"]:
+            logga(tipo="vietato", agente=sess, politica=politica, rotta="regole")
+            self._json({"error": {"message": "Regola dell'agente: puo' usare solo %s."
+                                             % ", ".join(regola["politiche"])}}, 403)
+            return
+        if regola and regola.get("tetto"):
+            a = (STATO.get("agenti") or {}).get((sess or "ignoto")[:24]) or {}
+            if a.get("giorno") == oggi() and a.get("n", 0) >= regola["tetto"]:
+                logga(tipo="tetto-agente", agente=sess, rotta="regole")
+                self._json({"error": {"message": "Tetto giornaliero dell'agente (regola: %d) "
+                                                 "raggiunto." % regola["tetto"]}}, 429)
+                return
         if agente_oltre(sess):                            # idea 26: tetto per agente
             logga(tipo="tetto-agente", agente=sess, rotta="fermato")
             self._json({"error": {"message": "Tetto giornaliero dell'agente raggiunto "
@@ -1115,6 +1317,15 @@ class H(BaseHTTPRequestHandler):
                       ms=int((time.time() - inizio) * 1000))
                 self._rispondi(d, vuole_stream)
                 return
+
+        # idea 3: cache locale — stessa domanda entro 10 min = 0 token
+        ck = cache_chiave(payload)
+        d = cache_leggi(ck)
+        if d:
+            logga(tipo="cache", agente=sess, rotta="cache",
+                  ms=int((time.time() - inizio) * 1000))
+            self._rispondi(d, vuole_stream)
+            return
 
         # aggancio B3: migliore/veloce passano dal MOTORE con le sue auto/best-*
         if politica in MAPPA_MOTORE and vivo(MOTORE):
@@ -1159,8 +1370,15 @@ class H(BaseHTTPRequestHandler):
         corpo = json.dumps(payload).encode()
         if vivo(MOTORE):
             d = inoltra(corpo, sessione=sess)
+            msg0 = (d.get("choices") or [{}])[0].get("message", {}) if d else {}
+            if d and not msg0.get("content") and not msg0.get("tool_calls"):
+                d = None                                  # igiene: 200 vuoto → riserva
+                logga(tipo="igiene", agente=sess, rotta="motore",
+                      nota="risposta vuota dal motore, passo alla riserva")
             if d:
+                d = ripara_tool_call(d, payload)          # idea 47 anche sul motore
                 conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
+                cache_scrivi(ck, d)                       # idea 3
                 logga(tipo="richiesta", agente=sess, politica=politica or "auto",
                       rotta="motore", modello=modello_chiesto or "auto",
                       ms=int((time.time() - inizio) * 1000))
@@ -1169,6 +1387,7 @@ class H(BaseHTTPRequestHandler):
         d, rotta = riserva(payload, "auto", sess)
         if d:
             conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
+            cache_scrivi(ck, d)                           # idea 3
             logga(tipo="richiesta", agente=sess, politica="auto", rotta="riserva",
                   **dict(rotta, ms=int((time.time() - inizio) * 1000)))
             self._rispondi(d, vuole_stream)
@@ -1176,6 +1395,43 @@ class H(BaseHTTPRequestHandler):
         logga(tipo="fallita", agente=sess, politica=politica or "auto", rotta="nessuna")
         self._json({"error": {"message": "motore giù e nessuna chiave di riserva ha risposto. "
                                          "Apri la Centrale → 🤖 Agenti → 🗣️ Appello delle chiavi."}}, 503)
+
+
+def statistiche():
+    """Idea 53 (OrcaRouter Lite in piccolo): il riassunto del lavoro dal glass-box."""
+    rotte, errori, agenti_n, provider_n = {}, {}, {}, {}
+    try:
+        for riga in open(LOG_FILE, encoding="utf-8").read().splitlines():
+            try:
+                v = json.loads(riga)
+            except Exception:
+                continue
+            rotte[v.get("rotta", "?")] = rotte.get(v.get("rotta", "?"), 0) + 1
+            if v.get("tipo") == "errore-riserva":
+                errori[v.get("errore", "?")] = errori.get(v.get("errore", "?"), 0) + 1
+            if v.get("agente"):
+                agenti_n[v["agente"][:20]] = agenti_n.get(v["agente"][:20], 0) + 1
+            if v.get("provider"):
+                provider_n[v["provider"]] = provider_n.get(v["provider"], 0) + 1
+    except Exception:
+        print("log vuoto")
+        return
+    print("── Rotte ──")
+    for k, n in sorted(rotte.items(), key=lambda x: -x[1]):
+        print("  %-16s %d" % (k, n))
+    print("── Errori riserva ──")
+    for k, n in sorted(errori.items(), key=lambda x: -x[1]) or [("nessuno", 0)]:
+        print("  %-16s %d" % (k, n))
+    print("── Provider piu' usati ──")
+    for k, n in sorted(provider_n.items(), key=lambda x: -x[1])[:8]:
+        print("  %-16s %d" % (k, n))
+    print("── Agenti piu' attivi ──")
+    for k, n in sorted(agenti_n.items(), key=lambda x: -x[1])[:8]:
+        print("  %-16s %d" % (k, n))
+    u = STATO.get("uso") or {}
+    print("── Oggi ──")
+    print("  richieste riserva:", sum(x.get("n", 0) for x in u.values() if x.get("giorno") == oggi()),
+          "· token riserva:", sum(x.get("token", 0) for x in u.values() if x.get("giorno") == oggi()))
 
 
 def stato():
@@ -1204,6 +1460,9 @@ if __name__ == "__main__":
     if "--scopri" in sys.argv:                            # idea 36
         scopri()
         sys.exit(0)
+    if "--statistiche" in sys.argv:                       # idea 53
+        statistiche()
+        sys.exit(0)
     if "--perdona" in sys.argv:                           # amnistia: azzera i castighi
         quanti = len(STATO["castighi"])
         STATO["castighi"] = {}
@@ -1212,7 +1471,9 @@ if __name__ == "__main__":
         print("fargliela leggere (ACCENDI_CERVELLO.bat lo fa in un colpo).")
         sys.exit(0)
     ricarica_gruppi()
-    print("Portiere FASE 2·B3 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s · gruppi: %d"
+    ricarica_quote()
+    ricarica_regole()
+    print("Portiere FASE 2·B4 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s · gruppi: %d"
           % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless"), len(GRUPPI)))
     appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
