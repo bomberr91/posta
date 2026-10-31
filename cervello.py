@@ -52,6 +52,16 @@ FASE 2 · BLOCCO 2 — chiavi e quote:
   python3 cervello.py --stato    dice chi sta rispondendo adesso
   python3 cervello.py --sonda    controlla le chiavi senza spendere token
   python3 cervello.py --perdona  amnistia: azzera tutti i castighi
+  python3 cervello.py --scopri   scopre i modelli di ogni provider (catalogo)
+
+FASE 2 · BLOCCO 3 — scoperta e nomi:
+   4  sessione appiccicosa: stesso agente → stesso provider per 15 min (prefix-cache)
+  11  punteggio complessita': richiesta lunga o con codice → l'auto sceglie i FORTI
+  30  gruppi-fallback con nome (portiere_gruppi.txt): "squadra = pid, pid/modello"
+  36  --scopri: catalogo dei modelli dichiarati da ogni provider (timeout brevi)
+  45  combo con nome: chiedi il nome del gruppo come modello
+  55  catalogo != accesso: la lista e' un indizio, la prova vera e' la risposta
+   +  migliore/veloce passano dal motore nuovo con auto/best-reasoning|fast
 """
 import hashlib
 import json
@@ -97,7 +107,15 @@ CONFIG = {
     "fascia_ms": 250,            # idea 7/31: provider nella stessa fascia di velocita'
                                  #   (250ms) si alternano per consumo, round-robin
     "tetto_agente": 0,           # idea 26: tetto richieste/giorno per agente (0 = spento)
+    # — FASE 2 · BLOCCO 3 —
+    "sticky_scadenza": 900,      # idea 4: la sessione resta fedele al suo provider 15 min
+    "complessita_soglia": 4000,  # idea 11: sopra questi caratteri (o con codice) l'auto
+                                 #   preferisce i modelli FORTI
+    "scoperta_timeout": 6,       # idea 36: timeout BREVI sulla scoperta (il saggio)
 }
+
+# aggancio al motore nuovo (3.8.52): le nostre politiche sulle sue auto/best-*
+MAPPA_MOTORE = {"migliore": "auto/best-reasoning", "veloce": "auto/best-fast"}
 
 # ── LA LISTA SUA (portiere_lista.txt) ─────────────────────────────────────────
 # formato: id|etichetta|nome portachiavi|indirizzo API|modello|modo|tipo|classe
@@ -138,6 +156,68 @@ def carica_lista():
 
 
 BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI = carica_lista()
+
+# ── FASE 2 · B3 · GRUPPI E COMBO CON NOME (idee 30+45) ───────────────────────
+# file portiere_gruppi.txt, una riga per gruppo:  nome = pid, pid/modello, ...
+# chiedi "nome" come modello → si provano i membri in quell'ordine.
+GRUPPI_FILE = os.path.join(QUI, "portiere_gruppi.txt")
+GRUPPI = {}
+_gruppi_mtime = [0.0]
+
+
+def carica_gruppi():
+    g = {}
+    try:
+        for riga in open(GRUPPI_FILE, encoding="utf-8", errors="replace").read().splitlines():
+            r = riga.strip()
+            if not r or r.startswith("#") or "=" not in r:
+                continue
+            nome, _, resto = r.partition("=")
+            membri = []
+            for m in resto.split(","):
+                m = m.strip()
+                if not m:
+                    continue
+                pid, _, modello = m.partition("/")
+                membri.append((pid.strip(), modello.strip() or None))
+            if membri:
+                g[nome.strip().lower()] = membri
+    except Exception:
+        pass
+    return g
+
+
+def ricarica_gruppi():
+    global GRUPPI
+    try:
+        m = os.path.getmtime(GRUPPI_FILE)
+    except Exception:
+        GRUPPI = {}
+        return
+    if m != _gruppi_mtime[0]:
+        _gruppi_mtime[0] = m
+        GRUPPI = carica_gruppi()
+
+
+# ── FASE 2 · B3 · CATALOGO SCOPERTO (idee 36+55) ─────────────────────────────
+CATALOGO_FILE = os.path.join(QUI, "portiere_catalogo.json")
+
+
+def catalogo_leggi():
+    try:
+        return json.load(open(CATALOGO_FILE, encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def chi_ha_modello(nome_modello):
+    """Dal catalogo scoperto: quali provider dichiarano quel modello.
+    ATTENZIONE (idea 55): catalogo != accesso — e' solo un indizio, la prova
+    vera resta la risposta (e ai bugiardi pensano i castighi)."""
+    cat = catalogo_leggi()
+    m = (nome_modello or "").lower()
+    return [pid for pid, voci in cat.items()
+            if pid in BASE and any(m == str(v).lower() for v in voci.get("modelli", []))]
 
 
 def ricarica():
@@ -471,6 +551,24 @@ PARAMETRI_SICURI = ("temperature", "top_p", "stop", "presence_penalty",
                     "frequency_penalty", "seed")
 
 
+def complessita(messaggi):
+    """Idea 11: punteggio semplice — quanti caratteri e se c'e' codice."""
+    testo = " ".join(str(m.get("content", ""))[:3000] for m in (messaggi or []))
+    punti = len(testo)
+    if "```" in testo or "def " in testo or "function " in testo:
+        punti += CONFIG["complessita_soglia"]      # il codice pesa come un testo lungo
+    return punti
+
+
+def forza_modello(v):
+    """Quanto e' FORTE il modello di una voce (0 = il piu' forte)."""
+    m = (v.get("modello") or "").lower()
+    for i, pat in enumerate(FORTI):
+        if pat in m:
+            return i
+    return len(FORTI)
+
+
 def riserva(payload, politica="auto", sessione=""):
     """Manda la richiesta alla riserva. FASE 2·B1: l'ordine lo decide la PAGELLA
     (salute prima, poi velocita' osservata EWMA con scadenza 10 min); sui codici
@@ -481,16 +579,53 @@ def riserva(payload, politica="auto", sessione=""):
     capo, sostituti = classifica()
     ordine = ([capo] if capo else []) + sostituti
     ordine = ordina_per_politica(ordine, politica)
-    if politica in ("auto", "veloce", "gratis", "keyless"):   # idee 5+19+60+7+31+44
+    # idea 11: l'auto con una richiesta COMPLESSA ragiona da "migliore"
+    if politica == "auto" and complessita(messaggi) >= CONFIG["complessita_soglia"]:
+        ordine.sort(key=lambda v: (not in_salute(v["id"]), forza_modello(v)))
+    elif politica in ("auto", "veloce", "gratis", "keyless"):   # idee 5+19+60+7+31+44
         # salute prima; poi fascia di velocita' (250ms); dentro la stessa fascia
         # vince chi ha LAVORATO MENO oggi → le chiavi gemelle si alternano da sole
         ordine.sort(key=lambda v: (not in_salute(v["id"]),
                                    velocita(v["id"], v.get("ms") or 9999) // CONFIG["fascia_ms"],
                                    uso_oggi(v["id"])))
     chiesto = (payload.get("model") or "").strip().lower()
-    if chiesto and chiesto not in POLITICHE and not chiesto.startswith("cervello/"):
+    if chiesto in GRUPPI:                                 # idee 30+45: gruppo con nome
+        per_voce = {v["id"]: v for v in ordine}
+        nuovo = []
+        for gpid, gmod in GRUPPI[chiesto]:
+            v = per_voce.get(gpid)
+            if v is None and gpid in BASE:                # membro fuori appello: si prova lo stesso
+                v = {"id": gpid, "nome": ETICHETTE.get(gpid, gpid),
+                     "modello": BASE[gpid][1], "ms": 9999}
+            if v is not None:
+                v = dict(v)
+                if gmod:
+                    v["modello"] = gmod
+                nuovo.append(v)
+        if nuovo:
+            ordine = nuovo
+    elif chiesto and chiesto not in POLITICHE and not chiesto.startswith("cervello/"):
+        pin = False
         for v in ordine:
             if chiesto in (v["id"].lower(), v["nome"].lower()) or chiesto == (v["modello"] or "").lower():
+                ordine.remove(v)
+                ordine.insert(0, v)
+                pin = True
+                break
+        if not pin:                                       # idee 36+55: pesca nel catalogo
+            for gpid in chi_ha_modello(chiesto):
+                v = {"id": gpid, "nome": ETICHETTE.get(gpid, gpid),
+                     "modello": chiesto, "ms": 9999}
+                for vv in ordine:
+                    if vv["id"] == gpid:
+                        v["ms"] = vv.get("ms", 9999)
+                        break
+                ordine.insert(0, v)
+    # idea 4: sessione appiccicosa — stesso agente, stesso provider (prefix-cache)
+    st = (STATO.get("sessioni") or {}).get((sessione or "")[:24])
+    if st and time.time() - st.get("quando", 0) < CONFIG["sticky_scadenza"]:
+        for v in ordine:
+            if v["id"] == st.get("pid"):
                 ordine.remove(v)
                 ordine.insert(0, v)
                 break
@@ -534,6 +669,11 @@ def riserva(payload, politica="auto", sessione=""):
                     ms = int((time.time() - inizio) * 1000)
                     segna(pid, True, ms)                  # idea 60: nutre l'EWMA
                     conta_uso(pid, (d.get("usage") or {}).get("total_tokens", 0))
+                    if sessione:                          # idea 4: ricorda la fedelta'
+                        ses = STATO.setdefault("sessioni", {})
+                        ses[(sessione or "")[:24]] = {"pid": pid, "quando": time.time()}
+                        if len(ses) > 50:
+                            ses.pop(min(ses, key=lambda k2: ses[k2].get("quando", 0)))
                     nome = v.get("nome") or pid
                     d["model"] = "%s (riserva %s)" % (modello, nome)
                     return d, {"provider": pid, "modello": modello, "ms": ms,
@@ -708,6 +848,39 @@ def sonda():
             print("  ⚪ %-22s non raggiungibile" % eti)
 
 
+def scopri():
+    """Idea 36: interroga /v1/models di ogni provider (timeout brevi) e salva
+    il catalogo in portiere_catalogo.json. Zero token spesi."""
+    ricarica()
+    cat, trovati = {}, 0
+    print("Scoperta modelli (GET /v1/models, timeout %ds):" % CONFIG["scoperta_timeout"])
+    for pid, (url, modello) in BASE.items():
+        eti = ETICHETTE.get(pid, pid)
+        if url == "SPECIALE-CLOUDFLARE" or TIPI.get(pid, "chat") != "chat":
+            continue
+        k = chiave(pid)
+        if not k:
+            continue
+        base, intest = indirizzo(pid, k)
+        try:
+            d = json.loads(urllib.request.urlopen(
+                urllib.request.Request(base + "/models", headers=intest),
+                timeout=CONFIG["scoperta_timeout"]).read().decode())
+            voci = [str(v.get("id", "")) for v in (d.get("data") or []) if v.get("id")][:500]
+            if voci:
+                cat[pid] = {"modelli": voci, "quando": time.strftime("%Y-%m-%d %H:%M")}
+                trovati += len(voci)
+                print("  ✅ %-22s %d modelli" % (eti, len(voci)))
+        except Exception:
+            print("  ⚪ %-22s niente lista" % eti)
+    try:
+        json.dump(cat, open(CATALOGO_FILE, "w", encoding="utf-8"))
+        print("Catalogo: %d provider, %d modelli → %s" % (len(cat), trovati, CATALOGO_FILE))
+        print("RICORDA (idea 55): catalogo != accesso, la prova vera e' la risposta.")
+    except Exception as e:
+        print("salvataggio fallito:", e)
+
+
 def pagina():
     """La pagina del Portiere: la SUA lista, provider per provider."""
     voci = {v.get("id"): v for v in appello()}
@@ -753,7 +926,7 @@ def pagina():
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
 <div style="max-width:1000px;margin:0 auto;padding:26px 20px">
-  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B2</span></h1>
+  <h1 style="margin:0 0 4px;font-size:22px">🚪 Portiere <span style="font-size:14px;color:#9aa4b2">porta 20129 · FASE 2·B3</span></h1>
   <div style="color:#9aa4b2;margin-bottom:16px">Il motore di riserva: fa passare tutto a OmniRoute
     quando è acceso, e se OmniRoute cade usa la sua lista qui sotto.
     Modelli-politica: <b>auto</b> · <b>gratis</b> · <b>veloce</b> · <b>migliore</b>.</div>
@@ -867,8 +1040,11 @@ class H(BaseHTTPRequestHandler):
                         "adesso": "motore" if su else (capo["nome"] if capo else "nessuna chiave")})
             return
         if self.path.startswith("/v1/models"):
+            ricarica_gruppi()
             politiche = [{"id": p, "object": "model", "owned_by": "cervello"}
                          for p in POLITICHE if p != "keyless"]
+            politiche += [{"id": g, "object": "model", "owned_by": "cervello-gruppo"}
+                          for g in GRUPPI]
             d = inoltra(None, "models", secondi=10) if vivo(MOTORE) else None
             if d and isinstance(d.get("data"), list):
                 d["data"] = politiche + d["data"]        # idea 6: le politiche in testa
@@ -884,6 +1060,7 @@ class H(BaseHTTPRequestHandler):
 
     def do_POST(self):
         ricarica()                                        # idea 10
+        ricarica_gruppi()                                 # idee 30+45
         inizio = time.time()
         if self.path.startswith("/v1/images/generations"):
             n = int(self.headers.get("Content-Length") or 0)
@@ -938,6 +1115,32 @@ class H(BaseHTTPRequestHandler):
                       ms=int((time.time() - inizio) * 1000))
                 self._rispondi(d, vuole_stream)
                 return
+
+        # aggancio B3: migliore/veloce passano dal MOTORE con le sue auto/best-*
+        if politica in MAPPA_MOTORE and vivo(MOTORE):
+            p2 = dict(payload, model=MAPPA_MOTORE[politica])
+            d = inoltra(json.dumps(p2).encode(), sessione=sess)
+            if d:
+                conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
+                logga(tipo="richiesta", agente=sess, politica=politica,
+                      rotta="motore-mappato", modello=MAPPA_MOTORE[politica],
+                      ms=int((time.time() - inizio) * 1000))
+                self._rispondi(d, vuole_stream)
+                return
+            # motore muto → si prosegue sulla riserva qui sotto
+
+        # i GRUPPI con nome vanno dritti in riserva (sanno loro chi chiamare)
+        if politica in GRUPPI:
+            d, rotta = riserva(payload, "auto", sess)
+            if d:
+                conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
+                logga(tipo="richiesta", agente=sess, politica="gruppo:" + politica,
+                      rotta="riserva", **dict(rotta, ms=int((time.time() - inizio) * 1000)))
+                self._rispondi(d, vuole_stream)
+                return
+            logga(tipo="fallita", agente=sess, politica="gruppo:" + politica, rotta="riserva")
+            self._json({"error": {"message": "Nessun membro del gruppo '%s' ha risposto." % politica}}, 503)
+            return
 
         # idea 6: le politiche diverse da "auto" scelgono direttamente dalla riserva
         if politica in POLITICHE and politica != "auto":
@@ -998,6 +1201,9 @@ if __name__ == "__main__":
     if "--sonda" in sys.argv:                             # idea 52
         sonda()
         sys.exit(0)
+    if "--scopri" in sys.argv:                            # idea 36
+        scopri()
+        sys.exit(0)
     if "--perdona" in sys.argv:                           # amnistia: azzera i castighi
         quanti = len(STATO["castighi"])
         STATO["castighi"] = {}
@@ -1005,7 +1211,8 @@ if __name__ == "__main__":
         print("Perdonati %d castighi. Se il Portiere è acceso, riavvialo per" % quanti)
         print("fargliela leggere (ACCENDI_CERVELLO.bat lo fa in un colpo).")
         sys.exit(0)
-    print("Portiere FASE 2·B2 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s"
-          % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless")))
+    ricarica_gruppi()
+    print("Portiere FASE 2·B3 su http://127.0.0.1:%d/v1 — %d chiavi · politiche: %s · gruppi: %d"
+          % (PORTA, len(BASE), ", ".join(p for p in POLITICHE if p != "keyless"), len(GRUPPI)))
     appello_da_solo()
     ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
