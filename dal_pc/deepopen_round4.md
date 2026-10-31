@@ -1,0 +1,4 @@
+# Round 4 — il chirurgico: 00:24
+## schema nativo router_questions():
+{"difficulty": {"type": "score", "instructions": "How hard is `request` for a language model?", "criteria": ["trivial: a lookup or one-liner", "easy: short answer, no reasoning", "moderate: several steps", "hard: long multi-step reasoning or specialist knowledge"]}, "domain": {"type": "choice", "instructions": "What domain does `request` belong to?", "criteria": {"code": "software engineering, programming, refactoring, architecture, debugging", "math_or_logic": "mathematics, logic puzzles, proofs, complex calculation", "writing": "creative writing, essays, emails, blog posts, copywriting", "fa
+Fetching 39 files:   0%|          | 0/39 [00:00<?, ?it/s]
