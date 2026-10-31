@@ -7,3 +7,5 @@
 {"tipo": "fallita", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "quando": "2026-10-31 13:43:46"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3627, "quando": "2026-10-31 15:41:09"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "migliore", "rotta": "motore-mappato", "modello": "auto/best-reasoning", "ms": 6263, "quando": "2026-10-31 15:58:12"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1748, "quando": "2026-10-31 16:12:47"}
+{"tipo": "cache", "agente": "cervello-2de5c12e398bc6e0", "rotta": "cache", "ms": 0, "quando": "2026-10-31 16:12:49"}
