@@ -1,8 +1,10 @@
 # pid|al_minuto|al_giorno|distanza_secondi   (0 = nessun freno su quella voce)
-# fonti: mappa-modelli-e-squadre 12/10 + collaudi 31/10. Numeri PRUDENTI.
+# fonti: mappa 12/10 + collaudi 31/10 + CYBIRD-D/FREE-LLM-API-Provider (verificato 30/10).
+# NOTA groq: il vero collo e' 200K TOKEN/giorno per modello (il freno conta richieste;
+# i token li vede il contatore uso — occhio ai prompt grossi su groq).
 groq|25|950|0
 openrouter|15|45|0
-gemini|10|1300|0
+gemini|4|18|0
 cohere|8|30|0
 nvidia|35|0|0
 ovh|0|0|31
