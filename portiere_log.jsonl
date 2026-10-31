@@ -20,3 +20,4 @@
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 7359, "tentativi": 1, "quando": "2026-10-31 16:56:15"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gruppo:forte", "rotta": "riserva", "provider": "llmtr", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 3075, "tentativi": 1, "quando": "2026-10-31 17:16:22"}
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 7731, "tentativi": 1, "quando": "2026-10-31 17:16:53"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "auto", "rotta": "riserva", "provider": "gizmo", "modello": "nvidia/nemotron-3.5-lightning:free", "ms": 7238, "tentativi": 1, "quando": "2026-10-31 17:36:12"}
