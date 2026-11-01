@@ -200,3 +200,24 @@ applicato davvero sul PC e **collaudato**:
 
 **Stato: DEFINITIVO.** Unica cosa che resta al capo: riavviare il cane col
 `.bat` una volta, così il processo in memoria prende il codice nuovo.
+
+---
+
+## VERDETTO FINALE (1/11 sera) — il capo ha confermato a mano: **TUTTO VERDE** ✅
+
+Il capo ha riavviato il cane e fatto girare la prova vera
+("Chi ha scritto i Promessi Sposi e in che anno?"), e ha verificato **con gli
+occhi suoi**:
+
+- ✅ il report esce **con le fonti**;
+- ✅ il bottone **"Scarica .md"** c'è e funziona;
+- ✅ il file è **nel posto giusto**: `deepdog\outputs\Final_Report_*.md`.
+
+⇒ **Deep Dog è DEFINITIVO.** Non resta una riga da fare: il 402 è risolto,
+i report atterrano sul disco, il cane è uno strumento che i tuoi agenti
+possono usare da soli (e tu non lo tocchi più).
+
+La lezione resta quella: *non era il `.env`, era un nome di modello che il
+motore non conosceva; e non era una riga, erano due (`output_mode` E
+`save_report_to_file`)*. Il cane funzionava a metà e sembrava funzionare:
+la metà che mancava era proprio quella che gli agenti usano.
