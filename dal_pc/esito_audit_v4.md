@@ -39,3 +39,72 @@
 [MEDIO] sessione: il valore va nell'header senza controllo. Un CR/LF genera `ValueError` e blocca la richiesta. -> Valida il valore o codificalo prima dell'header.
 
 ## Boccone 4
+
+
+$ ls -la && rg -n "def castiga|def segna|def _rispondi|def appello_da_solo|def punito" -S . 2>/dev/null | head -50
+(no output)
+
+$ rg -n "appello_da_solo|class H|ThreadingHTTPServer|HTTPServer|text/event-stream|\[DONE\]|Access-Control-Allow-Origin" -S . 2>/dev/null | head -80
+(no output)
+
+$ ls -la /home/agenti/posta; find /home/agenti/posta -maxdepth 2 -type f | head -50
+total 1788
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 14:13 .
+drwxr-x--- 1 agenti agenti    4096 Nov  1 12:05 ..
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 16:36 .git
+-rw-r--r-- 1 agenti agenti      61 Oct 27 15:20 .gitignore
+-rw-r--r-- 1 agenti agenti      10 Oct 27 15:20 .padrone
+drwxr-xr-x 1 agenti agenti    4096 Oct 27 15:20 00_INSTALLA_AGENTI
+-rw-r--r-- 1 agenti agenti    1116 Oct 27 15:20 6_BROWSER_AGENTI.bat
+-rw-r--r-- 1 agenti agenti     133 Oct 27 15:20 7_SQUADRA_FUSION.bat
+-rw-r--r-- 1 agenti agenti     286 Oct 29 09:40 8_CENTRALE_GUI.bat
+-rw-r--r-- 1 agenti agenti    1897 Oct 27 15:20 APRI_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti     892 Oct 27 15:20 CENTRALE_AGENTI.bat
+-rw-r--r-- 1 agenti agenti    2376 Oct 27 15:20 CONFIGURA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    8674 Oct 27 15:20 GUIDA_OPENCLAW.md
+-rw-r--r-- 1 agenti agenti    2354 Oct 27 15:20 INDICE_CARTELLE.md
+-rw-r--r-- 1 agenti agenti   11563 Oct 27 15:20 INSTALLA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    3770 Oct 27 15:20 RAPPORTO_AGENTI.txt
+-rw-r--r-- 1 agenti agenti      49 Oct 27 15:20 README.md
+drwxr-xr-x 1 agenti agenti    4096 Oct 27 15:20 RISPOSTE_AGENTI
+drwxr-xr-x 1 agenti agenti    4096 Oct 31 18:54 __pycache__
+-rw-r--r-- 1 agenti agenti    6179 Oct 27 15:20 agenti_stato.sh
+-rwxr-xr-x 1 agenti agenti   13517 Oct 27 15:20 aggiorna_tutto.sh
+-rw-r--r-- 1 agenti agenti    9958 Oct 27 15:20 appello_chiavi.sh
+-rwxr-xr-x 1 agenti agenti    3256 Oct 28 17:12 apri_free_llm_hub.sh
+-rwxr-xr-x 1 agenti agenti    4071 Oct 27 15:20 apri_openclaw.sh
+-rwxr-xr-x 1 agenti agenti   12053 Oct 29 09:40 centrale.sh
+-rw-r--r-- 1 agenti agenti   77484 Nov  1 14:13 cervello.py
+-rw-r--r-- 1 agenti agenti   22489 Oct 27 15:20 checkin_agentrouter.py
+-rw-r--r-- 1 agenti agenti    1573 Oct 27 15:20 checkin_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    3067 Oct 27 15:20 chiave_di.py
+-rw-r--r-- 1 agenti agenti    4531 Oct 27 15:20 chiavi_env.sh
+-rw-r--r-- 1 agenti agenti    6493 Oct 31 18:53 compressione.py
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 16:34 da_me
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 16:34 dal_pc
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 16:34 fatti
+drwxr-xr-x 1 agenti agenti    4096 Oct 28 17:12 free-llm-hub
+-rw-r--r-- 1 agenti agenti   17736 Oct 27 15:20 fusion_engine.py
+drwxr-xr-x 1 agenti agenti    4096 Oct 29 09:40 gui
+-rw-r--r-- 1 agenti agenti   11389 Oct 27 15:20 installa_agenti.sh
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 15:43 lavori
+-rw-r--r-- 1 agenti agenti    6154 Oct 27 15:20 leggi_discord.py
+-rw-r--r-- 1 agenti agenti    6619 Oct 27 15:20 leggi_fb_cdp.mjs
+-rw-r--r-- 1 agenti agenti    9080 Oct 27 15:20 leggi_fb_cdp.py
+-rwxr-xr-x 1 agenti agenti    6871 Oct 27 15:20 leggi_video.py
+-rw-r--r-- 1 agenti agenti    1002 Oct 27 15:20 mappa_innesto.txt
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 12:13 missione
+-rw-r--r-- 1 agenti agenti    5098 Oct 27 15:20 omni_chiavi.sh
+-rw-r--r-- 1 agenti agenti    4982 Oct 27 15:20 omni_free.sh
+-rwxr-xr-x 1 agenti agenti    8549 Oct 27 15:20 openclaw_fix.sh
+-rw-r--r-- 1 agenti agenti    2483 Oct 27 15:20 openclaw_stato.sh
+-rw-r--r-- 1 agenti agenti    2739 Oct 31 18:53 per_agente.py
+-rw-r--r-- 1 agenti agenti  167987 Oct 31 15:58 portiere_catalogo.json
+-rw-r--r-- 1 agenti agenti     317 Oct 31 17:16 portiere_gruppi.txt
+-rw-r--r-- 1 agenti agenti    9037 Oct 31 18:27 portiere_lista.txt
+-rw-r--r-- 1 agenti agenti    9714 Nov  1 16:37 portiere_log.jsonl
+-rw-r--r-- 1 agenti agenti     536 Oct 31 18:21 portiere_quote.txt
+-rw-r--r-- 1 agenti agenti    1457 Nov  1 16:37 portiere_stato.json
+-rw-r--r-- 1 agenti agenti     780 Oct 27 15:20 postino.log
+-rwxr-xr-x 1 agenti agenti    3574 Oct 27 15:20 postino.sh
+-rw-r--r-- 1 agenti agenti     540 Oct 27 15:
