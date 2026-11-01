@@ -48,3 +48,5 @@
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 12358, "quando": "2026-11-01 13:37:01"}
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 44277, "quando": "2026-11-01 13:37:52"}
 {"tipo": "banale", "agente": "cervello-2de5c12e398bc6e0", "rotta": "locale", "ms": 0, "quando": "2026-11-01 13:54:11"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5795, "quando": "2026-11-01 16:35:08"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 13092, "quando": "2026-11-01 16:35:21"}
