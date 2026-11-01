@@ -167,3 +167,36 @@ ancora DEEPSEEK, se arriva un 402, o se il report resta vuoto.
 2. riavviare il cane col `.bat` → **Demo veloce**
 3. la chiave DeepSeek nativa può restare nel `.env` (non viene più usata);
    per non confondere i futuri, si può anche togliere
+
+---
+
+## ESITO DEFINITIVO (1/11 sera, ~21:30)
+
+Il mistero del 402 era **risolto in teoria**; stanotte il cerotto è stato
+applicato davvero sul PC e **collaudato**:
+
+- **La causa**: non era il `.env`. Erano due difetti: (1) il motore chiedeva
+  `deepseek-flash`, un modello che OpenRouter non conosce (400) → il giusto è
+  `deepseek/deepseek-v4-flash`; (2) il wrapper ignorava `ROUTE_VIA_OPENROUTER`
+  e non salvava la scelta del Setup → tornava a DeepSeek nativo, che con la
+  chiave free risponde **402**.
+- **Il cerotto**: 5 modifiche a `web_app.py` → `/api/setup` risponde
+  `{"model_provider": "openrouter", "ready": true, "missing": []}` e la scelta
+  resta su disco (`setup_state.json`).
+- **Il collaudo**: una micro-ricerca vera è uscita pulita (supervisore → agenti
+  → bozza → citazioni → report finale: «Roma è la capitale d'Italia.»),
+  **niente 402**.
+- **La patch sopravvive**: il `.bat` NON riscarica il wrapper (verificato) →
+  nessun launcher nuovo serve.
+- **Secondo problema, risolto stanotte**: il wrapper aveva
+  `output_mode="none"` E `save_report_to_file=False` → il report non finiva
+  MAI su disco (stava solo in RAM e nella scheda). Bastava UNA riga, ma ne
+  servivano due (il motore scrive solo se `save_report_to_file` **E**
+  `files_enabled()`, e `files_enabled()` richiede `output_mode` "file"/"both").
+  Ora i report atterrano in `deepdog/outputs/` → il postino li porta in
+  `dal_pc/deepdog_reports/` → **gli agenti li ritrovano anche se il PC muore**.
+  (Era il punto chiesto dal capo: il cane è uno strumento donato agli agenti
+  in locale, non a lui.)
+
+**Stato: DEFINITIVO.** Unica cosa che resta al capo: riavviare il cane col
+`.bat` una volta, così il processo in memoria prende il codice nuovo.
