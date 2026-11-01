@@ -1,16 +1,25 @@
 #!/bin/bash
-cd ~/posta
+# collaudo_f2b4.sh — COLLAUDO FINALE FASE 2·B4 + IDEA 64
+# CURA-AUDIT v5: chat lette con fatti/chat_leggi.sh (corpo vuoto = FAILURE),
+# la chiave del gateway NON è più scritta qui (si legge dall'ambiente) e
+# l'uscita dice NO se qualcosa non torna. Prima non poteva dire NO.
+set -uo pipefail
+cd ~/posta || exit 1
 B=http://127.0.0.1:20129
+FALLITI=0
+# la chiave del gateway si legge dal portachiavi (regola #3: mai nel repo)
+. ./chiavi_env.sh 2>/dev/null || true
+export OMNIROUTE_API_KEY="${OMNIROUTE_API_KEY:-${OM_KEY:-}}"
 echo "## COLLAUDO FINALE FASE 2·B4 + IDEA 64 — $(date '+%H:%M')"
 echo
 echo "### 1. Versione"
-curl -s -m 5 $B/portiere | grep -o "FASE 2·B4" | head -1 || echo "NON TROVATA!"
+if curl -s -m 5 $B/portiere | grep -o "FASE 2·B4" | head -1; then :; else echo "   ✗ NON TROVATA!"; FALLITI=$((FALLITI+1)); fi
 echo
 echo "### 2. CACHE dal vivo (stessa domanda 2 volte)"
 Q='{"model":"auto","max_tokens":30,"messages":[{"role":"user","content":"Quante zampe ha un ragno? Solo il numero."}]}'
-curl -s -m 60 -H Content-Type:application/json -d "$Q" $B/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print('1ª:', d.get('model','?'))" 2>&1
+if bash fatti/chat_leggi.sh 180 "$Q" "'1ª: '+d.get('model','?')"; then :; else FALLITI=$((FALLITI+1)); fi
 sleep 2
-curl -s -m 60 -H Content-Type:application/json -d "$Q" $B/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print('2ª:', d.get('model','?'), '← deve dire (cache)')" 2>&1
+if bash fatti/chat_leggi.sh 180 "$Q" "'2ª: '+d.get('model','?')+' ← deve dire (cache)'"; then :; else FALLITI=$((FALLITI+1)); fi
 echo
 echo "### 3. IDEA 64 — LA COMPRESSIONE RTK DEL MOTORE LAVORA?"
 python3 << 'PYEOF'
@@ -37,7 +46,16 @@ try:
         print("VERDETTO IDEA 64: ⚠ usage non riportato dal provider — prova non conclusiva")
 except Exception as e:
     print("prova fallita:", str(e)[:200])
+    raise SystemExit(1)
 PYEOF
+[ $? -eq 0 ] || FALLITI=$((FALLITI+1))
 echo
 echo "### 4. Statistiche del Portiere"
 python3 cervello.py --statistiche 2>&1 | head -20
+echo
+if [ "$FALLITI" -gt 0 ]; then
+  echo "❌ COLLAUDO F2·B4 FALLITO: $FALLITI problema/i"
+  exit 1
+fi
+echo "✅ COLLAUDO F2·B4 OK"
+exit 0

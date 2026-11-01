@@ -8,15 +8,29 @@ TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_t
 echo "# Riprova OpenCode -> cervello (streaming) — $(date '+%d/%m %H:%M')" > "$OUT"
 pkill -f "cervello.py" 2>/dev/null; sleep 1
 (cd "$POSTA_DIR" && nohup python3 cervello.py >/dev/null 2>&1 &)
-sleep 3
-curl -s -m 3 http://127.0.0.1:20129/v1/models | grep -q '"auto"' \
-  && echo "- Cervello riavviato col codice NUOVO (auto nel catalogo): OK" >> "$OUT" \
-  || echo "- ATTENZIONE: il cervello non mostra 'auto' (codice vecchio?)" >> "$OUT"
+# CURA-AUDIT v5: riavviare e POI non verificare = lasciare il PC morto.
+# Il collaudo condiviso aspetta la porta e prova una chat vera.
+if bash "$POSTA_DIR/fatti/collaudo_cervello.sh" >> "$OUT" 2>&1; then
+  echo "- Cervello riavviato col codice NUOVO e COLLAUDATO: OK" >> "$OUT"
+else
+  echo "- ATTENZIONE: il cervello NON risponde dopo il riavvio (collaudo fallito)" >> "$OUT"
+  echo "esito: COLLAUDO FALLITO" >> "$OUT"
+fi
 echo >> "$OUT"; echo '## Test opencode run' >> "$OUT"; echo '```' >> "$OUT"
 timeout 180 opencode run -m cervello/auto "Rispondi esattamente: CERVELLO OK" >> "$OUT" 2>&1 \
   || echo "(fallito o oltre 3 minuti)" >> "$OUT"
 echo '```' >> "$OUT"
 cd "$POSTA_DIR" && git config user.name bomberr91 && git config user.email bomberr91@users.noreply.github.com
 git add dal_pc/ >/dev/null 2>&1; git commit -qm "prova_opencode2: esito" >/dev/null 2>&1 || true
-[ -n "$TOKEN" ] && { git pull -q --autostash --rebase "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" main >/dev/null 2>&1; git push -q "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" HEAD:main >/dev/null 2>&1; }
+# CURA-AUDIT v5: il push non è una verifica. Se il push fallisce, Dillo:
+# un "FINITO" sopra un push fallito è la stessa bugia del collaudo muto.
+if [ -n "$TOKEN" ]; then
+  git pull -q --autostash --rebase "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" main >/dev/null 2>&1
+  if git push -q "https://x-access-token:$TOKEN@github.com/bomberr91/posta.git" HEAD:main >/dev/null 2>&1; then
+    echo "✓ pubblicato su master"
+  else
+    echo "❌ PUSH FALLITO: il lavoro è locale, non è salito su master" >&2
+    exit 1
+  fi
+fi
 echo FINITO

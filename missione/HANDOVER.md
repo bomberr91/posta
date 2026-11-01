@@ -99,6 +99,10 @@ La chiave del gateway OmniRoute era **scritta a mano in 7 script** di un repo
 **pubblico**. Ora si legge dal portachiavi (`chiavi_env.sh` → `OM_KEY`),
 come dice la regola #3.
 
+### `fatti/chat_leggi.sh` (NUOVO)
+Legge una risposta chat e **dice la verità**: corpo vuoto → FAILURE con il
+perché ed uscita 1. È quello che mancava ai collaudi diagnostici.
+
 ---
 
 ## 4. LA REGOLA NUOVA (mettila in cima al quaderno)
@@ -147,12 +151,39 @@ bash fatti/collaudo_cervello.sh     # deve dire "COLLAUDO OK"
   `LISTA_LAVORI_FINALE`).
 - **NON ho unito** i due `fatti/deploy_*` in un unico script: ho tenuto la
   forma attuale e ho messo il collaudo in comune.
-- Gli script storici (`collaudo_f2b1..4`, `kilo_finale`, `sveglia_sentinella`,
-  `prova_opencode2`, `deepdog_antiveleno`, `scaglione1_applica_innesti`) **non
-  usano** ancora il collaudo condiviso: verificano cose diverse dal
-  funzionamento del cervello, ma se ne tocchi uno attenzione al pattern
-  `curl … | python3 -c "json.load(sys.stdin)"` (corpo vuoto = errore
-  silenzioso).
+- `deepdog_antiveleno.sh` e `scaglione1_applica_innesti.sh` **non parlano col
+  cervello** (lavorano su beads/GitHub): non li ho toccati.
+
+## 7b. GLI SCRIPT CHE UCCIDEVANO IL CERVELLO (fatti)
+
+Tre script facevano `pkill` del cervello e poi **non verificavano** che
+tornasse: potevano lasciare il PC morto senza dirlo.
+
+| script | prima | adesso |
+|---|---|---|
+| `sveglia_sentinella.sh` | kill + attesa + `curl` senza controllo | kill + `collaudo_cervello.sh` → **exit 1** se non torna |
+| `kilo_finale.sh` | kill + attesa, niente | kill + `collaudo_cervello.sh` → **exit 1** se non torna |
+| `prova_opencode2.sh` | kill + `sleep 3` + `grep` debole | kill + collaudo vero; e il **push** adesso dice NO se fallisce |
+
+## 7c. I COLLAUDI DIAGNOSTICI (fatti)
+
+`fatti/collaudo_f2b1..4.sh` e `fatti/collaudo_gruppi_kilo.sh` leggevano le
+chat con `curl … | python3 -c "json.load(sys.stdin)"`: **corpo vuoto =
+traccia di errore**, e nessuno guardava l'uscita.
+
+Ora usano il nuovo **`fatti/chat_leggi.sh`**:
+
+```bash
+bash fatti/chat_leggi.sh <timeout> <body-json> [espressione-python]
+```
+
+Che esce **1** e dice perché se la chat non risponde, e **0** con il campo
+richiesto se risponde. Ogni collaudo diagnostico ha ora un contatore dei
+problemi e finisce con `✅ … OK` (exit 0) o `❌ … FALLITO` (exit 1).
+
+Nota: il controllo di **versione** (`FASE 2·B1`) è diventato un *avviso*: il
+motore è a FASE 3 e non è un errore. La verifica vera è che la **targa
+risponda**.
 
 ## 8. LA LEZIONE (da non dimenticare)
 

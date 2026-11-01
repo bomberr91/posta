@@ -3,6 +3,9 @@ cd ~/posta
 echo "## KILO: PROVA FINALE CON BUDGET VERO + RITO AUTO — $(date '+%H:%M')"
 pkill -f '^python3 cervello\.py$' && echo "cervello ucciso, il guardiano lo risuscita..."
 for i in $(seq 1 15); do sleep 5; (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null && { echo "risorto (~$((i*5))s)"; break; }; done
+# CURA-AUDIT v5: dopo aver ucciso il cervello, VERIFICARE che è tornato.
+# Senza questo, uno script può lasciare il PC morto e dire "tutto bene".
+bash fatti/collaudo_cervello.sh || { echo "❌ il cervello NON è tornato (o non risponde)"; exit 1; }
 echo
 echo "### 1. Kilo diretto, max_tokens 1200 (budget da adulti)"
 python3 << 'PYEOF'

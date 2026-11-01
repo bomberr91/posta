@@ -1,13 +1,22 @@
 #!/bin/bash
-cd ~/posta
+# collaudo_gruppi_kilo.sh — COLLAUDO GRUPPI + KILO
+# CURA-AUDIT v5: chat lette con fatti/chat_leggi.sh (corpo vuoto = FAILURE)
+# e uscita 1 se qualcosa non torna. Prima non poteva dire NO.
+set -uo pipefail
+cd ~/posta || exit 1
 B=http://127.0.0.1:20129
+FALLITI=0
 echo "## COLLAUDO GRUPPI + KILO — $(date '+%H:%M')"
 echo
 echo "### 1. Il cervello ha mangiato i gruppi da solo? (/v1/models)"
-curl -s -m 15 $B/v1/models | python3 -c "import json,sys; print([m['id'] for m in json.load(sys.stdin)['data'] if m.get('owned_by')=='cervello-gruppo'])"
+if out=$(curl -fsS -m 15 $B/v1/models 2>/dev/null) && [ -n "$out" ]; then
+  echo "$out" | python3 -c "import json,sys; print([m['id'] for m in json.load(sys.stdin)['data'] if m.get('owned_by')=='cervello-gruppo'])" 2>&1 || FALLITI=$((FALLITI+1))
+else
+  echo "   ✗ /v1/models non risponde"; FALLITI=$((FALLITI+1))
+fi
 echo
 echo "### 2. Gruppo 'forte' alla prova"
-curl -s -m 120 -H Content-Type:application/json -d '{"model":"forte","max_tokens":30,"messages":[{"role":"user","content":"Dimmi solo: squadra forte presente"}]}' $B/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('model','?'),'→',(d.get('choices') or [{}])[0].get('message',{}).get('content','')[:60] or d.get('error',{}).get('message','')[:100])"
+if bash fatti/chat_leggi.sh 240 '{"model":"forte","max_tokens":30,"messages":[{"role":"user","content":"Dimmi solo: squadra forte presente"}]}' "d.get('model','?')+' → '+str(((d.get('choices') or [{}])[0].get('message',{}).get('content','')) or d.get('error',{}).get('message',''))[:60]"; then :; else FALLITI=$((FALLITI+1)); fi
 echo
 echo "### 3. KILO DIRETTO (lavoro n.3): il keyless dei 384 modelli parla in chat?"
 python3 << 'PYEOF'
@@ -39,7 +48,18 @@ echo
 echo "### 4. Rinfresco appello (cosi i keyless buoni entrano in squadra)"
 timeout 300 bash appello_chiavi.sh --svelto > /dev/null 2>&1
 sleep 2
-curl -s -m 10 $B/cervello | python3 -c "import json,sys; d=json.load(sys.stdin); print('riserve pronte ora:', d.get('risponde'))"
+if out=$(curl -fsS -m 10 $B/cervello 2>/dev/null) && [ -n "$out" ]; then
+  echo "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); print('riserve pronte ora:', d.get('risponde'))" 2>&1 || FALLITI=$((FALLITI+1))
+else
+  echo "   ✗ /cervello non risponde"; FALLITI=$((FALLITI+1))
+fi
 echo
 echo "### 5. Politica gratis dopo il rinfresco"
-curl -s -m 120 -H Content-Type:application/json -d '{"model":"gratis","max_tokens":30,"messages":[{"role":"user","content":"Capitale Italia? Una parola."}]}' $B/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('model','?'),'→',(d.get('choices') or [{}])[0].get('message',{}).get('content','')[:50] or d.get('error',{}).get('message','')[:100])"
+if bash fatti/chat_leggi.sh 240 '{"model":"gratis","max_tokens":30,"messages":[{"role":"user","content":"Capitale Italia? Una parola."}]}' "d.get('model','?')+' → '+str(((d.get('choices') or [{}])[0].get('message',{}).get('content','')) or d.get('error',{}).get('message',''))[:50]"; then :; else FALLITI=$((FALLITI+1)); fi
+echo
+if [ "$FALLITI" -gt 0 ]; then
+  echo "❌ COLLAUDO GRUPPI+KILO FALLITO: $FALLITI problema/i"
+  exit 1
+fi
+echo "✅ COLLAUDO GRUPPI+KILO OK"
+exit 0
