@@ -35,8 +35,7 @@ if [ "$DIM" -gt 13000000 ]; then
 fi
 echo
 echo "## 2. Gemini guarda il video"
-K=$(grep -oE "AIza[A-Za-z0-9_-]{30,}" ~/CHIAVI_LOCALI.md | head -1)
-[ -z "$K" ] && K=$(python3 chiave_di.py gemini 2>/dev/null)
+K=$(grep "^GEMINI_STUDIO=" ~/CHIAVI_LOCALI.md | cut -d= -f2)
 python3 - "$V" "$K" << 'PYEOF'
 import base64, json, sys, time, urllib.request
 video, chiave = sys.argv[1], sys.argv[2]
@@ -46,7 +45,7 @@ BASE = "https://generativelanguage.googleapis.com"
 
 def genera(parte_video):
     corpo = json.dumps({"contents": [{"parts": [parte_video, {"text": PROMPT}]}]}).encode()
-    req = urllib.request.Request(BASE + "/v1beta/models/gemini-2.0-flash:generateContent?key=" + chiave,
+    req = urllib.request.Request(BASE + "/v1beta/models/gemini-3.8-flash:generateContent?key=" + chiave,
                                  data=corpo, headers={"Content-Type": "application/json"})
     d = json.loads(urllib.request.urlopen(req, timeout=600).read().decode())
     return d["candidates"][0]["content"]["parts"][0]["text"]
