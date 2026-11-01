@@ -73,6 +73,20 @@ sync_up(){
   git add -A dal_pc fatti da_me >/dev/null 2>&1 \
     || git add -A dal_pc fatti >/dev/null 2>&1 \
     || git add -A >/dev/null 2>&1
+  # CURA-AUDIT (1/11 sera): GitHub RIFIUTA i nomi di file con caratteri
+  # vietati (":", "|", "<", ">", "*", "?", "\\"). Sul PC c'erano nomi tipo
+  # "appello_[chiavi.md](http://chiavi.md)" (un link markdown scritto per
+  # sbaglio come nome di file): la push veniva respinta con "push declined
+  # due to repository rule violations" e il lavoro restava in locale per
+  # sempre, senza capire il perché. Qui i nomi vietati vengono ESCLUSI dal
+  # commit e segnalati.
+  BAD="$(git diff --cached --name-only | grep -E '[<>:"|?*\\]' | head -5)"
+  if [ -n "$BAD" ]; then
+    say "⛔ nomi di file vietati da GitHub: esclusi dal commit"
+    echo "$BAD" | while IFS= read -r _f; do
+      [ -n "$_f" ] && { say "   · $_f"; git reset -q -- "$_f" >/dev/null 2>&1 || true; }
+    done
+  fi
   if [ -n "$ESCLUDI" ]; then
     for fe in $ESCLUDI; do git reset -q -- "$fe" >/dev/null 2>&1 || true; done
     say "⛔ gate: non pubblico $(echo $ESCLUDI | tr '\n' ' ') (lavoro tenuto in locale)"
