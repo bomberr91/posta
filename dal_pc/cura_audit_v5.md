@@ -115,6 +115,17 @@ qualcosa non torna. Lo usano ora:
 > dire di no**. Da oggi ogni collaudo ha un'uscita che significa NO, e ogni
 > file che non lo supera **non sale su master**.
 
+> E il 1/11 sera, mentre riparavo, ho trovato lo stesso difetto **nel mio
+> lavoro**: il collaudo condiviso, eseguito come programma, usciva 0 senza
+> aver fatto niente. Tre script ci si reggevano sopra. La malattia è
+> ereditaria: se il collaudo non lo testi in TUTTI i modi in cui lo usi, ti
+> protegge solo da metà.
+>
+> Un agente che scrive codice a mezz'ora e un rito che lo pubblica ogni 45
+> secondi, insieme, producono file spezzati che arrivano su master mentre
+> tutto dice "verde". Da ogni lato due reti: **il codice si collauda da solo**
+> (autoprova) e **il gate non lascia passare niente che non lo superi**.
+
 ---
 
 ## 9. AGGIORNAMENTO SERA (1/11) — round 2 e 3
@@ -168,5 +179,111 @@ codice di uscita che **vuol dire qualcosa**.
 
 - suite: **54 test + 24 subtest verdi** (19 + 17 nel file nuovo)
 - `--autoprova`: **SUPERATA**
-- `missione/HANDOVER.md`: il memo per chi riprende (fatto / da fare / come
-  verificare in 60 secondi)
+
+---
+
+## 9b. AGGIORNAMENTO NOTTE (1/11) — round 4 e 5
+
+**Il collaudo condiviso era MUTO in un modo.** `fatti/collaudo_cervello.sh`
+definiva le funzioni ma **non le chiamava mai** quando veniva eseguito come
+programma: usciva 0 senza aver fatto niente. I 6 deploy lo fanno con `.`
+(sourced) e poi chiamano `collaudo` → quelli erano corretti. Ma **tre script
+lo eseguivano** (`sveglia_sentinella`, `kilo_finale`, `prova_opencode2`) e
+per loro il collaudo passava a vuoto: il cervello poteva restare morto e lo
+script dire "tutto bene". Ora, se il file viene eseguito, il collaudo parte
+da solo; se viene sourced, espone le funzioni. Entrambi i modi verificati.
+
+**E i tre script che ammazzavano il cervello** ora chiamano il collaudo e
+escono 1 se non torna (`prova_opencode2` dice NO anche se il *push* fallisce).
+
+**Il workspace duplicava il repo.** Avevo fatto un secondo clone
+(`~/posta_lavoro`) perché `~/posta_ponte` sembrava non poter pushare (lo
+snapshot esclude `.git/config`). Ma `~/ponte.sh` ricuce la config: il ponte
+era già un clone valido. Ora c'è **un solo clone** in `~/posta_ponte` e il
+workspace è tornato da 47 a 39,5 MB.
+
+## 10. LE DUE RETI DI SICUREZZA (le usa anche chi arriva dopo)
+
+```bash
+# 1) il cervello è vivo e sano? (struttura + prova vera, senza rete)
+python3 cervello.py --autoprova        # exit 1 se qualcosa non torna
+
+# 2) questo file può salire su master? (compila + autoprova)
+python3 gate_pubblicazione.py           # exit 1 se qualcosa non torna
+python3 gate_pubblicazione.py --escludi # i file da NON pubblicare
+```
+
+`--autoprova` fa due cose:
+1. **controllo strutturale** (AST): ogni `self.X()` chiamato dentro una
+   classe deve esistere come metodo (o ereditato da `BaseHTTPRequestHandler`).
+   È il controllo **generico**: qualunque metodo annidato per sbaglio esce
+   qui, prima di girare.
+2. **prova viva**: avvia il cervello su una porta libera e gli fa una
+   **richiesta chat vera** (il "ping" è risposto in casa: istantaneo, 0 token,
+   ma attraversa comunque il codice che era rotto).
+
+## 11. COME VERIFICARE TUTTO (60 secondi)
+
+```bash
+cd ~/posta
+python3 cervello.py --autoprova     # deve dire "AUTOPROVA SUPERATA"
+python3 -m pytest tests/ -q         # deve dire "54 passed, 24 subtests"
+bash fatti/collaudo_cervello.sh     # deve dire "COLLAUDO OK"
+```
+
+## 12. COSA NON HO FATTO (aperto per il prossimo)
+
+- **NON ho ruotato la chiave OmniRoute** (`sk-be31…`): è stata tolta dal repo
+  ma è **stata pubblica** per un po'. → **il capo deve ruotarla** nel
+  portachiavi e nel gateway locale. *(le altre chiavi del portachiavi non
+  sono mai state nel repo)*
+- **NON ho toccato** `portiere_quote.txt`, `portiere_regole.txt` e
+  `portiere_profili.json`: restano da compilare col capo (è il pezzo 3 della
+  `LISTA_LAVORI_FINALE`).
+- **NON ho unito** i due `fatti/deploy_*` in un unico script: ho tenuto la
+  forma attuale e ho messo il collaudo in comune.
+- `deepdog_antiveleno.sh` e `scaglione1_applica_innesti.sh` **non parlano col
+  cervello** (lavorano su beads/GitHub): non li ho toccati.
+
+## 13. GLI SCRIPT CHE UCCIDEVANO IL CERVELLO (fatti)
+
+Tre script facevano `pkill` del cervello e poi **non verificavano** che
+tornasse: potevano lasciare il PC morto senza dirlo.
+
+| script | prima | adesso |
+|---|---|---|
+| `sveglia_sentinella.sh` | kill + attesa + `curl` senza controllo | kill + `collaudo_cervello.sh` → **exit 1** se non torna |
+| `kilo_finale.sh` | kill + attesa, niente | kill + `collaudo_cervello.sh` → **exit 1** se non torna |
+| `prova_opencode2.sh` | kill + `sleep 3` + `grep` debole | kill + collaudo vero; e il **push** adesso dice NO se fallisce |
+
+## 14. I COLLAUDI DIAGNOSTICI (fatti)
+
+`fatti/collaudo_f2b1..4.sh` e `fatti/collaudo_gruppi_kilo.sh` leggevano le
+chat con `curl … | python3 -c "json.load(sys.stdin)"`: **corpo vuoto =
+traccia di errore**, e nessuno guardava l'uscita.
+
+Ora usano il nuovo **`fatti/chat_leggi.sh`**:
+
+```bash
+bash fatti/chat_leggi.sh <timeout> <body-json> [espressione-python]
+```
+
+Che esce **1** e dice perché se la chat non risponde, e **0** con il campo
+richiesto se risponde. Ogni collaudo diagnostico ha ora un contatore dei
+problemi e finisce con `✅ … OK` (exit 0) o `❌ … FALLITO` (exit 1).
+
+Nota: il controllo di **versione** (`FASE 2·B1`) è diventato un *avviso*: il
+motore è a FASE 3 e non è un errore. La verifica vera è che la **targa
+risponda**.
+
+## 15. COME LAVORARE QUI (dal quaderno, in breve)
+
+- **Strada A**: `cervello.py` RESTA il motore. Le idee si copiano dentro, non
+  si sostituisce il motore.
+- Una fase alla volta: **sandbox → anteprima al capo → ok → push**.
+- `missione/REGOLE_VINCOLANTI.md` sono **vincolanti** (11 regole: costo zero,
+  chiavi solo nel portachiavi, niente sonda LLM per ogni richiesta, porte
+  20128/20129 intoccate, Python puro stdlib…).
+- Il quaderno delle idee è in `missione/CERVELLO_MACCHINA_PERFETTA.md`
+  (**64/64 idee chiuse** + la **idea 65** di questa sera).
+- I risultati passano da `dal_pc/`, i comandi da `da_me/`.

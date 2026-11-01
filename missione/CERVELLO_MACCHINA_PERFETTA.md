@@ -392,8 +392,9 @@ stato_invisibili: exit 0 col cervello vivo, exit 1 col cervello morto.
      scritta a mano in 7 script di un repo PUBBLICO. Ora si legge dal
      portachiavi (`chiavi_env.sh` → `$OM_KEY`). **La chiave va RUOTATA**:
      è stata pubblica (anche nella storia git). → IL CAPO DEVE RUOTARLA.
-65g. HANDOVER: `missione/HANDOVER.md` — cosa era rotto, cosa è stato
-     corretto, come verificare (60 secondi) e cosa resta aperto.
+65g. HANDOVER (per chi riprende): `dal_pc/cura_audit_v5.md` sezioni 10-15 —
+     cosa era rotto, cosa è stato corretto, come verificare (60 secondi)
+     e cosa resta aperto.
 
 ALTRI RILIEVI v4 CHIUSI: import solo ImportError · vivo() porta 443/IPv6 ·
 guardia solo-gratis famiglia Gemini pro/ultra · max_tokens in CONFIG · tetto di
