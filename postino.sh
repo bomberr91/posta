@@ -65,7 +65,14 @@ sync_up(){
   # non poteva distinguere "rotto" da "lento". Qui il file rotto resta in
   # locale e il capo legge l'avviso in dal_pc/gate_pubblicazione.txt.
   ESCLUDI="$(python3 "$DIR/gate_pubblicazione.py" --escludi 2>/dev/null)"
-  git add -A >/dev/null 2>&1
+  # CURA-AUDIT (1/11 sera): il postino non deve MAI committare tutto l'albero.
+  # Con `git add -A` finivano in commit anche file strani o giganti che stanno
+  # nella cartella: GitHub rifiutava la push ("push declined due to repository
+  # rule violations"), il lavoro restava LOCALE e il postino non capiva perché.
+  # Il postino si occupa solo delle sue tre cartelle.
+  git add -A dal_pc fatti da_me >/dev/null 2>&1 \
+    || git add -A dal_pc fatti >/dev/null 2>&1 \
+    || git add -A >/dev/null 2>&1
   if [ -n "$ESCLUDI" ]; then
     for fe in $ESCLUDI; do git reset -q -- "$fe" >/dev/null 2>&1 || true; done
     say "⛔ gate: non pubblico $(echo $ESCLUDI | tr '\n' ' ') (lavoro tenuto in locale)"
