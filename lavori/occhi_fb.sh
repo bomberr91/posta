@@ -22,27 +22,61 @@ if [ ! -s "$V" ]; then
 fi
 if [ ! -s "$V" ]; then echo "❌ SCARICAMENTO FALLITO (serve forse la via-screenshot)"; exit 0; fi
 echo "   ✓ scaricato: $(du -h "$V" | cut -f1)"
+DIM=$(stat -c%s "$V")
+if [ "$DIM" -gt 13000000 ]; then
+  if command -v ffmpeg > /dev/null; then
+    echo "   grosso ($((DIM/1000000))MB) → snellisco con ffmpeg (360p)"
+    ffmpeg -y -loglevel error -i "$V" -vf scale=-2:360 -r 12 -b:v 350k -ac 1 -b:a 48k /tmp/occhi_s.mp4 && mv /tmp/occhi_s.mp4 "$V"
+    echo "   → ora: $(du -h "$V" | cut -f1)"
+  else
+    echo "   grosso e NIENTE ffmpeg → riprovo col formato minimo"
+    yt-dlp -q -f "w[ext=mp4]/w" -o /tmp/occhi_w.mp4 "$URL" 2>/dev/null && [ -s /tmp/occhi_w.mp4 ] && mv /tmp/occhi_w.mp4 "$V" && echo "   → ora: $(du -h "$V" | cut -f1)"
+  fi
+fi
 echo
 echo "## 2. Gemini guarda il video"
 K=$(python3 chiave_di.py gemini 2>/dev/null)
 python3 - "$V" "$K" << 'PYEOF'
-import base64, json, sys, urllib.request
+import base64, json, sys, time, urllib.request
 video, chiave = sys.argv[1], sys.argv[2]
 dati = open(video, "rb").read()
-if len(dati) > 14_000_000:
-    print("video troppo grosso per la via inline (%.1f MB): serve il formato piu' leggero" % (len(dati)/1e6))
-    sys.exit(0)
-corpo = json.dumps({"contents": [{"parts": [
-    {"inline_data": {"mime_type": "video/mp4", "data": base64.b64encode(dati).decode()}},
-    {"text": "Analizza questo video in ITALIANO: 1) trascrivi il parlato 2) riporta TUTTO il testo che appare a schermo (titoli, scritte, sottotitoli) 3) elenca nomi di strumenti/repo/siti/link citati 4) riassunto in 3 righe del contenuto utile."}]}]}).encode()
-req = urllib.request.Request(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + chiave,
-    data=corpo, headers={"Content-Type": "application/json"})
-try:
+PROMPT = "Analizza questo video in ITALIANO: 1) trascrivi il parlato 2) riporta TUTTO il testo che appare a schermo (titoli, scritte, sottotitoli) 3) elenca nomi di strumenti/repo/siti/link citati 4) riassunto in 3 righe del contenuto utile."
+BASE = "https://generativelanguage.googleapis.com"
+
+def genera(parte_video):
+    corpo = json.dumps({"contents": [{"parts": [parte_video, {"text": PROMPT}]}]}).encode()
+    req = urllib.request.Request(BASE + "/v1beta/models/gemini-2.0-flash:generateContent?key=" + chiave,
+                                 data=corpo, headers={"Content-Type": "application/json"})
     d = json.loads(urllib.request.urlopen(req, timeout=600).read().decode())
-    print(d["candidates"][0]["content"]["parts"][0]["text"])
-except urllib.error.HTTPError as e:
-    print("Gemini dice", e.code, ":", e.read(300).decode(errors="replace"))
+    return d["candidates"][0]["content"]["parts"][0]["text"]
+
+# VIA 1: File API col protocollo resumable VERO (2 passi)
+try:
+    avvio = urllib.request.Request(BASE + "/upload/v1beta/files?key=" + chiave,
+        data=json.dumps({"file": {"display_name": "reel"}}).encode(), method="POST",
+        headers={"X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start",
+                 "X-Goog-Upload-Header-Content-Length": str(len(dati)),
+                 "X-Goog-Upload-Header-Content-Type": "video/mp4",
+                 "Content-Type": "application/json"})
+    r = urllib.request.urlopen(avvio, timeout=60)
+    url_su = r.headers.get("X-Goog-Upload-URL")
+    carica = urllib.request.Request(url_su, data=dati, method="POST",
+        headers={"X-Goog-Upload-Command": "upload, finalize", "X-Goog-Upload-Offset": "0"})
+    f = json.loads(urllib.request.urlopen(carica, timeout=600).read().decode())["file"]
+    for _ in range(40):
+        st = json.loads(urllib.request.urlopen(BASE + "/v1beta/" + f["name"] + "?key=" + chiave, timeout=30).read().decode())
+        if st.get("state") == "ACTIVE": break
+        time.sleep(4)
+    print(genera({"file_data": {"mime_type": "video/mp4", "file_uri": f["uri"]}}))
+    sys.exit(0)
+except Exception as e:
+    print("(File API ko: %s — provo la via inline)" % str(e)[:100])
+
+# VIA 2: inline (se il video e' abbastanza piccolo)
+if len(dati) > 14_000_000:
+    print("e il video resta troppo grosso per la via inline (%.1f MB). Mi fermo." % (len(dati)/1e6))
+    sys.exit(0)
+print(genera({"inline_data": {"mime_type": "video/mp4", "data": base64.b64encode(dati).decode()}}))
 PYEOF
 } > "$R" 2>&1
 git pull -q --rebase 2>/dev/null; git add "$R"; git commit -q -m "occhi-fb: $NOME"; git push -q origin main 2>/dev/null || { git pull -q --rebase && git push -q origin main; }
