@@ -18,8 +18,10 @@ try:
     t = "".join(b.get("text", "") for b in d.get("content", []))
     if t.strip():
         print("GIUDICE=" + m); print(t)
-except Exception:
-    pass
+except Exception as e:
+    import sys as _s
+    corpo_err = getattr(e, "read", lambda n=200: b"")(200)
+    print("[%s → %s %s]" % (m, str(e)[:60], corpo_err.decode(errors="replace")[:120] if corpo_err else ""), file=_s.stderr)
 PYEOF
 )
   if [ -n "$R" ]; then echo "$R"; exit 0; fi
