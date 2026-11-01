@@ -1,0 +1,3 @@
+# lista di prova — un URL per riga, le righe con # vengono ignorate
+https://www.facebook.com/reel/1350782990582563
+https://www.facebook.com/reel/1195289147628387
