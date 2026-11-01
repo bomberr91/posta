@@ -242,20 +242,22 @@ except Exception:
 # --- immagini: og:image + foto profilo del plugin + qualunque scontent nel HTML ---
 imgs = []
 for x in [og.get("og:image"), plug_img]:
+    x = html.unescape(x) if x else x
     if x and x not in imgs:
         imgs.append(x)
-for u in re.findall(r'https:\\?/\\?/scontent[^"\'\\ ]+', pagina):
-    u = u.replace("\\/", "/").replace("&amp;", "&")
-    if u not in imgs:
+for u in re.findall(r'https:\\?/\\?/scontent[^"\'\\ <>]+', pagina):
+    u = html.unescape(u.replace("\\/", "/"))
+    # scarta i domini nudi (stringhe troncate nel JS) e i duplicati
+    if len(u) > 60 and not u.rstrip("/").endswith("fbcdn.net") and u not in imgs:
         imgs.append(u)
 imgs = imgs[:10]
 
-# --- link: canonico/og + esterni veri (non facebook/fbcdn/static) ---
+# --- link: canonico/og + esterni veri (non facebook/fbcdn/static/w3/schema) ---
 links = []
 if og.get("og:url"):
     links.append(("canonico", og["og:url"]))
-for u in re.findall(r'https?://(?![^"\' <>]*?(?:facebook\.com|fbcdn\.net|fb\.com|static\.xx))[^"\'\\ <>]{10,200}', pagina):
-    u = u.replace("&amp;", "&")
+for u in re.findall(r'https?://(?![^"\' <>]*?(?:facebook\.com|fbcdn\.net|fb\.com|static\.xx|w3\.org|schema\.org))[^"\'\\ <>]{10,200}', pagina):
+    u = html.unescape(u.replace("&amp;", "&"))
     if not any(u == l for _, l in links):
         links.append(("esterno", u))
 links = links[:15]
