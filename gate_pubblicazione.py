@@ -68,6 +68,17 @@ def non_compila(nome):
         return True
 
 
+def cervello_cambiato():
+    """cervello.py è diverso dall'ultima versione pubblicata? (se no, niente
+    da giudicare: l'autoprova non serve)"""
+    try:
+        p = subprocess.run(["git", "diff", "--quiet", "HEAD", "--", "cervello.py"],
+                           cwd=QUI, capture_output=True, timeout=30)
+        return p.returncode != 0
+    except Exception:
+        return True
+
+
 def autoprova_cervello():
     """cervello.py deve superare l'autoprova. Restituisce l'output se fallisce."""
     if not os.path.exists(os.path.join(QUI, "cervello.py")):
@@ -86,19 +97,24 @@ def main():
     solo_escludi = "--escludi" in sys.argv
     rotte = []
     dettagli = []
+    modificati = file_modificati()
 
-    for nome in file_modificati():
+    for nome in modificati:
         if not os.path.exists(os.path.join(QUI, nome)):
             continue
         if non_compila(nome):
             rotte.append(nome)
             dettagli.append("%s: non compila" % nome)
 
-    esito = autoprova_cervello()
-    if esito:
-        rotte.append("cervello.py")
-        dettagli.append("cervello.py: autoprova FALLITA\n" +
-                        "\n".join("    " + r for r in esito.strip().splitlines()[-15:]))
+    # l'autoprova costa un secondo e mezzo: la facciamo SOLO se cervello.py
+    # è davvero cambiato. Il postino gira ogni 45s: non ha senso rifarla
+    # quando non c'è niente di nuovo da giudicare.
+    if "cervello.py" in modificati or cervello_cambiato():
+        esito = autoprova_cervello()
+        if esito:
+            rotte.append("cervello.py")
+            dettagli.append("cervello.py: autoprova FALLITA\n" +
+                            "\n".join("    " + r for r in esito.strip().splitlines()[-15:]))
 
     if solo_escludi:
         for nome in rotte:
@@ -122,6 +138,12 @@ def main():
         return 1
 
     print("✓ gate: tutto pubblicabile")
+    # l'avviso "file bloccati" non deve restare appeso quando il gate passa:
+    # un avviso vecchio fa leggere al capo un blocco che non c'e' piu'
+    try:
+        os.remove(os.path.join(QUI, "dal_pc", "gate_pubblicazione.txt"))
+    except OSError:
+        pass
     return 0
 
 

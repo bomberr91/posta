@@ -114,3 +114,59 @@ qualcosa non torna. Lo usano ora:
 > un Portiere morto. Il guaio non era il bug: era il **collaudo che non poteva
 > dire di no**. Da oggi ogni collaudo ha un'uscita che significa NO, e ogni
 > file che non lo supera **non sale su master**.
+
+---
+
+## 9. AGGIORNAMENTO SERA (1/11) — round 2 e 3
+
+### Le chiavi non stanno più nel repo (regola #3)
+
+Il repo `bomberr91/posta` è **pubblico**. La chiave del gateway OmniRoute era
+scritta **a mano** in 7 script. Ora si legge dal portachiavi
+(`chiavi_env.sh` → `$OM_KEY`), e `collaudo_f2b4.sh` la prende
+dall'ambiente dentro il blocco Python.
+
+| file | prima | adesso |
+|---|---|---|
+| `fatti/accendi_omniroute_e_rilancia.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/accendi_omniroute_2.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/controlla_omni.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/diagnosi_cervello.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/consigliere_saggio.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/motore_collaudo.sh` | chiave in chiaro | `${OM_KEY}` |
+| `fatti/collaudo_f2b4.sh` | chiave in chiaro | `os.environ` |
+
+> 🔴 **DA FARE TU (capo): ruota la chiave del gateway OmniRoute.**
+> `sk-be31…` è stata pubblica — anche nella storia git. Io ho tolto la chiave
+> dai file, ma **una chiave già pubblicata non si "togli"**: va cambiata.
+> Tutte le altre chiavi del portachiavi non sono mai state nel repo.
+
+### Due bug miei, trovati e corretti oggi
+
+1. **`stato_carica()` perdeva la sezione `"sentinella"`** → a ogni riavvio gli
+   occhi ripartivano da zero → falsi allarmi "promo pubblicata". Ora lo stato
+   conserva **tutte** le sezioni (più quelle sconosciute), e scarta solo la
+   spazzatura non-dict. Due test di regressione nuovi.
+2. **i miei test vive scrivevano sul `portiere_log.jsonl` del PC** (il
+   `logga()` scrive sul file vero). Ora i test di prova viva redirigono il log
+   su un file temporaneo. Verificato: dopo la suite, i file runtime del PC
+   hanno **md5 identico** a `HEAD`.
+
+### Il gate ora è leggero
+
+L'autoprova gira **solo se `cervello.py` è davvero cambiato** (il postino
+girava ogni 45 s: non ha senso rifare un collaudo da 1,5 s quando non c'è
+niente di nuovo).
+
+### Altro collaudo ora condiviso
+
+Anche `rito_nuovo`, `buongiorno_1_11`, `stato_invisibili`, `collaudo_fase1`
+e `test_blackout` usano `fatti/collaudo_cervello.sh` e restituiscono un
+codice di uscita che **vuol dire qualcosa**.
+
+### Stato finale
+
+- suite: **54 test + 24 subtest verdi** (19 + 17 nel file nuovo)
+- `--autoprova`: **SUPERATA**
+- `missione/HANDOVER.md`: il memo per chi riprende (fatto / da fare / come
+  verificare in 60 secondi)

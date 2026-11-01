@@ -1,6 +1,8 @@
 #!/bin/bash
 cd ~/posta
-K="sk-be311327ce941004-4df42c-cf76ba39"
+# CURA-AUDIT: la chiave NON è scritta qui, si legge dal portachiavi.
+. ./chiavi_env.sh 2>/dev/null || true
+K="${OMNIROUTE_API_KEY:-${OM_KEY:-}}"
 M=http://127.0.0.1:20128
 echo "## COLLAUDO MOTORE NUOVO (3.8.52) — $(date '+%H:%M')"
 echo

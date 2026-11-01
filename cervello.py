@@ -420,7 +420,15 @@ def stato_carica():
     """CURA-AUDIT: il JSON su disco puo' essere valido ma fatto di tipi
     sbagliati (una lista dove serve una mappa, numeri dove servono stringhe).
     Se non lo controlliamo, il primo .items() o il primo += muore in pieno
-    traffico. Qui si valida e si ricostruisce la forma buona."""
+    traffico. Qui si valida e si ricostruisce la forma buona.
+
+    ATTENZIONE (CURA-AUDIT v5, 1/11 sera): qui si tenevano SOLO cinque
+    sezioni scritte a mano. Tutto il resto — cioe' la "sentinella" e
+    qualunque sezione nuova — veniva buttato via a ogni riavvio: gli occhi
+    ripartivano da zero e il motore annunciava "promo pubblicata" ogni
+    volta che il cervello ripartiva. Adesso si tiene TUTTO quello che e'
+    una mappa (comprese le sezioni che non conosciamo) e si butta solo la
+    spazzatura."""
     global STATO
     try:
         d = json.load(open(STATO_FILE, encoding="utf-8"))
@@ -429,9 +437,12 @@ def stato_carica():
     if not isinstance(d, dict):
         d = {}
     nuovo = {}
-    for sezione in ("castighi", "pagella", "uso", "agenti", "sessioni"):
-        v = d.get(sezione)
-        nuovo[sezione] = v if isinstance(v, dict) else {}
+    for sezione, v in d.items():
+        if isinstance(v, dict):
+            nuovo[sezione] = v
+    for sezione in ("castighi", "pagella", "uso", "agenti", "sessioni", "sentinella"):
+        if sezione not in nuovo:
+            nuovo[sezione] = {}
     for k, v in list(nuovo["castighi"].items()):
         if not isinstance(v, (int, float)):
             nuovo["castighi"].pop(k, None)
@@ -1528,6 +1539,15 @@ def autoprova():
     print("✓ configurazione: %d provider · %d gruppi · %d regole"
           % (len(BASE), len(GRUPPI), len(REGOLE)))
 
+    # l'autoprova non deve sporcare il log di lavoro del PC: il file di log
+    # vero e' finito in un file temporaneo e si rimette com'era dopo.
+    import tempfile
+    log_salvato = globals()["LOG_FILE"]
+    tmp_log = tempfile.NamedTemporaryFile(prefix="portiere_autoprova_",
+                                           suffix=".jsonl", delete=False)
+    tmp_log.close()
+    globals()["LOG_FILE"] = tmp_log.name
+
     from http.server import ThreadingHTTPServer
     srv = ThreadingHTTPServer(("127.0.0.1", 0), H)
     porta = srv.server_address[1]
@@ -1578,6 +1598,11 @@ def autoprova():
         except Exception:
             pass
         AUTOPROVA[0] = False
+        globals()["LOG_FILE"] = log_salvato
+        try:
+            os.unlink(tmp_log.name)
+        except OSError:
+            pass
     if esito:
         print("❌ AUTOPROVA FALLITA")
     else:

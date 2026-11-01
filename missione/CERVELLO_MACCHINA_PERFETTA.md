@@ -385,7 +385,15 @@ IDEA 65 (nuova, nata dal buco) — OGNI COLLAUDO DEVE POTER DIRE "FALLITO":
 COLLAUDI (fatti): autoprova SUPERATA sul codice buono, FALLITA sul bug
 reintrodotto con la diagnosi esatta · gate blocca .py rotto e cervello rotto ·
 postino: exit 3 → nessun .done · deploy_cura: exit 1 a cervello morto, 0 a
-cervello sano · tests/test_cervello_offline.py 17 test + 17 subtest verdi.
+cervello sano · tests/test_cervello_offline.py 19 test + 17 subtest verdi ·
+stato_invisibili: exit 0 col cervello vivo, exit 1 col cervello morto.
+
+65f. CHIAVI FUORI DAL REPO (1/11 sera): la chiave del gateway OmniRoute era
+     scritta a mano in 7 script di un repo PUBBLICO. Ora si legge dal
+     portachiavi (`chiavi_env.sh` → `$OM_KEY`). **La chiave va RUOTATA**:
+     è stata pubblica (anche nella storia git). → IL CAPO DEVE RUOTARLA.
+65g. HANDOVER: `missione/HANDOVER.md` — cosa era rotto, cosa è stato
+     corretto, come verificare (60 secondi) e cosa resta aperto.
 
 ALTRI RILIEVI v4 CHIUSI: import solo ImportError · vivo() porta 443/IPv6 ·
 guardia solo-gratis famiglia Gemini pro/ultra · max_tokens in CONFIG · tetto di

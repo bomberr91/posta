@@ -92,6 +92,12 @@ class ProvaVivaTests(unittest.TestCase):
     def setUpClass(cls):
         cls.mod = cerv
         cls.mod.AUTOPROVA[0] = True          # nessuna uscita su internet
+        # il log di vetro è del PC: qui scriviamo in un file nostro, sennò i
+        # test lasciano righe false nel glass-box di FilippoPC
+        cls.log_prima = cls.mod.LOG_FILE
+        fd, cls.log_proprio = tempfile.mkstemp(suffix=".jsonl", prefix="portiere-log-test-")
+        os.close(fd)
+        cls.mod.LOG_FILE = cls.log_proprio
         cls.srv = ThreadingHTTPServer(("127.0.0.1", 0), cls.mod.H)
         cls.porta = cls.srv.server_address[1]
         cls.th = threading.Thread(target=cls.srv.serve_forever, daemon=True)
@@ -105,6 +111,11 @@ class ProvaVivaTests(unittest.TestCase):
             cls.srv.server_close()
         finally:
             cls.mod.AUTOPROVA[0] = False
+            cls.mod.LOG_FILE = cls.log_prima
+            try:
+                os.unlink(cls.log_proprio)
+            except OSError:
+                pass
 
     def _get(self, percorso):
         con = urllib.request.urlopen(self.base + percorso, timeout=10)
@@ -211,6 +222,55 @@ class StatoTests(unittest.TestCase):
             self.assertNotIn("a", cerv.STATO["castighi"])
             self.assertIsInstance(cerv.STATO["pagella"], dict)
             self.assertIsInstance(cerv.STATO["uso"], dict)
+        finally:
+            cerv.STATO = prima_stato
+            cerv.STATO_FILE = prima_file
+            if provvisorio:
+                try:
+                    os.unlink(provvisorio)
+                except OSError:
+                    pass
+
+    def test_la_sentinella_sopravvive_al_riavvio(self):
+        """La sentinella tiene le baseline degli occhi: se lo stato le perde a
+        ogni avvio, urla 'hanno pubblicato qualcosa' ogni volta (false allarmi)."""
+        prima_stato = cerv.STATO
+        prima_file = cerv.STATO_FILE
+        provvisorio = None
+        try:
+            fd, provvisorio = tempfile.mkstemp(suffix=".json", prefix="stato-sentinella-")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump({"sentinella": {"controllo": 123.5,
+                                          "visti": {"CYBIRD-D/FREE-LLM-API-Provider": "2026-10-30"}},
+                           "castighi": {}, "pagella": {}}, f)
+            cerv.STATO_FILE = provvisorio
+            cerv.stato_carica()
+            self.assertIn("sentinella", cerv.STATO)
+            self.assertEqual(cerv.STATO["sentinella"]["controllo"], 123.5)
+            self.assertIn("CYBIRD-D/FREE-LLM-API-Provider", cerv.STATO["sentinella"]["visti"])
+        finally:
+            cerv.STATO = prima_stato
+            cerv.STATO_FILE = prima_file
+            if provvisorio:
+                try:
+                    os.unlink(provvisorio)
+                except OSError:
+                    pass
+
+    def test_una_sezione_ignota_viene_conservata(self):
+        """Una sezione nuova (che un agente aggiunge) non deve sparire."""
+        prima_stato = cerv.STATO
+        prima_file = cerv.STATO_FILE
+        provvisorio = None
+        try:
+            fd, provvisorio = tempfile.mkstemp(suffix=".json", prefix="stato-extra-")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump({"sezione_che_non_conosciamo": {"a": 1},
+                           "rifiuto": "spazzatura"}, f)
+            cerv.STATO_FILE = provvisorio
+            cerv.stato_carica()
+            self.assertEqual(cerv.STATO["sezione_che_non_conosciamo"], {"a": 1})
+            self.assertNotIn("rifiuto", cerv.STATO)
         finally:
             cerv.STATO = prima_stato
             cerv.STATO_FILE = prima_file

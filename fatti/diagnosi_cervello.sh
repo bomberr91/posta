@@ -1,12 +1,14 @@
 #!/bin/bash
 cd "$(dirname "$0")/.." || exit 1
+# CURA-AUDIT: la chiave NON è scritta qui, si legge dal portachiavi.
+. ./chiavi_env.sh 2>/dev/null || true
 O=dal_pc/diagnosi_cervello.md
 {
 echo "# DIAGNOSI CERVELLO $(date)"
 echo "## 1. Portiere :20129 vivo?"
 curl -s -m 5 http://127.0.0.1:20129/v1/models | head -c 400; echo
 echo "## 2. OmniRoute :20128 vivo?"
-curl -s -m 5 -H "Authorization: Bearer sk-be311327ce941004-4df42c-cf76ba39" http://127.0.0.1:20128/v1/models | head -c 300
+curl -s -m 5 -H "Authorization: Bearer ${OM_KEY}" http://127.0.0.1:20128/v1/models | head -c 300
 [ -z "$(curl -s -m 5 http://127.0.0.1:20128/v1/models 2>/dev/null)" ] && echo "(nessuna risposta dalla 20128 = OMNIROUTE SPENTO)"
 echo
 echo "## 3. prova PICCOLA via Portiere (auto)"

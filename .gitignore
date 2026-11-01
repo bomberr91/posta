@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 gui/contabilita.json
 gui/agente_token.txt
+
+# avviso transitorio del gate (si cancella da solo quando il gate passa)
+dal_pc/gate_pubblicazione.txt

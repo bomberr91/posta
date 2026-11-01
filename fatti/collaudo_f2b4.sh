@@ -14,14 +14,14 @@ curl -s -m 60 -H Content-Type:application/json -d "$Q" $B/v1/chat/completions | 
 echo
 echo "### 3. IDEA 64 — LA COMPRESSIONE RTK DEL MOTORE LAVORA?"
 python3 << 'PYEOF'
-import json, urllib.request
+import json, os, urllib.request
 # prompt gonfio e ripetitivo: ~8000 caratteri = ~2000 token se NON compresso
 zavorra = ("Il gatto dorme sul tappeto rosso del salotto grande. " * 150)
 corpo = json.dumps({"model": "auto", "max_tokens": 20, "messages": [
     {"role": "user", "content": zavorra + " DOMANDA: di che colore e il tappeto? Una parola."}]}).encode()
 req = urllib.request.Request("http://127.0.0.1:20128/v1/chat/completions", data=corpo,
     headers={"Content-Type": "application/json",
-             "Authorization": "Bearer sk-be311327ce941004-4df42c-cf76ba39"})
+             "Authorization": "Bearer " + os.environ.get("OMNIROUTE_API_KEY", "")})
 try:
     d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode())
     u = d.get("usage") or {}

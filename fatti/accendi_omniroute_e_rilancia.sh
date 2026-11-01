@@ -1,9 +1,11 @@
 #!/bin/bash
 cd "$(dirname "$0")/.." || exit 1
+# CURA-AUDIT: la chiave NON è scritta qui, si legge dal portachiavi.
+. ./chiavi_env.sh 2>/dev/null || true
 R=dal_pc/accendi_omniroute.md
 export NVM_DIR="/home/agenti/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
 [ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh" >/dev/null 2>&1
-vivo(){ curl -s -m 4 http://127.0.0.1:20128/v1/models -H "Authorization: Bearer sk-be311327ce941004-4df42c-cf76ba39" | grep -q data; }
+vivo(){ curl -s -m 4 http://127.0.0.1:20128/v1/models -H "Authorization: Bearer ${OM_KEY}" | grep -q data; }
 {
 echo "# ACCENSIONE OMNIROUTE $(date)"
 if vivo; then echo "gia' acceso, niente da fare"
