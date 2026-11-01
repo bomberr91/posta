@@ -85,6 +85,7 @@ import random
 import re
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -290,9 +291,12 @@ def indirizzo(pid, k):
         acc, _, tok = (k or "").partition(":")
         return ("https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc,
                 dict(UA, Authorization="Bearer " + tok))
+    if url.startswith("http://"):
+        import urllib.parse
+        host = (urllib.parse.urlsplit(url).hostname or "").lower()
+        if host not in ("127.0.0.1", "localhost"):
+            raise ValueError("chiave su http in chiaro rifiutata")
     return url, dict(UA, Authorization="Bearer " + k)
-
-NOME = "Portiere"
 
 
 def vivo(url, secondi=1):
@@ -354,6 +358,7 @@ def chiave(pid):
 # ── FASE 1 · STATO PERSISTENTE: castighi e pagella (idee 17-22-27, 20) ───────
 STATO_FILE = os.path.join(QUI, "portiere_stato.json")
 STATO = {"castighi": {}, "pagella": {}}
+LOCK = threading.Lock()  # cura-audit
 _ultimo_salvataggio = [0.0]
 
 
@@ -370,14 +375,18 @@ def stato_carica():
 
 
 def stato_salva(forza=False):
-    """Scrive su disco al massimo ogni 2 secondi (idea 20: sopravvive al riavvio)."""
+    """Freno 2s. CURA-AUDIT: lucchetto + sostituzione atomica: mai piu' JSON tronchi."""
     if not forza and time.time() - _ultimo_salvataggio[0] < 2:
         return
     _ultimo_salvataggio[0] = time.time()
     try:
-        ora = time.time()
-        STATO["castighi"] = {k: v for k, v in STATO["castighi"].items() if v > ora}
-        json.dump(STATO, open(STATO_FILE, "w", encoding="utf-8"))
+        with LOCK:
+            ora = time.time()
+            STATO["castighi"] = {k: v for k, v in STATO["castighi"].items() if v > ora}
+            tmp = STATO_FILE + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(STATO, f)
+            os.replace(tmp, STATO_FILE)
     except Exception:
         pass
 
@@ -523,8 +532,9 @@ def sentinella():
         return
     st["controllo"] = time.time()
     visti = st.setdefault("visti", {})
-    if st.get("push_visto"):                              # migrazione dal 1° occhio
-        visti.setdefault(CONFIG["sentinella_repos"][0], st.pop("push_visto"))
+    repos_mig = CONFIG.get("sentinella_repos") or []
+    if st.get("push_visto") and repos_mig:                # migrazione dal 1° occhio
+        visti.setdefault(repos_mig[0], st.pop("push_visto"))
     avvisi = []
     # occhi sulle PAGINE (promo/regali)
     for pg in CONFIG.get("sentinella_pagine", []):
@@ -587,6 +597,8 @@ def risposta_locale(testo, perche):
 
 def banale(payload):
     """Solo i casi SICURI: titoli di conversazione (max_tokens piccolo) e ping."""
+    if payload.get("tools") or payload.get("response_format"):
+        return None
     msgs = payload.get("messages") or []
     ultimo = ""
     for m in reversed(msgs):
@@ -598,7 +610,7 @@ def banale(payload):
     mt = payload.get("max_tokens")
     if not (isinstance(mt, int) and mt <= 120):
         return None                      # i titoli veri viaggiano con max_tokens piccolo
-    testo = " ".join(str(m.get("content", ""))[:400] for m in msgs[:2] + msgs[-1:])
+    testo = " ".join(str(m.get("content", ""))[:400] for m in (msgs[:2] + msgs[-1:]))
     if RE_TITOLO.search(testo) and len(testo) < 2000:
         parole = re.sub(r"[^\w\s\u00c0-\u00ff]", " ", ultimo).split()
         return risposta_locale(" ".join(parole[:6]) or "Conversazione", "titolo")
@@ -612,12 +624,19 @@ _CACHE = {}
 
 
 def cache_chiave(payload):
-    if not CONFIG["cache_ttl"] or payload.get("tools") or             (payload.get("temperature") or 0) > 0.3:
+    if not CONFIG["cache_ttl"] or payload.get("tools") or (payload.get("temperature") or 0) > 0.3:
         return None
     base = json.dumps([payload.get("model", ""),
                        [[m.get("role"), " ".join(str(m.get("content", "")).split())]
                         for m in payload.get("messages") or []],
-                       payload.get("max_tokens")], ensure_ascii=False)
+                       payload.get("max_tokens"),
+                       payload.get("temperature"),
+                       payload.get("top_p"),
+                       payload.get("stop"),
+                       payload.get("presence_penalty"),
+                       payload.get("frequency_penalty"),
+                       payload.get("seed"),
+                       payload.get("response_format")], ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(base.encode()).hexdigest()
 
 
@@ -692,7 +711,10 @@ def freno(pid):
 
 
 def batte(pid):
-    _battiti.setdefault(pid, []).append(time.time())
+    ora = time.time()
+    batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
+    batt.append(ora)
+    _battiti[pid] = batt
 
 
 # ── FASE 2 · B4 · REGOLE PER AGENTE (idea 38, disegno S4/otari in piccolo) ───
@@ -750,12 +772,22 @@ def ripara_tool_call(d, payload):
     if msg.get("tool_calls") or not msg.get("content"):
         return d
     testo = msg["content"].strip()
-    m = re.search(r"\{.*\}", testo, re.S)
-    if not m:
-        return d
-    try:
-        j = json.loads(m.group(0))
-    except Exception:
+    dec = json.JSONDecoder()
+    j = None
+    i = testo.find("{")
+    while i != -1:
+        try:
+            obj, _ = dec.raw_decode(testo, i)
+        except Exception:
+            obj = None
+        if isinstance(obj, dict):
+            nome0 = obj.get("name")
+            arg0 = obj.get("arguments", obj.get("parameters"))
+            if nome0 and isinstance(arg0, (dict, str)):
+                j = obj
+                break
+        i = testo.find("{", i + 1)
+    if j is None:
         return d
     nome = j.get("name")
     argomenti = j.get("arguments", j.get("parameters"))
@@ -777,9 +809,13 @@ A_PAGAMENTO = ("gpt-5", "gpt-4.1", "gpt-4o", "o3", "o4-", "claude-opus",
 
 def a_pagamento(modello):
     m = (modello or "").lower()
-    if not m or "free" in m or "oss" in m or "mini" in m:
+    if not m:
         return False
-    return any(p in m for p in A_PAGAMENTO)
+    if not any(p in m for p in A_PAGAMENTO):
+        return False
+    if ":free" in m or "-free" in m or re.search(r"\boss\b", m):
+        return False
+    return True
 
 
 # ── FASE 1 · MODELLI-POLITICA (idea 6) ───────────────────────────────────────
@@ -998,7 +1034,7 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
                 req = urllib.request.Request(base + "/chat/completions", data=corpo,
                                              headers=intestazioni)
                 d = json.loads(urllib.request.urlopen(
-                    req, timeout=CONFIG["timeout_riserva"]).read().decode())
+                    req, timeout=CONFIG["timeout_riserva"]).read(3_000_000).decode())
                 msg0 = (d.get("choices") or [{}])[0].get("message", {})
                 if msg0.get("content") or msg0.get("tool_calls"):
                     d = ripara_tool_call(d, payload)      # idea 47
@@ -1348,13 +1384,15 @@ class H(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(corpo)
 
-    def _sessione(self):
-        """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""
-        s = self.headers.get("x-opencode-session")
-        if s:
-            return s
-        ua = self.headers.get("user-agent", "") or "agente"
-        return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]
+        def _sessione(self):
+            """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""
+            s = self.headers.get("x-opencode-session") or ""
+            s = "".join(s.split())[:64]
+            if s:
+                return s
+            ua = self.headers.get("user-agent", "") or "agente"
+            return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]
+
 
     def do_GET(self):
         ricarica()
@@ -1449,6 +1487,9 @@ class H(BaseHTTPRequestHandler):
             return
         vuole_stream = bool(payload.pop("stream", False))
         payload.pop("stream_options", None)
+        mt = payload.get("max_tokens")                     # cura-audit: tetto anti-abuso
+        if isinstance(mt, int) and mt > 8000:
+            payload["max_tokens"] = 8000
         sess = self._sessione()
         ricarica_profili()                                # FASE 3: idee 13+16
         comprimi_agente = True
