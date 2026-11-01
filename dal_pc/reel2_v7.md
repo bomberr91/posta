@@ -125,3 +125,6 @@ Ecco l'analisi completa del video in italiano:
 Andee è un agente AI open-source per Android e macOS che interagisce direttamente con l'interfaccia dei dispositivi senza richiedere integrazioni o API specifiche.  
 Esegue azioni simulando tocchi, clic e digitazione, analizzando elementi visivi e screenshot ed eseguendo i modelli localmente per tutelare la privacy.  
 È inoltre in grado di apprendere flussi di lavoro ricorrenti per trasformarli in routine automatizzate e riutilizzabili chiamate "Scene".
+T-pc fine: 11:39:10
+
+<!-- fine reel2_v7 -->
