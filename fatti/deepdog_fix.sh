@@ -4,7 +4,11 @@
 # LA DIAGNOSI (provata, non ipotizzata — vedi dal_pc/deepdog_mistero.md):
 # il wrapper Windows scriveva TRE catene di modelli con il nome "deepseek-flash".
 # Ma Deep Dog conosce solo "deepseek-v4-flash": "deepseek-flash" non è nella
+<<<<<<< HEAD
 # mappa _OPENROUTER_MODEL_MAP_BY_NAME, quindi get_model() saltava il ramo
+=======
+# mappa _OPENROUTE..., quindi get_model() saltava il ramo
+>>>>>>> 0610ed5 (postino: risposte sanitizzate)
 # OpenRouter e finiva sulla PIATTAFORMA DEEPSEEK (a pagamento) → 402
 # "Insufficient Balance". Ecco perché il Setup chiedeva DEEPSEEK_API_KEY
 # anche con OpenRouter selezionato: diceva la verità su un codice sbagliato.
@@ -29,7 +33,11 @@ echo "### 1. Lo stato PRIMA (le prove sul posto)"
 echo "— le tre catene che il wrapper scrive:"
 grep -n "model_fallback_chain=" "$D/web_app.py" | head -5
 echo "— la mappa OpenRouter di Deep Dog (i nomi che CONOSCE):"
+<<<<<<< HEAD
 grep -n -A 6 "_OPENROUTER_MODEL_MAP_BY_NAME = {" "$D/deep_research/config.py" | head -8
+=======
+grep -n -A 6 "_OPENROUTE... = {" "$D/deep_research/config.py" | head -8
+>>>>>>> 0610ed5 (postino: risposte sanitizzate)
 echo "— il default del provider nel Setup:"
 grep -n 'model_provider: str = ' "$D/web_app.py" | head -3
 echo "— ROUTE_VIA_OPENROUTER nel .env:"
@@ -58,17 +66,29 @@ print("   backup:", os.path.basename(backup))
 modifiche = []
 
 # (a) le tre catene: il nome che Deep Dog CONOSCE, e che segue l'ambiente
+<<<<<<< HEAD
 vecchio = '''        supervisor_model_fallback_chain=["deepseek-flash"],
         subagent_model_fallback_chain=["deepseek-flash"],
         draft_report_model_fallback_chain=["deepseek-flash"],'''
+=======
+vecchio = '''        supervisor...=["deepseek-flash"],
+        subagent_m...=["deepseek-flash"],
+        draft_repo...=["deepseek-flash"],'''
+>>>>>>> 0610ed5 (postino: risposte sanitizzate)
 nuovo = '''        # CURA-AUDIT (1/11): il wrapper scriveva "deepseek-flash", nome che
         # Deep Dog NON conosce: non è nella mappa OpenRouter, quindi get_model()
         # saltava il ramo OpenRouter e la chiamata finiva sulla piattaforma
         # DeepSeek (a pagamento) -> 402 Insufficient Balance. Qui il nome vero,
         # e lo si cambia dal .env (SUPERVISOR_MODEL ecc.).
+<<<<<<< HEAD
         supervisor_model_fallback_chain=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
         subagent_model_fallback_chain=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],
         draft_report_model_fallback_chain=[os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],'''
+=======
+        supervisor...=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
+        subagent_m...=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],
+        draft_repo...=[os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],'''
+>>>>>>> 0610ed5 (postino: risposte sanitizzate)
 if vecchio in src:
     src = src.replace(vecchio, nuovo, 1); modifiche.append("catene di modelli")
 else:

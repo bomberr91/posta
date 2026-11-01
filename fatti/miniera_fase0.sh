@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "## ⛏️ MINIERA FASE 0 — ricognizione — $(date '+%H:%M')"
 cd ~
-[ -d ~/miniera ] && (cd ~/miniera && git pull -q) || git clone -q --depth 1 https://github.com/rohitg00/ai-engineering-from-scratch.git ~/miniera
+[ -d ~/miniera ] && (cd ~/miniera && git pull -q) || git clone -q --depth 1 https://github.com/rohitg00/ai-enginee....git ~/miniera
 cd ~/miniera
 echo "### Struttura di primo livello"
 ls -d */ 2>/dev/null | head -20

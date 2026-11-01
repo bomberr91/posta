@@ -1,15 +1,15 @@
 # Risposta a «deepdog_fix»
 
-_01/11/2026 19:02 · FilippoPC_
+_01/11/2026 20:31 · FilippoPC_
 
-## 🐕 IL CEROTTO DI DEEP DOG — 01/11 19:02
+## 🐕 IL CEROTTO DI DEEP DOG — 01/11 20:31
 ### 1. Lo stato PRIMA (le prove sul posto)
 — le tre catene che il wrapper scrive:
-102:        supervisor_model_fallback_chain=["deepseek-flash"],
-103:        subagent_model_fallback_chain=["deepseek-flash"],
-104:        draft_report_model_fallback_chain=["deepseek-flash"],
+127:        supervisor...=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
+128:        subagent_m...=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],
+129:        draft_repo...=[os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],
 — la mappa OpenRouter di Deep Dog (i nomi che CONOSCE):
-714:_OPENROUTER_MODEL_MAP_BY_NAME = {
+714:_OPENROUTE... = {
 715-    "deepseek-v4-pro": "deepseek/deepseek-v4-pro",
 716-    "deepseek-v4-flash": "deepseek/deepseek-v4-flash",
 717-    "mimo-v2.5": "xiaomi/mimo-v2.5",
@@ -17,21 +17,53 @@ _01/11/2026 19:02 · FilippoPC_
 719-}
 720-
 — il default del provider nel Setup:
-55:    model_provider: str = "deepseek"
+59:    model_provider: str = "openrouter" if os.environ.get("OPENROUTER_API_KEY") else "deepseek"
 — ROUTE_VIA_OPENROUTER nel .env:
-EXA_API_KEY=…(mascherata)
-OPENROUTER_API_KEY=sk-or-v1-8…(mascherata)
-TAVILY_API_KEY=tvly-dev-1…(mascherata)
-ROUTE_VIA_OPENROUTER=true…(mascherata)
-WEB_SEARCH_ENGINE=both…(mascherata)
-EXA_API_KEY=cc3a11cf-c…(mascherata)
+EXA_API_KEY=
+OPENROUTER_API_KEY=sk-or-v1-8...…(mascherata)
+TAVILY_API_KEY=tvly-dev-1...…(mascherata)
+ROUTE_VIA_OPENROUTER=true
+WEB_SEARCH_ENGINE=both
+EXA_API_KEY=cc3a11cf-c...…(mascherata)
 
 ### 2. Applico il cerotto (idempotente, con backup)
-Traceback (most recent call last):
-  File "\\wsl.localhost\Ubuntu\tmp\dd_patch.py", line 5, in <module>
-    src = io.open(F, encoding="utf-8").read()
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-PermissionError: [Errno 13] Permission denied: '/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog\\web_app.py'
-❌ il cerotto non è stato applicato (exit 1): il cane resta com'era
+   il cerotto c'è già: non lo tocco (idempotente)
+— il file adesso:
+127:        supervisor...=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
+128:        subagent_m...=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],
+129:        draft_repo...=[os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],
+59:    model_provider: str = "openrouter" if os.environ.get("OPENROUTER_API_KEY") else "deepseek"
+
+— compila?
+   ✓ web_app.py compila
+
+### 3. Collaudo dal vivo
+— server di collaudo avviato (pid 954) sulla porta 8766, aspetto…
+   ✓ porta 8766 aperta
+— /api/setup (la configurazione):
+   {"configured": {"DEEPSEEK_API_KEY": false, "EXA_API_KEY": true, "OPENROUTER_API_KEY": true, "TAVILY_API_KEY": true}, "model_provider": "openrouter", "search_provider": "exa", "speed_profile": "fast", "ready": true, "missing": []}
+
+   ✓ missing: NESSUNA · provider: openrouter
+
+— una MICRO-ricerca vera (deve rispondere, niente 402):
+   stato: completed
+   eventi:
+     - Ricerca avviata
+     - Configurazione verificata
+     - Preparazione del piano di ricerca
+     - Piano di ricerca completato
+     - Creazione della prima bozza
+     - Prima bozza completata
+     - Il supervisore coordina gli agenti
+     - Il supervisore coordina gli agenti
+     - Scrittura del report finale
+     - Citazioni verificate
+     - Ricerca completata
+   estratto del report:
+      Roma è la capitale d'Italia.
+
+✅ CEROTTO APPLICATO E COLLAUDATO — la ricerca è uscita pulita (niente 402)
+   il TUO server sulla 8765 non è stato toccato: riavvialo col .bat
+   (la scelta del Setup ora resta su disco: setup_state.json)
 
 <!-- fine deepdog_fix -->
