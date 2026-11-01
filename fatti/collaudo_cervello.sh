@@ -75,3 +75,16 @@ collaudo(){
   echo "── COLLAUDO OK ──"
   return 0
 }
+
+# ─────────────────────────────────────────────────────────────────────
+# Se questo file viene ESEGUITO (non sourced), il collaudo parte da solo.
+# Se viene sourced (i deploy lo fanno con `.`), espone solo le funzioni e
+# il deploy chiama `collaudo`.
+#
+# SENZA QUESTO il file usciva 0 senza aver fatto NIENTE quando lo si
+# eseguiva: un collaudo muto — esattamente il difetto che questa sera
+# sto curando. (CURA-AUDIT v5, 1/11 sera)
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+  collaudo
+  exit $?
+fi
