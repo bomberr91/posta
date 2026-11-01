@@ -20,12 +20,17 @@ def carica_profili(percorso):
 
 def profilo_di(sessione, profili):
     """
-    Trova il primo profilo il cui prefisso combacia con l'id sessione.
+    Trova il profilo il cui prefisso combacia con l'id sessione.
+
+    CURA-AUDIT (1/11 sera, F18 — audit ZCode): vince il prefisso PIU' LUNGO,
+    come gia' fa regola_di. Prima vinceva il primo nell'ordine del JSON:
+    un profilo generico scritto prima di uno specifico vinceva sempre.
     """
+    migliore, lunghezza = None, -1
     for prefisso, profilo in profili.items():
-        if sessione.startswith(prefisso):
-            return profilo
-    return None
+        if sessione.startswith(prefisso) and len(prefisso) > lunghezza:
+            migliore, lunghezza = profilo, len(prefisso)
+    return migliore
 
 def applica_profilo(payload, profilo):
     """
@@ -61,6 +66,9 @@ if __name__ == "__main__":
     profili_test = {"goose-": {"politica": "veloce"}, "test-": {"max_tokens": 100}}
     assert profilo_di("goose-123", profili_test)["politica"] == "veloce", "Prefisso non trovato"
     assert profilo_di("altro-456", profili_test) is None, "Match non esistente"
+    # CURA-AUDIT F18: vince il prefisso piu' lungo, non il primo
+    profili_lunghi = {"x-": {"politica": "generico"}, "x-y-": {"politica": "specifico"}}
+    assert profilo_di("x-y-1", profili_lunghi)["politica"] == "specifico", "Deve vincere il prefisso piu' lungo"
     
     # Test applica_profilo (priorità payload esplicita)
     payload = {"max_tokens": 800, "model": "auto"}

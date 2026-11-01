@@ -115,6 +115,7 @@ import json
 import os
 import random
 import re
+import socket
 import subprocess
 import sys
 import threading
@@ -128,10 +129,15 @@ try:
     from compressione import alleggerisci_tools, comprimi_system, taglia_storia
     from per_agente import carica_profili, profilo_di, applica_profilo
     F3_OK = True
-except ImportError:
+except (ImportError, SyntaxError, AttributeError) as _e:
     # CURA-AUDIT: solo ImportError. Con "except Exception" un errore interno
     # dei moduli (non un import mancante) spegneva profili e compressione in
     # silenzio: si credeva F3 spento quando il problema era un altro.
+    # CURA-AUDIT (1/11 sera, F15 — audit ZCode): anche SyntaxError: un
+    # gemello corrotto non deve impedire l'AVVIVO del Portiere, ma deve
+    # urlare (non accendersi e spegnersi in silenzio).
+    import sys as _sys
+    print("cervello: F3 spento (%s): %s" % (type(_e).__name__, _e), file=_sys.stderr)
     F3_OK = False
 
 QUI = os.path.dirname(os.path.abspath(__file__))
@@ -149,7 +155,10 @@ CONFIG = {
     "cooldown_pensionato": 21600,# 404/410: modello pensionato, 6 ore per tutti
     "cooldown_passeggero": 30,   # 5xx: incidente passeggero
     "timeout_riserva": 60,       # secondi per ogni provider di riserva (idea 25)
-    "timeout_motore": 180,       # secondi per OmniRoute
+    # CURA-AUDIT (1/11 sera, F7 — audit ZCode): era 180s. Il budget peggiore
+    # di una richiesta era motore 180s + riserva 5x60s ~= 9 minuti fatturati
+    # per un solo client. 90s resta sopra i timeout tipici dei client.
+    "timeout_motore": 90,        # secondi per OmniRoute
     "soglia_successo": 0.8,      # sotto questo tasso il canale è malato (idea 27)
     "min_prove": 5,              # prima di giudicare servono almeno 5 prove
     "riposo_malato": 120,        # il canale malato riprova ogni 2 minuti
@@ -357,10 +366,15 @@ def vivo(url, secondi=1):
     try:
         fam = socket.AF_INET6 if ":" in host else socket.AF_INET
         s = socket.socket(fam, socket.SOCK_STREAM)
-        s.settimeout(secondi)
-        s.connect((host, int(porta)))
-        s.close()
-        return True
+        # CURA-AUDIT (1/11 sera, F14 — audit ZCode): il socket veniva chiuso
+        # solo se il connect riusciva: a ogni POST con il motore giù restava
+        # un fd orfano (proprio quando serve la riserva).
+        try:
+            s.settimeout(secondi)
+            s.connect((host, int(porta)))
+            return True
+        finally:
+            s.close()
     except Exception:
         return False
 
@@ -401,7 +415,7 @@ def chiave(pid):
     if nome:
         try:
             p = subprocess.run(["python3", os.path.join(QUI, "chiave_di.py"), nome],
-                               capture_output=True, text=True, timeout=20)
+                               capture_output=True, text=True, timeout=5)
             k = (p.stdout or "").strip()
         except Exception:
             k = ""
@@ -486,15 +500,25 @@ def stato_salva(forza=False):
     """Freno 2s. CURA-AUDIT: lucchetto + sostituzione atomica: mai piu' JSON tronchi."""
     if not forza and time.time() - _ultimo_salvataggio[0] < 2:
         return
-    _ultimo_salvataggio[0] = time.time()
     try:
         with LOCK:
+            if not forza and time.time() - _ultimo_salvataggio[0] < 2:
+                return
+            _ultimo_salvataggio[0] = time.time()
             ora = time.time()
             STATO["castighi"] = {k: v for k, v in STATO["castighi"].items() if v > ora}
-            tmp = STATO_FILE + ".tmp"
-            with open(tmp, "w", encoding="utf-8") as f:
-                json.dump(STATO, f)
-            os.replace(tmp, STATO_FILE)
+            # CURA-AUDIT (1/11 sera, F4 — audit ZCode): il dump avveniva
+            # DENTRO il lucchetto ma le mutazioni di STATO (segna, conta_uso,
+            # conta_agente, sentinella) NON lo prendevano: se una mutazione
+            # arrivava durante il dump -> "dictionary changed size during
+            # iteration" -> salvataggio saltato in silenzio -> castighi e
+            # contatori persi al riavvio. Ora: snapshot coerente, e il
+            # timestamp si segna DOPO che il salvataggio e' riuscito.
+            testo = json.dumps(STATO)
+        tmp = STATO_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(testo)
+        os.replace(tmp, STATO_FILE)
     except Exception:
         pass
 
@@ -527,8 +551,9 @@ def segna(pid, ok, ms=None):
     mobile EWMA), piu' l'interruttore: 3 errori di fila → il canale riposa 60s.
     La memoria sbiadisce (dimezza a 50 prove). Idea 61: niente giudizi sotto le
     5 prove (periodo di grazia, gia' garantito da in_salute)."""
-    p = STATO["pagella"].setdefault(pid, {"ok": 0, "ko": 0, "ultimo_ko": 0, "fila_ko": 0})
-    p["ok" if ok else "ko"] += 1
+    with LOCK:                                    # CURA-AUDIT F4: mai mutare
+        p = STATO["pagella"].setdefault(pid, {"ok": 0, "ko": 0, "ultimo_ko": 0, "fila_ko": 0})
+        p["ok" if ok else "ko"] += 1
     if ok:
         p["fila_ko"] = 0
         if ms is not None:                               # idea 60: EWMA della velocita'
@@ -574,12 +599,13 @@ def oggi():
 
 def conta_uso(pid, token=0):
     """Idea 43: contatore di consumo per chiave, azzerato ogni giorno (lazy, niente thread)."""
-    u = STATO.setdefault("uso", {}).setdefault(pid, {})
-    if u.get("giorno") != oggi():
-        u.clear()
-        u.update(giorno=oggi(), n=0, token=0)
-    u["n"] += 1
-    u["token"] += int(token or 0)
+    with LOCK:                                    # CURA-AUDIT F4: contatori
+        u = STATO.setdefault("uso", {}).setdefault(pid, {})
+        if u.get("giorno") != oggi():
+            u.clear()
+            u.update(giorno=oggi(), n=0, token=0)
+        u["n"] += 1
+        u["token"] += int(token or 0)
     stato_salva()
 
 
@@ -680,15 +706,27 @@ def sentinella():
     stato_salva(forza=True)
 
 
+# CURA-AUDIT (1/11 sera, F12 — audit ZCode): la rotazione del log non era
+# atomica e girava DENTRO la richiesta: righe perse, log mescolato, e la
+# richiesta che ruotava si fermava qualche secondo. Lock + rotazione atomica.
+_LOG_LOCK = threading.Lock()
+
+
 def logga(**voce):
     """Una riga JSON per ogni evento: chi, cosa, rotta, quanto ci ha messo, esito."""
     voce["quando"] = time.strftime("%Y-%m-%d %H:%M:%S")
+    riga = json.dumps(voce, ensure_ascii=False) + "\n"
     try:
-        with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(json.dumps(voce, ensure_ascii=False) + "\n")
-        if os.path.getsize(LOG_FILE) > 3_000_000:
-            righe = open(LOG_FILE, encoding="utf-8").read().splitlines()[-2000:]
-            open(LOG_FILE, "w", encoding="utf-8").write("\n".join(righe) + "\n")
+        with _LOG_LOCK:
+            if os.path.exists(LOG_FILE) and os.path.getsize(LOG_FILE) > 3_000_000:
+                righe = open(LOG_FILE, encoding="utf-8").read().splitlines()[-2000:]
+                tmp = LOG_FILE + ".tmp"
+                with open(tmp, "w", encoding="utf-8") as f:
+                    f.write("\n".join(righe) + "\n" + riga)
+                os.replace(tmp, LOG_FILE)      # rotazione atomica: nessuna riga persa
+            else:
+                with open(LOG_FILE, "a", encoding="utf-8") as f:
+                    f.write(riga)
     except Exception:
         pass
 
@@ -751,24 +789,32 @@ def cache_chiave(payload):
     return hashlib.sha1(base.encode()).hexdigest()
 
 
+# CURA-AUDIT (1/11 sera, F11 — audit ZCode): la cache aveva una corsa fra
+# min() (che sfoltisce) e pop() (che legge): la RuntimeError risaliva al
+# do_POST di una richiesta GIU' RIUSCITA. Lock dedicato.
+_CACHE_LOCK = threading.Lock()
+
+
 def cache_leggi(k):
     if not k:
         return None
-    v = _CACHE.get(k)
-    if v and time.time() - v[0] < CONFIG["cache_ttl"]:
-        d = json.loads(v[1])
-        d["model"] = str(d.get("model", "")) + " (cache)"
-        return d
-    _CACHE.pop(k, None)
+    with _CACHE_LOCK:
+        v = _CACHE.get(k)
+        if v and time.time() - v[0] < CONFIG["cache_ttl"]:
+            d = json.loads(v[1])
+            d["model"] = str(d.get("model", "")) + " (cache)"
+            return d
+        _CACHE.pop(k, None)
     return None
 
 
 def cache_scrivi(k, d):
     if not k:
         return
-    _CACHE[k] = (time.time(), json.dumps(d, ensure_ascii=False))
-    while len(_CACHE) > CONFIG["cache_max"]:
-        _CACHE.pop(min(_CACHE, key=lambda x: _CACHE[x][0]))
+    with _CACHE_LOCK:
+        _CACHE[k] = (time.time(), json.dumps(d, ensure_ascii=False))
+        while len(_CACHE) > CONFIG["cache_max"]:
+            _CACHE.pop(min(_CACHE, key=lambda x: _CACHE[x][0]))
 
 
 # ── FASE 2 · B4 · QUOTE PREVENTIVE (idea 48): frenare PRIMA del 429 ──────────
@@ -814,11 +860,20 @@ def freno(pid):
     ora = time.time()
     with LOCK:
         batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
-        _battiti[pid] = batt
         pieno = bool(al_min and len(batt) >= al_min)
         troppo_presto = bool(distanza and batt and ora - batt[-1] < distanza)
-    if pieno or troppo_presto:
-        return True
+        if pieno or troppo_presto:
+            _battiti[pid] = batt
+            return True
+        # CURA-AUDIT (1/11 sera, F9 — audit ZCode): il posto si PAGA qui,
+        # dentro il lucchetto. Prima il controllo e la registrazione erano
+        # separati (TOCTOU): due richieste simultanee passavano entrambe il
+        # freno e il provider riceveva un 429 di troppo (castighi immeri su
+        # provider sani).
+        batt.append(ora)
+        if len(batt) > CONFIG.get("battiti_max", 120):
+            batt = batt[-CONFIG.get("battiti_max", 120):]
+        _battiti[pid] = batt
     if al_giorno and uso_oggi(pid) >= al_giorno:
         return True
     return False
@@ -1181,7 +1236,9 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
             tentativi += 1
             per_questo += 1
             inizio = time.time()
-            batte(pid)                                    # idea 48: segna il battito
+            # CURA-AUDIT F9: il battito e' gia' stato registrato dentro
+            # freno(pid) (sotto lo stesso lucchetto): registrarlo qui
+            # riapriva la corsa.
             try:
                 req = urllib.request.Request(base + "/chat/completions", data=corpo,
                                              headers=intestazioni)
@@ -1230,7 +1287,11 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
                 tipo = classifica_errore(e.code, testo)
                 jitter = random.randint(0, 10)            # il saggio: sempre col jitter
                 # idea 24: on_status_codes — si RITENTA solo dove ha senso
-                if tipo in ("breve", "passeggero") and \
+                # CURA-AUDIT (1/11 sera, F7 — audit ZCode): si ritenta solo
+                # dove l'esito e' CERTO (il provider ha rifiutato). Un 5xx
+                # puo' essere gia' stato processato e fatturato: ritentarlo
+                # raddoppia la spesa.
+                if tipo == "breve" and \
                         per_questo <= CONFIG["retry_stesso"] and \
                         tentativi < CONFIG["max_tentativi"]:
                     time.sleep(min(CONFIG["backoff_base"] ** per_questo,
@@ -1262,6 +1323,21 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
                     segna(pid, False)
                 logga(tipo="errore-riserva", provider=pid, modello=modello,
                       errore=tipo, codice=e.code, tentativo=tentativi)
+                break
+            except (TimeoutError, socket.timeout):
+                # CURA-AUDIT (1/11 sera, F7 — audit ZCode): esito IGNOTO
+                # (il provider puo' aver completato e fatturato): niente
+                # ritento sullo stesso provider, si va in riserva.
+                castiga(pid, modello, CONFIG["cooldown_passeggero"])
+                segna(pid, False)
+                logga(tipo="errore-riserva", provider=pid, modello=modello,
+                      errore="timeout", tentativo=tentativi)
+                break
+            except json.JSONDecodeError:
+                # risposta oltre il tetto di lettura: gia' prodotta e pagata
+                logga(tipo="igiene", provider=pid, modello=modello,
+                      nota="risposta oltre il tetto di lettura, niente ritento")
+                segna(pid, False)
                 break
             except Exception as e:
                 # rete: merita UN ritento (idea 24), poi castigo passeggero
@@ -1415,7 +1491,13 @@ def scopri():
         except Exception:
             print("  ⚪ %-22s niente lista" % eti)
     try:
-        json.dump(cat, open(CATALOGO_FILE, "w", encoding="utf-8"))
+        # CURA-AUDIT (1/11 sera, F13 — audit ZCode): scrittura atomica. Un
+        # crash a meta' lasciava un JSON tronco → catalogo_leggi() restituiva
+        # {} → il routing diventava sordo in silenzio.
+        tmp = CATALOGO_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(cat, f, ensure_ascii=False)
+        os.replace(tmp, CATALOGO_FILE)
         print("Catalogo: %d provider, %d modelli → %s" % (len(cat), trovati, CATALOGO_FILE))
         print("RICORDA (idea 55): catalogo != accesso, la prova vera e' la risposta.")
     except Exception as e:
@@ -1428,7 +1510,9 @@ def pagina():
     su_motore = motore_vivo()
     pronti = sum(1 for pid in BASE if (voci.get(pid) or {}).get("esito") == "risponde")
     ora = time.time()
-    castigati = sum(1 for v in STATO["castighi"].values() if v > ora)
+    with LOCK:
+        _cast = dict(STATO["castighi"])       # snapshot: castiga() inserisce
+    castigati = sum(1 for v in _cast.values() if v > ora)
     corpo = []
     for pid, (url, modello) in BASE.items():
         v = voci.get(pid) or {}
@@ -1443,7 +1527,9 @@ def pagina():
             if p.get("ms_ewma") is not None:
                 nota += " · ~%dms" % p["ms_ewma"]
         if punito(pid, modello):
-            resta = max((v2 - ora) for k2, v2 in STATO["castighi"].items()
+            with LOCK:
+                _cast2 = dict(STATO["castighi"])
+            resta = max((v2 - ora) for k2, v2 in _cast2.items()
                         if v2 > ora and (k2.startswith(pid + "|") or
                                          k2 == "*|" + (modello or "")))
             nota += " · ⏸ castigo (%ds)" % int(resta)          # idea 43: countdown
@@ -1773,7 +1859,14 @@ class H(BaseHTTPRequestHandler):
         ricarica_gruppi()                                 # idee 30+45
         ricarica_quote()                                  # idea 48
         ricarica_regole()                                 # idea 38
-        sentinella()                                      # tracker quote, 1 volta/giorno
+        # CURA-AUDIT (1/11 sera, F6 — audit ZCode): la sentinella girava IN
+        # LINEA e bloccava fino a ~32s di rete la prima POST del giorno: il
+        # client scadeva, rimandava, e la richiesta veniva elaborata due
+        # volte (doppio costo). Ora gira in un thread.
+        if CONFIG.get("sentinella_ore") and \
+                time.time() - (STATO.get("sentinella") or {}).get("controllo", 0) \
+                >= CONFIG["sentinella_ore"] * 3600:
+            threading.Thread(target=sentinella, daemon=True).start()
         inizio = time.time()
         if self.path.startswith("/v1/images/generations"):
             try:
@@ -1828,7 +1921,10 @@ class H(BaseHTTPRequestHandler):
         comprimi_agente = True
         if F3_OK and PROFILI:
             prof = profilo_di(sess, PROFILI)
-            if prof:
+            # CURA-AUDIT (1/11 sera, F5 — audit ZCode): un profilo scritto
+            # male (una stringa invece di un dizionario) faceva AttributeError
+            # FUORI dal try -> empty reply per quell'agente.
+            if isinstance(prof, dict) and prof:
                 try:
                     payload, note = applica_profilo(payload, prof)
                     if note:
@@ -1933,9 +2029,18 @@ class H(BaseHTTPRequestHandler):
             d = inoltra(corpo, sessione=sess)
             msg0 = (d.get("choices") or [{}])[0].get("message", {}) if d else {}
             if d and not msg0.get("content") and not msg0.get("tool_calls"):
-                d = None                                  # igiene: 200 vuoto → riserva
-                logga(tipo="igiene", agente=sess, rotta="motore",
-                      nota="risposta vuota dal motore, passo alla riserva")
+                # CURA-AUDIT (1/11 sera, F7 — audit ZCode): un 200 con
+                # reasoning pieno e content vuoto (finish=length) NON e' un
+                # errore: e' il ragionatore che ha esaurito il budget. La
+                # riserva lo gia' rispettava, il motore no: e la richiesta
+                # finiva per generare DUE volte (doppio costo).
+                if msg0.get("reasoning") or msg0.get("reasoning_content"):
+                    logga(tipo="igiene", agente=sess, rotta="motore",
+                          nota="ragionatore senza budget, niente seconda generazione")
+                else:
+                    d = None                              # igiene: 200 vuoto → riserva
+                    logga(tipo="igiene", agente=sess, rotta="motore",
+                          nota="risposta vuota dal motore, passo alla riserva")
             if d:
                 d = ripara_tool_call(d, payload)          # idea 47 anche sul motore
                 conta_agente(sess, (d.get("usage") or {}).get("total_tokens", 0))
@@ -2004,7 +2109,9 @@ def stato():
     for v in pronti:
         print("  ✓", v.get("nome"), "·", v.get("modello") or "")
     ora = time.time()
-    castigati = [(k, int(v - ora)) for k, v in STATO["castighi"].items() if v > ora]
+    with LOCK:
+        _cast3 = dict(STATO["castighi"])
+    castigati = [(k, int(v - ora)) for k, v in _cast3.items() if v > ora]
     if castigati:
         print("In castigo:", ", ".join("%s (%ds)" % c for c in castigati))
     print("Portiere (20129):", "🟢 acceso" if vivo("http://127.0.0.1:%d" % PORTA) else "🔴 spento")
