@@ -110,3 +110,4 @@
 {"tipo": "errore-riserva", "provider": "pollinations", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 23:12:55"}
 {"tipo": "errore-riserva", "provider": "cloudflare", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 23:12:55"}
 {"tipo": "errore-riserva", "provider": "tokenharbor", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 23:12:55"}
+{"tipo": "banale", "agente": "cervello-2de5c12e398bc6e0", "rotta": "locale", "ms": 0, "quando": "2026-11-01 23:26:12"}
