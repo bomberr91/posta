@@ -141,6 +141,15 @@ CONFIG = {
     # — SENTINELLA QUOTE (31/10, 2 occhi): fonti sorvegliate una volta al giorno —
     "sentinella_repos": ["CYBIRD-D/FREE-LLM-API-Provider",
                          "open-free-llm-api/awesome-freellm-apis"],
+    # sentinelle-PAGINE (1/11): promo e regali — impronta del contenuto utile
+    "sentinella_pagine": [
+        {"nome": "zcode-daily (freeaihub)",
+         "url": "https://freeaihub.org/en/benefits/zcode-daily-300m-glm53-flash-tokens/",
+         "estrai": r"(Available|Ended|Expired|tokens daily[^<]{0,60})"},
+        {"nome": "zcode promo (aipromonow)",
+         "url": "https://www.aipromonow.com/en/promos/zcode-global-build-glm53-flash-3e8-oct27-2026",
+         "estrai": r"(no longer works|Verified|every day[^<]{0,40})"},
+    ],
     "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
     # — FASE 3 (idee 1-2: compressione · 13+16: profili per-agente) —
     "comprimi_riserva": True,    # la dieta vale SOLO per la riserva (il motore fa da se')
@@ -517,6 +526,20 @@ def sentinella():
     if st.get("push_visto"):                              # migrazione dal 1° occhio
         visti.setdefault(CONFIG["sentinella_repos"][0], st.pop("push_visto"))
     avvisi = []
+    # occhi sulle PAGINE (promo/regali)
+    for pg in CONFIG.get("sentinella_pagine", []):
+        try:
+            import re as _re, hashlib as _h
+            req = urllib.request.Request(pg["url"], headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
+            corpo = urllib.request.urlopen(req, timeout=10).read().decode(errors="replace")
+            trovati = " · ".join(sorted(set(_re.findall(pg["estrai"], corpo)))[:5])
+            impronta = _h.sha1(trovati.encode()).hexdigest()[:10]
+            prima = visti.get("pg:" + pg["nome"])
+            if prima and prima != impronta:
+                avvisi.append("%s CAMBIATA (%s)" % (pg["nome"], trovati[:80]))
+            visti["pg:" + pg["nome"]] = impronta
+        except Exception:
+            continue
     for repo in CONFIG.get("sentinella_repos", []):
         try:
             req = urllib.request.Request("https://api.github.com/repos/" + repo,
