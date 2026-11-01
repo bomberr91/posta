@@ -14,7 +14,7 @@ yt-dlp -U 2>/dev/null | tail -1
 V=/tmp/occhi_video.mp4
 rm -f "$V"
 echo "## 1. Scarico (prima senza cookie: molti reel sono pubblici)"
-if ! yt-dlp -q -f "best[height<=480][ext=mp4]/best[ext=mp4]/best" --max-filesize 40M -o "$V" "$URL" 2>&1 | tail -2; then true; fi
+if ! yt-dlp -q -f "w[ext=mp4][acodec!=none]/b[height<=360][ext=mp4]/w" --max-filesize 40M -o "$V" "$URL" 2>&1 | tail -2; then true; fi
 if [ ! -s "$V" ]; then
   echo "   pubblico no → provo coi cookie del BROWSER_AGENTI (Chromium :9222)"
   PROF=$(ls -d /mnt/c/Users/giopi/*Browser*Profile* /mnt/c/Users/giopi/AppData/Local/agenti/*rofile* 2>/dev/null | head -1)
@@ -22,16 +22,21 @@ if [ ! -s "$V" ]; then
 fi
 if [ ! -s "$V" ]; then echo "❌ SCARICAMENTO FALLITO (serve forse la via-screenshot)"; exit 0; fi
 echo "   ✓ scaricato: $(du -h "$V" | cut -f1)"
+# ffmpeg: se manca, scarico il binario statico una volta per tutte (niente sudo)
+FF=$(command -v ffmpeg || echo "$HOME/.local/bin/ffmpeg")
+if [ ! -x "$FF" ]; then
+  echo "   installo ffmpeg statico (una tantum)..."
+  mkdir -p ~/.local/bin /tmp/ffst && cd /tmp/ffst
+  curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ff.tar.xz \
+    && tar xf ff.tar.xz && cp ffmpeg-*-static/ffmpeg ~/.local/bin/ && chmod +x ~/.local/bin/ffmpeg \
+    && echo "   ✓ ffmpeg pronto" || echo "   ffmpeg statico non scaricabile (si tira dritto)"
+  cd ~/posta
+fi
 DIM=$(stat -c%s "$V")
-if [ "$DIM" -gt 13000000 ]; then
-  if command -v ffmpeg > /dev/null; then
-    echo "   grosso ($((DIM/1000000))MB) → snellisco con ffmpeg (360p)"
-    ffmpeg -y -loglevel error -i "$V" -vf scale=-2:360 -r 12 -b:v 350k -ac 1 -b:a 48k /tmp/occhi_s.mp4 && mv /tmp/occhi_s.mp4 "$V"
-    echo "   → ora: $(du -h "$V" | cut -f1)"
-  else
-    echo "   grosso e NIENTE ffmpeg → riprovo col formato minimo"
-    yt-dlp -q -f "w[ext=mp4]/w" -o /tmp/occhi_w.mp4 "$URL" 2>/dev/null && [ -s /tmp/occhi_w.mp4 ] && mv /tmp/occhi_w.mp4 "$V" && echo "   → ora: $(du -h "$V" | cut -f1)"
-  fi
+if [ "$DIM" -gt 4000000 ] && [ -x "$FF" ]; then
+  echo "   dieta Gemini: 360p a 1.5fps (lui campiona a 1fps, non perde nulla)"
+  "$FF" -y -loglevel error -i "$V" -vf scale=-2:360 -r 1.5 -b:v 120k -ac 1 -b:a 40k /tmp/occhi_s.mp4 \
+    && mv /tmp/occhi_s.mp4 "$V" && echo "   → ora: $(du -h "$V" | cut -f1)"
 fi
 echo
 echo "## 2. Gemini guarda il video"
