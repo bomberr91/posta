@@ -45,26 +45,27 @@ BASE = "https://generativelanguage.googleapis.com"
 
 def genera(parte_video):
     corpo = json.dumps({"contents": [{"parts": [parte_video, {"text": PROMPT}]}]}).encode()
-    req = urllib.request.Request(BASE + "/v1beta/models/gemini-2.0-flash:generateContent?key=" + chiave,
-                                 data=corpo, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(BASE + "/v1beta/models/gemini-2.0-flash:generateContent",
+                                 data=corpo, headers={"Content-Type": "application/json", "Authorization": "Bearer " + chiave})
     d = json.loads(urllib.request.urlopen(req, timeout=600).read().decode())
     return d["candidates"][0]["content"]["parts"][0]["text"]
 
 # VIA 1: File API col protocollo resumable VERO (2 passi)
 try:
-    avvio = urllib.request.Request(BASE + "/upload/v1beta/files?key=" + chiave,
+    avvio = urllib.request.Request(BASE + "/upload/v1beta/files",
         data=json.dumps({"file": {"display_name": "reel"}}).encode(), method="POST",
         headers={"X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start",
                  "X-Goog-Upload-Header-Content-Length": str(len(dati)),
                  "X-Goog-Upload-Header-Content-Type": "video/mp4",
-                 "Content-Type": "application/json"})
+                 "Content-Type": "application/json", "Authorization": "Bearer " + chiave})
     r = urllib.request.urlopen(avvio, timeout=60)
     url_su = r.headers.get("X-Goog-Upload-URL")
     carica = urllib.request.Request(url_su, data=dati, method="POST",
         headers={"X-Goog-Upload-Command": "upload, finalize", "X-Goog-Upload-Offset": "0"})
     f = json.loads(urllib.request.urlopen(carica, timeout=600).read().decode())["file"]
     for _ in range(40):
-        st = json.loads(urllib.request.urlopen(BASE + "/v1beta/" + f["name"] + "?key=" + chiave, timeout=30).read().decode())
+        s_req = urllib.request.Request(BASE + "/v1beta/" + f["name"], headers={"Authorization": "Bearer " + chiave})
+        st = json.loads(urllib.request.urlopen(s_req, timeout=30).read().decode())
         if st.get("state") == "ACTIVE": break
         time.sleep(4)
     print(genera({"file_data": {"mime_type": "video/mp4", "file_uri": f["uri"]}}))
