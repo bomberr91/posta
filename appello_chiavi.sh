@@ -107,7 +107,13 @@ prova(){
   [ -z "$CAND" ] && CAND="$mod"
   modello=$(printf '%s\n' "$CAND" | head -1)
 
-  if [ "$SVELTO" = "1" ] || [ "$modo" = "modelli" ]; then
+  # AUDIT FINALE (1/11 sera): i provider in modo "modelli" NON venivano
+  # interrogati col chat: finivano in "strano / elenco modelli 404" senza mai
+  # essere provati davvero. Molti di loro (NVIDIA, HuggingFace Router, Kilo,
+  # LLM7, Inferbase...) rispondono invece su /chat/completions: ora si prova
+  # la domanda vera ANCHE per loro, con il modello suggerito se /models
+  # non ha dato niente.
+  if [ "$SVELTO" = "1" ]; then
     if [ "$code" = "200" ]; then esito="risponde"; extra="chiave valida · modello visto: ${modello:-?}"
     elif [ "$code" = "429" ]; then esito="occupato"; extra="troppe richieste adesso (429)"
     elif [ "$code" = "000" ] || [ -z "$code" ]; then esito="rete"; extra="non raggiungibile"
