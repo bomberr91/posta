@@ -156,6 +156,49 @@ class ProvaVivaTests(unittest.TestCase):
         self.assertEqual((d.get("usage") or {}).get("total_tokens"), 0)
 
 
+    def test_f1_il_body_malformato_risponde_e_non_muore(self):
+        """F1: Content-Length non numerico, JSON non-oggetto, messaggi strani.
+
+        PRIMA: eccezione non gestita -> il server chiudeva la connessione a
+        vuoto ("empty reply"). ORA: deve SEMPRE arrivare una risposta HTTP.
+        """
+        import http.client
+        from urllib.error import HTTPError
+
+        # 1) JSON valido ma non un oggetto
+        try:
+            con = urllib.request.urlopen(urllib.request.Request(
+                self.base + "/v1/chat/completions", data=b"[1,2]",
+                headers={"Content-Type": "application/json"}), timeout=10)
+            con.close()
+            self.fail("un body non-oggetto deve dare 400")
+        except HTTPError as e:
+            self.assertEqual(e.code, 400)
+            e.close()
+
+        # 2) messages con elementi che non sono dizionari
+        try:
+            self._post("/v1/chat/completions", {"model": "auto", "messages": ["ciao"]})
+            self.fail("messages non-dizionario: doveva essere 400")
+        except HTTPError as e:
+            self.assertEqual(e.code, 400)
+            e.close()
+
+        # 3) Content-Length non numerico (via http.client grezzo)
+        c = http.client.HTTPConnection("127.0.0.1", self.porta, timeout=10)
+        try:
+            c.putrequest("POST", "/v1/chat/completions")
+            c.putheader("Content-Type", "application/json")
+            c.putheader("Content-Length", "abc")
+            c.endheaders()
+            c.send(b'{"model":"auto","messages":[{"role":"user","content":"ping"}]}')
+            r = c.getresponse()
+            self.assertIn(r.status, (200, 400, 413),
+                          "Content-Length non numerico: la connessione e' caduta")
+            r.read()
+        finally:
+            c.close()
+
 class GuardiaSoloGratisTests(unittest.TestCase):
     """La guardia anti-spesa: i modelli a pagamento non passano."""
 
@@ -303,3 +346,120 @@ class MaxTokensTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# CURA-AUDIT (1/11 sera): i test che SAZIONO dire NO.
+#
+# Vengono dal secondo audit (ZCode, modello diverso): hanno trovato la
+# classe di bug che ci ha fatto perdere la serata del 1/11 — l'"empty
+# reply", cioe' la connessione chiusa a vuoto senza nessun errore.
+# Prima di queste correzioni (F1/F2/F3) questi test FALLIScono.
+# ─────────────────────────────────────────────────────────────────────────
+
+class CorrezioniCriticheTests(unittest.TestCase):
+    """F1, F2, F3: i tre bug che potevano spegnere il Portiere."""
+
+    def test_f2_una_riga_sbagliata_non_ammazza_la_richiesta(self):
+        """F2: indirizzo() lanciava ValueError FUORI dal try della riserva.
+
+        Una sola riga con "http://" in portiere_lista.txt ammazzava TUTTA la
+        richiesta invece di saltare quel provider e fare failover.
+        """
+        salva = {n: getattr(cerv, n) for n in
+                 ("indirizzo", "chiave", "in_salute", "punito", "freno", "a_pagamento")}
+        salva_base = dict(cerv.BASE)
+        try:
+            def indirizzo_rotto(pid, k):
+                raise ValueError("chiave su http in chiaro rifiutata")
+            cerv.indirizzo = indirizzo_rotto
+            cerv.chiave = lambda pid: "chiave-finta"
+            cerv.in_salute = lambda pid: True
+            cerv.punito = lambda pid, modello: False
+            cerv.freno = lambda pid: False
+            cerv.a_pagamento = lambda modello: False
+            cerv.BASE["pippo-test"] = ("http://esempio.invalido", "modello-test")
+            # non deve sollevare: deve semplicemente saltare quel provider
+            risultato = cerv.riserva({"model": "auto", "messages": []})
+            self.assertIsNotNone(risultato, "la riserva deve rispondere qualcosa")
+        finally:
+            for n, v in salva.items():
+                setattr(cerv, n, v)
+            cerv.BASE.clear()
+            cerv.BASE.update(salva_base)
+
+    def test_f3_uno_stato_corrotto_non_ammazza_le_chat(self):
+        """F3: stato_carica() non validava i tipi annidati.
+
+        Un solo campo corrotto (ms_ewma) faceva TypeError nel sort della
+        riserva -> ogni chat "auto" in empty reply.
+        """
+        prima_stato = cerv.STATO
+        prima_file = cerv.STATO_FILE
+        provvisorio = None
+        try:
+            fd, provvisorio = tempfile.mkstemp(suffix=".json", prefix="stato-annidato-")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump({"castighi": {},
+                           "pagella": {"p1": {"ok": 3, "ko": 0, "ms_ewma": "abc",
+                                              "ms_quando": "ieri", "fila_ko": "x"}},
+                           "uso": {"p1": {"n": "non un numero", "token": 5}},
+                           "sessioni": {"s1": {"pid": 3, "quando": "adesso"}},
+                           "agenti": {}}, f)
+            cerv.STATO_FILE = provvisorio
+            cerv.stato_carica()
+            p = cerv.STATO["pagella"].get("p1", {})
+            self.assertNotIn("ms_ewma", p, "ms_ewma non numerico deve essere scartato")
+            self.assertNotIn("ms_quando", p, "ms_quando non numerico deve essere scartato")
+            self.assertEqual(p.get("fila_ko"), 0)
+            self.assertNotIn("p1", cerv.STATO.get("uso", {}))
+            self.assertNotIn("s1", cerv.STATO.get("sessioni", {}))
+        finally:
+            cerv.STATO = prima_stato
+            cerv.STATO_FILE = prima_file
+            if provvisorio:
+                try:
+                    os.unlink(provvisorio)
+                except OSError:
+                    pass
+
+
+class ProfiliAgenteTests(unittest.TestCase):
+    """F5: un profilo non-dizionario non deve ammazzare l'agente."""
+
+    def test_un_profilo_non_dizionario_non_ammazza_la_chat(self):
+        salva = cerv.PROFILI
+        try:
+            cerv.PROFILI = {"x-": "stringa invece di un dizionario"}
+            # non deve sollevare: il profilo va ignorato
+            try:
+                cerv.profilo_di("x-1", cerv.PROFILI)
+            except Exception as e:
+                self.fail("profilo_di doveva tollerare un profilo non-dizionario: %r" % (e,))
+        finally:
+            cerv.PROFILI = salva
+
+
+class ConcorrenzaTests(unittest.TestCase):
+    """F9/F10/F11: molti thread insieme non devono far esplodere nulla."""
+
+    def test_la_concorrenza_non_produce_nessuna_eccezione(self):
+        errori = []
+
+        def lavoro():
+            try:
+                for i in range(20):
+                    cerv.batte("p-test")
+                    cerv.segna("p-test", True, 120)
+                    cerv.cache_scrivi("chiave-test-%d" % i, {"d": i})
+                    cerv.cache_chiave({"model": "auto",
+                                       "messages": [{"role": "user", "content": "x"}]})
+            except Exception as e:                     # noqa: BLE001
+                errori.append(repr(e))
+
+        threads = [threading.Thread(target=lavoro) for _ in range(20)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join(timeout=60)
+        self.assertEqual(errori, [], "eccezioni in concorrenza: %s" % errori[:3])

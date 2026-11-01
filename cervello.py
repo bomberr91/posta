@@ -453,6 +453,30 @@ def stato_carica():
         for campo in ("ok", "ko"):
             if not isinstance(p.get(campo), int):
                 p[campo] = 0
+    # CURA-AUDIT (1/11 sera, F3 — audit ZCode): validazione dei tipi ANNIDATI.
+    # Un solo campo corrotto in portiere_stato.json (ms_ewma, ms_quando, uso.n,
+    # sessioni.quando) faceva TypeError nel sort della riserva → ogni chat
+    # "auto" in empty reply finche' il file non si riparava a mano.
+    for pid, p in list(nuovo["pagella"].items()):
+        if not isinstance(p, dict):
+            continue
+        for campo in ("ok", "ko", "fila_ko"):
+            if not isinstance(p.get(campo), int) or isinstance(p.get(campo), bool):
+                p[campo] = 0
+        for campo in ("ultimo_ko", "ms_quando"):
+            if not isinstance(p.get(campo), (int, float)) or isinstance(p.get(campo), bool):
+                p.pop(campo, None)
+        me = p.get("ms_ewma")
+        if not isinstance(me, (int, float)) or isinstance(me, bool):
+            p.pop("ms_ewma", None)
+    for pid, u in list(nuovo.get("uso", {}).items()):
+        if not isinstance(u, dict) or not isinstance(u.get("n"), int) \
+                or not isinstance(u.get("token"), int):
+            nuovo["uso"].pop(pid, None)
+    for s, v in list(nuovo.get("sessioni", {}).items()):
+        if not isinstance(v, dict) or not isinstance(v.get("pid"), str) \
+                or not isinstance(v.get("quando"), (int, float)) or isinstance(v.get("quando"), bool):
+            nuovo["sessioni"].pop(s, None)
     STATO = nuovo
     STATO.setdefault("castighi", {})
     STATO.setdefault("pagella", {})
@@ -1116,7 +1140,10 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
         if tentativi >= CONFIG["max_tentativi"]:
             break
         pid = v["id"]
-        _, modello = BASE[pid]
+        try:
+            _, modello = BASE[pid]
+        except KeyError:
+            continue                                 # hot-reload mentre la richiesta vola
         modello = v.get("modello") or modello
         if punito(pid, modello):                          # idea 17
             continue
@@ -1129,7 +1156,13 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
         k = chiave(pid)
         if not k:
             continue
-        base, intestazioni = indirizzo(pid, k)
+        try:
+            base, intestazioni = indirizzo(pid, k)
+        except (KeyError, ValueError) as e:
+            # una riga sbagliata in portiere_lista.txt deve far saltare SOLO
+            # quel provider (failover), non ammazzare tutta la richiesta
+            logga(tipo="errore-riserva", provider=pid, errore="indirizzo", nota=str(e)[:120])
+            continue
         intestazioni["Content-Type"] = "application/json"
         if sessione:
             intestazioni["x-opencode-session"] = sessione  # idea 58
@@ -1743,10 +1776,15 @@ class H(BaseHTTPRequestHandler):
         sentinella()                                      # tracker quote, 1 volta/giorno
         inizio = time.time()
         if self.path.startswith("/v1/images/generations"):
-            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+            except (TypeError, ValueError):
+                n = 0
             try:
                 corpo = json.loads(self.rfile.read(n).decode() or "{}")
             except Exception:
+                corpo = {}
+            if not isinstance(corpo, dict):
                 corpo = {}
             d = immagini((corpo.get("prompt") or "").strip())
             if d:
@@ -1759,11 +1797,24 @@ class H(BaseHTTPRequestHandler):
         if not self.path.startswith("/v1/chat/completions"):
             self._json({"errore": "solo /v1/chat/completions"}, 404)
             return
-        n = int(self.headers.get("Content-Length") or 0)
+        # CURA-AUDIT (1/11 sera, F1 — audit ZCode): il body NON poteva mai
+        # ammazzare la connessione. "empty reply" era esattamente questo.
+        try:
+            n = int(self.headers.get("Content-Length") or 0)
+        except (TypeError, ValueError):
+            n = 0
+        if n > CONFIG.get("risposta_max", 8_000_000):
+            self._json({"error": {"message": "corpo troppo grande"}}, 413)
+            return
         try:
             payload = json.loads(self.rfile.read(n).decode() or "{}")
         except Exception:
             self._json({"error": {"message": "corpo non valido"}}, 400)
+            return
+        if not isinstance(payload, dict) \
+                or not isinstance(payload.get("messages", []), list) \
+                or any(not isinstance(m, dict) for m in payload.get("messages", [])):
+            self._json({"error": {"message": "payload non valido"}}, 400)
             return
         vuole_stream = bool(payload.pop("stream", False))
         payload.pop("stream_options", None)
