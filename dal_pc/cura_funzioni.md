@@ -440,3 +440,86 @@ def batte(pid):
 ```
 
 ## LOTTO 2
+
+
+### FIX 6
+```python
+def sentinella():
+    """Una volta al giorno guarda se le FONTI delle quote (CYBIRD-D +
+    awesome-freellm-apis/freellm.net) hanno pubblicato aggiornamenti.
+    Niente thread: controllo pigro sul primo traffico utile della giornata."""
+    if not CONFIG.get("sentinella_ore"):
+        return
+    st = STATO.setdefault("sentinella", {})
+    if time.time() - st.get("controllo", 0) < CONFIG["sentinella_ore"] * 3600:
+        return
+    st["controllo"] = time.time()
+    visti = st.setdefault("visti", {})
+    repos_mig = CONFIG.get("sentinella_repos") or []
+    if st.get("push_visto") and repos_mig:                # migrazione dal 1° occhio
+        visti.setdefault(repos_mig[0], st.pop("push_visto"))
+    avvisi = []
+    # occhi sulle PAGINE (promo/regali)
+    for pg in CONFIG.get("sentinella_pagine", []):
+        try:
+            import re as _re, hashlib as _h
+            req = urllib.request.Request(pg["url"], headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
+            corpo = urllib.request.urlopen(req, timeout=10).read().decode(errors="replace")
+            trovati = " · ".join(sorted(set(_re.findall(pg["estrai"], corpo)))[:5])
+            impronta = _h.sha1(trovati.encode()).hexdigest()[:10]
+            prima = visti.get("pg:" + pg["nome"])
+            if prima and prima != impronta:
+                avvisi.append("%s CAMBIATA (%s)" % (pg["nome"], trovati[:80]))
+            visti["pg:" + pg["nome"]] = impronta
+        except Exception:
+            continue
+    for repo in CONFIG.get("sentinella_repos", []):
+        try:
+            req = urllib.request.Request("https://api.github.com/repos/" + repo,
+                                         headers={"User-Agent": "Mozilla/5.0 cervello/2.1"})
+            d = json.loads(urllib.request.urlopen(req, timeout=6).read().decode())
+            push = (d.get("pushed_at") or "")[:10]
+            if push and visti.get(repo) and push != visti[repo]:
+                avvisi.append("%s (push %s)" % (repo.split("/")[-1], push))
+            if push:
+                visti[repo] = push
+        except Exception:
+            continue
+    if avvisi:
+        st["avviso"] = "fonti quote aggiornate: " + " · ".join(avvisi) + \
+            " — ricontrollare portiere_quote.txt"
+        logga(tipo="sentinella", nota=st["avviso"])
+    stato_salva(forza=True)
+```
+
+### FIX 7
+```python
+    def _sessione(self):
+        """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""
+        s = self.headers.get("x-opencode-session") or ""
+        s = "".join(s.split())[:64]
+        if s:
+            return s
+        ua = self.headers.get("user-agent", "") or "agente"
+        return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]
+```
+
+### FIX 8
+```python
+def indirizzo(pid, k):
+    """Indirizzo e intestazioni per quel provider (Cloudflare ha un formato suo)."""
+    url, _ = BASE[pid]
+    UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1"}
+    if url == "SPECIALE-CLOUDFLARE":
+        acc, _, tok = (k or "").partition(":")
+        return ("https://api.cloudflare.com/client/v4/accounts/%s/ai/v1" % acc,
+                dict(UA, Authorization="Bearer " + tok))
+    if url.startswith("http://"):
+        import urllib.parse
+        host = (urllib.parse.urlsplit(url).hostname or "").lower()
+        if host not in ("127.0.0.1", "localhost"):
+            raise ValueError("chiave su http in chiaro rifiutata")
+    return url, dict(UA, Authorization="Bearer " + k)
+```
+
+## REVISIONE
