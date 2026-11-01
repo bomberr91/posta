@@ -51,11 +51,19 @@ def chiave(testo, percorso):
         righe = open(percorso, encoding="utf-8", errors="replace").read().splitlines()
     except Exception:
         return "", ""
+    # 1/11 sera: la ricerca pretendeva il prefisso "**" e quindi NON trovava
+    # le righe del registro scritte cosi' ("agentrouter sk-..."): AgentRouter
+    # risultava "nessuna chiave" pur avendo la chiave. Ora si prova anche il
+    # nome semplice, come parola intera.
     cercato = "**" + testo.lower()
-    # provo TUTTE le righe che parlano di questo provider, e mi fermo alla prima
-    # che contiene davvero una chiave (così non mi frega una riga di riepilogo)
+    semplice = testo.lower()
     for i, riga in enumerate(righe):
-        if cercato not in riga.lower():
+        rl = riga.lower()
+        if cercato in rl:
+            pass
+        elif re.search(r"\b" + re.escape(semplice) + r"\b", rl):
+            pass
+        else:
             continue
         pezzo = [riga]
         if i + 1 < len(righe) and "chiave completa" in righe[i + 1].lower():
