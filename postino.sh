@@ -70,6 +70,20 @@ sync_up(){
   # nella cartella: GitHub rifiutava la push ("push declined due to repository
   # rule violations"), il lavoro restava LOCALE e il postino non capiva perché.
   # Il postino si occupa solo delle sue tre cartelle.
+  # CURA-AUDIT (1/11 sera): FILTRO DI PUBBLICAZIONE. GitHub ha la push
+  # protection: se una risposta contiene una stringa che sembra una chiave
+  # (sk-…, ghp_…, tvly-…, un token lungo), la push viene RIFIUTATA ("push
+  # declined due to repository rule violations") e il postino si blocca in
+  # un loop, con il lavoro che resta in locale per sempre. Prima di
+  # committare, ogni stringa lunga nelle risposte viene mascherata: si
+  # pubblica il rapporto, non la chiave.
+  for _d in dal_pc fatti da_me; do
+    [ -d "$_d" ] || continue
+    find "$_d" -maxdepth 1 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+    | while IFS= read -r -d '' _f; do
+        sed -i -E 's/([A-Za-z0-9_-]{10})[A-Za-z0-9_-]{14,}/\1.../g' "$_f" 2>/dev/null || true
+      done
+  done
   git add -A dal_pc fatti da_me >/dev/null 2>&1 \
     || git add -A dal_pc fatti >/dev/null 2>&1 \
     || git add -A >/dev/null 2>&1
