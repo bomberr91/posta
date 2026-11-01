@@ -34,7 +34,7 @@ echo "— il default del provider nel Setup:"
 grep -n 'model_provider: str = ' "$D/web_app.py" | head -3
 echo "— ROUTE_VIA_OPENROUTER nel .env:"
 grep -E "^ROUTE_VIA_OPENROUTER|^WEB_SEARCH_ENGINE|^OPENROUTER_API_KEY|^EXA_API_KEY|^TAVILY_API_KEY" "$D/.env" 2>/dev/null \
-  | sed -E 's/=(.{0,10}).*/=\1…(mascherata)/'
+  | sed -E 's/=(.{12,}).*/=\1…(mascherata)/'
 echo
 
 # ── 2. IL CEROTTO ─────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ io.open(F, "w", encoding="utf-8").write(src)
 print("   applicati:", ", ".join(modifiche))
 PATCHEOF
 
-"$PY" /tmp/dd_patch.py
+python3 /tmp/dd_patch.py          # python di WSL: /mnt/c lo capisce
 RC=$?
 if [ $RC -ne 0 ]; then
   echo "❌ il cerotto non è stato applicato (exit $RC): il cane resta com'era"
@@ -153,7 +153,8 @@ grep -n 'model_provider: str = ' "$D/web_app.py" | head -2
 echo
 
 echo "— compila?"
-"$PY" -m py_compile "$D/web_app.py" && echo "   ✓ web_app.py compila" || {
+WIN_WEB_APP="$(wslpath -w "$D/web_app.py" 2>/dev/null || echo "$D/web_app.py")"
+"$PY" -m py_compile "$WIN_WEB_APP" && echo "   ✓ web_app.py compila" || {
   echo "❌ web_app.py NON compila: ripristino il backup"
   ls -t "$D"/web_app.py.bak-* 2>/dev/null | head -1 | xargs -r -I{} cp {} "$D/web_app.py"
   exit 1
@@ -254,7 +255,12 @@ if ! echo "$ST" | grep -q '"report": *"[^"]'; then
 fi
 
 # ── 4. CHIUDO ────────────────────────────────────────────────────────────
-kill "$SRV" 2>/dev/null
+kill "$SRV" 2>/dev/null || true
+# il kill su un processo WINDOWS lanciato da WSL non è affidabile: riprovo
+# con il pattern esatto (NON coincide con la riga di comando di questo job,
+# che è "bash da_me/deepdog_fix.sh")
+pkill -f "web_app.PORT=8766" 2>/dev/null || true
+sleep 1
 echo
 echo "✅ CEROTTO APPLICATO E COLLAUDATO — la ricerca è uscita pulita (niente 402)"
 echo "   il TUO server sulla 8765 non è stato toccato: riavvialo col .bat"
