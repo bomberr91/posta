@@ -77,13 +77,42 @@ sync_up(){
   # un loop, con il lavoro che resta in locale per sempre. Prima di
   # committare, ogni stringa lunga nelle risposte viene mascherata: si
   # pubblica il rapporto, non la chiave.
-  for _d in dal_pc fatti da_me; do
+  # CURA-AUDIT (1/11 sera, 2° giro): il filtro era troppo grossolano — mascherava
+  # QUALSIASI stringa da 24 caratteri: avrebbe troncato URL, citazioni e id
+  # dei report di Deep Dog. Ora maschera SOLO le stringhe che sono chiavi, e
+  # subito dopo RICONTROLLA: se ne resta una, la commit non parte (meglio
+  # perdere un report che farsi respinere la push). Niente da_me: lì i compiti
+  # aspettano di essere eseguiti e mascherarli li romperebbe.
+  CHIAVI_RE='sk-or-v1-[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{24,}|tvly-[A-Za-z0-9_-]{16,}|ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|cc3a11cf-[0-9a-fA-F-]{20,}|exa_[A-Za-z0-9]{16,}|oc_sk_[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}'
+  for _d in dal_pc fatti; do
     [ -d "$_d" ] || continue
-    find "$_d" -maxdepth 1 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+    find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
     | while IFS= read -r -d '' _f; do
-        sed -i -E 's/([A-Za-z0-9_-]{10})[A-Za-z0-9_-]{14,}/\1.../g' "$_f" 2>/dev/null || true
+        sed -i -E "s/($CHIAVI_RE)/«chiave mascherata»/g" "$_f" 2>/dev/null || true
       done
   done
+  RESIDUI=0
+  for _d in dal_pc fatti; do
+    [ -d "$_d" ] || continue
+    RESIDUI=$(( RESIDUI + $(find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+      | while IFS= read -r -d '' _f; do grep -cE "$CHIAVI_RE" "$_f" 2>/dev/null || echo 0; done | awk '{s+=$1} END{print s+0}') ))
+  done
+  if [ "$RESIDUI" -gt 0 ]; then
+    say "⛔ restano $RESIDUI stringhe-chiave: la commit NON parte (meglio perdere un report che farsi respinere la push)"
+    return 1
+  fi
+  # I REPORT DI DEEP DOG atterrano sul PC (cartella outputs/): li porto in
+  # dal_pc/deepdog_reports/ così vengono pubblicati e gli agenti li ritrovano
+  # anche se il PC viene formattato.
+  DD_OUT="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/outputs"
+  if [ -d "$DD_OUT" ]; then
+    mkdir -p dal_pc/deepdog_reports
+    find "$DD_OUT" -maxdepth 1 -type f -name '*.md' -print0 2>/dev/null \
+    | while IFS= read -r -d '' _r; do
+        _b="$(basename "$_r")"
+        [ -f "dal_pc/deepdog_reports/$_b" ] || cp -p "$_r" "dal_pc/deepdog_reports/$_b" 2>/dev/null || true
+      done
+  fi
   # NB: anche gui/ (dove vivono i cruscotti: hub, index, cruscotto) — così
   # le loro modifiche vengono versionate e non si perdono col PC.
   git add -A dal_pc fatti da_me gui >/dev/null 2>&1 \
