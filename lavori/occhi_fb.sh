@@ -4,6 +4,11 @@
 #   2) --batch    → tanti URL in fila, UN rapporto riassuntivo (da file .txt o da argomenti)
 #   3) --cataloga → pagina FB (non video): titolo/immagini/link/testo, SENZA aprire il browser
 #
+# SECONDO TENTATIVO: se un URL fallisce, si riprova UNA volta con strategia DIVERSA
+# (mai lo stesso metodo): UA browser normale invece dello standard, download diretto,
+# via inline forzata invece della File API. Se fallisce anche la riserva, si segnalano
+# i due errori e si va avanti: niente terzo tentativo.
+#
 # Uso:
 #   bash lavori/occhi_fb.sh "URL_VIDEO" [nome_rapporto]
 #   bash lavori/occhi_fb.sh --batch lista.txt
@@ -22,6 +27,10 @@ OCCHI-FB — occhio Facebook del PC
   bash lavori/occhi_fb.sh --batch lista.txt       tanti URL (uno per riga, # = commento) → UN rapporto
   bash lavori/occhi_fb.sh --batch "URL1" "URL2"   idem, con gli URL direttamente da riga di comando
   bash lavori/occhi_fb.sh --cataloga "URL_PAGINA" cosa c'è in una pagina (titolo/immagini/link/testo)
+
+Ogni URL ha DUE tentativi con strategie diverse (mai lo stesso metodo due volte):
+il primo standard, il secondo di riserva (UA browser → download diretto → inline forzato).
+Il riepilogo mostra entrambi: metodo + errore del 1°, metodo + esito del 2°.
 
 Rapporti in: ~/posta/dal_pc/ (committati e spinti su git come sempre)
 USO
@@ -68,39 +77,89 @@ pubblica() {
   git push -q origin HEAD:main 2>/dev/null || echo "   (push rimandato: il commit resta locale, il postino lo raccoglierà)"
 }
 
-# ---------- GUARDA un video: pipeline storica (stampa il suo pezzo di rapporto) ----------
-occhi_uno() {
+UA_BROWSER="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+
+# ---------- SCARICO video: due strategie VOLUTAMENTE diverse ----------
+# T1: yt-dlp come da sempre (UA standard + cookie se servono)
+scarico_std() {
   local URL="$1"
-  export PATH="$HOME/.local/bin:$PATH"
-  V=/tmp/occhi_video.mp4
   rm -f "$V"
-  echo "### 1. Scarico (prima senza cookie: molti reel sono pubblici)"
   if ! yt-dlp -q -f "w[ext=mp4][acodec!=none]/b[height<=360][ext=mp4]/w" --max-filesize 40M -o "$V" "$URL" 2>&1 | tail -2; then true; fi
   if [ ! -s "$V" ]; then
     echo "   pubblico no → provo coi cookie del BROWSER_AGENTI (Chromium :9222)"
     PROF=$(ls -d /mnt/c/Users/giopi/*Browser*Profile* /mnt/c/Users/giopi/AppData/Local/agenti/*rofile* 2>/dev/null | head -1)
     [ -n "$PROF" ] && yt-dlp -q --cookies-from-browser "chromium:$PROF" -f "best[height<=480][ext=mp4]/best" --max-filesize 40M -o "$V" "$URL" 2>&1 | tail -2
   fi
-  if [ ! -s "$V" ]; then echo "❌ SCARICAMENTO FALLITO (serve forse la via-screenshot)"; return 1; fi
-  echo "   ✓ scaricato: $(du -h "$V" | cut -f1)"
-  local FF=$(command -v ffmpeg || echo "$HOME/.local/bin/ffmpeg")
-  DIM=$(stat -c%s "$V")
+  [ -s "$V" ]
+}
+
+# T2 (riserva): a) yt-dlp con UA browser normale; b) download DIRETTO (yt-dlp -g + curl sul CDN)
+scarico_riserva() {
+  local URL="$1" STATO="$2" DURL
+  rm -f "$V"
+  echo "   riserva a) yt-dlp ma con lo UA normale del browser"
+  if ! yt-dlp -q --user-agent "$UA_BROWSER" -f "b[ext=mp4]/b" --max-filesize 40M -o "$V" "$URL" 2>&1 | tail -2; then true; fi
+  if [ -s "$V" ] && [ "$(stat -c%s "$V" 2>/dev/null || echo 0)" -gt 100000 ]; then
+    echo "T2|scarico yt-dlp UA browser|ok ($(du -h "$V" | cut -f1))" >> "$STATO"
+    return 0
+  fi
+  echo "T2|scarico yt-dlp UA browser|ko" >> "$STATO"
+  echo "   riserva b) via diretta: yt-dlp -g risolve l'URL del CDN, curl scarica col browser"
+  DURL=$(yt-dlp -g --user-agent "$UA_BROWSER" -f "b[acodec!=none][ext=mp4]/b[acodec!=none]/b" "$URL" 2>/dev/null | tail -1)
+  if [ -n "$DURL" ] && curl -sL --max-time 180 -A "$UA_BROWSER" "$DURL" -o "$V" 2>/dev/null \
+     && [ "$(stat -c%s "$V" 2>/dev/null || echo 0)" -gt 100000 ]; then
+    echo "T2|scarico diretto (curl su URL CDN)|ok ($(du -h "$V" | cut -f1))" >> "$STATO"
+    return 0
+  fi
+  echo "T2|scarico diretto (curl su URL CDN)|ko" >> "$STATO"
+  return 1
+}
+
+# ---------- dieta per Gemini (T1 leggera; T2 con la FORTE se serve l'inline) ----------
+metti_a_dieta() {
+  local MOD="$1" DIM FF
+  FF=$(command -v ffmpeg || echo "$HOME/.local/bin/ffmpeg")
+  DIM=$(stat -c%s "$V" 2>/dev/null || echo 0)
   if [ "$DIM" -gt 4000000 ] && [ -x "$FF" ]; then
     echo "   dieta Gemini: 360p a 1.5fps (lui campiona a 1fps, non perde nulla)"
     "$FF" -y -loglevel error -i "$V" -vf scale=-2:360 -r 1.5 -b:v 120k -ac 1 -b:a 40k /tmp/occhi_s.mp4 \
       && mv /tmp/occhi_s.mp4 "$V" && echo "   → ora: $(du -h "$V" | cut -f1)"
   fi
-  echo
+  if [ "$MOD" = riserva ]; then
+    DIM=$(stat -c%s "$V" 2>/dev/null || echo 0)
+    if [ "$DIM" -gt 14000000 ] && [ -x "$FF" ]; then
+      echo "   dieta FORTE da riserva: 240p a 1fps (la via inline vuole <14MB)"
+      "$FF" -y -loglevel error -i "$V" -vf scale=-2:240 -r 1 -b:v 80k -ac 1 -b:a 24k /tmp/occhi_s.mp4 \
+        && mv /tmp/occhi_s.mp4 "$V" && echo "   → ora: $(du -h "$V" | cut -f1)"
+    fi
+  fi
+}
+
+gemini_guarda() {  # $1 MOD (std|riserva)  $2 STATO
+  local MOD="$1" STATO="$2" K VIA
   echo "### 2. Gemini guarda il video"
-  local K
   K=$(chiave_gemini)
-  if [ -z "$K" ]; then echo "❌ nessuna chiave Gemini trovata (vedi .env / CHIAVI_LOCALI.md)"; return 1; fi
-python3 - "$V" "$K" << 'PYEOF'
+  if [ -z "$K" ]; then
+    echo "❌ nessuna chiave Gemini trovata (vedi .env / CHIAVI_LOCALI.md)"
+    { [ "$MOD" = std ] && echo "G1|gemini|ko: chiave mancante" || echo "G2|gemini|ko: chiave mancante"; } >> "$STATO"
+    return 1
+  fi
+  VIA=auto
+  [ "$MOD" = riserva ] && VIA=inline
+python3 - "$V" "$K" "$VIA" "$STATO" << 'PYEOF'
 import base64, json, sys, time, urllib.request
-video, chiave = sys.argv[1], sys.argv[2]
+video, chiave, via, stato = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 dati = open(video, "rb").read()
 PROMPT = "Analizza questo video in ITALIANO: 1) trascrivi il parlato 2) riporta TUTTO il testo che appare a schermo (titoli, scritte, sottotitoli) 3) elenca nomi di strumenti/repo/siti/link citati 4) riassunto in 3 righe del contenuto utile."
 BASE = "https://generativelanguage.googleapis.com"
+TAG = "G1" if via == "auto" else "G2"   # G1 = primo tentativo, G2 = riserva
+
+def nota(metodo, esito):
+    try:
+        with open(stato, "a") as f:
+            f.write("%s|%s|%s\n" % (TAG, metodo, str(esito).replace("|", "/")[:90]))
+    except Exception:
+        pass
 
 def genera(parte_video):
     corpo = json.dumps({"contents": [{"parts": [parte_video, {"text": PROMPT}]}]}).encode()
@@ -109,37 +168,86 @@ def genera(parte_video):
     d = json.loads(urllib.request.urlopen(req, timeout=600).read().decode())
     return d["candidates"][0]["content"]["parts"][0]["text"]
 
-# VIA 1: File API col protocollo resumable VERO (2 passi)
-try:
-    avvio = urllib.request.Request(BASE + "/upload/v1beta/files?key=" + chiave,
-        data=json.dumps({"file": {"display_name": "reel"}}).encode(), method="POST",
-        headers={"X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start",
-                 "X-Goog-Upload-Header-Content-Length": str(len(dati)),
-                 "X-Goog-Upload-Header-Content-Type": "video/mp4",
-                 "Content-Type": "application/json"})
-    r = urllib.request.urlopen(avvio, timeout=60)
-    url_su = r.headers.get("X-Goog-Upload-URL")
-    carica = urllib.request.Request(url_su, data=dati, method="POST",
-        headers={"X-Goog-Upload-Command": "upload, finalize", "X-Goog-Upload-Offset": "0"})
-    f = json.loads(urllib.request.urlopen(carica, timeout=600).read().decode())["file"]
-    for _ in range(40):
-        st = json.loads(urllib.request.urlopen(BASE + "/v1beta/" + f["name"] + "?key=" + chiave, timeout=30).read().decode())
-        if st.get("state") == "ACTIVE": break
-        time.sleep(4)
-    print(genera({"file_data": {"mime_type": "video/mp4", "file_uri": f["uri"]}}))
-    sys.exit(0)
-except Exception as e:
-    print("(File API ko: %s — provo la via inline)" % str(e)[:100])
+# VIA 1 (solo al primo tentativo): File API col protocollo resumable VERO
+if via == "auto":
+    try:
+        avvio = urllib.request.Request(BASE + "/upload/v1beta/files?key=" + chiave,
+            data=json.dumps({"file": {"display_name": "reel"}}).encode(), method="POST",
+            headers={"X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start",
+                     "X-Goog-Upload-Header-Content-Length": str(len(dati)),
+                     "X-Goog-Upload-Header-Content-Type": "video/mp4",
+                     "Content-Type": "application/json"})
+        r = urllib.request.urlopen(avvio, timeout=60)
+        url_su = r.headers.get("X-Goog-Upload-URL")
+        carica = urllib.request.Request(url_su, data=dati, method="POST",
+            headers={"X-Goog-Upload-Command": "upload, finalize", "X-Goog-Upload-Offset": "0"})
+        f = json.loads(urllib.request.urlopen(carica, timeout=600).read().decode())["file"]
+        for _ in range(40):
+            st = json.loads(urllib.request.urlopen(BASE + "/v1beta/" + f["name"] + "?key=" + chiave, timeout=30).read().decode())
+            if st.get("state") == "ACTIVE": break
+            time.sleep(4)
+        print(genera({"file_data": {"mime_type": "video/mp4", "file_uri": f["uri"]}}))
+        nota("gemini FileAPI", "ok")
+        sys.exit(0)
+    except Exception as e:
+        nota("gemini FileAPI", "ko: %s" % str(e)[:80])
+        print("(File API ko: %s — provo la via inline)" % str(e)[:100])
 
-# VIA 2: inline (se il video e' abbastanza piccolo)
+# VIA 2: inline (fallback interno al T1; via FORZATA alla riserva)
 if len(dati) > 14_000_000:
+    nota("gemini inline", "ko: video %.1fMB oltre i 14MB della via inline" % (len(dati)/1e6))
     print("e il video resta troppo grosso per la via inline (%.1f MB). Mi fermo." % (len(dati)/1e6))
-    sys.exit(0)
-print(genera({"inline_data": {"mime_type": "video/mp4", "data": base64.b64encode(dati).decode()}}))
+    sys.exit(1)
+try:
+    print(genera({"inline_data": {"mime_type": "video/mp4", "data": base64.b64encode(dati).decode()}}))
+    nota("gemini inline", "ok")
+except Exception as e:
+    nota("gemini inline", "ko: %s" % str(e)[:80])
+    print("inline ko: %s" % str(e)[:150])
+    sys.exit(1)
+sys.exit(0)
 PYEOF
 }
 
-# ---------- BATCH: tanti URL, UN rapporto ----------
+# ---------- GUARDA un video: T1 standard oppure T2 riserva ----------
+# $1 URL   $2 MOD (std|riserva)   $3 STATO (file con le righe T/G|metodo|esito)
+occhi_uno() {
+  local URL="$1" MOD="${2:-std}" STATO="${3:-/dev/null}"
+  export PATH="$HOME/.local/bin:$PATH"
+  V=/tmp/occhi_video.mp4
+  if [ "$MOD" = riserva ]; then
+    echo
+    echo "### ⛅ SECONDO TENTATIVO — riserva (strategia diversa, non lo stesso metodo)"
+  fi
+  if [ "$MOD" = std ]; then
+    echo "### 1. Scarico (prima senza cookie: molti reel sono pubblici)"
+    if scarico_std "$URL"; then
+      echo "   ✓ scaricato: $(du -h "$V" | cut -f1)"
+      echo "T1|scarico yt-dlp standard (+cookie se servono)|ok ($(du -h "$V" | cut -f1))" >> "$STATO"
+    else
+      echo "❌ SCARICAMENTO FALLITO col metodo standard (yt-dlp + cookie)"
+      echo "T1|scarico yt-dlp standard (+cookie)|ko" >> "$STATO"
+      return 1
+    fi
+  else
+    if [ -s "$V" ]; then
+      echo "   il video del 1° tentativo c'è già (era fallito su Gemini) → niente nuovo scarico"
+      echo "T2|scarico|salto: file già presente dal 1° tentativo" >> "$STATO"
+    else
+      echo "### 1. Scarico con la via di riserva"
+      if scarico_riserva "$URL" "$STATO"; then
+        echo "   ✓ scaricato: $(du -h "$V" | cut -f1)"
+      else
+        echo "❌ RISERVA: scarico fallito anche con UA browser e via diretta"
+        return 1
+      fi
+    fi
+  fi
+  metti_a_dieta "$MOD"
+  gemini_guarda "$MOD" "$STATO"
+}
+
+# ---------- BATCH: tanti URL, UN rapporto, DUE tentativi ciascuno ----------
 fa_batch() {
   local PRIMO="$1"; shift
   local -a URLS=()
@@ -157,7 +265,8 @@ fa_batch() {
     echo "# 👁 OCCHI-FB BATCH — $(date '+%d/%m/%Y %H:%M')"
     echo "URL in coda: $N — sorgente: $PRIMO"
   } > "$R"
-  local OK=0 KO=0 i=0 t0 d esito U
+  local OK=0 KO=0 RIS=0 i=0 t0 d esito U STATO riga
+  STATO=/tmp/occhi_stato_$$.txt
   for U in "${URLS[@]}"; do
     i=$((i+1))
     echo "▶ [$i/$N] $U" >&2
@@ -167,27 +276,46 @@ fa_batch() {
       echo
       echo "## ▶ URL $i/$N — $U"
     } >> "$R"
+    rm -f "$STATO"
     t0=$SECONDS
-    if occhi_uno "$U" >> "$R" 2>&1; then OK=$((OK+1)); esito="✓ ok"; else KO=$((KO+1)); esito="❌ ko"; fi
+    if occhi_uno "$U" std "$STATO" >> "$R" 2>&1; then
+      esito="✓ ok"; OK=$((OK+1))
+    else
+      # SECONDO TENTATIVO: strategia DIVERSA (mai lo stesso metodo) — e poi basta, niente terzo
+      if occhi_uno "$U" riserva "$STATO" >> "$R" 2>&1; then
+        esito="✓ riserva"; OK=$((OK+1)); RIS=$((RIS+1))
+      else
+        esito="❌"; KO=$((KO+1))
+      fi
+    fi
     d=$((SECONDS - t0))
-    echo "| $i | $U | $esito | ${d}s |" >> /tmp/occhi_tab.tmp
+    riga=""
+    if [ -s "$STATO" ]; then
+      while IFS='|' read -r t m e; do
+        [ -n "$riga" ] && riga="$riga → "
+        riga="$riga$t $m: $e"
+      done < "$STATO"
+    fi
+    [ -n "$riga" ] || riga="(nessun dettaglio)"
+    riga="${riga:0:280}"
+    echo "| $i | $U | $esito | ${d}s | $riga |" >> /tmp/occhi_tab.tmp
     echo "   → $esito (${d}s)" >&2
   done
   {
     echo
     echo "## 📊 Riepilogo"
-    echo "| # | URL | esito | tempo |"
-    echo "|---|-----|-------|-------|"
+    echo "| # | URL | esito | tempo | tentativi (metodo: esito) |"
+    echo "|---|-----|-------|-------|---------------------------|"
     cat /tmp/occhi_tab.tmp
     rm -f /tmp/occhi_tab.tmp
     echo
-    echo "**Bilancio: ✓ $OK su $N riusciti** (❌ $KO falliti)"
+    echo "**Bilancio: ✓ $OK su $N riusciti** (salvati dalla riserva: $RIS — ❌ falliti: $KO, dopo 2 tentativi, niente terzo)"
   } >> "$R"
-  pubblica "$R" "occhi-fb batch: $N url (ok $OK, ko $KO)"
-  echo "✅ rapporto: ~/posta/$R (✓ $OK, ❌ $KO)" >&2
+  pubblica "$R" "occhi-fb batch: $N url (ok $OK, ko $KO, riserva $RIS)"
+  echo "✅ rapporto: ~/posta/$R (✓ $OK, ❌ $KO, riserva $RIS)" >&2
 }
 
-# ---------- CATALOGA: pagina FB senza browser ----------
+# ---------- CATALOGA: pagina FB senza browser, con riserva UA browser ----------
 fa_cataloga() {
   local URL="$1"
   case "$URL" in http://*|https://*) ;; *) URL="https://$URL" ;; esac
@@ -204,26 +332,51 @@ import html, re, sys, urllib.parse, urllib.request
 from datetime import datetime
 
 url, out = sys.argv[1], sys.argv[2]
-UA_CAT = "facebookcatalog/1.0"   # il crawler-catalogo di FB: risponde coi meta og SENZA login
-UA_BRW = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+UA_CAT = "facebookcatalog/1.0"   # T1: il crawler-catalogo di FB (risponde coi meta og senza login)
+UA_BRW = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"  # T2: UA normale del browser
 
 def prendi(u, ua, t=25):
     req = urllib.request.Request(u, headers={"User-Agent": ua, "Accept-Language": "it_IT,it;q=0.9,en;q=0.8"})
     return urllib.request.urlopen(req, timeout=t).read().decode("utf-8", "ignore")
 
-og, pagina, via = {}, "", ""
-for u, ua in [(url, UA_CAT), (url.replace("www.facebook.com", "mbasic.facebook.com"), UA_BRW)]:
-    try:
-        pagina = prendi(u, ua)
-    except Exception:
-        continue
-    via = "%s (UA %s)" % (u, ua)
-    for m in re.findall(r'<meta[^>]+property="(og:[^"]+)"[^>]*content="([^"]*)"', pagina):
+def parsi_og(h):
+    og = {}
+    for m in re.findall(r'<meta[^>]+property="(og:[^"]+)"[^>]*content="([^"]*)"', h):
         og.setdefault(m[0], html.unescape(m[1]))
-    for m in re.findall(r'<meta[^>]+content="([^"]*)"[^>]*property="(og:[^"]+)"', pagina):
+    for m in re.findall(r'<meta[^>]+content="([^"]*)"[^>]*property="(og:[^"]+)"', h):
         og.setdefault(m[1], html.unescape(m[0]))
+    return og
+
+og, pagina, via = {}, "", ""
+note = []   # (tentativo, metodo, esito)
+
+# T1: UA facebookcatalog
+try:
+    pagina = prendi(url, UA_CAT)
+    og = parsi_og(pagina)
     if "og:title" in og:
-        break
+        note.append(("T1", "UA facebookcatalog", "ok"))
+        via = "%s (UA facebookcatalog)" % url
+    else:
+        note.append(("T1", "UA facebookcatalog", "ko: risposta senza og-tag"))
+        pagina = ""
+except Exception as e:
+    note.append(("T1", "UA facebookcatalog", "ko: %s" % str(e)[:70]))
+
+# T2 (solo se T1 non ha dato nulla): UA normale del browser, vie diverse (mbasic, poi www)
+if "og:title" not in og:
+    for u in [url.replace("www.facebook.com", "mbasic.facebook.com"), url]:
+        try:
+            pagina = prendi(u, UA_BRW)
+            og = parsi_og(pagina)
+            if "og:title" in og:
+                note.append(("T2", "UA browser normale", "ok (%s)" % urllib.parse.urlparse(u).netloc))
+                via = "%s (UA browser normale)" % u
+                break
+            note.append(("T2", "UA browser normale", "ko: risposta senza og-tag (%s)" % urllib.parse.urlparse(u).netloc))
+            pagina = ""
+        except Exception as e:
+            note.append(("T2", "UA browser normale", "ko: %s" % str(e)[:70]))
 
 plug_testo, plug_img = "", ""
 try:
@@ -271,7 +424,8 @@ L.append("# 📇 CATALOGO FB — %s" % titolo[:80])
 L.append("")
 L.append("- **URL:** %s" % url)
 L.append("- **Quando:** %s" % datetime.now().strftime("%d/%m/%Y %H:%M"))
-L.append("- **Via:** %s" % (via or "nessuna risposta utile"))
+L.append("- **Tentativi:** %s" % " → ".join("%s %s: %s" % n for n in note))
+L.append("- **Via:** %s" % (via or "NESSUNA (entrambi i tentativi senza dati)"))
 if og.get("og:type"):
     L.append("- **Tipo:** %s" % og["og:type"])
 if og.get("og:locale"):
@@ -303,6 +457,7 @@ if not links:
 L.append("")
 L.append("---")
 L.append("*Senza login Facebook mostra solo la scheda pubblica (meta og + plugin pagina): i singoli post richiedono l'accesso.*")
+L.append("*Due tentativi con vie diverse (T1 facebookcatalog, T2 UA browser); se entrambi falliscono, qui sopra ci sono i due errori — niente terzo tentativo.*")
 open(out, "w", encoding="utf-8").write("\n".join(L) + "\n")
 print("ok: %s" % out)
 PYEOF
@@ -337,17 +492,21 @@ case "${1:-}" in
     uso
     ;;
   *)
-    # come prima: UN video
+    # come prima: UN video (con la scala di riserva)
     URL="$1"
     NOME="${2:-occhi_fb}"
     R="dal_pc/${NOME}.md"
+    STATO=/tmp/occhi_stato_$$.txt
     {
       echo "# 👁 OCCHI-FB — $(date '+%d/%m %H:%M')"
       echo "URL: $URL"
       echo
       prepara_arsenale
       echo
-      occhi_uno "$URL"
+      if ! occhi_uno "$URL" std "$STATO"; then
+        occhi_uno "$URL" riserva "$STATO" || true
+      fi
+      rm -f "$STATO"
     } > "$R" 2>&1
     pubblica "$R" "occhi-fb: $NOME"
     ;;
