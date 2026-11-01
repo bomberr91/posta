@@ -2,6 +2,13 @@
 # postino.sh — il ponte: prende i compiti da ~/posta/da_me, li fa eseguire a OpenCode (o bash per .sh),
 # mette il risultato in ~/posta/dal_pc e lo spinge su GitHub (repo "posta").
 set -u
+# CURA-AUDIT (1/11 sera): git non deve MAI aspettare una password da terminale.
+# Il 1/11 il postino è rimasto APPESO su un prompt di credenziali: teneva il
+# flock, non vedeva nessun compito, non produceva nessuna notizia, e il
+# guardiano (che usa flock -n) non poteva riavviarlo. 40 minuti di coda
+# muta. Ora git fallisce subito e il postino lo dice ad alta voce.
+export GIT_TERMINAL_PROMPT=0
+export GIT_SSH_COMMAND="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
@@ -25,7 +32,27 @@ REMOTE="origin"
 say(){ echo "[$(date '+%d/%m %H:%M')] $*" | tee -a "$LOG"; }
 
 sync_down(){
-  git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 || git pull -q --autostash --rebase >/dev/null 2>&1 || true
+  # CURA-AUDIT (1/11 sera): un pull che fallisce in SILENZIO lascia il postino
+  # a girare per sempre senza mai vedere i compiti nuovi. Qui il fallimento
+  # si VEDE, si rimedia e non può durare all'infinito (timeout).
+  echo "pull $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
+  if timeout 120 git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 \
+     || timeout 120 git pull -q --autostash --rebase >/dev/null 2>&1; then
+    :
+  else
+    say "⚠ il pull è fallito: rimedio"
+    git rebase --abort >/dev/null 2>&1 || true
+    git merge --abort >/dev/null 2>&1 || true
+    git stash drop >/dev/null 2>&1 || true
+    git checkout -- portiere_log.jsonl portiere_stato.json >/dev/null 2>&1 || true
+    if timeout 120 git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 \
+       || timeout 120 git pull -q --autostash --rebase >/dev/null 2>&1; then
+      say "✓ pull rimediato"
+    else
+      say "⛔ il pull continua a fallire: i compiti in coda NON possono arrivare. Guarda: cd ~/posta && git status"
+    fi
+  fi
+  echo "idle $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
   if [ -f "$DIR/skills_pack.tar.gz" ] && [ ! -f "$HOME/.skills_v2_installed" ]; then
     tar -xzf "$DIR/skills_pack.tar.gz" -C "$HOME" && date -Is > "$HOME/.skills_v2_installed"
     say "✓ 26 skill aggiornate automaticamente in ~/.config/opencode e ~/.config/goose"
@@ -45,7 +72,9 @@ sync_up(){
   fi
   git diff --cached --quiet && return 0
   git commit -qm "postino $(date '+%d/%m %H:%M')" >/dev/null 2>&1 || true
-  git push -q "$REMOTE" HEAD:main >/dev/null 2>&1 || git push -q >/dev/null 2>&1 || say "⚠️ push fallito"
+  timeout 120 git push -q "$REMOTE" HEAD:main >/dev/null 2>&1 \
+    || timeout 120 git push -q >/dev/null 2>&1 \
+    || say "⚠️ push fallito (il lavoro resta locale: riprovo al prossimo giro)"
 }
 
 gira(){
@@ -77,6 +106,7 @@ gira(){
     fi
     TENT=$((TENT+1)); printf '%s\n' "$TENT" > "fatti/$n.tentativi"
     say "→ compito: $b (tentativo $TENT/3)"
+    echo "compito $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
     OUT="dal_pc/$n.md"
     { echo "# Risposta a «$n»"; echo; echo "_$(date '+%d/%m/%Y %H:%M') · $(hostname)_"; echo; } > "$OUT"
     ESITO=0
@@ -103,6 +133,7 @@ gira(){
     mv "$f" "fatti/$b"; date -Is > "fatti/$n.done"
     rm -f "fatti/$n.failito" "fatti/$n.tentativi" "fatti/$n.abbandonato"
     sync_up
+    echo "idle $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
     say "✓ risposta pronta in dal_pc/$n.md"
   done
   sync_up
