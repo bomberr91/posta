@@ -20,3 +20,22 @@
 [MEDIA] risposte locali: `banale()` risponde `OK` anche se la richiesta richiede tool o un formato specifico -> escludere richieste con vincoli, tool o formato di risposta.
 
 ## Boccone 3
+
+
+[CRITICO] riserva/errori: gestisci solo `HTTPError`. `URLError`, timeout e `JSONDecodeError` escono e bloccano il failover. -> Aggiungi `except (urllib.error.URLError, TimeoutError, ValueError)` e passa al provider dopo.
+
+[CRITICO] a_pagamento: il test `"mini" in m` trova "mini" dentro "gemini". I Gemini a pagamento passano con `solo_gratis`. -> Controlla `"gemini"` prima di `"mini"` o usa token esatti.
+
+[ALTO] stato condiviso: `STATO`, `REGISTRO` e `PROFILI` cambiano da più thread senza lock. `ses.pop(min(ses,...))` può dare `RuntimeError`. -> Proteggi lettura e scrittura con un `Lock` o copia il dict.
+
+[ALTO] risposta: `.read()` legge tutta la risposta. Un provider rotto o ostile esaurisce la memoria. -> Leggi al massimo N byte e rifiuta il resto.
+
+[ALTO] max_tokens: prendi il valore dal client senza limite. Un client impone costo e latenza enormi. -> Limita con `min(valore, CONFIG["max_tokens"])`.
+
+[MEDIO] ripara_tool_call: la regex `\{.*\}` è greedy e prende dal primo `{` all'ultimo `}`. -> Usa `json.JSONDecoder().raw_decode` o una regex non greedy.
+
+[MEDIO] regola_di: vince il primo prefisso inserito. Una chiave vuota o corta applica la regola a tutte le sessioni. -> Scegli la chiave più lunga e scarta chiavi vuote.
+
+[MEDIO] sessione: il valore va nell'header senza controllo. Un CR/LF genera `ValueError` e blocca la richiesta. -> Valida il valore o codificalo prima dell'header.
+
+## Boccone 4
