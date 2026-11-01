@@ -77,10 +77,13 @@ sync_up(){
   # un loop, con il lavoro che resta in locale per sempre. Prima di
   # committare, ogni stringa lunga nelle risposte viene mascherata: si
   # pubblica il rapporto, non la chiave.
-  for _d in dal_pc fatti da_me; do
+  # NB: mai su da_me/ — lì i compiti ASPETTANO di essere eseguiti, e
+  # mascherarli li romperebbe. Solo i rapporti (dal_pc) e l'archivio (fatti).
+  for _d in dal_pc fatti; do
     [ -d "$_d" ] || continue
-    find "$_d" -maxdepth 1 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+    find "$_d" -maxdepth 1 -type f -print0 2>/dev/null \
     | while IFS= read -r -d '' _f; do
+        case "$_f" in *.md|*.txt|*.log|*.sh|*.json) ;; *) continue ;; esac
         sed -i -E 's/([A-Za-z0-9_-]{10})[A-Za-z0-9_-]{14,}/\1.../g' "$_f" 2>/dev/null || true
       done
   done
