@@ -222,3 +222,45 @@ $ grep -nE "def castiga|def segna|def punito|def appello|def motore_vivo|def uso
 [BASSA] `da_confermare`: `r.split("|")` senza sanitizzazione causa campi errati su separatori non protetti -> normalizzare le righe ignorando spazi vuoti e sezioni invalide.
 
 ## Distillato EN
+
+
+[ALTA] Security: `indirizzo` sends the key over plain HTTP; reject HTTP except for loopback.
+[MEDIA] Concurrency: `ricarica` replaces six maps separately while requests read them; publish one immutable config under a lock.
+[MEDIA] Reliability: Catching `Exception` during imports hides internal errors and disables profiles and compression; catch only `ImportError`.
+[MEDIA] Reliability: `vivo` uses port 80 for HTTPS URLs; use port 443 for HTTPS and handle IPv6 correctly.
+[ALTA] Cache: The key omits parameters such as `top_p`, `stop`, and `response_format`, so different requests may get the same response; include all relevant parameters or disable caching.
+[ALTA] State: Concurrent writes to the same JSON file can truncate it or lose updates; use a lock and write to a temporary file before atomic replacement.
+[ALTA] Quotas: `freno()` and `batte()` are not atomic, so concurrent requests can exceed limits; check and record each call under the same lock.
+[MEDIA] Memory: `batte()` accumulates timestamps indefinitely when a provider has no quota configured; prune the list or skip recording those providers.
+[MEDIA] State: `stato_carica()` accepts valid JSON with invalid types, causing later `.items()` or increment operations to fail; validate the schema and types before assigning `STATO`.
+[MEDIA] Sentinel: `push_visto` raises `IndexError` when `sentinella_repos` is empty and may interrupt the request; ensure the list has at least one item.
+[MEDIA] Local responses: `banale()` returns `OK` even when the request requires tools or a specific format; exclude requests with constraints, tools, or response-format requirements.
+[CRITICO] Failover/errors: Only `HTTPError` is handled. `URLError`, timeouts, and `JSONDecodeError` escape and stop failover; catch `(urllib.error.URLError, TimeoutError, ValueError)` and try the next provider.
+[CRITICO] Paid models: `"mini" in m` also matches `"gemini"`, allowing paid Gemini models through `solo_gratis`; check `"gemini"` first or use exact tokens.
+[ALTO] Shared state: `STATO`, `REGISTRO`, and `PROFILI` are accessed by multiple threads without locks. `ses.pop(min(ses,...))` can raise `RuntimeError`; lock access or copy the dictionary.
+[ALTO] Responses: `.read()` loads the entire response, letting a broken or hostile provider exhaust memory; limit reads to N bytes and reject larger responses.
+[ALTO] `max_tokens`: The client-supplied value is unrestricted, allowing excessive cost and latency; cap it with `min(value, CONFIG["max_tokens"])`.
+[MEDIO] `ripara_tool_call`: The greedy `\{.*\}` regex matches from the first `{` to the last `}`; use `json.JSONDecoder().raw_decode` or a non-greedy regex.
+[MEDIO] `regola_di`: The first inserted prefix wins, so an empty or short key can affect every session; choose the longest key and discard empty keys.
+[MEDIO] Session: The value is inserted into a header without validation; CR/LF can raise `ValueError` and stop the request; validate or encode it first.
+[CRITICA] `_rispondi`: `Content-Length` prevents dynamic SSE streaming and rejects subsequent chunks; remove it and use chunked transfer encoding or flush directly.
+[ALTA] `riserva`: `headers.get("Retry-After")` ignores HTTP IMF-fixdate values, resetting the cooldown on 429; parse RFC 7231 dates with `email.utils.parsedate_to_datetime`.
+[ALTA] `STATO`: Concurrent mutations and unsynchronized `json.dump` cause race conditions; protect reads and writes with `threading.Lock`.
+[MEDIA] `da_confermare` / `scopri`: Files opened without context managers can leak file descriptors; use `with open(...) as f:`.
+[MEDIA] `_rispondi`: An empty `choices` payload raises an unhandled `IndexError` when a provider fails; use safe slicing: `(d.get("choices") or [{}])[0]`.
+[MEDIA] Images: Missing timeouts on `urllib` or external URLs can block an HTTP worker; set an explicit timeout and handle network exceptions.
+[BASSA] `appello_da_solo`: Parallel calls to `subprocess.Popen` can spawn duplicate processes; use an atomic flag or a per-run lock.
+[BASSA] `da_confermare`: Unsanitized `r.split("|")` can produce malformed fields; normalize lines and ignore blank or invalid sections.
+
+## Verdetto giudice di lusso
+GIUDICE=gpt-5.6-sol
+1. **CRITICAL — Paid-model policy bypass:** `"mini" in m` matches `"gemini"`, allowing paid Gemini models under `solo_gratis`; use exact model classification.
+2. **CRITICAL — Broken failover:** `URLError`, timeouts, and JSON parsing failures escape, preventing fallback to another provider; catch expected transport and decoding errors.
+3. **CRITICAL — Invalid SSE handling:** `_rispondi` sets `Content-Length`, blocking dynamic streaming and later chunks; use chunked transfer or direct flushing.
+4. **HIGH — Credential exposure:** `indirizzo` can transmit API keys over plain HTTP; reject non-loopback HTTP endpoints.
+5. **HIGH — Unsafe shared state:** Concurrent access and non-atomic persistence of `STATO`, `REGISTRO`, and `PROFILI` can crash, corrupt files, or lose updates; lock access and use atomic file replacement.
+**VERDICT: FRAGILE**
+[claude-opus-5 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-5 无可用渠道 (request id: 202611012345018763934055rwkng1OXmDwc)","type":"]
+[claude-opus-4-8 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-4-8 无可用渠道 (request id: 202611012345112820561796p9sdjwT7XNeD)","type"]
+[claude-sonnet-4-5-20250929 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-sonnet-4-5-20250929 无可用渠道 (request id: 20261101234522732473309lh28g5FBou0]
+FINE 16:45
