@@ -4,3 +4,6 @@
 GIUDICE=nessuno (tutte le onde chiuse ora)
 
 ## Boccone 2
+GIUDICE=nessuno (tutte le onde chiuse ora)
+
+## Boccone 3
