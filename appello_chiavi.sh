@@ -53,7 +53,26 @@ try:
     d = json.load(open(sys.argv[1], encoding="utf-8", errors="replace"))
 except Exception:
     sys.exit(0)
-voci = d.get("data") if isinstance(d, dict) else d
+# AUDIT FINALE (1/11 sera): la lista dei modelli arriva in forme diverse
+# ("data", "models", {"object":"list","data":[...]}, lista nuda, {"data":{"models":[...]}})
+# e prima si usciva: il provider finiva col modello "auto" -> "model not found".
+voci = None
+if isinstance(d, dict):
+    for chiave in ("data", "models", "result", "results", "items"):
+        v = d.get(chiave)
+        if isinstance(v, list):
+            voci = v
+            break
+        if isinstance(v, dict):
+            for sotto in ("models", "data", "items", "list"):
+                s = v.get(sotto)
+                if isinstance(s, list):
+                    voci = s
+                    break
+            if voci:
+                break
+elif isinstance(d, list):
+    voci = d
 if not isinstance(voci, list):
     sys.exit(0)
 cattivi = re.compile(r"embed|whisper|tts|audio|image|vision|rerank|moderation|guard|dall|stable-diffusion|sd-|flux|ocr|document", re.I)
@@ -69,10 +88,20 @@ for v in voci:
         continue
     nomi.append(n.replace("models/", ""))
 if not nomi:
-    sys.exit(0)
+    # nessun nome "buono": prendo comunque i primi nomi disponibili, meglio un
+    # modello strano che un "auto" che non esiste
+    for v in voci[:40]:
+        if isinstance(v, dict):
+            n = v.get("id") or v.get("name") or v.get("model") or v.get("slug")
+            if isinstance(n, str) and n:
+                nomi.append(n.replace("models/", ""))
+        elif isinstance(v, str) and v:
+            nomi.append(v)
+    if not nomi:
+        sys.exit(0)
 # prima i "buoni", poi gli altri; fra i buoni il più corto (di solito il nome base)
 buoni_prima = sorted(nomi, key=lambda n: (0 if buoni.search(n) else 1, len(n)))
-for n in buoni_prima[:5]:
+for n in buoni_prima[:8]:
     print(n)
 PY
 }
