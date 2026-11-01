@@ -4,3 +4,6 @@
 GIUDICE=nessuno (tutte le onde chiuse ora)
 
 ## Parte 2 (righe finali)
+GIUDICE=nessuno (tutte le onde chiuse ora)
+
+## Sintesi del giudice
