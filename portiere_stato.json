@@ -1,1 +1,1 @@
-{"castighi": {}, "pagella": {"p-test": {"ok": 1, "ko": 0, "ultimo_ko": 0, "fila_ko": 0, "ms_ewma": 120, "ms_quando": 1793568825.2896473}}, "uso": {}, "agenti": {}, "sessioni": {}, "sentinella": {"controllo": 1793568994.6812077, "visti": {"pg:zcode-daily (freeaihub)": "9e0b9340c2", "pg:zcode promo (aipromonow)": "22f9c49cb0", "CYBIRD-D/FREE-LLM-API-Provider": "2026-10-30", "open-free-llm-api/awesome-freellm-apis": "2026-10-27"}}}
+{"castighi": {}, "pagella": {"p-test": {"ok": 1, "ko": 0, "ultimo_ko": 0, "fila_ko": 0, "ms_ewma": 120, "ms_quando": 1793569338.4253302}}}
