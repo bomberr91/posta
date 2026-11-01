@@ -25,3 +25,5 @@ GIUDICE=nessuno (tutte le onde chiuse ora)
 [deepseek-v4-flash → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 deepseek-v4-flash 无可用渠道 (request id: 20261101220602144400429p29wz7bd960HN)","typ]
 
 ## Sintesi finale
+GIUDICE=nessuno (tutte le onde chiuse ora)
+FINE 15:07
