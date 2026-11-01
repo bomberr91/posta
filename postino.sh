@@ -84,7 +84,10 @@ sync_up(){
         sed -i -E 's/([A-Za-z0-9_-]{10})[A-Za-z0-9_-]{14,}/\1.../g' "$_f" 2>/dev/null || true
       done
   done
-  git add -A dal_pc fatti da_me >/dev/null 2>&1 \
+  # NB: anche gui/ (dove vivono i cruscotti: hub, index, cruscotto) — così
+  # le loro modifiche vengono versionate e non si perdono col PC.
+  git add -A dal_pc fatti da_me gui >/dev/null 2>&1 \
+    || git add -A dal_pc fatti gui >/dev/null 2>&1 \
     || git add -A dal_pc fatti >/dev/null 2>&1 \
     || git add -A >/dev/null 2>&1
   # CURA-AUDIT (1/11 sera): GitHub RIFIUTA i nomi di file con caratteri
