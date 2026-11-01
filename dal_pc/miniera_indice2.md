@@ -50,3 +50,5 @@ SKILLS VERE: 46
 | 45 | write-manual | > Writes a long technical manual that explains one subject at one pinned version, from its purpose to each request and response. Every listing comes from an offline capture, every claim traces to a ra |
 | 46 | write-manual | > Writes a long technical manual that explains one subject at one pinned version, from its purpose to each request and response. Every listing comes from an offline capture, every claim traces to a ra |
 | 44 | start-learning | > One-time onboarding for the AI Engineering from Scratch curriculum (542 lessons, 20 phases). Interviews the learner, runs the placement quiz, and writes LEARNING.md, a persistent study plan the lear |
+
+<!-- fine miniera_indice2 -->
