@@ -328,3 +328,35 @@ fretta e dirlo, (c) essere guardato da qualcuno.
 La lezione, come al solito: *anche il ponte verso il PC ha bisogno di un
 collaudo che possa dire NO*. Il postino vecchio scriveva `.done` anche sui
 compiti falliti — e i fallimenti scivolavano via senza rumore.
+
+---
+
+## 17. LA NOTTE DEL PONTE (1/11, 19:00 → 20:40) — quattro blocchi, zero bug di codice
+
+Il capo ha chiesto: *"cervello, posta e postino: funzionano?"*. La risposta
+onesta era **no**, e il motivo non era il codice. Quattro blocchi, in ordine:
+
+| # | il blocco | la prova | la riparazione |
+|---|---|---|---|
+| 1 | **il postino gelato** in un `git pull` (prompt di credenziali), con `flock` tenuto: nessun compito visto, 40 minuti di coda muta | il file di risposta di un compito non era nemmeno stato **troncato** → il ciclo dei compiti non era mai stato raggiunto | `GIT_TERMINAL_PROMPT=0`, `timeout` su pull/push, **fallimento annunciato** e auto-rimedio, il guardiano legge `/tmp/postino_stato` e riconosce il gelo |
+| 2 | **credenziali di push assenti** (`~/.posta_token`, `~/.posta_login`): le push del postino fallivano → il ramo locale divergeva → il pull entrava in rebase → conflitto | `warning: redirecting to https://github.com/bomberr91/posta.git/` (remote senza token) | token e login rimessi, remote con token, `rebase --abort` + `reset --hard` per riallineare |
+| 3 | **push protection di GitHub**: una stringa-chiave dentro risposte e script archiviati → la commit intera respinta → il postino riprovava all'infinito | `push declined due to repository rule violations` (repo **senza** ruleset e **senza** branch protection: verificato via API → il problema era il contenuto) | filtro di pubblicazione nel postino (maschera ogni stringa lunga prima di committare, **mai** su `da_me/`), `fatti/sanifica_chiavi.sh` |
+| 4 | **rebase interrotto** lasciato a metà → `reset` e `push` non potevano girare | `interactive rebase in progress; onto 50790bc` | `git rebase --abort` + `git reset --hard origin/main` |
+
+### Cosa è rimasto, dopo
+
+- **Cervello sul PC: SANO.** Il job `da_me/cervello_restart.sh` ha fatto
+  pull → kill → risurrezione (25 s) → `/salute` → collaudo:
+  `✓ targa: FASE 3 · ✓ salute: f3=True provider=62 motore=True · ✓ chat`
+  → **COLLAUDO OK**. Risposta in `dal_pc/cervello_restart.md`.
+- **Postino sul PC: VIVO.** Commit pushati da solo (`8328b8e`, `5581d33`).
+- **Nessuna chiave pubblicata**: verificate su `origin/main` e su tutta la
+  storia (OpenRouter, Exa, Tavily: mai uscite). Da ruotare resta **solo** la
+  vecchia chiave OmniRoute, già segnalata.
+
+### La regola che ne esce
+
+*Un canale che può fallire in silenzio è un canale morto.* Per tre ore la
+catena è stata ferma e sembrava un problema di permessi: in realtà era una
+stringa in un file di testo. Ogni passaggio ha adesso un'uscita che significa
+NO, e ogni fallimento **si annuncia** invece di scivolare via.
