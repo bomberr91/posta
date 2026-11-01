@@ -41,6 +41,17 @@ def carica_cervello():
 
 cerv = carica_cervello()
 
+# CURA-AUDIT / AUDIT FINALE N1+N2 (1/11 sera): questi test scrivevano nel
+# portiere_stato.json e nel portiere_log.jsonl VERI, svotando il libro mastro
+# del cervello (contatori, castighi, sentinella) e，留下endo errori finti nel
+# glass-box. Qui redirigiamo i due file su file temporanei, per tutta la suite.
+_fd, _TMP_LOG = tempfile.mkstemp(suffix=".jsonl", prefix="portiere-log-test-")
+os.close(_fd)
+cerv.LOG_FILE = _TMP_LOG
+_fd, _TMP_STATO = tempfile.mkstemp(suffix=".json", prefix="portiere-stato-test-")
+os.close(_fd)
+cerv.STATO_FILE = _TMP_STATO
+
 
 class ProvaStrutturaleTests(unittest.TestCase):
     """Il controllo strutturale: ogni self.X() chiamato deve esistere."""
@@ -527,3 +538,24 @@ class PolicyGratisTests(unittest.TestCase):
         finally:
             cerv.CLASSI.clear()
             cerv.CLASSI.update(salvato)
+
+
+class NonInquinaTests(unittest.TestCase):
+    """N1 (AUDIT FINALE) — i test non devono MAI scrivere nei file VERI del
+    cervello. Prima scrivevano nel portiere_stato.json vero (svotandolo:
+    contatori, castighi, sentinella) e nel portiere_log.jsonl vero (errori
+    finti nel glass-box). Questa e' la rete che chiude il buco."""
+
+    def test_il_file_di_stato_vero_non_e_stato_toccato(self):
+        vero = ROOT / "portiere_stato.json"
+        prima = vero.read_bytes() if vero.exists() else None
+        cerv.segna("p-test-prova", True, 12)
+        cerv.conta_agente("sess-test", 3)
+        dopo = vero.read_bytes() if vero.exists() else None
+        self.assertEqual(prima, dopo,
+                         "i test hanno scritto nel portiere_stato.json VERO")
+
+    def test_i_file_di_test_sono_temporanei(self):
+        self.assertNotEqual(str(cerv.STATO_FILE), str(ROOT / "portiere_stato.json"))
+        self.assertNotEqual(str(cerv.LOG_FILE), str(ROOT / "portiere_log.jsonl"))
+        self.assertIn("test", str(cerv.STATO_FILE))

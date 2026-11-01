@@ -504,7 +504,6 @@ def stato_salva(forza=False):
         with LOCK:
             if not forza and time.time() - _ultimo_salvataggio[0] < 2:
                 return
-            _ultimo_salvataggio[0] = time.time()
             ora = time.time()
             STATO["castighi"] = {k: v for k, v in STATO["castighi"].items() if v > ora}
             # CURA-AUDIT (1/11 sera, F4 — audit ZCode): il dump avveniva
@@ -519,6 +518,9 @@ def stato_salva(forza=False):
         with open(tmp, "w", encoding="utf-8") as f:
             f.write(testo)
         os.replace(tmp, STATO_FILE)
+        # AUDIT FINALE N9: il timestamp si segna DOPO che il file e' stato
+        # scritto: se la scrittura fallisce, i salvataggi restavano muti 2s.
+        _ultimo_salvataggio[0] = time.time()
     except Exception:
         pass
 
@@ -551,24 +553,32 @@ def segna(pid, ok, ms=None):
     mobile EWMA), piu' l'interruttore: 3 errori di fila → il canale riposa 60s.
     La memoria sbiadisce (dimezza a 50 prove). Idea 61: niente giudizi sotto le
     5 prove (periodo di grazia, gia' garantito da in_salute)."""
-    with LOCK:                                    # CURA-AUDIT F4: mai mutare
+    castigo_fila = False
+    with LOCK:
+        # CURA-AUDIT F4 + AUDIT FINALE N3: TUTTO il corpo dentro il
+        # lucchetto (prima solo 2 righe): le mutazioni fuori prendevano
+        # STATO mentre il dump lo serializzava -> "dictionary changed size
+        # during iteration" -> salvataggio saltato, castighi persi.
         p = STATO["pagella"].setdefault(pid, {"ok": 0, "ko": 0, "ultimo_ko": 0, "fila_ko": 0})
         p["ok" if ok else "ko"] += 1
-    if ok:
-        p["fila_ko"] = 0
-        if ms is not None:                               # idea 60: EWMA della velocita'
-            vecchio = p.get("ms_ewma")
-            p["ms_ewma"] = int(ms) if vecchio is None else round(0.7 * vecchio + 0.3 * ms)
-            p["ms_quando"] = time.time()
-    else:
-        p["ultimo_ko"] = time.time()
-        p["fila_ko"] = p.get("fila_ko", 0) + 1
-        if p["fila_ko"] >= CONFIG["fila_ko_max"]:        # idea 9: circuit breaker
+        if ok:
             p["fila_ko"] = 0
-            castiga(pid, None, CONFIG["cooldown_fila"] + random.randint(0, 10))
-    if p["ok"] + p["ko"] > 50:
-        p["ok"] //= 2
-        p["ko"] //= 2
+            if ms is not None:                               # idea 60: EWMA della velocita'
+                vecchio = p.get("ms_ewma")
+                p["ms_ewma"] = int(ms) if vecchio is None else round(0.7 * vecchio + 0.3 * ms)
+                p["ms_quando"] = time.time()
+        else:
+            p["ultimo_ko"] = time.time()
+            p["fila_ko"] = p.get("fila_ko", 0) + 1
+            if p["fila_ko"] >= CONFIG["fila_ko_max"]:        # idea 9: circuit breaker
+                p["fila_ko"] = 0
+                castigo_fila = True
+        if p["ok"] + p["ko"] > 50:
+            p["ok"] //= 2
+            p["ko"] //= 2
+    if castigo_fila:
+        # il lucchetto NON e' rientrante: castiga() lo prende, quindi va FUORI
+        castiga(pid, None, CONFIG["cooldown_fila"] + random.randint(0, 10))
     stato_salva(forza=not ok)            # i voti negativi vanno su disco subito
 
 
@@ -616,12 +626,13 @@ def uso_oggi(pid):
 
 def conta_agente(sess, token=0):
     """Idea 26: quanto lavora ogni agente, al giorno (per capire chi consuma)."""
-    a = STATO.setdefault("agenti", {}).setdefault((sess or "ignoto")[:24], {})
-    if a.get("giorno") != oggi():
-        a.clear()
-        a.update(giorno=oggi(), n=0, token=0)
-    a["n"] += 1
-    a["token"] += int(token or 0)
+    with LOCK:                                    # AUDIT FINALE N4: era senza
+        a = STATO.setdefault("agenti", {}).setdefault((sess or "ignoto")[:24], {})
+        if a.get("giorno") != oggi():
+            a.clear()
+            a.update(giorno=oggi(), n=0, token=0)
+        a["n"] += 1
+        a["token"] += int(token or 0)
     stato_salva()
 
 
@@ -664,7 +675,9 @@ def sentinella():
         return                      # durante l'autoprova non si esce su internet
     if not CONFIG.get("sentinella_ore"):
         return
-    st = STATO.setdefault("sentinella", {})
+    # AUDIT FINALE N5: lavoro su una COPIA e la metto dentro a fine funzione:
+    # questa gira in un thread (F6) e il dump poteva leggerla a meta'.
+    st = dict(STATO.get("sentinella") or {})
     if time.time() - st.get("controllo", 0) < CONFIG["sentinella_ore"] * 3600:
         return
     st["controllo"] = time.time()
@@ -703,6 +716,8 @@ def sentinella():
         st["avviso"] = "fonti quote aggiornate: " + " · ".join(avvisi) + \
             " — ricontrollare portiere_quote.txt"
         logga(tipo="sentinella", nota=st["avviso"])
+    with LOCK:
+        STATO["sentinella"] = st
     stato_salva(forza=True)
 
 
@@ -870,12 +885,16 @@ def freno(pid):
         # separati (TOCTOU): due richieste simultanee passavano entrambe il
         # freno e il provider riceveva un 429 di troppo (castighi immeri su
         # provider sani).
+        # AUDIT FINALE N7: il tetto GIORNALIERIO si controlla PRIMA di pagare
+        # il battito: prima il battito restava registrato anche quando la
+        # chiamata non partiva (battiti fantasma -> freni che scattano).
+        if al_giorno and uso_oggi(pid) >= al_giorno:
+            _battiti[pid] = batt
+            return True
         batt.append(ora)
         if len(batt) > CONFIG.get("battiti_max", 120):
             batt = batt[-CONFIG.get("battiti_max", 120):]
         _battiti[pid] = batt
-    if al_giorno and uso_oggi(pid) >= al_giorno:
-        return True
     return False
 
 
@@ -1242,6 +1261,10 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
         while tentativi < CONFIG["max_tentativi"]:
             tentativi += 1
             per_questo += 1
+            # AUDIT FINALE N8: il RITENTO sullo stesso provider conta come
+            # battito: prima il ritento non finiva nella finestra dei 60s e il
+            # freno poteva essere superato proprio dai ritenti.
+            batte(pid)
             inizio = time.time()
             # CURA-AUDIT F9: il battito e' gia' stato registrato dentro
             # freno(pid) (sotto lo stesso lucchetto): registrarlo qui
@@ -1802,16 +1825,24 @@ class H(BaseHTTPRequestHandler):
         if self.path.startswith("/portiere.json"):
             capo, sost = classifica()
             ora = time.time()
+            # AUDIT FINALE N6 (F10 a meta'): snapshot sotto lucchetto: le tre
+            # comprehension iteravano dict vivi mentre castiga/segna/conta_*
+            # inserivano -> "dictionary changed size during iteration" ->
+            # il cruscotto rispondeva "empty reply".
+            with LOCK:
+                _pag = dict(STATO.get("pagella") or {})
+                _cast = dict(STATO.get("castighi") or {})
+                _uso = dict(STATO.get("uso") or {})
             self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
                         "capo": capo, "sostituti": len(sost),
                         "pagelle": {pid: {"ok": p.get("ok", 0), "ko": p.get("ko", 0),
                                           "ms": p.get("ms_ewma")}
-                                    for pid, p in (STATO.get("pagella") or {}).items()},
+                                    for pid, p in _pag.items()},
                         "castighi": {k: int(v - ora)
-                                     for k, v in (STATO.get("castighi") or {}).items()
+                                     for k, v in _cast.items()
                                      if v > ora},
                         "uso_oggi": {pid: u.get("n", 0)
-                                     for pid, u in (STATO.get("uso") or {}).items()
+                                     for pid, u in _uso.items()
                                      if u.get("giorno") == oggi()},
                         "sentinella_avviso": (STATO.get("sentinella") or {}).get("avviso"),
                         "risponde": [v["id"] for v in appello()

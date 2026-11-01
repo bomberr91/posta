@@ -204,7 +204,12 @@ voci.sort(key=lambda v: (0 if v["esito"] == "risponde" and v.get("prova") == "ch
 dati = {"quando": __import__("time").strftime("%d/%m/%Y %H:%M"),
         "riserva": [v["id"] for v in voci if v["esito"] == "risponde"],
         "voci": voci}
-json.dump(dati, open(out, "w"), ensure_ascii=False, indent=1)
+# CURA-AUDIT F13 (AUDIT FINALE): scrittura ATOMICA: prima scriveva sul file
+# definitivo -> se il processo moriva li', il catalogo restava a meta'.
+_tmp = out + ".tmp"
+with open(_tmp, "w", encoding="utf-8") as _f:
+    json.dump(dati, _f, ensure_ascii=False, indent=1)
+os.replace(_tmp, out)
 print(json.dumps(dati, ensure_ascii=False))
 PY
 

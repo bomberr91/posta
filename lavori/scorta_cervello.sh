@@ -22,7 +22,9 @@ while true; do
     say "cervello DOWN: lo riavvio"
     # lock a tempo: se qualcun altro sta già tentando, aspetto e riprovo
     if flock -w 30 /tmp/cervello.lk true 2>/dev/null; then
-      nohup python3 cervello.py >> "$CERV" 2>&1 &
+      # AUDIT FINALE: senza PYTHONUNBUFFERED il log resta VUOTO proprio
+      # quando serve (il cane muore e non si sa perche').
+      PYTHONUNBUFFERED=1 nohup python3 cervello.py >> "$CERV" 2>&1 &
       for i in $(seq 1 20); do
         sleep 3
         if (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null; then
