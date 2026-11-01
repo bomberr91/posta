@@ -463,3 +463,67 @@ class ConcorrenzaTests(unittest.TestCase):
         for t in threads:
             t.join(timeout=60)
         self.assertEqual(errori, [], "eccezioni in concorrenza: %s" % errori[:3])
+
+
+class PolicyGratisTests(unittest.TestCase):
+    """F17 — la policy "gratis" deve prendere TUTTO cio' che e' gratis e senza
+    carta: keyless + free-ricorrente (+ classe vuota = free-ricorrente).
+    Prima prendeva solo i keyless: 58 provider gratis del capo restavano
+    fuori dalla rotta e il cervello rispondeva 503 con dieci chiavi sane.
+    Questo test e' la rete: se qualcuno lo rimette, la rete si chiude."""
+
+    def test_gratis_prende_anche_i_free_ricorrente(self):
+        ordine = [{"id": "k1"}, {"id": "f1"}, {"id": "f2"}]
+        salvato = dict(cerv.CLASSI)
+        try:
+            cerv.CLASSI["k1"] = "keyless"
+            cerv.CLASSI["f1"] = "free-ricorrente"
+            cerv.CLASSI["f2"] = ""
+            scelti = [v["id"] for v in cerv.ordina_per_politica(ordine, "gratis")]
+            self.assertIn("f1", scelti, "un free-ricorrente E' gratis: deve contare")
+            self.assertIn("f2", scelti, "classe vuota = free-ricorrente = gratis")
+            self.assertIn("k1", scelti, "i keyless sono gratis")
+        finally:
+            cerv.CLASSI.clear()
+            cerv.CLASSI.update(salvato)
+
+    def test_keyless_resta_solo_keyless(self):
+        ordine = [{"id": "k1"}, {"id": "f1"}]
+        salvato = dict(cerv.CLASSI)
+        try:
+            cerv.CLASSI["k1"] = "keyless"
+            cerv.CLASSI["f1"] = "free-ricorrente"
+            scelti = [v["id"] for v in cerv.ordina_per_politica(ordine, "keyless")]
+            self.assertEqual(scelti, ["k1"], "keyless = solo keyless (scelta stretta)")
+        finally:
+            cerv.CLASSI.clear()
+            cerv.CLASSI.update(salvato)
+
+    def test_su_62_provider_gratis_e_tutti(self):
+        """La prova vera: il file reale, 62 provider, la policy gratis prende tutto."""
+        from collections import Counter
+        classi = {}
+        for riga in open(ROOT / "portiere_lista.txt", encoding="utf-8"):
+            riga = riga.rstrip("\n")
+            if not riga.strip() or riga.lstrip().startswith("#"):
+                continue
+            p = riga.split("|")
+            if len(p) < 3:
+                continue
+            nome = p[2].strip()
+            classe = (p[7].strip() if len(p) > 7 else "") or \
+                     ("keyless" if nome == "SENZA" else "free-ricorrente")
+            classi[p[0].strip()] = classe
+        salvato = dict(cerv.CLASSI)
+        try:
+            cerv.CLASSI.clear()
+            cerv.CLASSI.update(classi)
+            ordine = [{"id": i} for i in classi]
+            scelti = [v["id"] for v in cerv.ordina_per_politica(ordine, "gratis")]
+            self.assertEqual(len(scelti), len(classi),
+                             "la policy gratis deve prendere TUTTI i provider")
+            print("   prova vera: %d provider, gratis ne prende %d, classi %s"
+                  % (len(classi), len(scelti), dict(Counter(classi.values()))))
+        finally:
+            cerv.CLASSI.clear()
+            cerv.CLASSI.update(salvato)

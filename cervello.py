@@ -1018,7 +1018,14 @@ FORTI = ("deepseek-v4", "glm-5", "kimi-k", "qwen3", "deepseek", "glm", "llama-3.
 
 
 def ordina_per_politica(ordine, politica):
-    if politica in ("gratis", "keyless"):
+    # "gratis" = TUTTO cio' che e' gratis e senza carta: keyless +
+    # free-ricorrente (+ classe vuota = free-ricorrente). Prima prendeva solo
+    # i keyless: 58 provider gratis del capo restavano fuori dalla rotta.
+    # "keyless" resta keyless-only: e' una scelta piu' stretta, non un errore.
+    if politica == "gratis":
+        return [v for v in ordine
+                if CLASSI.get(v["id"]) in ("keyless", "free-ricorrente", "")]
+    if politica == "keyless":
         return [v for v in ordine if CLASSI.get(v["id"]) == "keyless"]
     if politica == "migliore":
         def forza(v):
