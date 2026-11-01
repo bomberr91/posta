@@ -1368,8 +1368,19 @@ class H(BaseHTTPRequestHandler):
             return
         if self.path.startswith("/portiere.json"):
             capo, sost = classifica()
+            ora = time.time()
             self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
                         "capo": capo, "sostituti": len(sost),
+                        "pagelle": {pid: {"ok": p.get("ok", 0), "ko": p.get("ko", 0),
+                                          "ms": p.get("ms_ewma")}
+                                    for pid, p in (STATO.get("pagella") or {}).items()},
+                        "castighi": {k: int(v - ora)
+                                     for k, v in (STATO.get("castighi") or {}).items()
+                                     if v > ora},
+                        "uso_oggi": {pid: u.get("n", 0)
+                                     for pid, u in (STATO.get("uso") or {}).items()
+                                     if u.get("giorno") == oggi()},
+                        "sentinella_avviso": (STATO.get("sentinella") or {}).get("avviso"),
                         "risponde": [v["id"] for v in appello()
                                      if v.get("esito") == "risponde" and v.get("id") in BASE],
                         "voci": [{"id": k, "nome": ETICHETTE.get(k, k), "tipo": TIPI.get(k, "chat"),
