@@ -167,8 +167,16 @@ prova(){
     # NELLO STESSO ERRORE dicono quale modello usare ("Try gemma4:31b-cloud",
     # "model X not found", "use /v1/models"). Se lo dicono, lo si prova.
     if ! printf '%s' "$body" | grep -qi 'choices'; then
-      SUGGERITO=$(printf '%s' "$body" | grep -oiE "(try|use|instead)\s+\"?[A-Za-z0-9_.:/-]{4,60}\"?|\"model\":\"[^\"]{4,60}\"" | head -1 \
-        | sed -E 's/.*(try|use|instead)\s+\"?//I; s/\"model\":\"//I; s/\"$//')
+      SUGGERITO=$(printf '%s' "$body" | grep -oiE "\b(try|use|instead)\b\s+\"?[A-Za-z0-9_.:/-]{4,60}\"?" | head -1 \
+        | sed -E 's/.*\b(try|use|instead)\b\s+\"?//I; s/"$//')
+      # il provider a volte "suggerisce" una cosa che NON e' un modello
+      case "$SUGGERITO" in
+        ""|again|models|/v1/models|it|that|this|the|your|model|our|free) SUGGERITO="" ;;
+      esac
+      # un UUID non e' un nome di modello
+      case "$SUGGERITO" in
+        *-*-*-*-*) SUGGERITO="" ;;
+      esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
         body=$(curl -s -m 45 -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
           -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
