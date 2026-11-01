@@ -105,3 +105,4 @@
 {"tipo": "errore-riserva", "provider": "cloudflare", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 23:00:43"}
 {"tipo": "errore-riserva", "provider": "tokenharbor", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 23:00:43"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 27561, "quando": "2026-11-01 23:02:03"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "keyless", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 1044, "tentativi": 1, "quando": "2026-11-01 23:11:42"}
