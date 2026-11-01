@@ -54,10 +54,14 @@ perdita) e l'avviso finisce in `dal_pc/gate_pubblicazione.txt`.
 
 ### Il collaudo riscritto
 
-`fatti/collaudo_cervello.sh` (condiviso da tutti i deploy): timeout
-**coerenti col budget del motore**, ogni passo **verifica davvero**, e
-l'uscita dice **NO** quando qualcosa non torna. Tutti i `deploy_*.sh` lo
-usano con `collaudo || exit 1`.
+`fatti/collaudo_cervello.sh` (condiviso): timeout **coerenti col budget del
+motore**, ogni passo **verifica davvero**, e l'uscita dice **NO** quando
+qualcosa non torna. Lo usano ora:
+
+- i deploy: `deploy_cura` · `deploy_f3` · `deploy_cors` · `deploy_json_ricco` ·
+  `deploy_sentinella2` · `deploy_sent_pagine`
+- i riti che verificano il cervello: `rito_nuovo` · `buongiorno_1_11` ·
+  `stato_invisibili` · `collaudo_fase1` · `test_blackout`
 
 ### Il postino non mente più
 
@@ -88,8 +92,11 @@ usano con `collaudo || exit 1`.
   con 0 → `.done` regolare
 - `deploy_cura.sh` → con il cervello **morto** esce **1** e dice "COLLAUDO
   FALLITO"; con il cervello **sano** esce **0**
+- `stato_invisibili.sh` → vivo: exit 0 · morto: **exit 1**
+- `buongiorno_1_11.sh` → morto: **exit 1**
 - test suite: `tests/test_cervello_offline.py` **17 test + 17 subtest, tutti verdi**
   (regressione inclusa: il test reintroduce il bug e verifica che venga visto)
+- suite completa del repo: **52 test + 24 subtest verdi**
 
 ## 7. COSA CHIEDO AL CAPO
 
