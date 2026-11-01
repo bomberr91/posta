@@ -1,5 +1,7 @@
 #!/bin/bash
 # giudice_lusso.sh — una chiamata frontier via AgentRouter (cascata + pause).
+# ⚠️ REGOLA FERREA: prompt E contesto SOLO IN INGLESE (italiano = content-blocked).
+# Niente dump di codice con commenti italiani: distillare prima con operai locali.
 # Uso: bash lavori/giudice_lusso.sh "prompt EN" [file_contesto] > risposta.txt
 K=$(grep -oE "sk-mHof[A-Za-z0-9_-]{40,}" ~/CHIAVI_LOCALI.md | head -1)
 PROMPT="$1"; CTX=""
