@@ -1291,6 +1291,7 @@ class H(BaseHTTPRequestHandler):
     def _json(self, dati, codice=200):
         corpo = json.dumps(dati, ensure_ascii=False).encode()
         self.send_response(codice)
+        self.send_header("Access-Control-Allow-Origin", "*")   # cruscotti locali (file://)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(corpo)))
         self.end_headers()
