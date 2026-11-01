@@ -24,14 +24,27 @@ if [ -z "$DOMANDA" ]; then
 fi
 T0=$(date +%s)
 
-# 1. il cane è vivo?
+# 1. il cane è vivo? SE NON LO È, LO AVVIO IO (il capo non deve fare niente
+#    sul PC: il cane è un regalo per gli agenti, e gli agenti lo avviano)
 if ! curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
-  echo "il cane (porta $PORT) non risponde."
-  echo "  avvialo sul PC: doppio click su 'Avvia Deep Dog Web.bat'"
-  echo "  poi riprova questo comando."
-  exit 1
+  echo "il cane non gira: lo avvio io"
+  BAT='C:\Users\giopi\Documents\AgentWorkspace\deepdog\Avvia Deep Dog Web.bat'
+  cmd.exe /c start "" "$BAT" >/dev/null 2>&1
+  for i in $(seq 1 30); do
+    sleep 4
+    if curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
+      echo "cane avviato e vivo (~$((i*4))s)"
+      break
+    fi
+  done
+  if ! curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
+    echo "non sono riuscito ad avviarlo. Prova: doppio click su 'Avvia Deep Dog Web.bat'"
+    echo "oppure guarda se il venv esiste: /mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/.venv"
+    exit 1
+  fi
+else
+  echo "cane vivo (porta $PORT)"
 fi
-echo "cane vivo (porta $PORT)"
 
 # 2. la domanda
 echo "domanda: $DOMANDA"
