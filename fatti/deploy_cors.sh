@@ -1,5 +1,17 @@
 #!/bin/bash
-cd ~/posta
-pkill -f '^python3 cervello\.py$' && echo "ucciso, il guardiano risuscita col CORS"
-for i in $(seq 1 15); do sleep 5; (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null && { echo "risorto ~$((i*5))s"; break; }; done
-curl -s -D - -o /dev/null --max-time 5 http://127.0.0.1:20129/cervello 2>/dev/null | grep -i "access-control" && echo "✓ CORS attivo" || echo "✗ niente header"
+# DEPLOY CORS — CURA-AUDIT (1/11 sera): collaudo vero e header verificato.
+set -uo pipefail
+cd ~/posta || exit 1
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=fatti/collaudo_cervello.sh
+. "$DIR/fatti/collaudo_cervello.sh"
+
+pkill -f '^python3 cervello\.py$' && echo "ucciso, il guardiano risuscita col CORS" || echo "non girava"
+collaudo || { echo "❌ COLLAUDO FALLITO: il Portiere NON funziona, il deploy NON è riuscito"; exit 1; }
+
+echo "### header CORS"
+curl -s -D - -o /dev/null --max-time 10 "$CERVELLO_URL/cervello" 2>/dev/null \
+  | grep -i "access-control-allow-origin" | head -1 \
+  | grep -q . && echo "   ✓ CORS attivo" || { echo "   ✗ niente header CORS"; exit 1; }
+
+echo "✅ DEPLOY CORS RIUSCITO"

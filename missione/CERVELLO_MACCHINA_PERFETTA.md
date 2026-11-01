@@ -351,3 +351,48 @@ OpenCode (57) · Ollama Cloud (62) · Vercel AI GW $5/mese (63) · LLM7/Aion/Sil
 PROSSIMO PASSO (quando il capo da' l'ok): CONCLUSIONI DEFINITIVE — riscrivere le FASI
 incorporando le 64 idee -> approvazione -> applicare UNA FASE ALLA VOLTA
 (sandbox -> anteprima -> push).
+
+====================================================================
+== 🔴 CURA-AUDIT v5 — 1/11 sera — IL PORTIERE ERA MORTO E NON LO SAPEVA ==
+====================================================================
+NON ERA UN'IDEA NUOVA: era un BUCO. Il quaderno delle 64 idee era chiuso e
+perfetto, e intanto il Portiere non rispondeva a una chat dalle 16:24.
+
+DUE DIFETTI, STESSA COMMIT (3164d7f "CURA-AUDIT", 1/11 16:24):
+  ① `_sessione()` annidato dentro `_rispondi()` (indentazione sbagliata) →
+     H._sessione non esisteva → ogni chat moriva con "empty reply from server"
+  ② `NOME = "Portiere"` cancellato → /cervello e /portiere.json crashavano
+
+PERCHÉ IL COLLAUDO NON L'HA VISTO (e perché è la cosa più importante):
+  - i curl del collaudo avevano timeout 5-20s, il budget del motore è ~480s:
+    il collaudo non poteva distinguere "ROT TO" da "LENTO"
+  - nessuno guardava il codice di uscita: corpo vuoto → JSONDecodeError → avanti
+  - gli script di deploy non avevano `set -e`
+  - postino.sh scriveva il `.done` SENZA guardare l'uscita del job
+  → "deploy riuscito" scritto sopra un Portiere morto.
+
+IDEA 65 (nuova, nata dal buco) — OGNI COLLAUDO DEVE POTER DIRE "FALLITO":
+  65a. `--autoprova`: controllo STRUTTURALE (AST: ogni self.X() chiamato deve
+       esistere come metodo) + prova VIVA (chat vera su porta libera). Uscita 1.
+  65b. `gate_pubblicazione.py`: prima di pubblicare, ogni .py deve compilare e
+       cervello.py deve passare l'autoprova. Se no, NON sale su master.
+  65c. `GET /salute`: vivo? configurato? struttura pulita?
+  65d. postino: il `.done` solo con uscita 0; `.failito` + 3 tentativi, poi
+       `.abbandonato`.
+  65e. `fatti/collaudo_cervello.sh`: timeout coerenti col budget del motore,
+       ogni passo verifica davvero, l'uscita dice NO.
+
+COLLAUDI (fatti): autoprova SUPERATA sul codice buono, FALLITA sul bug
+reintrodotto con la diagnosi esatta · gate blocca .py rotto e cervello rotto ·
+postino: exit 3 → nessun .done · deploy_cura: exit 1 a cervello morto, 0 a
+cervello sano · tests/test_cervello_offline.py 17 test + 17 subtest verdi.
+
+ALTRI RILIEVI v4 CHIUSI: import solo ImportError · vivo() porta 443/IPv6 ·
+guardia solo-gratis famiglia Gemini pro/ultra · max_tokens in CONFIG · tetto di
+byte sulle risposte · quote atomiche + tetto battiti · stato validato · regole
+a prefisso più lungo · sessioni sotto lucchetto.
+
+LA LEZIONE (da mettere in cima al quaderno):
+  Il guaio non era il bug, era il COLLAUDO che non poteva dire di no.
+  Ogni collaudo ha un'uscita che significa NO, e ogni file che non lo supera
+  non sale su master.

@@ -32,7 +32,17 @@ sync_down(){
   fi
 }
 sync_up(){
+  # CURA-AUDIT: il GATE. Un file che non passa il suo collaudo non sale su
+  # master. Il 1/11 una commit di CURA-AUDIT pubblicò un cervello.py rotto
+  # (ogni chat moriva con "empty reply") e nessuno se ne accorse: il collaudo
+  # non poteva distinguere "rotto" da "lento". Qui il file rotto resta in
+  # locale e il capo legge l'avviso in dal_pc/gate_pubblicazione.txt.
+  ESCLUDI="$(python3 "$DIR/gate_pubblicazione.py" --escludi 2>/dev/null)"
   git add -A >/dev/null 2>&1
+  if [ -n "$ESCLUDI" ]; then
+    for fe in $ESCLUDI; do git reset -q -- "$fe" >/dev/null 2>&1 || true; done
+    say "⛔ gate: non pubblico $(echo $ESCLUDI | tr '\n' ' ') (lavoro tenuto in locale)"
+  fi
   git diff --cached --quiet && return 0
   git commit -qm "postino $(date '+%d/%m %H:%M')" >/dev/null 2>&1 || true
   git push -q "$REMOTE" HEAD:main >/dev/null 2>&1 || git push -q >/dev/null 2>&1 || say "⚠️ push fallito"
@@ -52,19 +62,46 @@ gira(){
     [ -f "$f" ] || continue
     b="$(basename "$f")"; n="${b%.*}"; ext="${b##*.}"
     [ -f "fatti/$n.done" ] && continue
-    say "→ compito: $b"
+    # CURA-AUDIT: un compito che fallisce NON viene archiviato come fatto.
+    # Si ritenta al massimo 3 volte, poi resta in fatti/ come .abbandonato.
+    TENT=0
+    if [ -f "fatti/$n.tentativi" ]; then
+      TENT=$(grep -oE '^[0-9]+$' "fatti/$n.tentativi" 2>/dev/null | head -1)
+      [ -z "$TENT" ] && TENT=0
+    fi
+    if [ "$TENT" -ge 3 ]; then
+      say "⛔ compito $n: fallito $TENT volte, non lo ritento (vedi dal_pc/$n.md)"
+      mv "$f" "fatti/$b" >/dev/null 2>&1
+      date -Is > "fatti/$n.abbandonato"
+      continue
+    fi
+    TENT=$((TENT+1)); printf '%s\n' "$TENT" > "fatti/$n.tentativi"
+    say "→ compito: $b (tentativo $TENT/3)"
     OUT="dal_pc/$n.md"
     { echo "# Risposta a «$n»"; echo; echo "_$(date '+%d/%m/%Y %H:%M') · $(hostname)_"; echo; } > "$OUT"
+    ESITO=0
     if [ "$ext" = "sh" ]; then
-      timeout 1800 bash "$f" >> "$OUT" 2>&1
+      timeout 1800 bash "$f" >> "$OUT" 2>&1 || ESITO=$?
     elif [[ "$b" == squadra_* ]] && [ -x "$DIR/squadra.sh" ]; then
-      timeout 2700 "$DIR/squadra.sh" "$(cat "$f")" "$OUT" >/dev/null 2>&1
+      timeout 2700 "$DIR/squadra.sh" "$(cat "$f")" "$OUT" >/dev/null 2>&1 || ESITO=$?
     else
       timeout 2700 opencode run -m opencode/big-pickle "$(cat "$f")" >> "$OUT" 2>&1 \
-        || timeout 2700 opencode run "$(cat "$f")" >> "$OUT" 2>&1
+        || timeout 2700 opencode run "$(cat "$f")" >> "$OUT" 2>&1 || ESITO=$?
+    fi
+    if [ "$ESITO" -ne 0 ]; then
+      # CURA-AUDIT: questo e' il buco che nascondeva tutto. Il .done si scrive
+      # SOLO se il job e' uscito con 0. Un timeout (124) o un errore (1) non
+      # passano: il compito resta da fare e viene ritentato.
+      echo "" >> "$OUT"
+      echo "<!-- FALLITO (exit $ESITO) $n -->" >> "$OUT"
+      date -Is > "fatti/$n.failito"
+      sync_up
+      say "✗ compito $n FALLITO (exit $ESITO): non dichiarato fatto, tentativo $TENT/3"
+      continue
     fi
     echo "" >> "$OUT"; echo "<!-- fine $n -->" >> "$OUT"
     mv "$f" "fatti/$b"; date -Is > "fatti/$n.done"
+    rm -f "fatti/$n.failito" "fatti/$n.tentativi" "fatti/$n.abbandonato"
     sync_up
     say "✓ risposta pronta in dal_pc/$n.md"
   done

@@ -77,6 +77,38 @@ FASE 2 · BLOCCO 3 — scoperta e nomi:
   45  combo con nome: chiedi il nome del gruppo come modello
   55  catalogo != accesso: la lista e' un indizio, la prova vera e' la risposta
    +  migliore/veloce passano dal motore nuovo con auto/best-reasoning|fast
+
+CURA-AUDIT v5 (1/11 sera) — il Portiere era MORTO e non lo sapeva:
+  Due difetti, introdotti dalla stessa commit (3164d7f, 16:24):
+   ① `_sessione()` era annidato dentro `_rispondi()` per un'indentazione
+      sbagliata → `H._sessione` non esisteva → ogni richiesta chat moriva con
+      "empty reply from server";
+   ② la riga `NOME = "Portiere"` era stata cancellata → /cervello e
+      /portiere.json crashavano (NameError).
+  Il collaudo non poteva accorgersene (i curl avevano un timeout più corto del
+  budget del motore, nessuno guardava l'uscita, il postino scriveva il .done
+  a ogni costo). Da qui tutto quello che segue.
+
+  LE DUE RETI DI SICUREZZA (nuove):
+   A. --autoprova: prova STRUTTURALE (ogni self.X() chiamato deve esistere
+      come metodo) + prova VIVA (il cervello risponde davvero a una chat, su
+      una porta libera). Uscita 1 se qualcosa non torna.
+   B. gate_pubblicazione.py: prima di pubblicare, ogni .py modificato deve
+      compilare e cervello.py deve passare l'autoprova. Se no, il file NON
+      sale su master (il lavoro resta in locale, nessuna perdita).
+  + GET /salute: il riscontro veloce (vivo? configurato? struttura pulita?)
+
+  GLI ALTRI RILIEVI DELL'AUDIT v4 (quelli non già coperti):
+   - import: solo ImportError (un errore interno non deve spegnere F3 in silenzio)
+   - vivo(): la porta la decide lo schema (443 per https) e l'IPv6 va tra parentesi
+   - guardia solo-gratis: chiusa la famiglia dei piani Gemini pro/ultra
+   - max_tokens: tetto in CONFIG (8000), e i valori non interi vengono scartati
+   - risposte: mai più di risposta_max byte letti (motore e riserva)
+   - quote: freno() e batte() atomici sotto lucchetto, e i battiti hanno un tetto
+   - stato: lo stato su disco viene validato (tipi sbagliati → ricostruiti)
+   - regole per agente: vince il prefisso PIÙ LUNGO, le chiavi vuote no
+   - sessioni: la mappa è sotto lucchetto (min() su una mappa che un altro
+     thread svuota = RuntimeError a caso)
 """
 import hashlib
 import json
@@ -96,13 +128,18 @@ try:
     from compressione import alleggerisci_tools, comprimi_system, taglia_storia
     from per_agente import carica_profili, profilo_di, applica_profilo
     F3_OK = True
-except Exception:
+except ImportError:
+    # CURA-AUDIT: solo ImportError. Con "except Exception" un errore interno
+    # dei moduli (non un import mancante) spegneva profili e compressione in
+    # silenzio: si credeva F3 spento quando il problema era un altro.
     F3_OK = False
 
 QUI = os.path.dirname(os.path.abspath(__file__))
 MOTORE = "http://127.0.0.1:20128/v1"
 PORTA = 20129
 APPELLO = os.path.join(os.path.expanduser("~"), ".posta_appello.json")
+# CURA-AUDIT: durante l'autoprova nessuno deve uscire su internet.
+AUTOPROVA = [False]
 
 # ── FASE 1 · CONFIG: i numeri collaudati (idea 33 + saggio: statici, niente tuning) ──
 CONFIG = {
@@ -156,6 +193,11 @@ CONFIG = {
     "comprimi_riserva": True,    # la dieta vale SOLO per la riserva (il motore fa da se')
     "system_min_car": 1200,      # system sotto questa taglia: non si tocca
     "storia_max_car": 24000,     # storia oltre questa taglia: si taglia (mai con tool-call in mezzo)
+    # — CURA-AUDIT (1/11 sera): i numeri che il motore non aveva ——
+    "max_tokens": 8000,          # tetto anti-abuso: un client nonpuo' chiedere 1M token
+    "risposta_max": 8_000_000,  # byte letti da una risposta (mai di piu')
+    "battiti_max": 120,          # istanti tenuti per provider nella finestra 60s
+    "autoprova_timeout": 20,     # secondi per la prova end-to-end dell'autoprova
 }
 
 # aggancio al motore nuovo (3.8.52): le nostre politiche sulle sue auto/best-*
@@ -299,12 +341,24 @@ def indirizzo(pid, k):
     return url, dict(UA, Authorization="Bearer " + k)
 
 
+# CURA-AUDIT: questa riga era stata cancellata per sbaglio (stessa commit che
+# aveva annidato _sessione) → NameError su /cervello e /portiere.json.
+NOME = "Portiere"
+
+
 def vivo(url, secondi=1):
+    """C'e' vivo quell'indirizzo? CURA-AUDIT: la porta la decide lo schema
+    (443 per https, 80 per http) e l'host si scrive fra parentesi per l'IPv6."""
     import socket
     da = url.split("//")[-1].split("/")[0]
     host, _, porta = da.partition(":")
+    if not porta:
+        porta = "443" if url.lower().startswith("https://") else "80"
     try:
-        s = socket.create_connection((host, int(porta or 80)), timeout=secondi)
+        fam = socket.AF_INET6 if ":" in host else socket.AF_INET
+        s = socket.socket(fam, socket.SOCK_STREAM)
+        s.settimeout(secondi)
+        s.connect((host, int(porta)))
         s.close()
         return True
     except Exception:
@@ -363,13 +417,32 @@ _ultimo_salvataggio = [0.0]
 
 
 def stato_carica():
+    """CURA-AUDIT: il JSON su disco puo' essere valido ma fatto di tipi
+    sbagliati (una lista dove serve una mappa, numeri dove servono stringhe).
+    Se non lo controlliamo, il primo .items() o il primo += muore in pieno
+    traffico. Qui si valida e si ricostruisce la forma buona."""
     global STATO
     try:
         d = json.load(open(STATO_FILE, encoding="utf-8"))
-        if isinstance(d, dict):
-            STATO = d
     except Exception:
-        pass
+        d = None
+    if not isinstance(d, dict):
+        d = {}
+    nuovo = {}
+    for sezione in ("castighi", "pagella", "uso", "agenti", "sessioni"):
+        v = d.get(sezione)
+        nuovo[sezione] = v if isinstance(v, dict) else {}
+    for k, v in list(nuovo["castighi"].items()):
+        if not isinstance(v, (int, float)):
+            nuovo["castighi"].pop(k, None)
+    for pid, p in list(nuovo["pagella"].items()):
+        if not isinstance(p, dict):
+            nuovo["pagella"].pop(pid, None)
+            continue
+        for campo in ("ok", "ko"):
+            if not isinstance(p.get(campo), int):
+                p[campo] = 0
+    STATO = nuovo
     STATO.setdefault("castighi", {})
     STATO.setdefault("pagella", {})
 
@@ -400,7 +473,8 @@ def castiga(pid, modello, secondi, globale=False):
         k = pid + "|*"
     else:
         k = pid + "|" + modello
-    STATO["castighi"][k] = time.time() + secondi
+    with LOCK:
+        STATO.setdefault("castighi", {})[k] = time.time() + secondi
     stato_salva(forza=True)              # i castighi DEVONO sopravvivere al riavvio
 
 
@@ -525,6 +599,8 @@ def sentinella():
     """Una volta al giorno guarda se le FONTI delle quote (CYBIRD-D +
     awesome-freellm-apis/freellm.net) hanno pubblicato aggiornamenti.
     Niente thread: controllo pigro sul primo traffico utile della giornata."""
+    if AUTOPROVA[0]:
+        return                      # durante l'autoprova non si esce su internet
     if not CONFIG.get("sentinella_ore"):
         return
     st = STATO.setdefault("sentinella", {})
@@ -693,17 +769,20 @@ def ricarica_quote():
 
 
 def freno(pid):
-    """True = NON chiamare adesso questo provider (sarebbe sopra i suoi limiti)."""
+    """True = NON chiamare adesso questo provider (sarebbe sopra i suoi limiti).
+    CURA-AUDIT: controllo e registrazione sotto lo stesso lucchetto, cosi'
+    due richieste simultanee non superano il limite insieme."""
     lim = QUOTE.get(pid)
     if not lim:
         return False
     al_min, al_giorno, distanza = lim
     ora = time.time()
-    batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
-    _battiti[pid] = batt
-    if al_min and len(batt) >= al_min:
-        return True
-    if distanza and batt and ora - batt[-1] < distanza:
+    with LOCK:
+        batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
+        _battiti[pid] = batt
+        pieno = bool(al_min and len(batt) >= al_min)
+        troppo_presto = bool(distanza and batt and ora - batt[-1] < distanza)
+    if pieno or troppo_presto:
         return True
     if al_giorno and uso_oggi(pid) >= al_giorno:
         return True
@@ -711,10 +790,15 @@ def freno(pid):
 
 
 def batte(pid):
+    """CURA-AUDIT: finestra scorrevole dei battiti, con tetto (non cresce all'infinito
+    per i provider senza quota) e scrittura sotto lucchetto."""
     ora = time.time()
-    batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
-    batt.append(ora)
-    _battiti[pid] = batt
+    with LOCK:
+        batt = [t for t in _battiti.get(pid, []) if ora - t < 60]
+        batt.append(ora)
+        if len(batt) > CONFIG.get("battiti_max", 120):
+            batt = batt[-CONFIG.get("battiti_max", 120):]
+        _battiti[pid] = batt
 
 
 # ── FASE 2 · B4 · REGOLE PER AGENTE (idea 38, disegno S4/otari in piccolo) ───
@@ -756,10 +840,19 @@ def ricarica_regole():
 
 
 def regola_di(sess):
+    """CURA-AUDIT: vince il prefisso PIU' LUNGO (non il primo incontrato) e le
+    chiavi vuote vengono scartate: una riga senza nome non deve valere per tutti."""
+    s = sess or ""
+    migliore = None
+    lunghezza = -1
     for chi, regola in REGOLE.items():
-        if (sess or "").startswith(chi):
-            return regola
-    return None
+        nome = (chi or "").strip()
+        if not nome or not isinstance(regola, dict):
+            continue
+        if s.startswith(nome) and len(nome) > lunghezza:
+            migliore = regola
+            lunghezza = len(nome)
+    return migliore
 
 
 # ── FASE 2 · B4 · PARSER TOOL-CALL EURISTICO (idea 47) ───────────────────────
@@ -804,16 +897,27 @@ def ripara_tool_call(d, payload):
 
 # ── FASE 1 · GUARDIA SOLO-GRATIS (idea 21) ───────────────────────────────────
 A_PAGAMENTO = ("gpt-5", "gpt-4.1", "gpt-4o", "o3", "o4-", "claude-opus",
-               "claude-sonnet", "claude-haiku", "gemini-2.5-pro", "grok-4")
+               "claude-sonnet", "claude-haiku", "grok-4")
+# CURA-AUDIT: i piani "pro"/"ultra" dei Gemini sono a pagamento anche quando
+# il nome non contiene "gemini-2.5-pro" (1.5-pro, 3-pro, ...). La guardia
+# deve chiudere la famiglia intera, non un nome solo.
+RE_A_PAGAMENTO = (
+    re.compile(r"gemini-[\d.]+-pro"),
+    re.compile(r"gemini-[\d.]+-ultra"),
+    re.compile(r"gemini-[\d.]+-flash-(premium|thinking)"),
+)
 
 
 def a_pagamento(modello):
     m = (modello or "").lower()
     if not m:
         return False
-    if not any(p in m for p in A_PAGAMENTO):
-        return False
+    # prima la scappatoia del gratis: ":free", "-free", "oss"
     if ":free" in m or "-free" in m or re.search(r"\boss\b", m):
+        return False
+    if any(rx.search(m) for rx in RE_A_PAGAMENTO):
+        return True
+    if not any(p in m for p in A_PAGAMENTO):
         return False
     return True
 
@@ -838,15 +942,19 @@ def ordina_per_politica(ordine, politica):
 
 
 def inoltra(corpo, percorso="chat/completions", secondi=None, sessione=""):
-    """Passa la richiesta al motore. Ritorna il JSON o None."""
+    """Passa la richiesta al motore. Ritorna il JSON o None.
+    CURA-AUDIT: la risposta si legge fino a un tetto: un provider rotto o
+    ostile non deve poterci svuotare la memoria."""
     try:
         intestazioni = {"Content-Type": "application/json"}
         if sessione:
             intestazioni["x-opencode-session"] = sessione   # idea 58
         req = urllib.request.Request(MOTORE + "/" + percorso, data=corpo,
                                      headers=intestazioni)
-        return json.loads(urllib.request.urlopen(
-            req, timeout=secondi or CONFIG["timeout_motore"]).read().decode())
+        grezzo = urllib.request.urlopen(
+            req, timeout=secondi or CONFIG["timeout_motore"]).read(
+                CONFIG.get("risposta_max", 8_000_000))
+        return json.loads(grezzo.decode())
     except Exception:
         return None
 
@@ -1042,10 +1150,18 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
                     segna(pid, True, ms)                  # idea 60: nutre l'EWMA
                     conta_uso(pid, (d.get("usage") or {}).get("total_tokens", 0))
                     if sessione:                          # idea 4: ricorda la fedelta'
-                        ses = STATO.setdefault("sessioni", {})
-                        ses[(sessione or "")[:24]] = {"pid": pid, "quando": time.time()}
-                        if len(ses) > 50:
-                            ses.pop(min(ses, key=lambda k2: ses[k2].get("quando", 0)))
+                        # CURA-AUDIT: sotto lucchetto. min() su una mappa che
+                        # un altro thread sta svuotando = RuntimeError a caso.
+                        with LOCK:
+                            ses = STATO.setdefault("sessioni", {})
+                            ses[(sessione or "")[:24]] = {"pid": pid, "quando": time.time()}
+                            if len(ses) > 50:
+                                try:
+                                    vecchio = min(ses, key=lambda k2: ses[k2].get("quando", 0))
+                                except (ValueError, RuntimeError):
+                                    vecchio = None
+                                if vecchio is not None:
+                                    ses.pop(vecchio, None)
                     nome = v.get("nome") or pid
                     d["model"] = "%s (riserva %s)" % (modello, nome)
                     rotta = {"provider": pid, "modello": modello, "ms": ms,
@@ -1343,6 +1459,132 @@ def pagina():
     return html
 
 
+# ── CURA-AUDIT (1/11 sera) · L'AUTOPROVA ────────────────────────────────────
+# Il buco che ha fatto morire il Portiere: _sessione() era finito dentro
+# _rispondi() per un'indentazione sbagliata. Sintassi Python valida, ma
+# H._sessione non esisteva piu' → ogni richiesta chat moriva con "empty reply
+# from server", e il collaudo (che non poteva distinguere "rotto" da "lento")
+# diceva "tutto bene". Due reti di sicurezza:
+#   1) controllo STRUTTURALE: ogni self.X() chiamato deve esistere come metodo;
+#   2) prova VIVA: si fa parlare davvero il cervello, su una porta libera.
+
+
+def controlla_struttura():
+    """Ogni self.X() chiamato dentro una classe deve corrispondere a un metodo
+    davvero definito (o ereditato). È il controllo generico: qualunque metodo
+    annidato per sbaglio esce qui, prima di girare."""
+    import ast
+    from http.server import BaseHTTPRequestHandler
+    problemi = []
+    try:
+        src = open(os.path.join(QUI, "cervello.py"), encoding="utf-8").read()
+        tree = ast.parse(src)
+    except Exception as e:
+        return ["cervello.py non si legge: %s" % e]
+    ereditati = set()
+    for n in dir(BaseHTTPRequestHandler):
+        try:
+            if callable(getattr(BaseHTTPRequestHandler, n, None)):
+                ereditati.add(n)
+        except Exception:
+            pass
+    for cls in [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]:
+        metodi = {f.name for f in cls.body if isinstance(f, ast.FunctionDef)}
+        chiamati = set()
+        for f in cls.body:
+            if not isinstance(f, ast.FunctionDef):
+                continue
+            for n in ast.walk(f):
+                if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) \
+                        and isinstance(n.func.value, ast.Name) \
+                        and n.func.value.id == "self":
+                    chiamati.add(n.func.attr)
+        for m in sorted(chiamati - metodi - ereditati):
+            problemi.append("%s: self.%s() non è un metodo della classe" % (cls.name, m))
+    return problemi
+
+
+def autoprova():
+    """La prova vera: il cervello risponde davvero? Non guarda i file, lo
+    interroga. Serve al collaudo dei deploy e al postino prima di pubblicare
+    cervello.py: un file rotto non deve salire su master."""
+    problemi = controlla_struttura()
+    if problemi:
+        print("❌ STRUTTURA")
+        for p in problemi:
+            print("   -", p)
+        return 1
+    print("✓ struttura: tutti i metodi chiamati esistono")
+
+    AUTOPROVA[0] = True
+    try:
+        ricarica()
+        ricarica_gruppi()
+        ricarica_quote()
+        ricarica_regole()
+    except Exception as e:
+        print("❌ hot-reload: %s" % e)
+        return 1
+    print("✓ configurazione: %d provider · %d gruppi · %d regole"
+          % (len(BASE), len(GRUPPI), len(REGOLE)))
+
+    from http.server import ThreadingHTTPServer
+    srv = ThreadingHTTPServer(("127.0.0.1", 0), H)
+    porta = srv.server_address[1]
+    th = threading.Thread(target=srv.serve_forever, daemon=True)
+    th.start()
+    base = "http://127.0.0.1:%d" % porta
+    esito = 0
+    try:
+        def chiedi(percorso, corpo=None):
+            req = urllib.request.Request(
+                base + percorso, data=corpo,
+                headers={"Content-Type": "application/json"} if corpo else {})
+            con = urllib.request.urlopen(req, timeout=CONFIG["autoprova_timeout"])
+            return json.loads(con.read().decode())
+
+        for nome, percorso in (("/cervello", "/cervello"),
+                               ("/portiere.json", "/portiere.json"),
+                               ("/v1/models", "/v1/models")):
+            try:
+                d = chiedi(percorso)
+                if not isinstance(d, dict):
+                    raise ValueError("risposta non JSON")
+                print("✓ %-16s risponde" % nome)
+            except Exception as e:
+                print("❌ %-16s NON risponde: %s" % (nome, e))
+                esito = 1
+
+        # la prova che conta: una richiesta CHAT vera attraverso tutto il
+        # percorso (come fanno gli agenti). "ping" si risponde in casa:
+        # istantanea e senza token, ma attraversa comunque il codice che
+        # il 1/11 era rotto (sess = self._sessione()).
+        try:
+            corpo = json.dumps({"model": "auto",
+                                "messages": [{"role": "user", "content": "ping"}]}).encode()
+            d = chiedi("/v1/chat/completions", corpo)
+            scelte = d.get("choices") or []
+            if not scelte:
+                raise ValueError("risposta senza scelte: %s" % str(d)[:120])
+            print("✓ /v1/chat/completions risponde (%s)"
+                  % str(d.get("model", "?"))[:60])
+        except Exception as e:
+            print("❌ /v1/chat/completions NON risponde: %s" % e)
+            esito = 1
+    finally:
+        try:
+            srv.shutdown()
+            srv.server_close()
+        except Exception:
+            pass
+        AUTOPROVA[0] = False
+    if esito:
+        print("❌ AUTOPROVA FALLITA")
+    else:
+        print("✅ AUTOPROVA SUPERATA")
+    return esito
+
+
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -1384,15 +1626,17 @@ class H(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(corpo)
 
-        def _sessione(self):
-            """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""
-            s = self.headers.get("x-opencode-session") or ""
-            s = "".join(s.split())[:64]
-            if s:
-                return s
-            ua = self.headers.get("user-agent", "") or "agente"
-            return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]
-
+    # CURA-AUDIT: questo metodo era annidato dentro _rispondi (indentazione
+    # sbagliata) → H._sessione non esisteva → ogni richiesta chat moriva con
+    # "empty reply from server". Qui è un metodo di classe, come deve essere.
+    def _sessione(self):
+        """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""
+        s = self.headers.get("x-opencode-session") or ""
+        s = "".join(s.split())[:64]
+        if s:
+            return s
+        ua = self.headers.get("user-agent", "") or "agente"
+        return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]
 
     def do_GET(self):
         ricarica()
@@ -1425,6 +1669,17 @@ class H(BaseHTTPRequestHandler):
                                   "classe": CLASSI.get(k, ""),
                                   "indirizzo": v[0], "modello": v[1]} for k, v in BASE.items()],
                         "da_confermare": da_confermare()})
+            return
+        if self.path.startswith("/salute"):
+            # CURA-AUDIT: il riscontro veloce per i collaudi. Risponde subito,
+            # senza rete: dice "sono vivo e configurato" in un colpo solo.
+            self._json({"ok": True, "nome": NOME, "porta": PORTA,
+                        "f3": bool(F3_OK), "provider": len(BASE),
+                        "gruppi": len(GRUPPI), "regole": len(REGOLE),
+                        "motore": motore_vivo(),
+                        "riserva": len([v for v in appello()
+                                        if v.get("esito") == "risponde"]),
+                        "struttura": controlla_struttura()})
             return
         if self.path.startswith("/cervello"):
             su = motore_vivo()
@@ -1488,8 +1743,10 @@ class H(BaseHTTPRequestHandler):
         vuole_stream = bool(payload.pop("stream", False))
         payload.pop("stream_options", None)
         mt = payload.get("max_tokens")                     # cura-audit: tetto anti-abuso
-        if isinstance(mt, int) and mt > 8000:
-            payload["max_tokens"] = 8000
+        if not isinstance(mt, int) or isinstance(mt, bool):
+            payload.pop("max_tokens", None)
+        elif mt > CONFIG["max_tokens"]:
+            payload["max_tokens"] = CONFIG["max_tokens"]
         sess = self._sessione()
         ricarica_profili()                                # FASE 3: idee 13+16
         comprimi_agente = True
@@ -1691,6 +1948,8 @@ if __name__ == "__main__":
     if "--statistiche" in sys.argv:                       # idea 53
         statistiche()
         sys.exit(0)
+    if "--autoprova" in sys.argv:                         # CURA-AUDIT: la prova vera
+        sys.exit(autoprova())
     if "--perdona" in sys.argv:                           # amnistia: azzera i castighi
         quanti = len(STATO["castighi"])
         STATO["castighi"] = {}

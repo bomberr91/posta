@@ -1,0 +1,245 @@
+"""Test di regressione del Portiere (cervello.py) — tutto offline, zero rete.
+
+Perché questo file esiste (1/11 sera):
+  il commit di CURA-AUDIT aveva annidato `_sessione()` dentro `_rispondi()`
+  per un'indentazione sbagliata. Sintassi Python valida, ma `H._sessione`
+  non esisteva più → ogni richiesta chat moriva con "empty reply from server"
+  e il collaudo non poteva accorgersene. Erano due bug nello stesso commit:
+  anche `NOME = "Portiere"` era stato cancellato → /cervello e /portiere.json
+  crashavano.
+
+Ogni test qui dentro è una rete: se qualcuno rifà lo stesso errore, la rete
+si chiude. Il file NON deve mai fare richieste di rete e NON deve leggere il
+portachiavi vero.
+"""
+from __future__ import annotations
+
+import importlib.util
+import json
+import os
+from pathlib import Path
+import shutil
+import tempfile
+import threading
+import unittest
+import urllib.request
+from http.server import ThreadingHTTPServer
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def carica_cervello():
+    """Importa cervello.py come modulo, senza avviare il server."""
+    spec = importlib.util.spec_from_file_location("cervello_sotto_test", ROOT / "cervello.py")
+    if spec is None or spec.loader is None:
+        raise RuntimeError("cervello.py non caricabile")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+cerv = carica_cervello()
+
+
+class ProvaStrutturaleTests(unittest.TestCase):
+    """Il controllo strutturale: ogni self.X() chiamato deve esistere."""
+
+    def test_la_classe_h_ha_il_metodo_sessione(self):
+        # la regressione vera: _sessione era DENTRO _rispondi, quindi
+        # H._sessione non esisteva e ogni richiesta chat moriva.
+        self.assertTrue(hasattr(cerv.H, "_sessione"),
+                        "H._sessione manca: il Portiere non risponde piu' alle chat")
+        self.assertTrue(callable(cerv.H._sessione))
+
+    def test_il_controllo_non_trovano_problemi_su_cervello_reale(self):
+        self.assertEqual(cerv.controlla_struttura(), [])
+
+    def test_il_controllo_scopre_un_metodo_annidato_per_sbaglio(self):
+        """Il file rotto (metodo annidato) deve essere segnalato."""
+        tmp = Path(tempfile.mkdtemp(prefix="cervello-rotto-"))
+        try:
+            src = (ROOT / "cervello.py").read_text(encoding="utf-8")
+            buono = (
+                "    def _sessione(self):\n"
+                '        """Idea 58: un ID di sessione stabile per agente (o quello che manda lui)."""\n'
+                '        s = self.headers.get("x-opencode-session") or ""\n'
+                '        s = "".join(s.split())[:64]\n'
+                '        if s:\n'
+                '            return s\n'
+                '        ua = self.headers.get("user-agent", "") or "agente"\n'
+                '        return "cervello-" + hashlib.sha1(ua.encode()).hexdigest()[:16]\n'
+            )
+            self.assertIn(buono, src, "cervello.py non ha piu' il blocco atteso")
+            rotto = "".join(("    " + riga if riga.strip() else riga) + "\n"
+                            for riga in buono.rstrip("\n").split("\n"))
+            (tmp / "cervello.py").write_text(src.replace(buono, rotto), encoding="utf-8")
+            spec = importlib.util.spec_from_file_location("cervello_rotto", tmp / "cervello.py")
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            problemi = mod.controlla_struttura()
+            self.assertTrue(problemi, "il controllo NON ha visto il metodo annidato")
+            self.assertTrue(any("_sessione" in p for p in problemi),
+                            "il problema segnalato non riguarda _sessione: %s" % problemi)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+class ProvaVivaTests(unittest.TestCase):
+    """La prova end-to-end: il cervello risponde davvero, come gli agenti."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.mod = cerv
+        cls.mod.AUTOPROVA[0] = True          # nessuna uscita su internet
+        cls.srv = ThreadingHTTPServer(("127.0.0.1", 0), cls.mod.H)
+        cls.porta = cls.srv.server_address[1]
+        cls.th = threading.Thread(target=cls.srv.serve_forever, daemon=True)
+        cls.th.start()
+        cls.base = "http://127.0.0.1:%d" % cls.porta
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            cls.srv.shutdown()
+            cls.srv.server_close()
+        finally:
+            cls.mod.AUTOPROVA[0] = False
+
+    def _get(self, percorso):
+        con = urllib.request.urlopen(self.base + percorso, timeout=10)
+        return json.loads(con.read().decode())
+
+    def _post(self, percorso, corpo):
+        req = urllib.request.Request(
+            self.base + percorso, data=json.dumps(corpo).encode(),
+            headers={"Content-Type": "application/json"})
+        con = urllib.request.urlopen(req, timeout=10)
+        return json.loads(con.read().decode())
+
+    def test_la_chat_risponde_con_scelte(self):
+        """È la prova che il 1/11 falliva: la chat non deve morire in silenzio."""
+        d = self._post("/v1/chat/completions",
+                       {"model": "auto", "messages": [{"role": "user", "content": "ping"}]})
+        self.assertTrue(d.get("choices"), "risposta senza scelte: %s" % d)
+        self.assertTrue(d["choices"][0]["message"].get("content"))
+
+    def test_cervello_json_rispone(self):
+        d = self._get("/cervello")
+        self.assertIn("nome", d)
+        self.assertEqual(d["nome"], "Portiere")
+
+    def test_portiere_json_rispone(self):
+        d = self._get("/portiere.json")
+        self.assertIn("porta", d)
+        self.assertIn("pagelle", d)
+
+    def test_salute_rispone_e_conosce_il_proprio_stato(self):
+        d = self._get("/salute")
+        self.assertTrue(d.get("ok"))
+        self.assertEqual(d.get("struttura"), [], "la struttura non e' pulita")
+
+    def test_il_ping_non_spende_token(self):
+        d = self._post("/v1/chat/completions",
+                       {"model": "auto", "messages": [{"role": "user", "content": "ping"}]})
+        self.assertEqual((d.get("usage") or {}).get("total_tokens"), 0)
+
+
+class GuardiaSoloGratisTests(unittest.TestCase):
+    """La guardia anti-spesa: i modelli a pagamento non passano."""
+
+    def test_i_modelli_a_pagamento_sono_rifiutati(self):
+        for m in ("gpt-5", "gpt-4o", "claude-opus-4", "o3-mini",
+                  "gemini-2.5-pro", "gemini-1.5-pro", "gemini-3-ultra"):
+            with self.subTest(modello=m):
+                self.assertTrue(cerv.a_pagamento(m))
+
+    def test_i_modelli_gratis_passano(self):
+        for m in ("gemini-2.0-flash", "gemini-2.5-flash", "llama-3.3-70b-versatile",
+                  "deepseek-v4-flash", "auto", "", "glm-4.7-flash"):
+            with self.subTest(modello=m):
+                self.assertFalse(cerv.a_pagamento(m))
+
+    def test_la_scappatoia_free_vince_sempre(self):
+        for m in ("gpt-5-free", "gemini-2.5-pro-free", "claude-opus-4:free"):
+            with self.subTest(modello=m):
+                self.assertFalse(cerv.a_pagamento(m))
+
+
+class RegoleAgenteTests(unittest.TestCase):
+    """Le regole per agente: vince il prefisso piu' lungo, le chiavi vuote no."""
+
+    def setUp(self):
+        self.prima = cerv.REGOLE
+        cerv.REGOLE = {
+            "": {"politiche": ["gratis"]},
+            "cervello-": {"politiche": ["auto"]},
+            "cervello-abc": {"politiche": ["migliore"]},
+        }
+
+    def tearDown(self):
+        cerv.REGOLE = self.prima
+
+    def test_vince_il_prefisso_piu_lungo(self):
+        regola = cerv.regola_di("cervello-abc-xyz")
+        self.assertEqual(regola["politiche"], ["migliore"])
+
+    def test_una_chiave_vuota_non_si_applica_a_tutti(self):
+        regola = cerv.regola_di("altro-agente")
+        self.assertIsNone(regola)
+
+
+class StatoTests(unittest.TestCase):
+    """Lo stato su disco: se e' rovinato, il cervello si ricostruisce."""
+
+    def test_uno_stato_con_tipi_sbagliati_viene_ricostruito(self):
+        # ATTENZIONE: questo test scrive su un file PROPRIO e non tocca mai
+        # portiere_stato.json (una prima versione faceva os.unlink sul file
+        # vero e lo cancellava: mai più).
+        prima_stato = cerv.STATO
+        prima_file = cerv.STATO_FILE
+        provvisorio = None
+        try:
+            fd, provvisorio = tempfile.mkstemp(suffix=".json", prefix="stato-rotto-")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump({"castighi": {"a": "non un numero"},
+                           "pagella": "non una mappa",
+                           "uso": [], "agenti": {}, "sessioni": {}}, f)
+            cerv.STATO_FILE = provvisorio
+            cerv.stato_carica()
+            self.assertIsInstance(cerv.STATO["castighi"], dict)
+            self.assertNotIn("a", cerv.STATO["castighi"])
+            self.assertIsInstance(cerv.STATO["pagella"], dict)
+            self.assertIsInstance(cerv.STATO["uso"], dict)
+        finally:
+            cerv.STATO = prima_stato
+            cerv.STATO_FILE = prima_file
+            if provvisorio:
+                try:
+                    os.unlink(provvisorio)
+                except OSError:
+                    pass
+
+    def test_i_battiti_non_crescono_all_infinito(self):
+        cerv._battiti.clear()
+        for _ in range(500):
+            cerv.batte("provider-di-prova")
+        self.assertLessEqual(len(cerv._battiti.get("provider-di-prova", [])),
+                             cerv.CONFIG["battiti_max"])
+
+
+class VivoTests(unittest.TestCase):
+    """La porta giusta: https = 443, http = 80."""
+
+    def test_un_indirizzo_inesistente_non_e_vivo(self):
+        self.assertFalse(cerv.vivo("http://127.0.0.1:1", secondi=1))
+
+
+class MaxTokensTests(unittest.TestCase):
+    def test_il_tetto_e_in_config(self):
+        self.assertIsInstance(cerv.CONFIG.get("max_tokens"), int)
+        self.assertGreater(cerv.CONFIG["max_tokens"], 0)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,8 +1,23 @@
 #!/bin/bash
-cd ~/posta
-pkill -f '^python3 cervello\.py$' && echo "resurrezione con la cura..."
-for i in $(seq 1 15); do sleep 5; (exec 3<>/dev/tcp/127.0.0.1/20129) 2>/dev/null && { echo "risorto ~$((i*5))s"; break; }; done
-curl -s -m 10 http://127.0.0.1:20129/portiere | grep -o "FASE 3" | head -1
-curl -s -m 10 -H Content-Type:application/json -d '{"model":"gemini-2.5-pro","messages":[{"role":"user","content":"x"}]}' http://127.0.0.1:20129/v1/chat/completions | head -c 120
-echo
-curl -s -m 15 -H Content-Type:application/json -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' http://127.0.0.1:20129/v1/chat/completions | python3 -c "import json,sys; print(json.load(sys.stdin).get('model','?'))"
+# DEPLOY CURA — CURA-AUDIT (1/11 sera): collaudo vero e uscita onesta.
+set -uo pipefail
+cd ~/posta || exit 1
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=fatti/collaudo_cervello.sh
+. "$DIR/fatti/collaudo_cervello.sh"
+
+pkill -f '^python3 cervello\.py$' && echo "resurrezione con la cura..." || echo "non girava"
+collaudo || { echo "❌ COLLAUDO FALLITO: il Portiere NON funziona, il deploy NON è riuscito"; exit 1; }
+
+echo "### guardia solo-gratis (deve RIFIUTARE un modello a pagamento)"
+curl -s -m 30 -H 'Content-Type: application/json' \
+  -d '{"model":"gemini-2.5-pro","messages":[{"role":"user","content":"x"}]}' \
+  "$CERVELLO_URL/v1/chat/completions" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+msg = (d.get('error') or {}).get('message', '')
+assert 'solo-gratis' in msg, 'il modello a pagamento è passato: %s' % str(d)[:160]
+print('   ✓ guardia solo-gratis attiva')" || {
+  echo "   ✗ la guardia solo-gratis non funziona"; exit 1; }
+
+echo "✅ DEPLOY CURA RIUSCITO"
