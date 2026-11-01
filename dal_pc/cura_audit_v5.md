@@ -360,3 +360,38 @@ onesta era **no**, e il motivo non era il codice. Quattro blocchi, in ordine:
 catena è stata ferma e sembrava un problema di permessi: in realtà era una
 stringa in un file di testo. Ogni passaggio ha adesso un'uscita che significa
 NO, e ogni fallimento **si annuncia** invece di scivolare via.
+
+---
+
+## 18. IL SECONDO AUDIT (ZCode, 1/11 sera) — 19 rilievi, 16 corretti
+
+Un altro modello, un altro sguardo sugli stessi 3.000+ di `cervello.py`:
+ha trovato la **stessa classe di bug** del 1/11 (l'*"empty reply"*: la
+connessione chiusa a vuoto senza nessun errore) e l'ha chiamata per nome.
+
+**Prima ondata — le 3 critiche** (F1, F2, F3): il body malformato ammazzava
+la connessione; una riga con `http://` nella lista ammazzava **tutta** la
+richiesta invece di fare failover; un campo corrotto in `portiere_stato.json`
+metteva in empty reply **ogni** chat.
+
+**Seconda onda — 13 rilievi** (F4, F5, F6, F7, F8, F9, F10, F11, F12, F13,
+F14, F15, F16, F18): stato che si perde al riavvio; la sentinella che
+blocca 32 secondi la prima richiesta del giorno (e il client che ritenta =
+doppio costo); fino a **9 minuti fatturati per una richiesta** (timeout motore
+180s + riserva 5×60s + retry su esito ignoto + risposte oltre il tetto
+rimescolate come errori di rete); il freno preventivo che non frenava (corsa
+fra controllo e registrazione); la cache e le iterazioni sui castighi che
+facevano morire richieste **già riuscite**; la rotazione del log non atomica
+che girava dentro la richiesta; catalogo e appello scritti a metà (JSON
+tronco → routing sordo in silenzio).
+
+**Restano due, e non sono bug:**
+- **F17** — la politica "gratis" scarta le chiavi free vere e tiene solo le
+  keyless: se i keyless sono giù, la policy "gratis" dà 503 anche con dieci
+  chiavi free sane. **È una scelta, non un difetto**: se la intesa era
+  "tutto ciò che non costa", va cambiata in `("keyless", "free-ricorrente")`.
+- **F19** — igiene cosmetica (`open()` senza `with`): solo warning.
+
+**Il metodo è quello che ha funzionato**: per ogni correzione c'è un test
+che **fallisce sul codice vecchio** e passa su quello nuovo. La suite è
+passata da 19 a **24 test**, autoprova e gate verdi.
