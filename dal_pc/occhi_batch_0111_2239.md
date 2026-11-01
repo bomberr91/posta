@@ -72,3 +72,11 @@ Un giovane addetto alla manutenzione racconta di essere stato ricoverato sei mes
 
 ## ▶ URL 2/2 — https://www.facebook.com/reel/1195289147628387
 ### 1. Scarico (prima senza cookie: molti reel sono pubblici)
+
+## 📊 Riepilogo
+| # | URL | esito | tempo | tentativi (metodo: esito) |
+|---|-----|-------|-------|---------------------------|
+| 1 | https://www.facebook.com/reel/1350782990582563 | ✓ ok | 80s | T1 scarico yt-dlp standard (+cookie se servono): ok (3.9M) → G1 gemini FileAPI: ok |
+| 2 | https://www.facebook.com/reel/1195289147628387 | ✓ ok | 87s | T1 scarico yt-dlp standard (+cookie se servono): ok (480K) → G1 gemini FileAPI: ok |
+
+**Bilancio: ✓ 2 su 2 riusciti** (salvati dalla riserva: 0 — ❌ falliti: 0, dopo 2 tentativi, niente terzo)
