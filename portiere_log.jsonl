@@ -90,3 +90,7 @@
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 14008, "quando": "2026-11-01 17:09:50"}
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 21631, "quando": "2026-11-01 17:10:15"}
 {"tipo": "banale", "agente": "cervello-aa1a99bc6f86e808", "rotta": "locale", "ms": 0, "quando": "2026-11-01 17:40:33"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 22:33:45"}
+{"tipo": "errore-riserva", "provider": "pollinations", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 22:33:45"}
+{"tipo": "errore-riserva", "provider": "cloudflare", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 22:33:45"}
+{"tipo": "errore-riserva", "provider": "tokenharbor", "errore": "indirizzo", "nota": "chiave su http in chiaro rifiutata", "quando": "2026-11-01 22:33:45"}
