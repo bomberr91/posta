@@ -81,3 +81,28 @@ Un ragazzo racconta il suo percorso dopo sei mesi di ricovero per depressione, d
    ✓ scaricato: 480K
 
 ### 2. Gemini guarda il video
+Ecco l'analisi dettagliata del video:
+
+1) **Trascrizione del parlato:**
+*Nel video non è presente alcun dialogo o parlato comprensibile; la traccia audio è composta unicamente da effetti sonori (effetti di colpi/pugni in stile cartone animato).*
+
+2) **Testo a schermo:**
+- In alto: `#FAAFO Part 2`
+- Sulla volante della polizia: `POLICIA`, `190`
+- In basso a destra: icona/logo di un pugno chiuso giallo
+
+3) **Nomi di strumenti/repo/siti/link citati:**
+*Nessuno strumento, repository, sito web o link citato nel video.*
+
+4) **Riassunto del contenuto (in 3 righe):**
+Il video mostra una violenta colluttazione all'aperto tra alcuni agenti di polizia e diversi civili accanto a una volante.
+Durante lo scontro fisico, uno dei civili viene colpito e atterrato dagli agenti mentre intervengono altri individui.
+La clip è modificata con effetti visivi a fumetto ed effetti sonori umoristici in corrispondenza dei colpi sferrati.
+
+## 📊 Riepilogo
+| # | URL | esito | tempo |
+|---|-----|-------|-------|
+| 1 | https://www.facebook.com/reel/1350782990582563 | ✓ ok | 99s |
+| 2 | https://www.facebook.com/reel/1195289147628387 | ✓ ok | 120s |
+
+**Bilancio: ✓ 2 su 2 riusciti** (❌ 0 falliti)
