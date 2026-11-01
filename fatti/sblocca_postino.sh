@@ -9,6 +9,10 @@
 # c'era una sola notizia. Questo script lo sblocca, rimedia allo stato del
 # repo, riavvia il guardiano con il codice NUOVO (che sa riconoscere il gelo)
 # e poi VERIFICA che il postino sia vivo.
+#
+# L'ORDINE CONTA: prima il PULL (il codice nuovo), POI il guardiano. Se si
+# riavvia il guardiano prima, riparte con il codice vecchio e si ricade nel
+# gelo che si voleva rimediare.
 set -uo pipefail
 REPO="$HOME/posta"
 cd "$REPO" || { echo "❌ non trovo $REPO"; exit 1; }
@@ -21,17 +25,7 @@ pkill -f 'postino\.sh --loop' 2>/dev/null || true
 sleep 2
 pgrep -f 'postino.sh --loop' >/dev/null && say "   ⚠ c'è ancora un postino vivo" || say "   ✓ nessun postino attivo"
 
-say "2. il guardiano è vivo? se sì lo riavvio (così prende il codice col controllo del gelo)"
-if pgrep -f 'scorta_posta.sh' >/dev/null; then
-  say "   sì: lo ammazzo e lo riavvio"
-  pkill -f 'scorta_posta.sh' 2>/dev/null || true
-  sleep 2
-fi
-nohup bash "$REPO/lavori/scorta_posta.sh" >> /tmp/scorta_posta.log 2>&1 &
-sleep 3
-pgrep -f 'scorta_posta.sh' >/dev/null && say "   ✓ guardiano avviato" || say "   ❌ il guardiano non parte"
-
-say "3. rimedio lo stato del repo (lock, rebase, stash)"
+say "2. rimedio lo stato del repo (lock, rebase, stash, file runtime)"
 rm -f .git/index.lock
 git rebase --abort >/dev/null 2>&1 || true
 git merge --abort >/dev/null 2>&1 || true
@@ -39,9 +33,16 @@ git stash drop >/dev/null 2>&1 || true
 git checkout -- portiere_log.jsonl portiere_stato.json >/dev/null 2>&1 || true
 echo "   — situazione:"; git status --short | head -8
 
-say "4. pull (con --rebase --autostash, senza chiedere password)"
+say "3. PULL del codice nuovo (prima del guardiano: è lui che deve ripartire nuovo)"
 GIT_TERMINAL_PROMPT=0 timeout 120 git pull --rebase --autostash origin main 2>&1 | tail -3
 echo "   — testa: $(git log --oneline -1 2>/dev/null)"
+
+say "4. riavvio il guardiano (così prende il codice col controllo del gelo)"
+pkill -f 'scorta_posta.sh' 2>/dev/null || true
+sleep 2
+nohup bash "$REPO/lavori/scorta_posta.sh" >> /tmp/scorta_posta.log 2>&1 &
+sleep 4
+pgrep -f 'scorta_posta.sh' >/dev/null && say "   ✓ guardiano avviato" || say "   ❌ il guardiano non parte"
 
 say "5. il postino riparte? (aspetto 120s che scriva lo stato)"
 VIVO=0
@@ -59,7 +60,11 @@ done
 [ "$VIVO" -eq 1 ] || say "   ⚠ il postino non ha ancora scritto lo stato: guarda /tmp/postino.log e /tmp/scorta_posta.log"
 
 say "6. i compiti in coda"
-ls -1 da_me/ 2>/dev/null | sed 's/^/   → /' || say "   (coda vuota)"
+if [ -n "$(ls -A da_me/ 2>/dev/null)" ]; then
+  ls -1 da_me/ 2>/dev/null | sed 's/^/   → /'
+else
+  say "   (coda vuota)"
+fi
 say ""
 say "Se la coda è piena e il postino è vivo: aspetta un giro (45s) e guarda dal_pc/ per le risposte."
 exit 0

@@ -287,3 +287,44 @@ risponda**.
 - Il quaderno delle idee è in `missione/CERVELLO_MACCHINA_PERFETTA.md`
   (**64/64 idee chiuse** + la **idea 65** di questa sera).
 - I risultati passano da `dal_pc/`, i comandi da `da_me/`.
+
+---
+
+## 16. LA NOTTE DEL POSTINO GELATO (1/11, ~19:02 → fine serata)
+
+Il filo della sera: il capo ha chiesto di riprendere la giornata del morto.
+Priorità al **mistero Deep Dog** (il 402 "Insufficient Balance"). La causa
+è stata trovata e provata (vedi `dal_pc/deepdog_mistero.md`), il cerotto
+scritto e consegnato al PC come job.
+
+### Il vero ritrovamento della serata: **il postino si è GELATO**
+
+Consegnato il primo cerotto, il postino ha risposto — ma la risposta era il
+vecchio file di prima. Dopo **40 minuti** di coda muta, la diagnosi:
+
+- il postino **non era morto**: era **appeso dentro un `git pull`** (classico
+  prompt di credenziali su un TTY), con `flock -n` sul lock;
+- nessuno poteva sostituirlo: il guardiano (`lavori/scorta_posta.sh`) usa
+  `flock -n`, quindi saltava il giro;
+- i compiti in coda (`da_me/`) **non arrivavano**, e non c'era una notizia.
+
+La prova: il file di risposta di un compito non era nemmeno stato **troncato**
+(la vecchia versione del postino scrive l'intestazione PRIMA di lanciare il
+compito) → il ciclo dei compiti non era mai stato raggiunto.
+
+**La regola che ne nasce: un canale che può fallire in silenzio è un canale
+morto.** Il postino deve (a) non chiedere mai una password, (b) fallire in
+fretta e dirlo, (c) essere guardato da qualcuno.
+
+### Cosa è cambiato (commits `70563cb`, `ddafedc`)
+
+| prima | adesso |
+|---|---|
+| `git pull` senza timeout, in silenzio | `timeout 120`, con `GIT_TERMINAL_PROMPT=0`, e se fallisce **lo dice** e rimedia (rebase/merge abort, stash drop, checkout dei file runtime) |
+| nessuno guardava il postino | il guardiano legge `/tmp/postino_stato`: se resta sul pull oltre 3 minuti è **gelato** → lo ammazza e lo riavvia |
+| il guardiano faceva `git pull -q` (niente `--rebase`) | `--rebase --autostash`, con timeout, e log in `/tmp/scorta_posta.log` |
+| — | `fatti/sblocca_postino.sh`: **un comando solo** per sbloccare tutto e verificare che il postino sia vivo |
+
+La lezione, come al solito: *anche il ponte verso il PC ha bisogno di un
+collaudo che possa dire NO*. Il postino vecchio scriveva `.done` anche sui
+compiti falliti — e i fallimenti scivolavano via senza rumore.
