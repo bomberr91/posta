@@ -107,4 +107,118 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 12:13 missione
 -rw-r--r-- 1 agenti agenti    1457 Nov  1 16:37 portiere_stato.json
 -rw-r--r-- 1 agenti agenti     780 Oct 27 15:20 postino.log
 -rwxr-xr-x 1 agenti agenti    3574 Oct 27 15:20 postino.sh
--rw-r--r-- 1 agenti agenti     540 Oct 27 15:
+-rw-r--r-- 1 agenti agenti     540 Oct 27 15:20 prova.sh
+-rw-r--r-- 1 agenti agenti    4962 Oct 27 15:20 prova_agenti.sh
+-rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
+-rw-r--r-- 1 agenti agenti    2269 Oct 27 15:20 ricerca_strategica.py
+-rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
+-rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
+-rw-r--r-- 1 agenti agenti     315 Oct 27 15:20 stato_fusion.json
+drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
+drwxr-xr-x 1 agenti agenti    4096 Oct 28 23:10 tests
+-rwxr-xr-x 1 agenti agenti    7878 Oct 27 15:20 verifica.sh
+/home/agenti/posta/.git/COMMIT_EDITMSG
+/home/agenti/posta/.git/config
+/home/agenti/posta/.git/description
+/home/agenti/posta/.git/FETCH_HEAD
+/home/agenti/posta/.git/HEAD
+/home/agenti/posta/.git/index
+/home/agenti/posta/.git/opencode
+/home/agenti/posta/.git/ORIG_HEAD
+/home/agenti/posta/.git/packed-refs
+/home/agenti/posta/.gitignore
+/home/agenti/posta/.padrone
+/home/agenti/posta/00_INSTALLA_AGENTI/01_HERMES.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/02_DIAGNOSTICA_HERMES_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/03_OPENCODE_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/04_GOOSE_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/05_SECONDHAND_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/06_ANTIGRAVITY_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/07_ICONE_AGENTI_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/08_ICONA_OPENCLAW_WINDOWS.bat
+/home/agenti/posta/6_BROWSER_AGENTI.bat
+/home/agenti/posta/7_SQUADRA_FUSION.bat
+/home/agenti/posta/8_CENTRALE_GUI.bat
+/home/agenti/posta/agenti_stato.sh
+/home/agenti/posta/aggiorna_tutto.sh
+/home/agenti/posta/appello_chiavi.sh
+/home/agenti/posta/apri_free_llm_hub.sh
+/home/agenti/posta/APRI_OPENCLAW.bat
+/home/agenti/posta/apri_openclaw.sh
+/home/agenti/posta/centrale.sh
+/home/agenti/posta/CENTRALE_AGENTI.bat
+/home/agenti/posta/cervello.py
+/home/agenti/posta/checkin_agentrouter.py
+/home/agenti/posta/checkin_agentrouter.sh
+/home/agenti/posta/chiave_di.py
+/home/agenti/posta/chiavi_env.sh
+/home/agenti/posta/compressione.py
+/home/agenti/posta/CONFIGURA_OPENCLAW.bat
+/home/agenti/posta/dal_pc/accendi_omniroute.md
+/home/agenti/posta/dal_pc/accendi_omniroute_2.md
+/home/agenti/posta/dal_pc/accendi_omniroute_e_rilancia.md
+/home/agenti/posta/dal_pc/agentrouter_checkin.md
+/home/agenti/posta/dal_pc/aggiorna_26_skill_e_browser.md
+/home/agenti/posta/dal_pc/analisi_blocco_1.md
+/home/agenti/posta/dal_pc/analisi_blocco_2.md
+/home/agenti/posta/dal_pc/analisi_blocco_3.md
+/home/agenti/posta/dal_pc/analisi_blocco_4.md
+/home/agenti/posta/dal_pc/appello_chiavi.md
+/home/agenti/posta/dal_pc/ar_canali_aperti.md
+/home/agenti/posta/dal_pc/ar_processo3.md
+/home/agenti/posta/dal_pc/ar_processo4.md
+
+$ rg -n "def castiga|def segna|def punito|def appello|def motore_vivo|def uso_oggi|def ricarica|def chiave|def indirizzo|def sonda|def scopri|class H|ThreadingHTTPServer|HTTPServer|Retry-After|def _rispondi|text/event-stream|\[DONE\]|SOSTITUTI_MAX|def classifica|def da_confermare" /home/agenti/posta/cervello.py
+/bin/bash: line 1: rg: command not found
+
+✗ Grep "def castiga|def segna|def punito|def appello|def motore_vivo|def uso_oggi|def ricarica|def chiave|def indirizzo|def sonda|def scopri|class H|ThreadingHTTPServer|HTTPServer|Retry-After|def _rispondi|text/event-stream|\[DONE\]|SOSTITUTI_MAX|def classifica|def da_confermare" failed in cervello.py
+Error: Ripgrep JSON record exceeded 65536 bytes
+
+$ grep -nE "def castiga|def segna|def punito|def appello|def motore_vivo|def uso_oggi|def ricarica|def chiave|def indirizzo|class H|ThreadingHTTPServer|HTTPServer|Retry-After|def _rispondi|text/event-stream|SOSTITUTI_MAX|def classifica|def da_confermare" /home/agenti/posta/cervello.py
+39:  51  429 intelligenti: se il provider manda Retry-After, obbediamo (max 5 min)
+91:from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+128:    "retry_after_max": 300,      # idea 51: rispetta Retry-After, ma mai oltre 5 min
+233:def ricarica_gruppi():
+266:def ricarica():
+285:def indirizzo(pid, k):
+317:def motore_vivo():
+323:def appello():
+334:def chiave(pid):
+385:def castiga(pid, modello, secondi, globale=False):
+398:def punito(pid, modello):
+407:def segna(pid, ok, ms=None):
+468:def uso_oggi(pid):
+493:def classifica_errore(codice, testo):
+652:def ricarica_quote():
+705:def ricarica_regole():
+863:def ricarica_profili():
+1047:                        ra = int(float(e.headers.get("Retry-After") or 0))
+1085:def da_confermare():
+1104:SOSTITUTI_MAX = 12
+1114:def appello_da_solo():
+1122:def classifica():
+1136:    return buoni[0], buoni[1:SOSTITUTI_MAX + 1]
+1310:class H(BaseHTTPRequestHandler):
+1323:    def _rispondi(self, d, stream):
+1345:        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+1666:    ThreadingHTTPServer(("127.0.0.1", PORTA), H).serve_forever()
+
+→ Read cervello.py [offset=380, limit=120]
+→ Read cervello.py [offset=1000, limit=160]
+→ Read cervello.py [limit=120, offset=920]
+→ Read cervello.py [limit=200, offset=1300]
+→ Read cervello.py [limit=170, offset=1499]
+→ Read cervello.py [limit=130, offset=110]
+✱ Grep "def riserva\(" in cervello.py · 1 match
+→ Read cervello.py [limit=150, offset=1160]
+[CRITICA] `_rispondi`: Content-Length blocca lo streaming SSE dinamico e rifiuta chunk successivi -> rimuovere Content-Length e usare chunked transfer encoding o flush diretto.
+[ALTA] `riserva`: `headers.get("Retry-After")` ignora le date HTTP IMF-fixdate e azzera il cooldown su 429 -> eseguire parsing RFC 7231 con `email.utils.parsedate_to_datetime`.
+[ALTA] `STATO`: modifiche concorrenti e `json.dump` su file non sincronizzato causano race condition -> proteggere letture e scritture con `threading.Lock`.
+[MEDIA] `da_confermare` / `scopri`: file aperti senza context manager causano resource leak di file descriptor -> usare `with open(...) as f:`.
+[MEDIA] `_rispondi`: payload con `choices` vuoto solleva `IndexError` non gestito su crash del provider -> sostituire `d.get("choices")[0]` con slicing sicuro `(d.get("choices") or [{}])[0]`.
+[MEDIA] `immagini`: timeout assente su `urllib` o URL esterno blocca il worker HTTP -> aggiungere timeout esplicito e gestire eccezioni di rete.
+[BASSA] `appello_da_solo`: `subprocess.Popen` crea processi concorrenti multipli se invocato in parallelo -> aggiungere flag atomico o lock per singola esecuzione.
+[BASSA] `da_confermare`: `r.split("|")` senza sanitizzazione causa campi errati su separatori non protetti -> normalizzare le righe ignorando spazi vuoti e sezioni invalide.
+
+## Distillato EN

@@ -65,3 +65,6 @@
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7390, "quando": "2026-11-01 16:37:52"}
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 164455, "quando": "2026-11-01 16:40:39"}
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 29563, "quando": "2026-11-01 16:41:11"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 144177, "quando": "2026-11-01 16:43:38"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 14898, "quando": "2026-11-01 16:44:01"}
+{"tipo": "errore-riserva", "provider": "cloudflare", "modello": "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "errore": "contesto", "codice": 413, "tentativo": 1, "quando": "2026-11-01 16:44:02"}
