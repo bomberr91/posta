@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Cruscotto del Cervello</title>
+<style>
+  *{box-sizing:border-box}
+  :root{
+    --bg:#070b14; --txt:#e9eef8; --mut:#93a0b8;
+    --card1:rgba(148,163,184,.085); --card2:rgba(148,163,184,.04);
+    --line:rgba(148,163,184,.17);
+    --ok:#34d399; --bad:#f87171; --warn:#fbbf24; --info:#38bdf8; --vio:#a78bfa;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--txt);
+    font:14px/1.45 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(56,189,248,.35)}
+  .bg{
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(1100px 650px at 88% -12%, rgba(56,189,248,.14), transparent 62%),
+      radial-gradient(950px 600px at -8% 108%, rgba(167,139,250,.12), transparent 62%),
+      radial-gradient(750px 480px at 55% 118%, rgba(52,211,153,.09), transparent 60%),
+      linear-gradient(180deg,#0a0f1c 0%,#070b14 100%);
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:22px 22px 30px}
+
+  /* ---------- testata ---------- */
+  header{display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:14px}
+  .logo{
+    width:46px; height:46px; border-radius:14px; display:grid; place-items:center; font-size:24px;
+    background:linear-gradient(135deg, rgba(56,189,248,.25), rgba(167,139,250,.25));
+    border:1px solid var(--line); box-shadow:0 0 26px rgba(56,189,248,.18);
+  }
+  h1{
+    margin:0; font-size:21px; font-weight:800; letter-spacing:.3px;
+    background:linear-gradient(90deg,#7dd3fc,#c4b5fd 55%,#f0abfc);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .sub{color:var(--mut); font-size:12px; margin-top:2px}
+  .hright{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  .clock{font-size:12px; color:var(--mut); font-variant-numeric:tabular-nums; text-align:right}
+  .pill{
+    display:flex; align-items:center; gap:9px; padding:9px 16px; border-radius:999px;
+    font-weight:800; font-size:12px; letter-spacing:1.2px; white-space:nowrap;
+    border:1px solid var(--line); color:var(--mut); background:var(--card2);
+  }
+  .dot{width:10px; height:10px; border-radius:50%; background:#64748b; position:relative; flex:none}
+  .pill.on{color:#86efac; border-color:rgba(52,211,153,.45); background:rgba(52,211,153,.10); box-shadow:0 0 18px rgba(52,211,153,.13)}
+  .pill.on .dot{background:var(--ok); box-shadow:0 0 10px var(--ok)}
+  .pill.on .dot::after{content:''; position:absolute; inset:-4px; border-radius:50%; border:1.5px solid rgba(52,211,153,.55); animation:impulso 1.6s ease-out infinite}
+  .pill.off{color:#fca5a5; border-color:rgba(248,113,113,.5); background:rgba(248,113,113,.10); box-shadow:0 0 18px rgba(248,113,113,.13)}
+  .pill.off .dot{background:var(--bad); box-shadow:0 0 10px var(--bad)}
+  .pill.wait{color:#fcd34d; border-color:rgba(251,191,36,.45); background:rgba(251,191,36,.08)}
+  .pill.wait .dot{background:var(--warn)}
+  .pill.bloc{color:#fcd34d; border-color:rgba(251,191,36,.45); background:rgba(251,191,36,.08)}
+  .pill.bloc .dot{background:var(--warn); box-shadow:0 0 10px rgba(251,191,36,.7)}
+  @keyframes impulso{0%{transform:scale(.6); opacity:1}100%{transform:scale(1.55); opacity:0}}
+
+  /* ---------- banner CORS ---------- */
+  .banner{
+    border:1px solid rgba(251,191,36,.4); background:rgba(251,191,36,.07);
+    border-radius:16px; padding:15px 18px; margin-bottom:14px;
+  }
+  .banner.nascosto{display:none}
+  .banner-t{font-weight:750; color:#fcd34d; margin-bottom:6px}
+  .banner-s{color:var(--mut); font-size:12.5px}
+  .banner code{
+    background:rgba(0,0,0,.38); border:1px solid var(--line); padding:2px 8px; border-radius:8px;
+    color:#a5f3fc; font-family:ui-monospace,Consolas,Menlo,monospace; font-size:12px;
+  }
+  #riprova{
+    margin-top:10px; padding:7px 16px; border-radius:10px; border:1px solid var(--line);
+    background:rgba(148,163,184,.13); color:var(--txt); font-weight:750; cursor:pointer; font-size:12.5px;
+  }
+  #riprova:hover{background:rgba(148,163,184,.22)}
+
+  /* ---------- griglie e card ---------- */
+  .grid-top{display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px}
+  .grid-main{display:grid; grid-template-columns:2fr 1fr; gap:14px; align-items:start}
+  .col{display:grid; gap:14px}
+  .card{
+    background:linear-gradient(180deg, var(--card1), var(--card2));
+    border:1px solid var(--line); border-radius:18px; padding:16px 18px;
+    box-shadow:0 12px 32px rgba(2,6,17,.38); backdrop-filter:blur(6px);
+    animation:salire .5s ease both;
+  }
+  .col .card:nth-child(2){animation-delay:.08s}
+  .grid-top .card:nth-child(2){animation-delay:.06s}
+  @keyframes salire{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  .ct{
+    font-size:11px; letter-spacing:2px; color:var(--mut); font-weight:800; margin-bottom:12px;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+  }
+  .ctsub{font-weight:650; letter-spacing:.4px; color:#64748b; font-size:11px; text-transform:none}
+
+  /* ---------- chi risponde ---------- */
+  .capo-line{display:flex; align-items:center; gap:11px; flex-wrap:wrap}
+  .capo-nome{font-size:29px; font-weight:800; letter-spacing:.2px}
+  .badge{
+    padding:3px 10px; border-radius:999px; font-size:11px; font-weight:650;
+    border:1px solid var(--line); background:var(--card1); color:var(--mut); white-space:nowrap;
+  }
+  .badge.ok{color:#86efac; border-color:rgba(52,211,153,.4)}
+  .badge.info{color:#7dd3fc; border-color:rgba(56,189,248,.4)}
+  .badge.vio{color:#c4b5fd; border-color:rgba(167,139,250,.4)}
+  .badge.warn{color:#fcd34d; border-color:rgba(251,191,36,.4)}
+  .badge.bad{color:#fca5a5; border-color:rgba(248,113,113,.4)}
+  .capo-meta{color:var(--mut); font-size:12.5px; margin-top:7px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:11px}
+  .chip{
+    padding:4px 10px; border-radius:8px; font-size:11.5px; font-weight:600;
+    background:var(--card1); border:1px solid var(--line); color:#cbd5e1;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .chip.mute{color:#64748b; font-weight:650}
+  .chip.okc{color:#a7f3d0; border-color:rgba(52,211,153,.35); background:rgba(52,211,153,.08)}
+  .mini-dot{width:6px; height:6px; border-radius:50%; background:var(--ok); box-shadow:0 0 6px rgba(52,211,153,.8)}
+
+  /* ---------- riserva ---------- */
+  .ris-big{display:flex; align-items:baseline; gap:7px}
+  .big{font-size:38px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1; color:#6ee7b7}
+  .ris-big small{font-size:12.5px; color:var(--mut); font-weight:650}
+  .nota{color:#64748b; font-size:11.5px; margin-top:11px}
+
+  /* ---------- provider ---------- */
+  .lista{display:flex; flex-direction:column; gap:2px; max-height:474px; overflow-y:auto; padding-right:6px}
+  .lista::-webkit-scrollbar{width:8px}
+  .lista::-webkit-scrollbar-thumb{background:rgba(148,163,184,.25); border-radius:8px}
+  .lista::-webkit-scrollbar-track{background:transparent}
+  .prow{display:flex; align-items:center; gap:10px; padding:6px 8px; border-radius:10px; min-width:0}
+  .prow:hover{background:rgba(148,163,184,.08)}
+  .st{width:9px; height:9px; border-radius:50%; flex:none; background:#475569}
+  .st.on{background:var(--ok); box-shadow:0 0 8px rgba(52,211,153,.7)}
+  .st.capo{background:var(--vio); box-shadow:0 0 10px rgba(167,139,250,.9)}
+  .pinfo{min-width:0; flex:1; display:flex; align-items:baseline; gap:8px}
+  .pnome{font-weight:680; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ptipo{
+    font-size:9.5px; letter-spacing:.8px; padding:2px 7px; border-radius:6px; flex:none;
+    border:1px solid var(--line); color:var(--mut); text-transform:uppercase; font-weight:700;
+  }
+  .ptipo.t-chat{color:#7dd3fc; border-color:rgba(56,189,248,.35)}
+  .ptipo.t-emb{color:#c4b5fd; border-color:rgba(167,139,250,.35)}
+  .ptipo.t-db{color:#fcd34d; border-color:rgba(251,191,36,.35)}
+  .ptipo.t-img,.ptipo.t-vid{color:#f9a8d4; border-color:rgba(244,114,182,.35)}
+  .ptipo.t-voce{color:#86efac; border-color:rgba(52,211,153,.35)}
+  .ptipo.t-vis{color:#d8b4fe; border-color:rgba(192,132,252,.35)}
+  .pmod{color:#64748b; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:none; max-width:28%}
+  .bar{width:120px; height:8px; border-radius:99px; background:rgba(148,163,184,.14); overflow:hidden; flex:none}
+  .bar i{display:block; height:100%; border-radius:99px; width:0; transition:width .8s cubic-bezier(.22,.7,.25,1)}
+  .lv3 i{background:linear-gradient(90deg,#10b981,#34d399)}
+  .lv2 i{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+  .lv1 i{background:linear-gradient(90deg,#f97316,#fb923c)}
+  .lv0 i{background:linear-gradient(90deg,#ef4444,#f87171)}
+  .lvoff i{background:#475569}
+  .val{flex:none; width:64px; text-align:right; font-size:11.5px; font-variant-numeric:tabular-nums; color:var(--mut); font-weight:650}
+  .val.okt{color:#86efac}
+  .val.mutt{color:#64748b}
+  .val.g{color:#6ee7b7}.val.y{color:#fcd34d}.val.o{color:#fdba74}.val.r{color:#fca5a5}
+
+  /* ---------- castighi ---------- */
+  .castigo{display:flex; align-items:center; gap:12px; padding:11px 4px; border-bottom:1px dashed rgba(148,163,184,.15)}
+  .castigo:last-child{border-bottom:0}
+  .cinfo{flex:1; min-width:0}
+  .cnome{font-weight:750; font-size:13.5px}
+  .cmot{color:var(--mut); font-size:12px; margin-top:2px}
+  .cbar{height:5px; border-radius:99px; background:rgba(148,163,184,.14); margin-top:9px; overflow:hidden}
+  .cbar i{display:block; height:100%; border-radius:99px; width:100%; background:linear-gradient(90deg,#ef4444,#fb923c); transition:width 1s linear}
+  .cdown{text-align:right; flex:none}
+  .csec{font-size:24px; font-weight:800; font-variant-numeric:tabular-nums; color:#fca5a5; line-height:1}
+  .csec small{font-size:11px; color:var(--mut); font-weight:650; margin-left:2px}
+  .cmm{font-size:11px; color:var(--mut); font-variant-numeric:tabular-nums; margin-top:3px}
+  .urgente .csec{animation:battito 1s ease-in-out infinite}
+  @keyframes battito{50%{opacity:.4}}
+
+  /* ---------- sistema ---------- */
+  .srow{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6.5px 0; border-bottom:1px dashed rgba(148,163,184,.12); font-size:12.5px}
+  .srow:last-child{border-bottom:0}
+  .srow .k{color:var(--mut)}
+  .srow .v{font-weight:700; font-variant-numeric:tabular-nums}
+  .sgood{color:#6ee7b7}.sbad{color:#fca5a5}.swarn{color:#fcd34d}
+
+  /* ---------- stati vuoti ---------- */
+  .vuoto{padding:22px 8px; text-align:center; color:var(--mut); font-size:13px}
+  .vuoto .em{display:block; font-size:28px; margin-bottom:8px}
+  .vuoto-sub{display:block; font-size:11.5px; margin-top:4px; color:#64748b}
+
+  /* ---------- lavoro di oggi ---------- */
+  .bar.uso i{background:linear-gradient(90deg,#0284c7,#38bdf8)}
+  .val.usot{color:#7dd3fc}
+
+  /* ---------- banner sentinella ---------- */
+  .banner.sentinella{border-color:rgba(251,191,36,.55); background:rgba(251,191,36,.10); box-shadow:0 0 24px rgba(251,191,36,.08)}
+  .banner.sentinella .banner-t{color:#fde68a}
+
+  /* ---------- plancia link ---------- */
+  .plancia{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:16px}
+  .pbtn{
+    display:inline-flex; align-items:center; gap:7px; padding:8px 16px; border-radius:12px;
+    border:1px solid var(--line); background:var(--card1); color:#cbd5e1;
+    font-size:12.5px; font-weight:700; text-decoration:none;
+    transition:background .2s, border-color .2s, transform .2s;
+  }
+  .pbtn:hover{background:rgba(148,163,184,.2); border-color:rgba(148,163,184,.35); transform:translateY(-1px)}
+
+  .foot{margin-top:16px; color:#5b6779; font-size:11.5px; text-align:center}
+
+  /* ---------- velo "cervello spento" ---------- */
+  .spento{
+    position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+    background:rgba(5,8,16,.78); backdrop-filter:blur(10px);
+    opacity:1; transition:opacity .35s, visibility .35s;
+  }
+  .spento.chiuso{opacity:0; pointer-events:none; visibility:hidden}
+  .spento-card{
+    text-align:center; padding:42px 58px; border-radius:24px;
+    border:1px solid rgba(248,113,113,.35); background:rgba(248,113,113,.06);
+    box-shadow:0 0 60px rgba(248,113,113,.14), 0 30px 80px rgba(0,0,0,.5);
+  }
+  .bigdot{
+    width:22px; height:22px; border-radius:50%; background:var(--bad);
+    margin:0 auto 18px; box-shadow:0 0 26px var(--bad); animation:respiro 1.6s ease-in-out infinite;
+  }
+  @keyframes respiro{50%{transform:scale(.72); opacity:.55}}
+  .spento-t{font-size:30px; font-weight:800; color:#fca5a5; letter-spacing:.5px}
+  .spento-s{color:var(--mut); margin-top:8px; font-size:13px}
+
+  @media (max-width:940px){
+    .grid-top,.grid-main{grid-template-columns:1fr}
+    .lista{max-height:430px}
+  }
+  @media (max-width:700px){
+    .pmod{display:none}
+    .bar{width:82px}
+    .capo-nome{font-size:24px}
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">🧠</div>
+      <div>
+        <h1>Cruscotto del Cervello</h1>
+        <div class="sub" id="baseNota">http://localhost:20129 · aggiornamento ogni 10 s</div>
+      </div>
+    </div>
+    <div class="hright">
+      <div class="clock" id="lastSync">in attesa…</div>
+      <div class="pill wait" id="pill"><span class="dot"></span><span id="pillText">IN ATTESA</span></div>
+    </div>
+  </header>
+
+  <div class="banner nascosto" id="banner">
+    <div class="banner-t">⚖️ Il portiere è acceso, ma questa pagina non può leggere i dati</div>
+    <div class="banner-s">Nelle risposte manca l'header CORS. Nel server Python, per <b>/cervello</b> e <b>/portiere.json</b>, aggiungi:
+      <code>self.send_header('Access-Control-Allow-Origin', '*')</code></div>
+    <button id="riprova" type="button">riprova ora</button>
+  </div>
+
+  <div class="banner sentinella nascosto" id="sentinella">
+    <div class="banner-t">📡 Avviso della sentinella</div>
+    <div class="banner-s" id="sentinellaTesto"></div>
+  </div>
+
+  <main>
+    <section class="grid-top">
+      <div class="card">
+        <div class="ct">CHI RISPONE ADESSO</div>
+        <div id="capo"><div class="vuoto">…mi collego…</div></div>
+      </div>
+      <div class="card">
+        <div class="ct">RISERVA OGGI</div>
+        <div id="riserva"><div class="vuoto">…</div></div>
+      </div>
+    </section>
+    <section class="grid-main">
+      <div class="card">
+        <div class="ct">PROVIDER · PAGELLE <span id="provCount" class="ctsub"></span></div>
+        <div id="lista" class="lista"><div class="vuoto">…mi collego…</div></div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="ct">CASTIGHI ATTIVI <span id="castCount" class="ctsub"></span></div>
+          <div id="castighi"><div class="vuoto">…</div></div>
+        </div>
+        <div class="card">
+          <div class="ct">LAVORO DI OGGI <span id="usoCount" class="ctsub"></span></div>
+          <div id="uso"><div class="vuoto">…</div></div>
+        </div>
+        <div class="card">
+          <div class="ct">SISTEMA</div>
+          <div id="sistema"><div class="vuoto">…</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <nav class="plancia" aria-label="collegamenti rapidi">
+    <a class="pbtn" href="http://localhost:20129/portiere" target="_blank" rel="noopener">🛡️ Pagina Portiere</a>
+    <a class="pbtn" href="http://127.0.0.1:8765" target="_blank" rel="noopener">🐕 Deep Dog</a>
+    <a class="pbtn" href="?porta=20999" target="_blank" rel="noopener">🧪 Cruscotto porta test</a>
+  </nav>
+  <div class="foot">Cruscotto del Cervello · polling ogni 10 s · zero dipendenze esterne</div>
+</div>
+
+<div class="spento chiuso" id="spento">
+  <div class="spento-card">
+    <div class="bigdot"></div>
+    <div class="spento-t">cervello spento</div>
+    <div class="spento-s" id="spentoSub">non risponde su http://localhost:20129 · riprovo ogni 10 s</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+(function(){
+
+  /* ============ utilità ============ */
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtOra = t => new Date(t).toLocaleTimeString('it-IT', {hour12:false});
+
+  /* ============ configurazione ============ */
+  const PORTA = (() => {
+    const q = new URLSearchParams(location.search).get('porta');
+    const n = q ? parseInt(q, 10) : NaN;
+    return (Number.isFinite(n) && n > 0 && n < 65536) ? n : 20129;
+  })();
+  const BASE = 'http://localhost:' + PORTA;
+  $('baseNota').textContent = BASE + ' · aggiornamento ogni 10 s';
+  $('spentoSub').textContent = 'non risponde su ' + BASE + ' · riprovo ogni 10 s';
+
+  /* ============ stato ============ */
+  const S = {
+    cerv: null, port: null,        // ultime risposte valide
+    cervOk: false, portOk: false,  // esito ultima lettura
+    pagelle: null, castighi: [], uso: [], avviso: null,
+    lastFetch: 0,                  // timestamp dell'ultimo aggancio
+    vivo: false,                   // liveness del server (sondaggio opaco)
+    bloccato: false,               // server vivo ma letture negate (CORS)
+    tentLettura: 0,                // cicli da ultimo tentativo di lettura
+    inFlight: false
+  };
+  const nomeMap = {};
+
+  /* ============ parsing tollerante ============
+     pagelle e castighi sono campi opzionali: se il portiere li pubblica
+     (in /cervello o in /portiere.json) vengono mostrati con le forme più
+     probabili (mappa o lista, vote 0-10 o 0-100, scadenze assolute o secondi). */
+  const CHIAVI_PAGELLE  = ['pagelle','pagella','voti','voto','punteggi','punteggio','valutazioni','statistiche'];
+  const CHIAVI_CASTIGHI = ['castighi','castigo','punizioni','punizione','sanzioni','sanzione','penalita','penalità','in_castigo','sospesi'];
+  const CHIAVI_VOTO     = ['voto','pagella','score','punteggio','media','valore','qualita','qualità'];
+  const CHIAVI_USO      = ['uso_oggi','uso','lavoro_oggi','richieste_oggi'];
+  const CHIAVI_AVVISO   = ['sentinella_avviso','avviso_sentinella','sentinella'];
+
+  function primo(obj, chiavi){
+    if (!obj || typeof obj !== 'object') return undefined;
+    for (const k of chiavi){ if (obj[k] !== undefined && obj[k] !== null) return obj[k]; }
+    return undefined;
+  }
+  function primoNumero(o, chiavi){
+    for (const k of chiavi){
+      const v = o[k];
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(+v)) return +v;
+    }
+    return null;
+  }
+  function normPagelle(raw){
+    if (raw == null) return null;
+    const out = {};
+    if (Array.isArray(raw)){
+      for (const it of raw){
+        if (!it || typeof it !== 'object') continue;
+        const id = it.id ?? it.provider ?? it.nome ?? it.voce;
+        const v = primoNumero(it, CHIAVI_VOTO);
+        if (id != null && v != null) out[String(id).toLowerCase()] = {voto: v};
+      }
+    } else if (typeof raw === 'object'){
+      for (const [k, v] of Object.entries(raw)){
+        const key = k.toLowerCase();
+        if (typeof v === 'number' && isFinite(v)) out[key] = {voto: v};
+        else if (typeof v === 'string' && v.trim() !== '' && isFinite(+v)) out[key] = {voto: +v};
+        else if (v && typeof v === 'object'){
+          const n = primoNumero(v, CHIAVI_VOTO);
+          if (n != null) out[key] = {voto: n};
+          else {
+            /* forma {ok, ko, ms}: la pagella è il rapporto di successo */
+            const ok = isFinite(+v.ok) ? +v.ok : null;
+            const ko = isFinite(+v.ko) ? +v.ko : null;
+            const tot = (ok || 0) + (ko || 0);
+            if ((ok != null || ko != null) && tot > 0){
+              const q = (ok || 0) / tot * 100;
+              out[key] = {voto: q, txt: Math.round(q) + '%'};
+            }
+          }
+        }
+      }
+    }
+    return Object.keys(out).length ? out : null;
+  }
+  function parseQuando(v){
+    if (v == null) return null;
+    if (typeof v === 'number'){
+      if (v > 1e12) return new Date(v);          // epoch ms
+      if (v > 1e9)  return new Date(v * 1000);   // epoch s
+      return null;
+    }
+    if (typeof v === 'string'){
+      const s = v.trim();
+      if (/^\d+(\.\d+)?$/.test(s)){
+        const n = +s;
+        if (n > 1e12) return new Date(n);
+        if (n > 1e9)  return new Date(n * 1000);
+        return new Date(Date.now() + n * 1000);  // secondi residui
+      }
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d;
+    }
+    return null;
+  }
+  function normCastighi(raw){
+    if (raw == null) return [];
+    let arr;
+    if (Array.isArray(raw)) arr = raw;
+    else if (typeof raw === 'object'){
+      arr = Object.entries(raw).map(([k, v]) => {
+        if (v && typeof v === 'object') return Object.assign({}, v, {id: v.id ?? k});
+        if (typeof v === 'number' && isFinite(v)) return v > 1e9 ? {id: k, scadenza: v} : {id: k, sec: v};
+        return {id: k, scadenza: v};
+      });
+    } else return [];
+    const out = [];
+    for (const it of arr){
+      if (it == null) continue;
+      if (typeof it !== 'object'){ out.push({id: String(it), motivo: '', fine: null, sec: null, tot: null}); continue; }
+      const id = it.id ?? it.provider ?? it.nome ?? it.chi ?? it.voce ?? it.target;
+      const motivo = it.motivo ?? it.ragione ?? it.causa ?? it.perche ?? it.perché ?? it.descrizione ?? '';
+      let fine = null;
+      for (const k of ['scadenza','scadenza_epoch','scade','fine','fino','fino_a','fino_al','expires','expiry','until','verso']){
+        if (it[k] != null){ const d = parseQuando(it[k]); if (d){ fine = d; break; } }
+      }
+      let sec = null;
+      for (const k of ['rimanenti','secondi','secondi_rimanenti','scade_tra','residuo','residui','ttl','sec']){
+        if (it[k] != null && isFinite(+it[k])){ sec = +it[k]; break; }
+      }
+      let tot = null;
+      for (const k of ['durata','totale','durata_s','pena']){
+        if (it[k] != null && isFinite(+it[k])){ tot = +it[k]; break; }
+      }
+      out.push({id: id != null ? String(id) : '?', motivo: String(motivo), fine, sec, tot});
+    }
+    return out;
+  }
+  function restante(c){
+    if (c.fine) return Math.max(0, (c.fine.getTime() - Date.now()) / 1000);
+    if (c.sec != null) return Math.max(0, c.sec - (Date.now() - S.lastFetch) / 1000);
+    return null;
+  }
+
+  /* mappa provider → richieste di oggi */
+  function normUso(raw){
+    if (raw == null) return [];
+    let arr;
+    if (Array.isArray(raw)) arr = raw;
+    else if (typeof raw === 'object') arr = Object.entries(raw).map(([k, v]) => ({id: k, n: v}));
+    else return [];
+    const out = [];
+    for (const it of arr){
+      if (it == null || typeof it !== 'object') continue;
+      const id = it.id ?? it.provider ?? it.nome ?? it.voce ?? it.chi;
+      if (id == null) continue;
+      const n = primoNumero(it, ['n','richieste','count','uso','numero','tot','totale','chiamate']);
+      if (n == null || n <= 0) continue;
+      out.push({id: String(id), n: n});
+    }
+    return out.sort((a, b) => b.n - a.n);
+  }
+
+  /* anima le barre appena inserite nel DOM */
+  function animaBarre(root){
+    const barre = root.querySelectorAll('.bar i');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      barre.forEach(b => {
+        const w = b.getAttribute('data-w');
+        if (w != null){ b.style.width = w + '%'; b.removeAttribute('data-w'); }
+      });
+    }));
+  }
+
+  /* ============ rendering ============ */
+  function costruisciMappa(){
+    for (const v of (S.port && S.port.voci) || []){
+      if (v && v.id) nomeMap[String(v.id).toLowerCase()] = v.nome || v.id;
+    }
+  }
+  function nomeDi(id){
+    const k = String(id).toLowerCase();
+    return nomeMap[k] || String(id);
+  }
+  function nomeBreve(x){
+    if (typeof x === 'string') return x;
+    if (x && typeof x === 'object') return x.nome || x.id || '?';
+    return String(x);
+  }
+  const TIPO_CLS = {chat:'t-chat', embedding:'t-emb', db:'t-db', immagini:'t-img', video:'t-vid', voce:'t-voce', visione:'t-vis'};
+  const lvClasse  = p => p >= 75 ? 'lv3' : p >= 55 ? 'lv2' : p >= 35 ? 'lv1' : 'lv0';
+  const lvColore  = lv => lv === 'lv3' ? 'g' : lv === 'lv2' ? 'y' : lv === 'lv1' ? 'o' : 'r';
+  const fmtVoto = v => (typeof v !== 'number' || !isFinite(v)) ? '—' : (v > 10 ? String(Math.round(v)) : v.toFixed(1));
+
+  function renderCapo(){
+    const el = $('capo');
+    const capo = (S.cerv && S.cerv.capo) || (S.port && S.port.capo) || null;
+    if (!capo){ el.innerHTML = '<div class="vuoto"><span class="em">💤</span>nessun provider al comando</div>'; return; }
+    const badges = [];
+    if (capo.modello) badges.push('<span class="badge vio">' + esc(capo.modello) + '</span>');
+    if (capo.ms != null) badges.push('<span class="badge info">' + esc(String(capo.ms)) + ' ms</span>');
+    const ad = S.cerv && S.cerv.adesso != null ? String(S.cerv.adesso) : null;
+    if (ad) badges.push('<span class="badge ' + (ad.toLowerCase() === 'motore' ? 'ok' : 'warn') + '">in comando: ' + esc(ad) + '</span>');
+    let sost = '';
+    const so = S.cerv ? S.cerv.sostituti : null;
+    if (Array.isArray(so) && so.length){
+      sost = '<span class="chip mute">sostituti pronti:</span>' +
+             so.map(x => '<span class="chip">🛟 ' + esc(nomeBreve(x)) + '</span>').join('');
+    } else {
+      const n = (typeof so === 'number') ? so :
+                (S.port && typeof S.port.sostituti === 'number' ? S.port.sostituti : null);
+      if (n != null) sost = '<span class="chip">🛟 ' + n + ' sostituti pronti</span>';
+    }
+    el.innerHTML =
+      '<div class="capo-line"><span class="capo-nome">' + esc(capo.nome || capo.id || '—') + '</span>' + badges.join('') + '</div>' +
+      '<div class="capo-meta">il portiere gli sta passando le richieste in questo momento</div>' +
+      (sost ? '<div class="chips">' + sost + '</div>' : '');
+  }
+
+  function renderRiserva(){
+    const el = $('riserva');
+    const ris = (S.cerv && Array.isArray(S.cerv.riserva)) ? S.cerv.riserva :
+                (S.port && Array.isArray(S.port.risponde)) ? S.port.risponde : [];
+    const tot = (S.port && S.port.totali) || null;
+    if (!ris.length){ el.innerHTML = '<div class="vuoto"><span class="em">🕳️</span>nessuna riserva in elenco</div>'; return; }
+    el.innerHTML =
+      '<div class="ris-big"><span class="big">' + ris.length + '</span><small>' + (tot ? '/ ' + tot : '') + ' voci</small></div>' +
+      '<div class="chips">' + ris.map(id => '<span class="chip okc"><span class="mini-dot"></span>' + esc(nomeDi(id)) + '</span>').join('') + '</div>' +
+      '<div class="nota">le riserve di oggi — pronte a subentrare se il capo tace</div>';
+  }
+
+  function rigaVoce(v, rispSet, capoId){
+    const id = String(v.id || '').toLowerCase();
+    const nome = v.nome || v.id || '?';
+    const isCapo = !!id && id === capoId;
+    const on = rispSet.has(id);
+    const tipo = TIPO_CLS[v.tipo] || 't-alt';
+    let bar, val;
+    const pag = S.pagelle && S.pagelle[id];
+    if (pag){
+      const voto = pag.voto;
+      const p = Math.max(0, Math.min(100, voto > 10 ? voto : voto * 10));
+      const lv = lvClasse(p);
+      bar = '<span class="bar ' + lv + '"><i data-w="' + p + '"></i></span>';
+      val = '<span class="val ' + lvColore(lv) + '">' + (pag.txt || fmtVoto(voto)) + '</span>';
+    } else {
+      bar = '<span class="bar ' + (on ? 'lv3' : 'lvoff') + '"><i data-w="' + (on ? 100 : 26) + '"></i></span>';
+      val = on ? '<span class="val okt">in campo</span>' : '<span class="val mutt">fuori</span>';
+    }
+    return '<div class="prow">' +
+      '<span class="st ' + (isCapo ? 'capo' : (on ? 'on' : '')) + '"></span>' +
+      '<div class="pinfo"><span class="pnome">' + (isCapo ? '👑 ' : '') + esc(nome) + '</span>' +
+      (v.tipo ? '<span class="ptipo ' + tipo + '">' + esc(v.tipo) + '</span>' : '') +
+      (v.modello && v.modello !== '—' ? '<span class="pmod">' + esc(v.modello) + '</span>' : '') +
+      '</div>' + bar + val + '</div>';
+  }
+
+  function renderProviders(){
+    const el = $('lista');
+    const voci = (S.port && Array.isArray(S.port.voci)) ? S.port.voci : [];
+    if (!voci.length){
+      $('provCount').textContent = '';
+      el.innerHTML = '<div class="vuoto"><span class="em">📭</span>elenco provider non disponibile</div>';
+      return;
+    }
+    const rispSet = new Set(((S.port && Array.isArray(S.port.risponde)) ? S.port.risponde : []).map(x => String(x).toLowerCase()));
+    const capoId = String((S.cerv && S.cerv.capo && S.cerv.capo.id) || (S.port && S.port.capo && S.port.capo.id) || '').toLowerCase();
+    const nRisp = (S.cerv && typeof S.cerv.risponde === 'number') ? S.cerv.risponde : rispSet.size;
+    $('provCount').textContent = voci.length + ' voci · ' + nRisp + ' in campo';
+    const rank = v => { const id = String((v && v.id) || '').toLowerCase(); return id === capoId ? 0 : (rispSet.has(id) ? 1 : 2); };
+    const ord = voci.map((v, i) => ({v, i})).sort((a, b) => (rank(a.v) - rank(b.v)) || (a.i - b.i));
+    el.innerHTML = ord.map(({v}) => rigaVoce(v, rispSet, capoId)).join('');
+    animaBarre(el);
+  }
+
+  function renderUso(){
+    const el = $('uso');
+    const tot = S.uso.reduce((s, x) => s + x.n, 0);
+    $('usoCount').textContent = S.uso.length ? tot + ' richieste' : '';
+    if (!S.uso.length){
+      el.innerHTML = '<div class="vuoto"><span class="em">🌙</span>nessuno ha lavorato oggi<span class="vuoto-sub">nessuna richiesta registrata finora</span></div>';
+      return;
+    }
+    const max = S.uso[0].n;
+    el.innerHTML = S.uso.map(x => {
+      const p = Math.max(3, Math.min(100, max > 0 ? x.n / max * 100 : 0));
+      return '<div class="prow">' +
+        '<div class="pinfo"><span class="pnome">' + esc(nomeDi(x.id)) + '</span></div>' +
+        '<span class="bar uso"><i data-w="' + p + '"></i></span>' +
+        '<span class="val usot">' + x.n + '</span></div>';
+    }).join('');
+    animaBarre(el);
+  }
+
+  function renderSentinella(){
+    const el = $('sentinella');
+    const a = S.avviso;
+    if (a == null || (typeof a === 'string' && a.trim() === '')){ el.classList.add('nascosto'); return; }
+    let txt;
+    if (typeof a === 'string') txt = a;
+    else if (a && typeof a === 'object') txt = a.messaggio ?? a.testo ?? a.avviso ?? JSON.stringify(a);
+    else txt = String(a);
+    $('sentinellaTesto').textContent = txt;
+    el.classList.remove('nascosto');
+  }
+
+  function renderCastighi(){
+    const el = $('castighi');
+    const n = S.castighi.length;
+    $('castCount').textContent = n ? n + (n === 1 ? ' attivo' : ' attivi') : '';
+    if (!n){
+      el.innerHTML = '<div class="vuoto"><span class="em">😌</span>nessun castigo attivo<span class="vuoto-sub">tutti i provider sono in campo</span></div>';
+      return;
+    }
+    el.innerHTML = S.castighi.map((c, i) =>
+      '<div class="castigo" data-i="' + i + '">' +
+        '<div class="cinfo"><div class="cnome">⚖️ ' + esc(nomeDi(c.id)) + '</div>' +
+        (c.motivo ? '<div class="cmot">' + esc(c.motivo) + '</div>' : '') +
+        '<div class="cbar"><i style="width:100%"></i></div></div>' +
+        '<div class="cdown"><div class="csec"><span class="n">…</span><small>s</small></div><div class="cmm"></div></div>' +
+      '</div>').join('');
+    renderCountdowns();
+  }
+
+  function renderCountdowns(){
+    document.querySelectorAll('#castighi .castigo').forEach(row => {
+      const c = S.castighi[+row.dataset.i];
+      if (!c) return;
+      const nEl = row.querySelector('.csec .n');
+      const small = row.querySelector('.csec small');
+      const mm = row.querySelector('.cmm');
+      const barI = row.querySelector('.cbar i');
+      const r = restante(c);
+      if (r == null){
+        nEl.textContent = '—'; small.style.display = 'none'; mm.textContent = '';
+        barI.style.display = 'none'; row.classList.remove('urgente');
+        return;
+      }
+      small.style.display = ''; barI.style.display = '';
+      const s = Math.ceil(r);
+      nEl.textContent = String(s);
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+      mm.textContent = (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(ss).padStart(2, '0');
+      barI.style.width = (c.tot && c.tot > 0) ? Math.max(0, Math.min(100, r / c.tot * 100)) + '%' : '100%';
+      row.classList.toggle('urgente', s <= 30);
+    });
+  }
+
+  function renderSistema(){
+    const el = $('sistema');
+    const c = S.cerv || {}, p = S.port || {};
+    const tot = p.totali != null ? p.totali : (typeof c.risponde === 'number' ? c.risponde : null);
+    const inCampo = typeof c.risponde === 'number' ? c.risponde : (Array.isArray(p.risponde) ? p.risponde.length : null);
+    const sost = Array.isArray(c.sostituti) ? c.sostituti.length :
+                 (typeof c.sostituti === 'number' ? c.sostituti :
+                 (typeof p.sostituti === 'number' ? p.sostituti : null));
+    const riga = (k, v) => '<div class="srow"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>';
+    const ok = '<span class="sgood">✓</span>', no = '<span class="sbad">✗</span>';
+    el.innerHTML =
+      riga('modalità', c.adesso != null ? esc(String(c.adesso)) : '—') +
+      riga('solo-cervello', c.interruttore_solo_cervello ? '<span class="swarn">sì</span>' : 'no') +
+      riga('voci totali', tot != null ? String(tot) : '—') +
+      riga('in campo', inCampo != null ? String(inCampo) : '—') +
+      riga('sostituti pronti', sost != null ? String(sost) : '—') +
+      riga('GET /cervello', S.cervOk ? ok : no) +
+      riga('GET /portiere.json', S.portOk ? ok : no);
+  }
+
+  function renderClock(){
+    const el = $('lastSync');
+    if (!S.lastFetch){ el.textContent = 'in attesa…'; return; }
+    const dt = Math.floor((Date.now() - S.lastFetch) / 1000);
+    el.textContent = 'aggancio ' + fmtOra(S.lastFetch) + ' · ' + dt + ' s fa';
+  }
+
+  function renderAll(){
+    costruisciMappa();
+    renderCapo();
+    renderRiserva();
+    renderProviders();
+    renderCastighi();
+    renderUso();
+    renderSentinella();
+    renderSistema();
+    renderClock();
+  }
+
+  /* ============ stati del cruscotto ============ */
+  function modeOnline(){
+    $('spento').classList.add('chiuso');
+    $('banner').classList.add('nascosto');
+    const m = S.cerv ? S.cerv.motore : null;
+    const p = $('pill');
+    if (m === true){ p.className = 'pill on';  $('pillText').textContent = 'MOTORE ATTIVO'; }
+    else if (m === false){ p.className = 'pill off'; $('pillText').textContent = 'MOTORE SPENTO'; }
+    else { p.className = 'pill wait'; $('pillText').textContent = 'IN ATTESA'; }
+    renderAll();
+  }
+  function modeSpento(){
+    $('pill').className = 'pill off';
+    $('pillText').textContent = 'CERVELLO SPENTO';
+    $('banner').classList.add('nascosto');
+    $('spento').classList.remove('chiuso');
+  }
+  function modeBloccato(){
+    $('pill').className = 'pill bloc';
+    $('pillText').textContent = 'PORTIERE VIVO · DATI BLOCCATI';
+    $('spento').classList.add('chiuso');
+    $('banner').classList.remove('nascosto');
+  }
+
+  /* ============ rete ============ */
+  function timeout(ms){
+    const ctl = new AbortController();
+    setTimeout(() => ctl.abort(), ms);
+    return ctl.signal;
+  }
+  async function leggiJson(url){
+    const r = await fetch(url, {cache: 'no-store', signal: timeout(5000)});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+
+  async function poll(){
+    if (S.inFlight) return;
+    S.inFlight = true;
+    try {
+      /* 1) liveness: risposta opaca (mai letta), nessun rumore se vive */
+      try {
+        await fetch(BASE + '/cervello', {mode: 'no-cors', cache: 'no-store', signal: timeout(5000)});
+        S.vivo = true;
+      } catch (e) { S.vivo = false; }
+
+      if (!S.vivo){ S.bloccato = false; modeSpento(); return; }
+
+      /* 2) lettura vera; se bloccata, si riprova ogni 6 cicli (~1 min) */
+      if (S.bloccato && (S.tentLettura % 6) !== 0){ S.tentLettura++; modeBloccato(); return; }
+      S.tentLettura++;
+
+      const [r1, r2] = await Promise.allSettled([
+        leggiJson(BASE + '/cervello'),
+        leggiJson(BASE + '/portiere.json')
+      ]);
+      const cerv = r1.status === 'fulfilled' ? r1.value : null;
+      const port = r2.status === 'fulfilled' ? r2.value : null;
+
+      if (!cerv && !port){ S.bloccato = true; modeBloccato(); return; }
+      S.bloccato = false; S.tentLettura = 0;
+
+      if (cerv) S.cerv = cerv;
+      if (port) S.port = port;
+      S.cervOk = !!cerv; S.portOk = !!port;
+      S.lastFetch = Date.now();
+
+      S.pagelle  = normPagelle(primo(cerv, CHIAVI_PAGELLE) ?? primo(port, CHIAVI_PAGELLE));
+      S.castighi = normCastighi(primo(cerv, CHIAVI_CASTIGHI) ?? primo(port, CHIAVI_CASTIGHI));
+      S.uso      = normUso(primo(port, CHIAVI_USO) ?? primo(cerv, CHIAVI_USO));
+      S.avviso   = primo(port, CHIAVI_AVVISO) ?? primo(cerv, CHIAVI_AVVISO) ?? null;
+      modeOnline();
+    } finally {
+      S.inFlight = false;
+    }
+  }
+
+  /* ============ avvio ============ */
+  $('riprova').addEventListener('click', () => { S.bloccato = false; poll(); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !S.inFlight && Date.now() - S.lastFetch > 4000) poll();
+  });
+  setInterval(renderCountdowns, 1000);   // i castighi scendono ogni secondo
+  setInterval(renderClock, 1000);
+  setInterval(poll, 10000);              // interrogazione ogni 10 s
+  poll();
+})();
+</script>
+</body>
+</html>
