@@ -55,10 +55,17 @@ prepara_arsenale() {
 
 pubblica() {
   local R="$1" MSG="$2"
-  git pull -q --rebase 2>/dev/null
   git add "$R"
-  git commit -q -m "$MSG"
-  git push -q origin main 2>/dev/null || { git pull -q --rebase && git push -q origin main; }
+  git commit -q -m "$MSG" 2>/dev/null
+  # il repo a volte sta in detached HEAD (e il postino committa in parallelo):
+  # si spinge HEAD:main (non main), e se il remoto è avanti si riaggancia SENZA
+  # lasciare rebase a metà (mai operazioni che possano bloccare il repo)
+  git push -q origin HEAD:main 2>/dev/null && return 0
+  git fetch -q origin 2>/dev/null
+  if ! git rebase -q origin/main 2>/dev/null; then
+    git rebase --abort 2>/dev/null
+  fi
+  git push -q origin HEAD:main 2>/dev/null || echo "   (push rimandato: il commit resta locale, il postino lo raccoglierà)"
 }
 
 # ---------- GUARDA un video: pipeline storica (stampa il suo pezzo di rapporto) ----------
