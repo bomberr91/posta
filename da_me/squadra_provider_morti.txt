@@ -1,0 +1,78 @@
+COMPITO (squadra a 3 ruoli: cerca → verifica → correggi): per i provider che ci restano,
+dire con i fatti se si possono recuperare GRATIS (senza carta, senza abbonamento) e con
+quale alternativa; e dire chi va semplicemente RITIRATO dalla lista del Portiere.
+
+I due gruppi:
+
+A) CHIAVE PROBABILMENTE MORTA (la chiave non basta più, o il provider chiede soldi):
+   WaveSpeedAI · Aion Labs · SeaLION · Waterfall · Nscale · Kilo · Speechify ·
+   Jina AI · BlockRun · Qdrant Cloud · Zhipu · Token Harbor · NaraRouter · Requesty ·
+   OpenCode Zen (i suoi modelli gratis rispondono "free usage limit reached" via API ma
+   funzionano DENTRO OpenCode: verifica e spiega come va usato).
+B) LE CHIAVI MANCANTI: TeamoRouter (nel vault c'è solo il prefisso sk-teamo-e0c685…:
+   cerca se il provider è ancora gratis e come si prende una chiave nuova senza carta)
+   e fal.ai (è un provider MEDIA:images/video, non chat: verifica se ci serve).
+
+METODO (usa le skill che hai: archivio-consulta e ricerca-contenitori sull'archivio-repo,
+firecrawl/agent-browser per il web, oss-review se guardi licenze):
+1) per ogni provider: è ancora gratis? serve una carta? il free tier esiste e come funziona?
+   (leggi la pagina pricing/ToS/dashboard: citazione esatta, con la data).
+2) se c'è una alternativa gratis equivalente, cercala (canali: awesome, FMHY,
+   definitive-opensource, AlternativeTo, LibHunt, APIVault) e verifica con il protocollo
+   dell'archivio (licenza letta nel FILE, data ultimo commit, quota, dove gira).
+3) NON riproporre quello che è già in NON_RIPROPORRE.md o che fa già da noi un provider
+   vivo della nostra lista (la lista dei vivi: OpenRouter, Ollama Cloud, Groq, Mistral,
+   NVIDIA, Cloudflare Workers AI, Speka, Lucidity, Moondream, OrcaRouter, LLM7, Router9,
+   Jina AI, Cohere, FreeAI, Inferbase, Logfare, Sail, SimpleLLM, xKiro, Plugsky,
+   DreamPrompting, BazaarLink, Agnes AI, CLōD, Pollinations, Google AI Studio, LLMTR).
+
+CONSEGNA (in fondo al file, markdown): una tabella
+| provider | stato reale (con la prova) | si recupera gratis? | alternativa proposta | azione (TENERE / SOSTITUIRE / RITIRARE) |
+e in fondo le 2 righe di lista delle chiavi mancanti (TeamoRouter, fal.ai) con le fonti.
+Se un fatto non è verificabile, scrivi "NON VERIFICATO" e da dove hai letto.
+
+VINCOLI: costo 0 e MAI carte; niente chiavi/token nel report; conti solo le righe dati
+(le liste gonfiano i numeri); una riga per voce, con la data della verifica.
+
+---
+AGGIORNAMENTO DAL CAPO (2/11, ~10:30) — IL VERDETTO DI ALCUNI È GIÀ NOTO:
+  OVH → NON è recuperabile gratis: la chiave va RIGENERATA nella dashboard
+  (risponde "Forbidden: authentication failed" e rimanda a kepler.ai.cloud.ovh.net).
+  Kilo → 401 INVALID_TOKEN: serve una chiave vera o il token anonimo giusto → cerca
+  solo COME si prende gratis, non un altro modello.
+  Token Harbor · NaraRouter · Requesty · BlockRun · Zhipu → tutti "402/429: servono
+  crediti" (confermato oggi) → NON cercare un altro modello: cerca solo se esiste un
+  free tier vero senza carta, e se no scrivi "NO GRATIS".
+  LongCat → quota esaurita (402), non è un problema di nome.
+  ➜ Il resto del compito (le alternative gratis e le due chiavi mancanti) resta come
+  scritto sopra.
+
+---
+AGGIORNAMENTO DAL CAPO (2/11, ~11:40) — CATALOGO PUBBLICO + TRE VERDETTI CAMBIATI:
+  Il catalogo firmato di freellmapi è pubblico e si scarica senza chiave:
+      https://api.freellmapi.co/v1/latest
+  Copia per i nostri provider: `lavori/catalogo_freellmapi.json` (rigenerabile con
+      python3 lavori/aggiorna_catalogo.py)
+  Per ogni provider: modelli GRATIS con id esatto, rango (1 = migliore), rpm/rpd e i
+  QUIRK (le istruzioni operative: formato della chiave, header, max_tokens minimi,
+  rate limit, se serve la carta). Molte domande del vostro compito sono già scritte
+  li dentro: leggete il "quirk" del provider PRIMA di andare a leggere prezzi e pagine.
+
+  VERDETTI AGGIORNATI (non più validi quelli di prima):
+  · OVH → NON va rigenerata nessuna chiave: è keyless e funziona (nessun header
+    Authorization → `Mistral-Nemo-Instruct-2407`, 200). Con una chiave qualunque
+    risponde 403. Escluso dal compito.
+  · Kilo → keyless e SENZA header: funziona così com'è (`liquid/lfm-2.5-2.6b:free`,
+    200 su https://api.kilo.ai/api/gateway/v1). Non serve cercare una chiave. Escluso.
+  · Zhipu → la chiave che abbiamo va bene, il modello gratis è `glm-4.6v-flash`. Il
+    1305 che avete visto è "troppo traffico su quel modello in questo momento", non
+    "servono crediti". Escluso (salvo confermare che non esista un free tier vero).
+  ➜ RESTA IL COMPITO COME SOPRA (le altre righe: WaveSpeedAI, Aion Labs, SeaLION,
+    Waterfall, Nscale, Speechify, Jina AI, BlockRun, Qdrant Cloud, OpenCode Zen,
+    TeamoRouter, fal.ai) + il gruppo dei provider che rispondono ma solo a intermittenza
+    (Router9, HuggingFace Router, Chutes, Septor Labs, Api.Airforce, UnoRouter,
+    Google AI Studio, OpenCode Zen): per questi DUE gruppi guardate PRIMA nel catalogo
+    cosa dice (rpm/rpd = quante richieste al giorno, e il quirk) e poi, se serve, nel
+    web. Verdetto richiesto: TENERE / SOSTITUIRE / RITIRARE, con la prova.
+  ➜ Il rapporto deve stare in dal_pc/ (il postino lo salva da solo): non scrivere
+    dentro portiere_lista.txt e non toccare altri file del repo.
