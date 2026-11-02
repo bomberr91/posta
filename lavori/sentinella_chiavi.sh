@@ -84,5 +84,17 @@ else
   say "check-in agentrouter saltato"
 fi
 
+# 5) LongCat: a che ora rinnova la quota giornaliera (l'orario non e' nei docs)
+echo >> "$RAPPORTO"; echo "## 5. LongCat - quota giornaliera" >> "$RAPPORTO"
+if [ -f "$HOME/sonda_longcat.log" ]; then
+  OK200=$(grep ' | 200 | ' "$HOME/sonda_longcat.log" | tail -1)
+  KO402=$(grep ' | 402 | ' "$HOME/sonda_longcat.log" | tail -1)
+  echo "- ultimo 200 (quota tornata): ${OK200:-nessuno}" >> "$RAPPORTO"
+  echo "- ultimo 402 (quota esaurita): ${KO402:-nessuno}" >> "$RAPPORTO"
+  echo '```' >> "$RAPPORTO"; tail -20 "$HOME/sonda_longcat.log" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
+else
+  echo "sonda non avviata: nessun log in ~/sonda_longcat.log" >> "$RAPPORTO"
+fi
+
 say "giro finito · rapporto: $RAPPORTO"
 exit 0

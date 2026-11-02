@@ -29,7 +29,7 @@ bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat||fr
 clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat||free-ricorrente||
 navy|NavyAI|NavyAI|https://api.navy/v1|schizogpt|chat||free-ricorrente|gpt-6.1-sol;gpt-6-astra;gpt-5.6-sol||
 orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli||free-ricorrente||
-nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|agnes-2.5-flash|modelli||free-ricorrente|nemotron-3.5-lightning-free;ling-3.0-flash-fin-free;laguna-s-2.1|
+nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|minimax-m3.1-flash|modelli||free-ricorrente|glm-5.3-flash;deepseek-v4.1-flash;minimax-m3.1-flash;kimi-k3;laguna-s-2.1|
 routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli||free-ricorrente|minimax-m3.1-flash:free|
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente||
