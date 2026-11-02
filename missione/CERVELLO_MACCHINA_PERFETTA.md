@@ -257,7 +257,7 @@ Prossimo passo: CONCLUSIONI DEFINITIVE (fasi riscritte con tutte le 48 idee).
     chiave a costo zero token (per il controllo periodico del portachiavi)
 53. OrcaRouter Lite = MIT, self-host, SQLite (NO Postgres/Redis!) -> codice da minare:
     bandito contestuale che vota la difficolta' e IMPARA dal traffico reale
-    github.[CHIAVE-RIMOSSA]
+    github.com/Continuum-AI-Corp/OrcaRouter-Lite
 
 ### IO Intelligence (io.net) ⭐ caccia con riserva
 54. CACCIA: chiave free @ https://api.intelligence.io.solutions/api/v1 — MA free tier reale =
@@ -337,9 +337,9 @@ RESTA: Blocco 3 (EmpirioLabs, SaladCloud, Ollama Cloud, Vercel AI Gateway) — U
     prima di reimplementare la compressione (idea 42), controllare se il nostro
     OmniRoute :20128 le ha gia' e come si accendono.
 
-[CHIAVE-RIMOSSA]
+====================================================================
 == 🏁 QUADERNO COMPLETO (30/10 notte) — TUTTE LE ANALISI FINITE ==
-[CHIAVE-RIMOSSA]
+====================================================================
 TOTALE ANALIZZATI: 13 candidati originali + 6 collaterali Reddit/GitHub + 12 lista Goose
                    = 31 approfonditi (+ 10 scartati a vista dalla lista Goose con motivo)
 TOTALE IDEE: 64 numerate (buone + parcheggi 🅿️ + scarti ❌ motivati, tutto in questo file)
@@ -352,9 +352,9 @@ PROSSIMO PASSO (quando il capo da' l'ok): CONCLUSIONI DEFINITIVE — riscrivere 
 incorporando le 64 idee -> approvazione -> applicare UNA FASE ALLA VOLTA
 (sandbox -> anteprima -> push).
 
-[CHIAVE-RIMOSSA]
+====================================================================
 == 🔴 CURA-AUDIT v5 — 1/11 sera — IL PORTIERE ERA MORTO E NON LO SAPEVA ==
-[CHIAVE-RIMOSSA]
+====================================================================
 NON ERA UN'IDEA NUOVA: era un BUCO. Il quaderno delle 64 idee era chiuso e
 perfetto, e intanto il Portiere non rispondeva a una chat dalle 16:24.
 

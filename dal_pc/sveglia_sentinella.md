@@ -8,7 +8,7 @@ cervello ucciso (rilegge lo stato alla resurrezione)
 risorto ~60s
 ### I due occhi
  👁 CYBIRD-D/FREE-LLM-API-Provider → baseline push 2026-10-30
- 👁 [CHIAVE-RIMOSSA] → baseline push 2026-10-27
+ 👁 open-free-llm-api/awesome-freellm-apis → baseline push 2026-10-27
 occhi attivi: 2 · avviso: nessuno (baseline, giusto cosi)
 
 <!-- fine sveglia_sentinella -->

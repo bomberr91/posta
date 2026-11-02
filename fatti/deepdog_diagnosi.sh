@@ -1,5 +1,5 @@
 #!/bin/bash
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 echo "## 🐕 DIAGNOSI CONFIG — $(date '+%H:%M')"
 echo "### 1. .env reale (nomi attivi, valori mascherati)"
 grep -E "^[A-Z_]+=." "$D/.env" | sed 's/=\(.\{6\}\).*/=\1•••/' 

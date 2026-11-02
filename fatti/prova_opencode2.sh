@@ -2,7 +2,7 @@
 # prova_opencode2.sh — riavvia il cervello col codice nuovo (streaming) e riprova OpenCode
 export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
-POSTA_DIR="$HOME/posta"; OUT="$[CHIAVE-RIMOSSA].md"
+POSTA_DIR="$HOME/posta"; OUT="$POSTA_DIR/dal_pc/punta_opencode2.md"
 TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
 [ -z "$TOKEN" ] && TOKEN="$(grep -oE 'ghp_[A-Za-z0-9]{30,}' "$HOME/CHIAVI_LOCALI.md" 2>/dev/null | head -1)"
 echo "# Riprova OpenCode -> cervello (streaming) — $(date '+%d/%m %H:%M')" > "$OUT"
@@ -10,7 +10,7 @@ pkill -f "cervello.py" 2>/dev/null; sleep 1
 (cd "$POSTA_DIR" && nohup python3 cervello.py >/dev/null 2>&1 &)
 # CURA-AUDIT v5: riavviare e POI non verificare = lasciare il PC morto.
 # Il collaudo condiviso aspetta la porta e prova una chat vera.
-if bash "$[CHIAVE-RIMOSSA].sh" >> "$OUT" 2>&1; then
+if bash "$POSTA_DIR/fatti/collaudo_cervello.sh" >> "$OUT" 2>&1; then
   echo "- Cervello riavviato col codice NUOVO e COLLAUDATO: OK" >> "$OUT"
 else
   echo "- ATTENZIONE: il cervello NON risponde dopo il riavvio (collaudo fallito)" >> "$OUT"

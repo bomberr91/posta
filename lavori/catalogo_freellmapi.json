@@ -4540,19 +4540,19 @@
   ],
   "huggingface": [
    {
-    "slug": "[CHIAVE-RIMOSSA]",
+    "slug": "hf-tiny-credit",
     "titolo": "Small $0.10/month routed credit",
     "testo": "HuggingFace Inference Providers grants only ~$0.10/month of routed credit on the free tier (PRO is $2/month). Enough for light experimentation; exhausts quickly. Credits apply only to HF-routed requests.",
     "gravita": "warning"
    },
    {
-    "slug": "[CHIAVE-RIMOSSA]",
+    "slug": "hf-monthly-credits-exhausted",
     "titolo": "Monthly included credits run out",
     "testo": "HuggingFace meters Inference Providers in dollars, not tokens: free accounts get $0.10 credited every month. When it is spent every route answers 402 \"You have depleted your monthly included credits\", as happened during the September 18, 2026 audit. This is a spent-wallet state, not a dead route, and it clears when the monthly grant renews. Rows are kept enabled and the router should treat 402 here as a provider-level cooldown to the start of next month rather than a per-model failure.",
     "gravita": "info"
    },
    {
-    "slug": "[CHIAVE-RIMOSSA]",
+    "slug": "hf-router-no-enabled-provider-2026-09-21",
     "titolo": "No inference provider serves this model",
     "testo": "Key-tested on September 21, 2026: the HuggingFace router answered these ids with \"The requested model is not supported by any provider you have enabled\". They are catalogued on the Hub but no Inference Provider serves them, so the route cannot succeed for any account. Separately, the router meters dollars against a $0.10 monthly included credit, not tokens; when that credit is spent every other row returns 402 until the monthly reset.",
     "gravita": "warning"

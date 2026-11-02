@@ -112,7 +112,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 12:13 missione
 -rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
 -rw-r--r-- 1 agenti agenti    2269 Oct 27 15:20 ricerca_strategica.py
 -rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
--rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 [CHIAVE-RIMOSSA]
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
 -rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
 -rw-r--r-- 1 agenti agenti     315 Oct 27 15:20 stato_fusion.json
 drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
@@ -129,45 +129,45 @@ drwxr-xr-x 1 agenti agenti    4096 Oct 28 23:10 tests
 /home/agenti/posta/.git/packed-refs
 /home/agenti/posta/.gitignore
 /home/agenti/posta/.padrone
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].bat
+/home/agenti/posta/00_INSTALLA_AGENTI/01_HERMES.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/02_DIAGNOSTICA_HERMES_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/03_OPENCODE_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/04_GOOSE_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/05_SECONDHAND_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/06_ANTIGRAVITY_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/07_ICONE_AGENTI_WINDOWS.bat
+/home/agenti/posta/00_INSTALLA_AGENTI/08_ICONA_OPENCLAW_WINDOWS.bat
+/home/agenti/posta/6_BROWSER_AGENTI.bat
+/home/agenti/posta/7_SQUADRA_FUSION.bat
+/home/agenti/posta/8_CENTRALE_GUI.bat
 /home/agenti/posta/agenti_stato.sh
-[CHIAVE-RIMOSSA].sh
-[CHIAVE-RIMOSSA].sh
-[CHIAVE-RIMOSSA].sh
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].sh
+/home/agenti/posta/aggiorna_tutto.sh
+/home/agenti/posta/appello_chiavi.sh
+/home/agenti/posta/apri_free_llm_hub.sh
+/home/agenti/posta/APRI_OPENCLAW.bat
+/home/agenti/posta/apri_openclaw.sh
 /home/agenti/posta/centrale.sh
-[CHIAVE-RIMOSSA].bat
+/home/agenti/posta/CENTRALE_AGENTI.bat
 /home/agenti/posta/cervello.py
-[CHIAVE-RIMOSSA].py
-[CHIAVE-RIMOSSA].sh
+/home/agenti/posta/checkin_agentrouter.py
+/home/agenti/posta/checkin_agentrouter.sh
 /home/agenti/posta/chiave_di.py
 /home/agenti/posta/chiavi_env.sh
 /home/agenti/posta/compressione.py
-[CHIAVE-RIMOSSA].bat
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
-[CHIAVE-RIMOSSA].md
+/home/agenti/posta/CONFIGURA_OPENCLAW.bat
+/home/agenti/posta/dal_pc/accendi_omniroute.md
+/home/agenti/posta/dal_pc/accendi_omniroute_2.md
+/home/agenti/posta/dal_pc/accendi_omniroute_e_rilancia.md
+/home/agenti/posta/dal_pc/agentrouter_checkin.md
+/home/agenti/posta/dal_pc/aggiorna_26_skill_e_browser.md
+/home/agenti/posta/dal_pc/analisi_blocco_1.md
+/home/agenti/posta/dal_pc/analisi_blocco_2.md
+/home/agenti/posta/dal_pc/analisi_blocco_3.md
+/home/agenti/posta/dal_pc/analisi_blocco_4.md
+/home/agenti/posta/dal_pc/appello_chiavi.md
+/home/agenti/posta/dal_pc/ar_canali_aperti.md
+/home/agenti/posta/dal_pc/ar_processo3.md
+/home/agenti/posta/dal_pc/ar_processo4.md
 
 $ rg -n "def castiga|def segna|def punito|def appello|def motore_vivo|def uso_oggi|def ricarica|def chiave|def indirizzo|def sonda|def scopri|class H|ThreadingHTTPServer|HTTPServer|Retry-After|def _rispondi|text/event-stream|\[DONE\]|SOSTITUTI_MAX|def classifica|def da_confermare" /home/agenti/posta/cervello.py
 /bin/bash: line 1: rg: command not found
@@ -260,7 +260,7 @@ GIUDICE=gpt-5.6-sol
 4. **HIGH — Credential exposure:** `indirizzo` can transmit API keys over plain HTTP; reject non-loopback HTTP endpoints.
 5. **HIGH — Unsafe shared state:** Concurrent access and non-atomic persistence of `STATO`, `REGISTRO`, and `PROFILI` can crash, corrupt files, or lose updates; lock access and use atomic file replacement.
 **VERDICT: FRAGILE**
-[claude-opus-5 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-5 无可用渠道 (request id: [CHIAVE-RIMOSSA])","type":"]
-[claude-opus-4-8 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-4-8 无可用渠道 (request id: [CHIAVE-RIMOSSA])","type"]
-[claude-sonnet-4-5-20250929 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-sonnet-4-5-20250929 无可用渠道 (request id: [CHIAVE-RIMOSSA]]
+[claude-opus-5 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-5 无可用渠道 (request id: 202611012345018763934055rwkng1OXmDwc)","type":"]
+[claude-opus-4-8 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-opus-4-8 无可用渠道 (request id: 202611012345112820561796p9sdjwT7XNeD)","type"]
+[claude-sonnet-4-5-20250929 → HTTP Error 503: Service Unavailable {"error":{"message":"当前分组 default 下对于模型 claude-sonnet-4-5-20250929 无可用渠道 (request id: 20261101234522732473309lh28g5FBou0]
 FINE 16:45

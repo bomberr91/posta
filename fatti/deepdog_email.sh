@@ -1,5 +1,5 @@
 #!/bin/bash
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 echo "## 🐕 EMAIL DI SERVIZIO NEL .env — $(date '+%H:%M')"
 python3 - "$D/.env" << 'PYEOF'
 import sys, re

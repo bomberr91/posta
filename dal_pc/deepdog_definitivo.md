@@ -13,7 +13,7 @@ _01/11/2026 21:24 · FilippoPC_
 [01/11 21:24] 3. collaudo sul server di PROVA (8766) — il 8765 non si tocca
    ✓ porta 8766 aperta
    file in outputs/: prima=0 dopo=1 (ricerca finita: 1)
-   ✅ IL REPORT ATTERRA: [CHIAVE-RIMOSSA].md — 2438 byte
+   ✅ IL REPORT ATTERRA: Final_Report_Sun_Nov_01_2026_2026-11-01_21-27-56_ign.md — 2438 byte
 # Bozza di Report: Identificazione del Capoluogo d'Italia
 
 ## Obiettivo

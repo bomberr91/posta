@@ -21,7 +21,7 @@ if [ -f "$HOME/CHIAVI_LOCALI.md" ]; then
 fi
 
 # 0. Se il potenziamento non è ancora stato eseguito, fallo subito!
-if [ ! -f "$HOME/.[CHIAVE-RIMOSSA]" ] && [ -f "$HOME/posta/aggiorna_tutto.sh" ]; then
+if [ ! -f "$HOME/.skills_v2_installed" ] && [ -f "$HOME/posta/aggiorna_tutto.sh" ]; then
   bash "$HOME/posta/aggiorna_tutto.sh"
 fi
 

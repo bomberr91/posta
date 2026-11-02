@@ -3,8 +3,8 @@
 set -u
 POSTA_DIR="$HOME/posta"; OUT="$POSTA_DIR/dal_pc/sveglia_zcode.md"
 TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
-[CHIAVE-RIMOSSA].exe
-WINDIR_AG="[CHIAVE-RIMOSSA]"
+SCH=/mnt/c/Windows/System32/schtasks.exe
+WINDIR_AG="/mnt/c/Users/giopi/AppData/Local/agenti"
 mkdir -p "$WINDIR_AG"
 echo "# Sveglia ZCode 12:00 — $(date '+%d/%m %H:%M')" > "$OUT"
 # popup senza finestra nera (VBS, ASCII, CRLF)

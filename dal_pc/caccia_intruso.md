@@ -11,7 +11,7 @@ agenti    1475  0.0  0.0  17016  6224 tty2     S    09:18   0:00 bash postino.sh
 → conteggio loop postino: 4
 
 ### 2. Avvii automatici nel REGISTRO di Windows
-    [CHIAVE-RIMOSSA]    REG_SZ    "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --no-startup-window --win-session-start
+    MicrosoftEdgeAutoLaunch_D02E5BF2D9ED7172E6B6C556AC1779DF    REG_SZ    "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --no-startup-window --win-session-start
     OneDrive    REG_SZ    "C:\Users\giopi\AppData\Local\Microsoft\OneDrive\OneDrive.exe" /background
     Opera Stable    REG_SZ    "C:\Users\giopi\AppData\Local\Programs\Opera\opera.exe" --autostart
     RaiDrive    REG_SZ    C:\Program Files\OpenBoxLab\RaiDrive\RaiDrive.exe /background

@@ -10,7 +10,7 @@
 #     in outputs/ (è questo il punto che stanotte non funzionava).
 #  + il Setup deve essere rimasto (openrouter, missing []) dopo il riavvio.
 set -uo pipefail
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 say(){ echo "[$(date '+%d/%m %H:%M')] $*"; }
 
 say "1. il cane (8765) risponde?"
@@ -24,7 +24,7 @@ fi
 say "2. quando è partito il processo rispetto alla patch?"
 PATCHED="$(stat -c '%y' "$D/web_app.py" 2>/dev/null | cut -d. -f1)"
 echo "   web_app.py è stato patchato: $PATCHED"
-PSOUT="$([CHIAVE-RIMOSSA].0/powershell.exe -NoProfile -Command \
+PSOUT="$(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -Command \
   "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Select-Object ProcessId,CreationDate,CommandLine | Format-List" 2>/dev/null)"
 echo "$PSOUT" | grep -A2 -i "web_app\|CreationDate\|ProcessId" | head -24
 CREATED="$(echo "$PSOUT" | grep -i "CreationDate" | head -3 | sed 's/.*CreationDate[^:]*: *//' | head -1)"
@@ -61,8 +61,8 @@ if [ -n "$NEWF" ] && [ "$DOPO" -gt "$PRIMA" ]; then
   echo "   --- le prime righe ---"
   head -8 "$NEWF"
   # e lo metto nel repo, così è durabile per gli agenti
-  mkdir -p "$[CHIAVE-RIMOSSA]"
-  cp -p "$NEWF" "$[CHIAVE-RIMOSSA]" 2>/dev/null && echo "   copiato in dal_pc/deepdog_reports/ ✅"
+  mkdir -p "$HOME/posta/dal_pc/deepdog_reports"
+  cp -p "$NEWF" "$HOME/posta/dal_pc/deepdog_reports/" 2>/dev/null && echo "   copiato in dal_pc/deepdog_reports/ ✅"
 else
   say "5. ⚠️ nessun file nuovo (la ricerca è finita? $FIN)"
   tail -20 /tmp/dd_ok_status.json 2>/dev/null | head -5

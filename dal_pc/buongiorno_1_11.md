@@ -14,7 +14,7 @@ FASE 3
 motore: True · adesso: motore · riserve: 6
 
 ### 3. Sveglio la sentinella (primo battito del giorno) e controllo avvisi
-occhi: [('CYBIRD-D/FREE-LLM-API-Provider', '2026-10-30'), ('[CHIAVE-RIMOSSA]', '2026-10-27')]
+occhi: [('CYBIRD-D/FREE-LLM-API-Provider', '2026-10-30'), ('open-free-llm-api/awesome-freellm-apis', '2026-10-27')]
 📡 avviso: nessuno — fonti ferme, quote valide
 
 ### 4. Castighi pendenti dalla notte

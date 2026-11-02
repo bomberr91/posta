@@ -55,7 +55,7 @@ chat(){
   local out
   out=$(curl -fsS -m "$T_CHAT" -H 'Content-Type: application/json' \
         -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' \
-        "$[CHIAVE-RIMOSSA]" 2>/dev/null) || {
+        "$CERVELLO_URL/v1/chat/completions" 2>/dev/null) || {
         echo "   ✗ la chat non risponde (timeout ${T_CHAT}s o connessione chiusa dal server)"
         return 1; }
   echo "$out" | python3 -c "

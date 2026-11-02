@@ -151,11 +151,11 @@ for it in all_items:
     elif u and len(it.get("text", "")) > len(dedup[u].get("text", "")):
         dedup[u] = it
 
-out_json = os.path.expanduser("~[CHIAVE-RIMOSSA].json")
+out_json = os.path.expanduser("~/posta/dal_pc/tutti_i_salvati_fb.json")
 with open(out_json, "w", encoding="utf-8") as f:
     json.dump({"collections": val.get("collections", []), "items": list(dedup.values())}, f, ensure_ascii=False, indent=2)
 
-out_txt = os.path.expanduser("~[CHIAVE-RIMOSSA].txt")
+out_txt = os.path.expanduser("~/posta/dal_pc/tutti_i_salvati_fb_raw.txt")
 with open(out_txt, "w", encoding="utf-8") as f:
     f.write("\n\n".join(raw_bodies))
 
@@ -171,12 +171,12 @@ fi
 
 if [ ! -x "$HOME/.local/bin/headroom" ]; then
   python3 -m venv "$HOME/.local/share/headroom-venv" 2>/dev/null || true
-  "$HOME/.[CHIAVE-RIMOSSA]" install -q --upgrade pip >/dev/null 2>&1 || true
+  "$HOME/.local/share/headroom-venv/bin/pip" install -q --upgrade pip >/dev/null 2>&1 || true
   # Installiamo headroom-ai evitando la compilazione Rust da zero (--only-binary=:all: o pacchetto base + proxy + mcp)
-  "$HOME/.[CHIAVE-RIMOSSA]" install -q --prefer-binary "headroom-ai[proxy,mcp]" >/dev/null 2>&1 \
-    || "$HOME/.[CHIAVE-RIMOSSA]" install -q --prefer-binary headroom-ai >/dev/null 2>&1 || true
-  if [ -x "$HOME/.[CHIAVE-RIMOSSA]" ]; then
-    ln -sf "$HOME/.[CHIAVE-RIMOSSA]" "$HOME/.local/bin/headroom"
+  "$HOME/.local/share/headroom-venv/bin/pip" install -q --prefer-binary "headroom-ai[proxy,mcp]" >/dev/null 2>&1 \
+    || "$HOME/.local/share/headroom-venv/bin/pip" install -q --prefer-binary headroom-ai >/dev/null 2>&1 || true
+  if [ -x "$HOME/.local/share/headroom-venv/bin/headroom" ]; then
+    ln -sf "$HOME/.local/share/headroom-venv/bin/headroom" "$HOME/.local/bin/headroom"
   fi
 fi
 
@@ -185,7 +185,7 @@ fi
   echo "- **Data**: $(date '+%d/%m/%Y %H:%M')"
   echo "- **XERJ**: $(~/.local/bin/xerj --version 2>&1 | head -1 || echo non trovato)"
   echo "- **Headroom**: $(~/.local/bin/headroom --version 2>&1 | head -1 || echo non trovato)"
-} > "$[CHIAVE-RIMOSSA].md"
+} > "$POSTA_DIR/dal_pc/headroom_status.md"
 
-cat "$[CHIAVE-RIMOSSA].md"
+cat "$POSTA_DIR/dal_pc/headroom_status.md"
 push_git

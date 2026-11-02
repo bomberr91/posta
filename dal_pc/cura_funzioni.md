@@ -68,7 +68,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 17:07 missione
 -rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
 -rw-r--r-- 1 agenti agenti    2269 Oct 27 15:20 ricerca_strategica.py
 -rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
--rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 [CHIAVE-RIMOSSA]
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
 -rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
 -rw-r--r-- 1 agenti agenti     315 Oct 27 15:20 stato_fusion.json
 drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
@@ -555,7 +555,7 @@ $ cd /home/agenti/posta && wc -l cervello.py && grep -n "def a_pagamento\|def ca
 
 ← Edit cervello.py
 Index: /home/agenti/posta/cervello.py
-[CHIAVE-RIMOSSA]
+===================================================================
 --- /home/agenti/posta/cervello.py
 +++ /home/agenti/posta/cervello.py
 @@ -499,9 +499,11 @@
@@ -578,7 +578,7 @@ Error: Could not find oldString in the file. It must match exactly, including wh
 
 ← Edit cervello.py
 Index: /home/agenti/posta/cervello.py
-[CHIAVE-RIMOSSA]
+===================================================================
 --- /home/agenti/posta/cervello.py
 +++ /home/agenti/posta/cervello.py
 @@ -618,9 +618,16 @@

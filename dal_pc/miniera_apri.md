@@ -58,8 +58,8 @@ Keep source paths in the result. Stop when evidence is missing.
 ### 4. Dove vivono le skills sul PC?
   ✓ ESISTE: /home/agenti/.claude/skills (28 voci)
   ✓ ESISTE: /home/agenti/.agents/skills (28 voci)
-  — manca: [CHIAVE-RIMOSSA].claude/skills
-  — manca: [CHIAVE-RIMOSSA].agents/skills
+  — manca: /mnt/c/Users/giopi/Documents/AgentWorkspace/.claude/skills
+  — manca: /mnt/c/Users/giopi/Documents/AgentWorkspace/.agents/skills
   ✓ ESISTE: /home/agenti/.config/opencode/skills (26 voci)
 ### 5. opencode e le skills
 node_modules

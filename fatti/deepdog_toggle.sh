@@ -1,5 +1,5 @@
 #!/bin/bash
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 echo "## 🐕 TOGGLE + VERITÀ SUI REQUISITI — $(date '+%H:%M')"
 echo "### 1. chiave deepseek-piattaforma nel portachiavi PC?"
 grep -i "platform.deepseek\|deepseek.com" ~/CHIAVI_LOCALI.md | head -2 || echo "  nessuna traccia di chiave deepseek dedicata"

@@ -1,5 +1,5 @@
 #!/bin/bash
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 echo "## 🔎 EXA: VERIFICA + DOPPIA RICERCA + SKILL — $(date '+%H:%M')"
 echo "### 1. .env (mascherato)"
 grep -E "^[A-Z_]+=." "$D/.env" | sed 's/=\(.\{6\}\).*/=\1•••/'

@@ -19,7 +19,7 @@ model: auto
 provider: cervello
 approval: never
 sandbox: read-only
-session id: [CHIAVE-RIMOSSA]
+session id: 01a18d01-cd89-758f-a866-35795a9639c5
 --------
 user
 Rispondi esattamente: CERVELLO OK
@@ -28,7 +28,7 @@ model: auto
 provider: cervello
 approval: never
 sandbox: read-only
-session id: [CHIAVE-RIMOSSA]
+session id: 01a18d01-cd89-758f-a866-35795a9639c5
 --------
 user
 Rispondi esattamente: CERVELLO OK
@@ -37,7 +37,7 @@ model: auto
 provider: cervello
 approval: never
 sandbox: read-only
-session id: [CHIAVE-RIMOSSA]
+session id: 01a18d01-a5e9-766e-92f0-aae64a29ecb6
 --------
 user
 Rispondi esattamente: CERVELLO OK

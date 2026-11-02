@@ -56,14 +56,14 @@ def app_config(setup: SetupState | None = None) -> RunConfig:
     fast = selected.speed_profile == "fast"
     use_openrouter = selected.model_provider == "openrouter"
     return RunConfig(
-        [CHIAVE-RIMOSSA]["deepseek-flash"],
+        supervisor_model_fallback_chain=["deepseek-flash"],
         subagent_model_fallback_chain=["deepseek-flash"],
-        [CHIAVE-RIMOSSA]["deepseek-flash"],
+        draft_report_model_fallback_chain=["deepseek-flash"],
         disable_model_fallback=True,
-        [CHIAVE-RIMOSSA],
-        [CHIAVE-RIMOSSA],
-        [CHIAVE-RIMOSSA],
-        [CHIAVE-RIMOSSA],
+        route_via_openrouter=use_openrouter,
+        supervisor_route_via_openrouter=use_openrouter,
+        subagent_route_via_openrouter=use_openrouter,
+        draft_route_via_openrouter=use_openrouter,
 
 ### 2. Dove salva la scelta? C'è un file di setup persistito?
 74:SETUP = SetupState()
@@ -78,7 +78,7 @@ def app_config(setup: SetupState | None = None) -> RunConfig:
 243:</div><div class="actions"><button id="saveSetup">Salva setup</button><span id="setupMessage" class="meta"></span></div><p class="setup-note">I campi vuoti mantengono le chiavi già caricate dal file .env o inserite in questa sessione. Deep Dog non mostra mai una chiave salvata.</p></div></section>
 
 ### 3. INTERROGO IL SERVER DAL VIVO (20 secondi)
-— /api/status → {"status": "failed", "message": "Ricerca terminata: failed", "report": "", "error": "APIStatusError: Error code: 402 - Insufficient Balance (request_id: [CHIAVE-RIMOSSA])", "events": ["Ricerca avviata", "Configurazione verificata", "Preparazione del piano di ricerca", "Ricerca non riuscita"], "elapsed_seconds": 1}
+— /api/status → {"status": "failed", "message": "Ricerca terminata: failed", "report": "", "error": "APIStatusError: Error code: 402 - Insufficient Balance (request_id: 19fc2736-cda0-4718-940f-43405a074d62)", "events": ["Ricerca avviata", "Configurazione verificata", "Preparazione del piano di ricerca", "Ricerca non riuscita"], "elapsed_seconds": 1}
 — /api/setup → {"configured": {"DEEPSEEK_API_KEY": true, "EXA_API_KEY": true, "OPENROUTER_API_KEY": true, "TAVILY_API_KEY": true}, "model_provider": "openrouter", "search_provider": "both", "speed_profile": "fast", "ready": true, "missing": []}
 — /status → {"error": "Risorsa non trovata"}
 — /api/config → {"error": "Risorsa non trovata"}
@@ -101,9 +101,9 @@ era nel `.env`.
 `web_app.py` (il wrapper Windows) scriveva tre catene così:
 
 ```python
-[CHIAVE-RIMOSSA]["deepseek-flash"],
+supervisor_model_fallback_chain=["deepseek-flash"],
 subagent_model_fallback_chain=["deepseek-flash"],
-[CHIAVE-RIMOSSA]["deepseek-flash"],
+draft_report_model_fallback_chain=["deepseek-flash"],
 ```
 
 Ma in `deep_research/config.py` la mappa dei modelli instradabili su

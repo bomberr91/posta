@@ -4,25 +4,25 @@
 - **╭──📊Statistiche** (``)
 - **Voce (bloccata) 💎・Elite Club: 28** (``)
 - **╭──📍Informazioni** (``)
-- **Annunci 📌・introduzione** (`[CHIAVE-RIMOSSA]`)
-- **Regole 📖・regolamento** (`[CHIAVE-RIMOSSA]`)
-- **Annunci (limitati) 📢・annunci** (`[CHIAVE-RIMOSSA]`)
-- **Annunci (limitati) 🔒・updates** (`[CHIAVE-RIMOSSA]`)
+- **Annunci 📌・introduzione** (`/channels/1119998900271587471/1120000721262227507`)
+- **Regole 📖・regolamento** (`/channels/1119998900271587471/1120000664966266951`)
+- **Annunci (limitati) 📢・annunci** (`/channels/1119998900271587471/1120000775951753236`)
+- **Annunci (limitati) 🔒・updates** (`/channels/1119998900271587471/1289267168072040471`)
 - **╭──💎Abbonamento** (``)
-- **Annunci (limitati) 💎・upgrade** (`[CHIAVE-RIMOSSA]`)
-- **Testo (limitato) 💞・recensioni** (`[CHIAVE-RIMOSSA]`)
+- **Annunci (limitati) 💎・upgrade** (`/channels/1119998900271587471/1120007178359677019`)
+- **Testo (limitato) 💞・recensioni** (`/channels/1119998900271587471/1162495153035034694`)
 - **╭──🎫Supporto** (``)
-- **Testo 🎫・apri-un-ticket** (`[CHIAVE-RIMOSSA]`)
+- **Testo 🎫・apri-un-ticket** (`/channels/1119998900271587471/1156516921689260072`)
 - **╭──💣Servizi** (``)
-- **Testo (limitato) 📈・social-media-boost** (`[CHIAVE-RIMOSSA]`)
-- **Testo (limitato) 🚀・agency-ad-accounts** (`[CHIAVE-RIMOSSA]`)
-- **Testo (limitato) 📡・facebook-assets** (`[CHIAVE-RIMOSSA]`)
-- **Testo (limitato) 🏢・uk-company** (`[CHIAVE-RIMOSSA]`)
-- **Testo (limitato) 🏢・us-company** (`[CHIAVE-RIMOSSA]`)
+- **Testo (limitato) 📈・social-media-boost** (`/channels/1119998900271587471/1120001810409734204`)
+- **Testo (limitato) 🚀・agency-ad-accounts** (`/channels/1119998900271587471/1161645179502084197`)
+- **Testo (limitato) 📡・facebook-assets** (`/channels/1119998900271587471/1245437390051475657`)
+- **Testo (limitato) 🏢・uk-company** (`/channels/1119998900271587471/1165293815213588678`)
+- **Testo (limitato) 🏢・us-company** (`/channels/1119998900271587471/1261980685753778257`)
 
 ---
 
-## 📖 Canale 1: (1248) Discord | #🎫・apri-un-ticket | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 1: (1248) Discord | #🎫・apri-un-ticket | Ecom Elite (`https://discord.com/channels/1119998900271587471/1156516921689260072`)
 
 ### 📝 Contenuto:
 ```text
@@ -174,12 +174,12 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 2: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 2: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120001810409734204`)
 ### 🔗 Link esterni nel canale:
 - SMM FLARE -> https://smmflare.com/ref/3yyo7
 - https://smmflare.com/ref/3yyo7 -> https://smmflare.com/ref/3yyo7
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].webp?ex=6ad57cb7&is=6ad42b37&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].gif?ex=6ad5dcd8&is=6ad48b58&[CHIAVE-RIMOSSA]&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197906609150623786/dssmain.webp?ex=6ad57cb7&is=6ad42b37&hm=5f4ee985c8088e8f02205204814d1627f709c9a813714e199906f3ae81ae4384&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197466243926589500/3dgifmaker91704.gif?ex=6ad5dcd8&is=6ad48b58&hm=9e6d0b7c13ad51008fe0e6b2749f779727715b616f9b4df8317bd4dbb88ad95a&
 
 ### 📝 Contenuto:
 ```text
@@ -336,7 +336,7 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 3: (1248) Discord | #📖・regolamento | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 3: (1248) Discord | #📖・regolamento | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000664966266951`)
 
 ### 📝 Contenuto:
 ```text
@@ -501,17 +501,17 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 4: (1248) Discord | #📢・annunci | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 4: (1248) Discord | #📢・annunci | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120000775951753236`)
 ### 🔗 Link esterni nel canale:
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad559f5&is=6ad40875&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5a605&is=6ad45485&[CHIAVE-RIMOSSA]&
+-  -> https://cdn.discordapp.com/attachments/1120000775951753236/1280131332009103381/image.png?ex=6ad559f5&is=6ad40875&hm=b5335116aaa1e9d0e29badf9da913dc843c6fa0715c938646b47633f2f25abcb&
+-  -> https://cdn.discordapp.com/attachments/1120000775951753236/1284199272082047121/CleanShot_2024-09-10_at_21.png?ex=6ad5a605&is=6ad45485&hm=86e65e4d8d229ff453a334fe0160bb7138480866eedd17bf82e0196c9621d7d8&
 - https://sublaunch.com/ecomelite -> https://sublaunch.com/ecomelite
 - Ecom Elite 🇮🇹 - Ecom Community N.1 in Italia -> https://sublaunch.com/ecomelite
--  -> https://upcdn.[CHIAVE-RIMOSSA].jpg
+-  -> https://upcdn.io/W142hYH/raw/uploads/ogimage/ogImage_sublaunchId-ch2uFpwA3d_username-ecomelite_RpU1wXtc.jpg
 - https://sublaunch.com/toolsuite -> https://sublaunch.com/toolsuite
 - ToolSuite 💻 - 50+ Spy & AI tools for your ecommerce -> https://sublaunch.com/toolsuite
--  -> https://upcdn.[CHIAVE-RIMOSSA].jpg
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad580e9&is=6ad42f69&[CHIAVE-RIMOSSA]&
+-  -> https://upcdn.io/W142hYH/raw/uploads/ogimage/ogImage_sublaunchId-GpQHYWjxop_username-toolsuite_irkVgTvd.jpg
+-  -> https://cdn.discordapp.com/attachments/1120000775951753236/1301916431398469732/ECOM_ELITE.png?ex=6ad580e9&is=6ad42f69&hm=fbf6e9e1b6b0aae24aa82ed4f63ad0d7ff107da94bf07010aa564e90fa92c3b5&
 
 ### 📝 Contenuto:
 ```text
@@ -770,7 +770,7 @@ Segui
 
 ---
 
-## 📖 Canale 5: (1248) Discord | #🔒・updates | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 5: (1248) Discord | #🔒・updates | Ecom Elite (`https://discord.com/channels/1119998900271587471/1289267168072040471`)
 
 ### 📝 Contenuto:
 ```text
@@ -896,7 +896,7 @@ Segui
 
 ---
 
-## 📖 Canale 6: (1248) Discord | #💎・upgrade | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 6: (1248) Discord | #💎・upgrade | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120007178359677019`)
 
 ### 📝 Contenuto:
 ```text
@@ -1030,14 +1030,14 @@ Segui
 
 ---
 
-## 📖 Canale 7: (1248) Discord | #💞・recensioni | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 7: (1248) Discord | #💞・recensioni | Ecom Elite (`https://discord.com/channels/1119998900271587471/1162495153035034694`)
 ### 🔗 Link esterni nel canale:
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5ea8a&is=6ad4990a&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5ea8e&is=6ad4990e&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5ea93&is=6ad49913&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5ea9a&is=6ad4991a&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5bfdf&is=6ad46e5f&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].png?ex=6ad5c7ae&is=6ad4762e&[CHIAVE-RIMOSSA]&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634674605424660/IMG_7021.png?ex=6ad5ea8a&is=6ad4990a&hm=0d48359ad2a519676eefc98a3d1a7935d9c7793af6cc36bba787daf45fca3c97&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634692284420246/IMG_7018.png?ex=6ad5ea8e&is=6ad4990e&hm=3db17eab2e13784cbfe5b6adb93280ff192f95f9758c3267260e63c7ee75ccb5&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634712438181940/IMG_7016.png?ex=6ad5ea93&is=6ad49913&hm=70b951445ff24f4beb676d32fff4b46729d76813714d7b1c5b7428223b9a5221&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1205634742876381287/IMG_7015.png?ex=6ad5ea9a&is=6ad4991a&hm=00d5a36f00d0d74ee2b9ee14beaab1431085f730e3460ff2235e93e7f0998e48&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1214286169336971344/IMG_7548.png?ex=6ad5bfdf&is=6ad46e5f&hm=6749b095ddf45f48f511d53ebe8b4d8933ddd7af7f8c71ec416233f2bb8539be&
+-  -> https://cdn.discordapp.com/attachments/1162495153035034694/1291664366349058121/Screenshot_20241004-171652.png?ex=6ad5c7ae&is=6ad4762e&hm=39d617a29ad4281b2c0edbb479b87eb21c9647a46dfcb7202849d2ade29a70e4&
 
 ### 📝 Contenuto:
 ```text
@@ -1241,12 +1241,12 @@ Non hai il permesso necessario per scrivere messaggi in questo canale.
 
 ---
 
-## 📖 Canale 8: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.[CHIAVE-RIMOSSA]`)
+## 📖 Canale 8: (1248) Discord | #📈・social-media-boost | Ecom Elite (`https://discord.com/channels/1119998900271587471/1120001810409734204`)
 ### 🔗 Link esterni nel canale:
 - SMM FLARE -> https://smmflare.com/ref/3yyo7
 - https://smmflare.com/ref/3yyo7 -> https://smmflare.com/ref/3yyo7
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].webp?ex=6ad57cb7&is=6ad42b37&[CHIAVE-RIMOSSA]&
--  -> https://cdn.discordapp.[CHIAVE-RIMOSSA].gif?ex=6ad5dcd8&is=6ad48b58&[CHIAVE-RIMOSSA]&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197906609150623786/dssmain.webp?ex=6ad57cb7&is=6ad42b37&hm=5f4ee985c8088e8f02205204814d1627f709c9a813714e199906f3ae81ae4384&
+-  -> https://cdn.discordapp.com/attachments/1161349660368175244/1197466243926589500/3dgifmaker91704.gif?ex=6ad5dcd8&is=6ad48b58&hm=9e6d0b7c13ad51008fe0e6b2749f779727715b616f9b4df8317bd4dbb88ad95a&
 
 ### 📝 Contenuto:
 ```text

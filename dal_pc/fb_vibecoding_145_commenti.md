@@ -1,5 +1,5 @@
 # 📌 Post e Commenti Facebook Estratti
-- **URL**: https://www.facebook.[CHIAVE-RIMOSSA]
+- **URL**: https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776
 - **Titolo**: (2) Vibe Coding is Life | Which AI model can I use for 24 hours without hitting daily limits❓❓❓❓ | Facebook
 - **Caratteri estratti**: 23846
 

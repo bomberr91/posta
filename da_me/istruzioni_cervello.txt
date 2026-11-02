@@ -1,4 +1,4 @@
-COMPITO: scrivere nel file GIÀ ESISTENTE `[CHIAVE-RIMOSSA].md` la sezione
+COMPITO: scrivere nel file GIÀ ESISTENTE `missione/CERVELLO_MACCHINA_PERFETTA.md` la sezione
 definitiva con le istruzioni permanenti del cervello per l'appello delle chiavi.
 NON creare file .md nuovi: il capitolo va dentro quel file, in fondo, con un titolo
 chiaro. Non toccare altri file del repo (fuori dal report che il postino salva da solo).

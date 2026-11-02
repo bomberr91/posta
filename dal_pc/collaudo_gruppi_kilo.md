@@ -8,7 +8,7 @@ _31/10/2026 17:16 · FilippoPC_
 ['code', 'forte', 'rinforzi']
 
 ### 2. Gruppo 'forte' alla prova
-[CHIAVE-RIMOSSA] (riserva LLMTR) → The user wants a very short, direct answer: "Tell me only: s
+nvidia/nemotron-3-ultra-550b-a55b (riserva LLMTR) → The user wants a very short, direct answer: "Tell me only: s
 
 ### 3. KILO DIRETTO (lavoro n.3): il keyless dei 384 modelli parla in chat?
 endpoint: https://kilocode.ai/api/openrouter/v1

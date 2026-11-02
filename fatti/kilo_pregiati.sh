@@ -4,7 +4,7 @@ echo "## KILO: I DUE PREGIATI, CON CALMA — $(date '+%H:%M')"
 python3 << 'PYEOF'
 import json, time, urllib.request
 UA = {"Content-Type": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1"}
-URL = "https://kilo.[CHIAVE-RIMOSSA]"
+URL = "https://kilo.ai/api/openrouter/v1/chat/completions"
 for m in ("nvidia/nemotron-3.5-lightning:free", "cohere/north-mini-code:free"):
     corpo = json.dumps({"model": m, "max_tokens": 30, "messages": [{"role": "user", "content": "Rispondi solo: kilo funziona"}]}).encode()
     try:

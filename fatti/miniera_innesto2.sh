@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "## ⛏️ INNESTO round 2 (cerca-ovunque) — $(date '+%H:%M')"
 cd ~/miniera
-SETTE="check-tests learn-agent-skills learn-mcp reviewable [CHIAVE-RIMOSSA] [CHIAVE-RIMOSSA] [CHIAVE-RIMOSSA]"
+SETTE="check-tests learn-agent-skills learn-mcp reviewable skill-invocation-router skill-release-gate skill-safety-reviewer"
 for S in $SETTE; do
   D=$(find . -type d -name "$S" -not -path "*/node_modules/*" | head -1)
   if [ -n "$D" ]; then

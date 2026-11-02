@@ -1,6 +1,6 @@
 #!/bin/bash
 # Crea ACCENDI_OMNIROUTE.bat sul Desktop (finestra dedicata, bind sicuro)
-DEST="[CHIAVE-RIMOSSA].bat"
+DEST="/mnt/c/Users/giopi/Desktop/ACCENDI_OMNIROUTE.bat"
 printf '@echo off\r\ntitle OmniRoute - NON CHIUDERE QUESTA FINESTRA (riducila a icona)\r\necho Avvio OmniRoute sulla porta 20128 (il primo avvio impiega anche 2-3 minuti)...\r\nwsl bash -lc ". ~/.nvm/nvm.sh; export OMNIROUTE_SERVER_HOST=127.0.0.1; omniroute"\r\npause\r\n' > "$DEST"
 ls -la "$DEST" && echo "BAT creato sul Desktop"
 echo

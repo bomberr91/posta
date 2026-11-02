@@ -8,7 +8,7 @@ liberi = [m for m in cat if ":free" in m.lower()]
 print("modelli :free nel catalogo kilo:", len(liberi))
 print("primi 8:", liberi[:8])
 UA = {"Content-Type": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1"}
-URL = "https://kilo.[CHIAVE-RIMOSSA]"
+URL = "https://kilo.ai/api/openrouter/v1/chat/completions"
 for m in liberi[:4]:
     corpo = json.dumps({"model": m, "max_tokens": 25, "messages": [{"role": "user", "content": "Rispondi solo: kilo funziona"}]}).encode()
     try:

@@ -2,7 +2,7 @@
 > build · auto
 [0m
 | skill               | verdetto       | motivo                                  |
-|---------------------|-----------------|[CHIAVE-RIMOSSA]|
+|---------------------|-----------------|-----------------------------------------|
 | find-your-level     | 🅿️ PARCHEGGIO   | Utile per onboarding futuro, non ora    |
 | isometric-explainer | 🔵IG+🔵YT        | Visualizza processi per contenuti social|
 | learn               | 🅿️ PARCHEGGIO   | Formazione base, non prioritaria        |

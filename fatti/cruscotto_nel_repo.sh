@@ -9,7 +9,7 @@
 # Il repo è PUBBLICO: prima di copiare il file lo scanno per stringhe-chiave
 # e, se ce ne fossero, le maschero (l'originale resta in /tmp).
 set -uo pipefail
-SRC="[CHIAVE-RIMOSSA].html"
+SRC="/mnt/c/Users/giopi/Documents/AgentWorkspace/cruscotto.html"
 REPO="$HOME/posta"
 cd "$REPO" || { echo "❌ non trovo $REPO"; exit 1; }
 say(){ echo "[$(date '+%d/%m %H:%M')] $*"; }

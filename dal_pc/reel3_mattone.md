@@ -48,7 +48,7 @@ Ecco l'analisi completa del video:
   * Tabella comandi: `Codex` / `Claude Code` con opzioni `/start-learning` e `/learn-mcp`
   * Finestra terminale:
     ```bash
-    $ npx skills add [CHIAVE-RIMOSSA]
+    $ npx skills add rohitg00/ai-engineering-from-scratch
     > /start-learning
     ```
 * **Schermata riepilogo repo:**
@@ -78,10 +78,10 @@ Ecco l'analisi completa del video:
 
 ### 3) Strumenti, Repository, Siti e Link citati
 * **GitHub:** Piattaforma di hosting del codice.
-* **Repository:** `[CHIAVE-RIMOSSA]` (URL: `https://github.[CHIAVE-RIMOSSA]`).
+* **Repository:** `rohitg00/ai-engineering-from-scratch` (URL: `https://github.com/rohitg00/ai-engineering-from-scratch`).
 * **Claude Code:** Strumento CLI per sviluppatori di Anthropic utilizzato per interagire con Claude direttamente dal terminale.
 * **Comandi / Script:**
-  * `npx skills add [CHIAVE-RIMOSSA]`
+  * `npx skills add rohitg00/ai-engineering-from-scratch`
   * `/start-learning`
   * `/learn-mcp`
 * **Standard & Tecnologie:** MCP (*Model Context Protocol*), AI Agents, LLM Apps.

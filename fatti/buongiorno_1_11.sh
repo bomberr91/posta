@@ -21,7 +21,7 @@ echo "### 2b. COLLAUDO (il cervello parla davvero?)"
 collaudo || { echo "❌ il cervello non passa il collaudo"; exit 1; }
 echo
 echo "### 3. Sveglio la sentinella (primo battito del giorno) e controllo avvisi"
-curl -fsS -m 60 -H 'Content-Type: application/json' -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' "$[CHIAVE-RIMOSSA]" >/dev/null 2>&1
+curl -fsS -m 60 -H 'Content-Type: application/json' -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' "$CERVELLO_URL/v1/chat/completions" >/dev/null 2>&1
 sleep 5
 python3 -c "
 import json

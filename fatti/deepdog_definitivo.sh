@@ -15,7 +15,7 @@
 # riavvii: nessun launcher nuovo serve.
 set -uo pipefail
 REPO="$HOME/posta"
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 PY="$D/.venv/Scripts/python.exe"
 cd "$REPO" || { echo "❌ non trovo $REPO"; exit 1; }
 say(){ echo "[$(date '+%d/%m %H:%M')] $*"; }
@@ -30,7 +30,7 @@ else
   python3 /tmp/dd_outputs_patch.py 2>/dev/null || {
     cat > /tmp/dd_outputs_patch.py << 'PYEOF'
 import os, re, shutil, time
-D = "[CHIAVE-RIMOSSA]"
+D = "/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 F = os.path.join(D, "web_app.py")
 src = open(F, encoding="utf-8").read()
 shutil.copy2(F, F + ".bak-" + time.strftime("%Y%m%d-%H%M%S"))

@@ -19,7 +19,7 @@
 # QUI: due correzioni minime + un collaudo che parla. Il collaudo esce 1 se
 # qualcosa non torna: se non dice NO, non dice niente.
 set -uo pipefail
-D="[CHIAVE-RIMOSSA]"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 PY="$D/.venv/Scripts/python.exe"
 echo "## 🐕 IL CEROTTO DI DEEP DOG — $(date '+%d/%m %H:%M')"
 
@@ -50,7 +50,7 @@ echo "### 2. Applico il cerotto (idempotente, con backup)"
 cat > /tmp/dd_patch.py << 'PATCHEOF'
 import io, os, re, shutil, sys, time
 
-D = "[CHIAVE-RIMOSSA]"
+D = "/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 F = os.path.join(D, "web_app.py")
 src = io.open(F, encoding="utf-8").read()
 MARCA = "CURA-AUDIT (1/11):"
@@ -67,9 +67,9 @@ modifiche = []
 
 # (a) le tre catene: il nome che Deep Dog CONOSCE, e che segue l'ambiente
 <<<<<<< HEAD
-vecchio = '''        [CHIAVE-RIMOSSA]["deepseek-flash"],
+vecchio = '''        supervisor_model_fallback_chain=["deepseek-flash"],
         subagent_model_fallback_chain=["deepseek-flash"],
-        [CHIAVE-RIMOSSA]["deepseek-flash"],'''
+        draft_report_model_fallback_chain=["deepseek-flash"],'''
 =======
 vecchio = '''        supervisor...=["deepseek-flash"],
         subagent_m...=["deepseek-flash"],
@@ -81,9 +81,9 @@ nuovo = '''        # CURA-AUDIT (1/11): il wrapper scriveva "deepseek-flash", no
         # DeepSeek (a pagamento) -> 402 Insufficient Balance. Qui il nome vero,
         # e lo si cambia dal .env (SUPERVISOR_MODEL ecc.).
 <<<<<<< HEAD
-        [CHIAVE-RIMOSSA][os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
+        supervisor_model_fallback_chain=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
         subagent_model_fallback_chain=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],
-        [CHIAVE-RIMOSSA][os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],'''
+        draft_report_model_fallback_chain=[os.environ.get("DRAFT_REPORT_MODEL", "deepseek-v4-flash")],'''
 =======
         supervisor...=[os.environ.get("SUPERVISOR_MODEL", "deepseek-v4-flash")],
         subagent_m...=[os.environ.get("SUBAGENT_MODEL", "deepseek-v4-flash")],

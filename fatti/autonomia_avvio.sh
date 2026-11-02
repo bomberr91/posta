@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "## AUTONOMIA ALL'AVVIO — $(date '+%H:%M')"
-STARTUP="[CHIAVE-RIMOSSA] Menu/Programs/Startup"
+STARTUP="/mnt/c/Users/giopi/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup"
 DESK="/mnt/c/Users/giopi/Desktop"
-ARCHIVIO="[CHIAVE-RIMOSSA]"
+ARCHIVIO="/mnt/c/Users/giopi/Documents/AgentWorkspace/vecchi_bat"
 echo
 echo "### 1. Cosa c'era già in Esecuzione automatica"
 ls -la "$STARTUP" 2>/dev/null | tail -n +2
@@ -26,7 +26,7 @@ done
 echo "(i WIDGET_* non si toccano)"
 echo
 echo "### 4. Pulizia bat dal Desktop → archiviati in AgentWorkspace/vecchi_bat"
-for f in "$DESK/ACCENDI_CERVELLO.bat" "$DESK/ACCENDI_OMNIROUTE.bat" "$DESK/PUNTA_OPENCLAW_CERVELLO.bat" "[CHIAVE-RIMOSSA].bat"; do
+for f in "$DESK/ACCENDI_CERVELLO.bat" "$DESK/ACCENDI_OMNIROUTE.bat" "$DESK/PUNTA_OPENCLAW_CERVELLO.bat" "/mnt/c/Users/giopi/Downloads/ACCENDI_CERVELLO.bat"; do
   [ -f "$f" ] && mv "$f" "$ARCHIVIO/" && echo "archiviato: $(basename "$f")"
 done
 echo

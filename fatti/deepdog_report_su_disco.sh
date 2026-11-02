@@ -12,8 +12,8 @@
 #
 # Il server vero (porta 8765) NON si tocca: il collaudo gira su 8766.
 set -uo pipefail
-D="[CHIAVE-RIMOSSA]"
-PY="[CHIAVE-RIMOSSA].venv/Scripts/python.exe"
+D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
+PY="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/.venv/Scripts/python.exe"
 say(){ echo "[$(date '+%d/%m %H:%M')] $*"; }
 
 say "1. dove sono i file"
@@ -24,7 +24,7 @@ echo "   web_app.py: $(wc -c < "$D/web_app.py") byte"
 say "2. applico il cerotto (idempotente, con backup)"
 cat > /tmp/dd_outputs_patch.py << 'PYEOF'
 import os, re, shutil, time
-D = "[CHIAVE-RIMOSSA]"
+D = "/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
 F = os.path.join(D, "web_app.py")
 src = open(F, encoding="utf-8").read()
 shutil.copy2(F, F + ".bak-" + time.strftime("%Y%m%d-%H%M%S"))

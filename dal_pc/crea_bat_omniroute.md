@@ -2,7 +2,7 @@
 
 _31/10/2026 13:53 · FilippoPC_
 
--rwxrwxrwx 1 agenti agenti 253 Oct 31 13:53 [CHIAVE-RIMOSSA].bat
+-rwxrwxrwx 1 agenti agenti 253 Oct 31 13:53 /mnt/c/Users/giopi/Desktop/ACCENDI_OMNIROUTE.bat
 BAT creato sul Desktop
 
 Versione OmniRoute attualmente installata:

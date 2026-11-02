@@ -2,7 +2,7 @@
 # installa_freebuff.sh — installa Freebuff CLI (7° agente) dentro WSL
 set -u
 export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-POSTA_DIR="$HOME/posta"; OUT="$[CHIAVE-RIMOSSA].md"
+POSTA_DIR="$HOME/posta"; OUT="$POSTA_DIR/dal_pc/installa_freebuff.md"
 TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
 echo "# Installazione Freebuff — $(date '+%d/%m %H:%M')" > "$OUT"
 echo "- node: $(node --version 2>/dev/null || echo ASSENTE)" | tee -a "$OUT"

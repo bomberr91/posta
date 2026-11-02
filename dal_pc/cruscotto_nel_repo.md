@@ -3,7 +3,7 @@
 _01/11/2026 20:43 · FilippoPC_
 
 [01/11 20:43] 1. il cruscotto esiste?
-   [CHIAVE-RIMOSSA].html — 37649 byte
+   /mnt/c/Users/giopi/Documents/AgentWorkspace/cruscotto.html — 37649 byte
 [01/11 20:43] 2. scansione stringhe-chiave (il repo è pubblico)
 [01/11 20:43]    chiavi trovate: 0
 [01/11 20:43]    ✓ nessuna chiave: il file si copia così com'è

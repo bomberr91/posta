@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # sveglia_agentrouter.sh — WIDGET check-in AgentRouter: dalle 18:05 apre Chrome sul sito e insiste finche' non dici SI
 set -u
-POSTA_DIR="$HOME/posta"; OUT="$[CHIAVE-RIMOSSA].md"
+POSTA_DIR="$HOME/posta"; OUT="$POSTA_DIR/dal_pc/sveglia_agentrouter.md"
 TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
-AG="[CHIAVE-RIMOSSA]"
-STARTUP="[CHIAVE-RIMOSSA] Menu/Programs/Startup"
+AG="/mnt/c/Users/giopi/AppData/Local/agenti"
+STARTUP="/mnt/c/Users/giopi/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup"
 mkdir -p "$AG"
 echo "# Widget check-in AgentRouter — $(date '+%d/%m %H:%M')" > "$OUT"
-sed 's/$/\r/' "$[CHIAVE-RIMOSSA].ps1" > /tmp/wa.ps1
+sed 's/$/\r/' "$POSTA_DIR/strumenti/widget_agentrouter_src.ps1" > /tmp/wa.ps1
 printf '\xEF\xBB\xBF' > "$AG/WIDGET_AGENTROUTER.ps1"; cat /tmp/wa.ps1 >> "$AG/WIDGET_AGENTROUTER.ps1"
 echo "- scritto C:\\Users\\giopi\\AppData\\Local\\agenti\\WIDGET_AGENTROUTER.ps1" | tee -a "$OUT"
 printf 'CreateObject("Wscript.Shell").Run "powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File ""C:\\Users\\giopi\\AppData\\Local\\agenti\\WIDGET_AGENTROUTER.ps1""", 0, False\r\n' > "$STARTUP/WIDGET_AGENTROUTER.vbs"

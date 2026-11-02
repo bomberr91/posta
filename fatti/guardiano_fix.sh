@@ -22,7 +22,7 @@ fi
 
 echo
 echo "### 2. avvio il guardiano nuovo"
-nohup bash "$[CHIAVE-RIMOSSA].sh" > /tmp/guardiano_avvio.log 2>&1 &
+nohup bash "$HOME/posta/lavori/scorta_cervello.sh" > /tmp/guardiano_avvio.log 2>&1 &
 sleep 8
 pgrep -af '[s]corta_cervello.sh' | head -2 || echo "   il guardiano non e' partito"
 tail -3 "$LOG" 2>/dev/null
