@@ -125,6 +125,11 @@ PY
 # prova <id> <etichetta> <riga-portachiavi> <pattern> <base_url> <modello-suggerito> <chat|modelli>
 prova(){
   local id="$1" eti="$2" nome="$3" base="$4" mod="$5" modo="$6"
+  # 2/11 BUG: «extra» (i modelli curati extra della lista) e «auth» arrivano come
+  # parametri 7 e 8. Prima «extra» finiva nella dichiarazione local e veniva
+  # (a) lasciato vuoto e (b) letto PRIMA di essere valorizzato -> «unbound variable».
+  # Ora sono local separati e non collidono con la nota finale.
+  local EXTRA_MODELLI="$7" auth="$8"
   local key NOAUTH=0
   if [ "$nome" = "SENZA" ]; then
     # I "SENZA" NON SONO TUTTI UGUALI (2/11, verificato con chat vera):
@@ -141,7 +146,9 @@ prova(){
   if [ "$nome" != "SENZA" ] && [ -z "$key" ]; then
     printf '%s\t%s\tno-chiave\t0\tnessuna chiave nel portachiavi\t\n' "$id" "$eti" > "$TMP/$id.res"; return
   fi
-  local t0 t1 code esito extra modello MODELLI_KO=""
+  # 2/11: max_tokens 128 (prima 20). I modelli che «ragionano» mandano il testo
+  # in reasoning_content e con 20 token il content resta VUOTO: sembravano rotti.
+  local t0 t1 code esito extra="" modello MODELLI_KO=""
   t0=$(date +%s%N)
 
   # CLOUDFLARE: l'indirizzo dipende dall'account, che sta DENTRO la chiave («account_id:token»),
@@ -191,7 +198,7 @@ PY
   # AUDIT 2/11: il modello curato si prova per PRIMO. Prima questo script buttava
   # via quello scelto da noi e usava il primo id che tornava da /models: e quel
   # primo id era spesso un UUID o un modello morto (Cloudflare, NVIDIA, Moondream...).
-  EXTRA=$(printf '%s' "$extra" | tr ';' '\n' | awk 'NF && !v[$0]++')
+  EXTRA=$(printf '%s' "$EXTRA_MODELLI" | tr ';' '\n' | awk 'NF && !v[$0]++')
   # AI HORDE: il roster cambia ogni ora e un modello puo' essere valido ma senza
   # nessun worker online. L'unica fonte affidabile e' il contatore dei worker.
   if [ "$base" = "https://oai.aihorde.net/v1" ]; then
@@ -240,7 +247,7 @@ PY
       [ -z "$tentativo" ] && continue
       i=$((i+1)); [ "$i" -gt 3 ] && break
       body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
-        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
+        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":128}" \
         "$base/chat/completions" 2>/dev/null)
       [ -n "$body" ] && ultimo="$body"
       if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; ok=1; break; fi
@@ -264,7 +271,7 @@ PY
       esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
         body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
-          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
+          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":128}" \
           "$base/chat/completions" 2>/dev/null)
         if printf '%s' "$body" | grep -qi 'choices'; then
           modello="$SUGGERITO"; ok=1
@@ -286,7 +293,9 @@ PY
   fi
   t1=$(date +%s%N)
   local prova_di="modelli"
-  { [ "$SVELTO" = "0" ] && [ "$modo" = "chat" ]; } && prova_di="chat"
+  # 2/11: in appello pieno la domanda vera e' stata fatta a TUTTI i provider
+  # chat (tranne ai NON-chat): la colonma «prova» deve dire la verita'.
+  [ "$SVELTO" = "0" ] && [ "$modo" != "no" ] && prova_di="chat"
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$id" "$eti" "$esito" "$(( (t1-t0)/1000000 ))" "$extra" "${modello:-}" "$prova_di" > "$TMP/$id.res"
 }
 
