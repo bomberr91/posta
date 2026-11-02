@@ -84,8 +84,12 @@ else
   say "check-in agentrouter saltato"
 fi
 
-# 5) LongCat: a che ora rinnova la quota giornaliera (l'orario non e' nei docs)
+# 5) LongCat: a che ora rinnova la quota (l'orario non e' nei docs)
 echo >> "$RAPPORTO"; echo "## 5. LongCat - quota giornaliera" >> "$RAPPORTO"
+PIDF="$HOME/.sonda_longcat.pid"
+if [ ! -f "$PIDF" ] || ! kill -0 "$(cat "$PIDF" 2>/dev/null)" 2>/dev/null; then
+  bash fatti/sonda_longcat.sh >/dev/null 2>&1 && echo "sonda non attiva: riavviata" >> "$RAPPORTO"
+fi
 if [ -f "$HOME/sonda_longcat.log" ]; then
   OK200=$(grep ' | 200 | ' "$HOME/sonda_longcat.log" | tail -1)
   KO402=$(grep ' | 402 | ' "$HOME/sonda_longcat.log" | tail -1)
