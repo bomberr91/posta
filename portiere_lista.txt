@@ -34,7 +34,7 @@ routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimera
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente||
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|modelli||free-ricorrente||
-teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|deepseek-v4-flash-free|modelli||free-ricorrente|deepseek-flash-free;glm-5.3-flash-free|
+teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|deepseek-v4-flash-free|chat||free-ricorrente|deepseek-flash-free;glm-5.3-flash-free|
 unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli||free-ricorrente|qwen/qwen3.8-27b|
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat||free-ricorrente||
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat||free-ricorrente||
@@ -46,7 +46,7 @@ logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli||free-ricorrente||
 lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli||free-ricorrente||
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat||free-ricorrente||
 speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
-nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli||free-ricorrente||
+nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|Qwen/Qwen3-4B-Instruct-2507|chat||free-ricorrente|Qwen/Qwen3-8B;meta-llama/Llama-3.1-8B-Instruct;Qwen/Qwen3-4B-Thinking-2507|
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli||free-ricorrente||
 ovh|OVH|SENZA|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|Mistral-Nemo-Instruct-2407|modelli||keyless|gpt-oss-120b;Meta-Llama-3_3-70B-Instruct;Qwen3.5-397B-A17B;gpt-oss-20b|none
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli||free-ricorrente||

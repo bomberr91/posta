@@ -1,7 +1,10 @@
-# Chiavi: quadro ordinato (2/11, 13:33)
+# Chiavi: quadro ordinato (2/11, sera)
 
 Numero autorevole: **l'appello dal PC**. Ultimo giro completo+parziale: 14:33.
 Esito: **42 chat verdi su 62** (i 6 non-chat escono dall'appello) — stamattina erano 32.
+Aggiornamento sera: **Nscale è risolto** (era fra i "nessuna chiave") → al prossimo
+giro dal PC dovrebbe salire a **43/62**. TeamoRouter e fal.ai hanno la chiave valida
+ma non possono fare chat (motivi in A).
 
 **Chiusi oggi:** Aion Labs (era il mio estrattore: tagliava la chiave all'underscore) ·
 AgentRouter (chiave troncata nel vault + strada sbagliata: ora va su `/v1/messages`
@@ -15,9 +18,9 @@ lista per il cervello.
 | # | Provider | Esito dal PC | Causa vera | Cosa serve |
 |---|---|---|---|---|
 | 1 | AgentRouter | nessuna chiave | la chiave **è** nel mio vault (riga 33) ma il PC non la trova → i due vault non coincidono | 1 comando sul PC per vedere se la riga c'è |
-| 2 | TeamoRouter | nessuna chiave | nel vault c'è solo il prefisso `sk-teamo-…` | **la chiave intera ce l'hai solo tu** |
-| 3 | fal.ai | nessuna chiave | solo la forma; è provider MEDIA (immagini/video) | escluso |
-| 4 | Nscale | nessuna chiave | il token sta in `06_hunt`, non nel vault | escluso |
+| 2 | TeamoRouter | **crediti esauriti** | chiave **valida** (catalogo 200, 71 modelli) ma la chat risponde 400 «Your TeamoRouter wallet balance is insufficient» → **non ricaricare** (niente carte) | niente: si usa quando avrà crediti gratis |
+| 3 | fal.ai | **account bloccato** | chiave **valida** (401 con chiave falsa, 200 col catalogo) ma la generazione dice 403 «User is locked. Reason: TOP_UP» → chiedono la carta | niente: provider solo media, e le immagini le fa già Pollinations |
+| 4 | ~~Nscale~~ | **risponde** | **risolto il 2/11 sera**: token JWT nel vault, base `https://inference.api.nscale.com/v1`, chat 200 in 0,75 s (`Qwen/Qwen3-4B-Instruct-2507` → "OK"), 401 con token falso | — |
 | 5 | Jina AI | 404 | OCR/reranker: non è un provider di chat | **togliere dalla lista** |
 | 6 | Speechify | 404 | text-to-speech | **togliere dalla lista** |
 | 7 | WaveSpeedAI | 404 | immagini/video | **togliere dalla lista** |
@@ -66,7 +69,9 @@ lista per il cervello.
 3. **Waterfall**: la chiave è stata **revocata** → serve una chiave nuova
 4. **NavyAI e LongCat**: il free tier è in pausa / la quota è esaurita → propose di
    toglierli per ora (si possono rimettere quando tornano)
-5. **TeamoRouter**: serve la chiave intera, solo tu ce l'hai
-6. **AgentRouter**: capire perché il PC non la trova (è un vault diverso)
+5. ~~TeamoRouter: serve la chiave intera~~ **fatto**: la chiave è nel vault, ma il
+   wallet è vuoto → resta in lista, non ricaricare
+6. ~~AgentRouter: capire perché il PC non la trova~~ **fatto**: il vault PC aveva la
+   chiave **troncata** → sostituita con l'intera
 7. Gli **8 "occupato"** e **AI Horde** non richiedono nulla: la sentinella li riprova
    ogni 6 ore e l'appello li riprova a ogni giro
