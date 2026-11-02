@@ -63,7 +63,10 @@ def chiave(testo, percorso):
     except Exception:
         return "", ""
 
-    rx_grassetto = re.compile(r"^\s*(?:[-|*#>\u2022]\s*)*\*\*" + re.escape(testo) + r"\*\*", re.I)
+    # 2/11 sera: il portachiavi e' NUMERATO (1. **Nome** — chiave), quindi il
+    # prefisso può essere un pallino o un numero: senza questo l'estrattore
+    # non trovava piu' nessuna chiave e l'appello diceva "nessuna chiave".
+    rx_grassetto = re.compile(r"^\s*(?:(?:[-|*#>\u2022]|\d+[.)])\s*)*\*\*" + re.escape(testo) + r"\*\*", re.I)
     rx_parola = re.compile(r"\b" + re.escape(testo.lower()) + r"\b", re.I)
 
     indici = [i for i, riga in enumerate(righe) if rx_grassetto.search(riga)]

@@ -34,9 +34,9 @@ if [ ! -f "$CHIAVI" ]; then
 fi
 
 # le chiavi si prendono dal portachiavi, MAI hardcoded
-EXA=$(grep -iE "^[[:space:]]*-?[[:space:]]*\**Exa\b" "$CHIAVI" 2>/dev/null \
+EXA=$(grep -iE "^[[:space:]]*([0-9]+[.)])?[[:space:]]*-?[[:space:]]*\**Exa\b" "$CHIAVI" 2>/dev/null \
       | grep -oE "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" | head -1)
-TAVILY=$(grep -iE "^[[:space:]]*-?[[:space:]]*\**Tavily\b" "$CHIAVI" 2>/dev/null \
+TAVILY=$(grep -iE "^[[:space:]]*([0-9]+[.)])?[[:space:]]*-?[[:space:]]*\**Tavily\b" "$CHIAVI" 2>/dev/null \
       | grep -oE "tvly-[A-Za-z0-9_-]{20,}" | head -1)
 
 if [ -z "$EXA" ] && [ -z "$TAVILY" ]; then
