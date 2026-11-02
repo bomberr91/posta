@@ -146,6 +146,9 @@ sync_up(){
 
 gira(){
   sync_down
+  # BATTITO (2/11): segno di vita. Il guardiano lo usa per capire la
+  # differenza fra "sta lavorando" e "e' appeso" (prima non si poteva).
+  date +%s > /tmp/postino_battito 2>/dev/null || true
   # check-in AgentRouter +25$/gg — SOLO dalle 18:05 italiane (regola anti-ban) e solo se serve.
   # Le guardie vere (flag del giorno, max 3 tentativi, login manuale) stanno dentro checkin_agentrouter.py
   FLAG="$HOME/.ar_checkin_$(date +%F)"
@@ -177,6 +180,9 @@ gira(){
     OUT="dal_pc/$n.md"
     { echo "# Risposta a «$n»"; echo; echo "_$(date '+%d/%m/%Y %H:%M') · $(hostname)_"; echo; } > "$OUT"
     ESITO=0
+    # mentre il compito gira il battito continua (un compito puo' durare 45 min)
+    ( while :; do date +%s > /tmp/postino_battito 2>/dev/null; sleep 30; done ) >/dev/null 2>&1 &
+    HB=$!
     if [ "$ext" = "sh" ]; then
       timeout 1800 bash "$f" >> "$OUT" 2>&1 || ESITO=$?
     elif [[ "$b" == squadra_* ]] && [ -x "$DIR/squadra.sh" ]; then
@@ -196,6 +202,8 @@ gira(){
       say "✗ compito $n FALLITO (exit $ESITO): non dichiarato fatto, tentativo $TENT/3"
       continue
     fi
+    kill "$HB" >/dev/null 2>&1 || true
+    date +%s > /tmp/postino_battito 2>/dev/null || true
     echo "" >> "$OUT"; echo "<!-- fine $n -->" >> "$OUT"
     mv "$f" "fatti/$b"; date -Is > "fatti/$n.done"
     rm -f "fatti/$n.failito" "fatti/$n.tentativi" "fatti/$n.abbandonato"
@@ -208,7 +216,7 @@ gira(){
 
 say "postino acceso · repo: ${LOGIN:-?} · opencode: $(command -v opencode || echo NON_TROVATO)"
 if [ "${1:-}" = "--loop" ]; then
-  while :; do gira; sleep 45; done
+  while :; do gira; sleep 45; date +%s > /tmp/postino_battito 2>/dev/null || true; done
 else
   gira
 fi

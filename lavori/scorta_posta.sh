@@ -30,6 +30,27 @@ while true; do
     fi
   fi
 
+  # 2/11: il GUARDIANO DEL CERVELLO e' vivo? Se no, la sentinella delle chiavi
+  # e il cervello (porta 20129) restano giaci' senza che nessuno se ne accorga.
+  if ! pgrep -f 'scorta_cervello\.sh' >/dev/null 2>&1; then
+    say "-> il guardiano del cervello non gira: lo riavvio"
+    ( cd "$HOME/posta" && nohup bash lavori/scorta_cervello.sh >> /tmp/scorta_cervello.log 2>&1 & )
+    sleep 2
+  fi
+
+  # 2/11: il postino e' vivo ma APPESO? Il battito dice l'ultima volta che ha
+  # lavorato. Se e' vecchio, il postino e' bloccato: lo ammazzo e lo riavvio.
+  # (Prima un postino appeso restava l'ino con la coda muta per sempre.)
+  if [ -f /tmp/postino_battito ]; then
+    BAT=$(stat -c %Y /tmp/postino_battito 2>/dev/null || echo 0)
+    ETA=$(( $(date +%s) - BAT ))
+    if [ "$ETA" -gt 420 ]; then
+      say "-> il postino non batte da ${ETA}s: e' appeso, lo riavvio"
+      pkill -f 'postino\.sh --loop' >/dev/null 2>&1 || true
+      sleep 3
+    fi
+  fi
+
   # 2/11: via il FLOCK. Il lock veniva EREDITATO dai figli del postino (un
   # `opencode run` interrotto): se il postino moriva, il figlio teneva ancora
   # il lock e `flock -n` falliva PER SEMPRE, in silenzio (due ore di coda muta).
