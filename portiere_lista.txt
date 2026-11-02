@@ -34,7 +34,7 @@ routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimera
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente||
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|modelli||free-ricorrente||
-teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli||free-ricorrente||
+teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|deepseek-v4-flash-free|modelli||free-ricorrente|deepseek-flash-free;glm-5.3-flash-free|
 unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli||free-ricorrente|qwen/qwen3.8-27b|
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat||free-ricorrente||
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat||free-ricorrente||

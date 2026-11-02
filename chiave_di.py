@@ -41,6 +41,8 @@ FORMATI = [
     r"cfut_[A-Za-z0-9]+",
     r"lfu_[A-Za-z0-9]+",
     r"sk-free-[A-Za-z0-9_-]+",
+    r"sk-teamo-[A-Za-z0-9_-]{16,}",   # TeamoRouter
+    r"fal_sk_[A-Za-z0-9]+:[A-Za-z0-9]+",  # fal.ai: chiave:segreto
     r"ghp_[A-Za-z0-9]+",
     r"sk-[A-Za-z0-9_-]{16,}",
     r"AIza[A-Za-z0-9_-]{30,}",
