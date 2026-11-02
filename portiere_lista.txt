@@ -8,12 +8,12 @@
 # Indirizzi verificati uno per uno il 21/10/2026 (elenco modelli 200), dal portachiavi.
 
 # ── CHAT ────────────────────────────────────────────────────────────────────
-groq|Groq|Groq|https://api.groq.com/openai/v1|llama-3.3-70b-versatile|chat
+groq|Groq|Groq|https://api.groq.com/openai/v1|qwen/qwen3.8-27b|chat
 gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat
-mistral|Mistral|Mistral|https://api.mistral.ai/v1|mistral-small-latest|chat
+mistral|Mistral|Mistral|https://api.mistral.ai/v1|ministral-8b-latest|chat
 cohere|Cohere|Cohere|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat
 openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat
-nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|meta/llama-3.1-8b-instruct|chat
+nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
 pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat
 agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli
@@ -23,7 +23,7 @@ api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|cha
 bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat
 clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat
 navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli
-orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|auto|modelli
+orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli
 nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli
 routeway|Routeway|Routeway|https://api.routeway.ai/v1|auto|modelli
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli
@@ -34,13 +34,13 @@ unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|auto|modelli
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
 llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
-router9|Router9|Router9|https://api.router9.com/v1|auto|modelli
+router9|Router9|Router9|https://api.router9.com/v1|deepseek-v4-flash|modelli
 waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
 blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-v4-flash|chat
 logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
-lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|auto|modelli
+lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
-speka|Speka|Speka|https://speka.me/v1|google/gemma-4-31b-it|chat
+speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli
 ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
@@ -49,7 +49,7 @@ aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|google/gemma-4-
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
-llm7|LLM7|LLM7|https://api.llm7.io/v1|auto|modelli
+llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli
 longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli
 ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli
 requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli
@@ -87,7 +87,7 @@ jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding
 qdrant|Qdrant Cloud|Qdrant Cloud — cluster «Bomber91»|https://4e506b83-cf3b-4dab-b1ff-774a090094ba.eu-central-1-0.aws.cloud.qdrant.io|—|no|db
 fal|fal.ai|fal.ai|https://fal.run|—|no|immagini
 wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video
-moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream2|no|visione
+moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream/moondream3-preview|no|visione
 pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini
 
 ## NOTE DEL 21/10 NOTTE (provate una per una dal router)

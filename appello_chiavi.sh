@@ -133,8 +133,15 @@ prova(){
     401|403) printf '%s\t%s\tchiave-no\t%s\tchiave rifiutata (%s)\t\n' "$id" "$eti" "$(( ($(date +%s%N)-t0)/1000000 ))" "$code" > "$TMP/$id.res"; return ;;
   esac
   CAND=$(scegli_modello "$TMP/$id.mod")
+  ORIG="$mod"                       # il modello CURATO (quello della nostra lista)
   [ -z "$CAND" ] && CAND="$mod"
   modello=$(printf '%s\n' "$CAND" | head -1)
+  # AUDIT 2/11: il modello curato si prova per PRIMO. Prima questo script buttava
+  # via quello scelto da noi e usava il primo id che tornava da /models: e quel
+  # primo id era spesso un UUID o un modello morto (Cloudflare, NVIDIA, Moondream...).
+  if [ -n "$ORIG" ] && [ "$ORIG" != "auto" ] && [ "$ORIG" != "free" ]; then
+    CAND=$(printf '%s\n%s\n' "$ORIG" "$CAND" | awk 'NF && !v[$0]++')
+  fi
 
   # AUDIT FINALE (1/11 sera): i provider in modo "modelli" NON venivano
   # interrogati col chat: finivano in "strano / elenco modelli 404" senza mai
