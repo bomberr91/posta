@@ -14,7 +14,7 @@
 
 # ── CHAT ────────────────────────────────────────────────────────────────────
 groq|Groq|Groq|https://api.groq.com/openai/v1|qwen/qwen3.8-27b|chat||free-ricorrente||
-gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat||free-ricorrente||
+gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-3.8-flash|chat||free-ricorrente|gemini-flash-latest;models/gemini-3.8-flash|
 mistral|Mistral|Mistral|https://api.mistral.ai/v1|ministral-8b-latest|chat||free-ricorrente||
 cohere|Cohere|Cohere|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat||free-ricorrente||
 openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat||free-ricorrente||
@@ -22,20 +22,20 @@ nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra
 huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat||free-ricorrente||
 pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat||free-ricorrente||
 agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|gpt-5.6-sol|anthropic||free-ricorrente|gpt-6-astra;gpt-6.1-sol|
-opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat||free-ricorrente||
+opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3-flash-free|chat||free-ricorrente|deepseek-v4.1-flash-free;nemotron-3.5-lightning-free|
 aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat||free-ricorrente||
 api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat||free-ricorrente||
 bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat||free-ricorrente||
 clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat||free-ricorrente||
 navy|NavyAI|NavyAI|https://api.navy/v1|schizogpt|chat||free-ricorrente|gpt-6.1-sol;gpt-6-astra;gpt-5.6-sol||
 orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli||free-ricorrente||
-nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli||free-ricorrente||
+nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|ling-3.0-flash-vl-free|modelli||free-ricorrente|nemotron-3-ultra-free;nemotron-3-super-free|
 routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli||free-ricorrente|minimax-m3.1-flash:free|
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente||
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|modelli||free-ricorrente||
 teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|deepseek-v4-flash-free|chat||free-ricorrente|deepseek-flash-free;glm-5.3-flash-free|
-unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli||free-ricorrente|qwen/qwen3.8-27b|
+unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|glm-5.3-flash-free|modelli||free-ricorrente|glm-5.3:free;qwen/qwen3.8-27b|
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat||free-ricorrente||
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat||free-ricorrente||
 llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
