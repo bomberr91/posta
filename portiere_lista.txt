@@ -27,7 +27,7 @@ aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat||fre
 api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat||free-ricorrente||
 bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat||free-ricorrente||
 clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat||free-ricorrente||
-navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli||free-ricorrente||
+navy|NavyAI|NavyAI|https://api.navy/v1|schizogpt|chat||free-ricorrente|gpt-6.1-sol;gpt-6-astra;gpt-5.6-sol||
 orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli||free-ricorrente||
 nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli||free-ricorrente||
 routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli||free-ricorrente|minimax-m3.1-flash:free|
@@ -55,7 +55,7 @@ pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
 llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli||free-ricorrente||
-longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli||free-ricorrente||
+longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|LongCat-2.5|chat||free-ricorrente|LongCat-2.5-Preview;LongCat-2.0||
 ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli||free-ricorrente||
 requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli||free-ricorrente||
 zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli||free-ricorrente||
