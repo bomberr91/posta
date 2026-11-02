@@ -100,5 +100,12 @@ else
   echo "sonda non avviata: nessun log in ~/sonda_longcat.log" >> "$RAPPORTO"
 fi
 
+# 6) NaraRouter: piano free attivo (7M token/giorno) ma l'unico modello free
+#    (Laguna S 2.1) rifiuta le richieste: se torna, lo reintegriamo.
+echo >> "$RAPPORTO"; echo "## 6. NaraRouter (piano free)" >> "$RAPPORTO"
+NARA=$(timeout 180 bash fatti/prova_nararouter.sh 2>&1 | tail -12)
+echo '```' >> "$RAPPORTO"; echo "$NARA" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
+say "nararouter: $(echo "$NARA" | grep -c 'HTTP 200') risposte 200"
+
 say "giro finito · rapporto: $RAPPORTO"
 exit 0
