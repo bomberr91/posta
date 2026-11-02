@@ -84,10 +84,9 @@ else
   echo "cmd.exe non qui: la variabile $ENVKEY va messa a mano su Windows"
 fi
 
-# --- collaudo: una richiesta vera al provider
+# --- collaudo: una richiesta vera al provider (in python: in WSL sul PC curl
+#     non c'e' e il suo stderr era nascosto, quindi il collaudo falliva in
+#     silenzio con "HTTP 000")
 echo "collaudo con una richiesta vera..."
-CODE=$(curl -s -m 60 -o /tmp/_ag.txt -w "%{http_code}" -X POST "$BASEURL/chat/completions" \
-  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  -d "{\"model\":\"$MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi solo con OK\"}],\"max_tokens\":64}" 2>/dev/null)
-echo "HTTP $CODE :: $(head -c 220 /tmp/_ag.txt | tr -d '\n')"
+python3 fatti/collaudo_provider.py "$NAME" "$MODEL" "$BASEURL"
 exit 0
