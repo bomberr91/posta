@@ -1,10 +1,10 @@
 # Chiavi: quadro ordinato (2/11, sera)
 
 Numero autorevole: **l'appello dal PC**. Ultimo giro completo+parziale: 14:33.
-Esito: **42 chat verdi su 62** (i 6 non-chat escono dall'appello) — stamattina erano 32.
-Aggiornamento sera: **Nscale è risolto** (era fra i "nessuna chiave"), verificato dal PC
-→ al prossimo giro l'appello dovrebbe salire a **43/62**. Le tre chiavi (TeamoRouter,
-fal.ai, Nscale) sono ora **intere nel vault del PC**: backup `~/CHIAVI_LOCALI.md.bak-20261102-151516`. TeamoRouter e fal.ai hanno la chiave valida
+Esito: **43 chat verdi su 62** (giro dal PC delle 15:18) — stamattina erano 32.
+Le tre chiavi (TeamoRouter, fal.ai, Nscale) sono ora **intere nel vault del PC**
+(backup `~/CHIAVI_LOCALI.md.bak-20261102-151516`): **Nscale è entrato in riserva**
+(43 = 42 + Nscale). Restano **12 da rivedere** e **7 non-chat esclusi** (42+12+7 = 62). TeamoRouter e fal.ai hanno la chiave valida
 ma non possono fare chat (motivi in A).
 
 **Chiusi oggi:** Aion Labs (era il mio estrattore: tagliava la chiave all'underscore) ·
@@ -14,7 +14,10 @@ AnyAPI · Typhoon · Gizmo · Token Harbor · BlockRun (nomi-modello nuovi, veri
 chat vera) · Zhipu (glm-4.6v-flash) · i 6 non-chat esclusi dall'appello ma tenuti in
 lista per il cervello.
 
-## A. I 21 che NON rispondono — con la causa e la decisione
+## A. I 12 che NON rispondono — con la causa e la decisione
+(I 7 non-chat esclusi sono in fondo: Jina AI · Speechify · WaveSpeedAI · Moondream ·
+Qdrant Cloud · Pollinations immagini · fal.ai — restano in lista e il cervello li usa
+a richiesta)
 
 | # | Provider | Esito dal PC | Causa vera | Cosa serve |
 |---|---|---|---|---|
@@ -22,10 +25,10 @@ lista per il cervello.
 | 2 | TeamoRouter | **crediti esauriti** | chiave **valida** (catalogo 200, 71 modelli) ma la chat risponde 400 «Your TeamoRouter wallet balance is insufficient» → **non ricaricare** (niente carte) | niente: si usa quando avrà crediti gratis |
 | 3 | fal.ai | **account bloccato** | chiave **valida** (401 con chiave falsa, 200 col catalogo) ma la generazione dice 403 «User is locked. Reason: TOP_UP» → chiedono la carta | niente: provider solo media, e le immagini le fa già Pollinations |
 | 4 | ~~Nscale~~ | **risponde** | **risolto il 2/11 sera e CONFERMATO dal PC** (`fatti/prova_nscale.sh`: catalogo 200 con 26 modelli, chat 200 in 0,35 s → "OK"); token JWT da 1207 caratteri nel vault, base `https://inference.api.nscale.com/v1`, 401 con token fasullo | — |
-| 5 | Jina AI | 404 | OCR/reranker: non è un provider di chat | **togliere dalla lista** |
-| 6 | Speechify | 404 | text-to-speech | **togliere dalla lista** |
-| 7 | WaveSpeedAI | 404 | immagini/video | **togliere dalla lista** |
-| 8 | Moondream | 404 | visione | **togliere dalla lista** |
+| 5 | Jina AI | non-chat | embedding/reranker: escluso dall'appello (prima diceva 404) | resta, il cervello lo usa su richiesta |
+| 6 | Speechify | non-chat | text-to-speech: escluso dall'appello | resta, il cervello lo usa su richiesta |
+| 7 | WaveSpeedAI | non-chat | immagini/video: escluso dall'appello | resta, il cervello lo usa su richiesta |
+| 8 | Moondream | non-chat | visione: escluso dall'appello | resta, il cervello lo usa su richiesta |
 | 9 | ~~Aion Labs~~ | **risponde** | la chiave era buona: **era il mio estrattore** che tagliava la chiave all'underscore (`alv2_…_yQ058` → 401). Risolto il 2/11: ora risponde (`aion-labs/aion-3.5`) | — |
 | 10 | Waterfall | chiave rifiutata | **chiave morta**: "Unknown or revoked API key" su tutti e 20 i modelli gratis (il suo /models è pubblico, per questo sembrava vivo e su freellmapi resta verde) | **ti serve una chiave nuova** (modello `auto` + 10 id gratis già in lista). In cima nei SOSPESI: controllo quotidiano |
 | 11 | NavyAI | modello `navy-auto` inesistente | free tier **pausato da loro** + nome modello sbagliato | **togliere dalla lista** |
@@ -40,7 +43,7 @@ lista per il cervello.
 | 20 | AI Horde | modello senza worker | il roster cambia ogni ora: serve un id con worker online | si riprende col roster |
 | 21 | Zhipu | **risponde** (glm-4.6v-flash) | era quota, è rientrato alle 13:33 | — |
 
-## B. I 42 che rispondono, raggruppati per modello che funziona
+## B. I 43 che rispondono, raggruppati per modello che funziona
 
 | Modello/rotta che risponde | Provider |
 |---|---|
@@ -48,6 +51,7 @@ lista per il cervello.
 | `nvidia/nemotron-3.5-lightning:free` | Gizmo · AnyAPI |
 | `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` | BlockRun |
 | `qwen/qwen3.8-27b` (e varianti free) | Groq · LLMTR · Cloudflare (`@cf/qwen/…`) |
+| `Qwen/Qwen3-8B` | Nscale (base `inference.api.nscale.com/v1`, token JWT) |
 | `deepseek-v4-flash` | Token Harbor · Router9 · Logfare (`auto`) · BazaarLink |
 | `typhoon-v2.5-30b-a3b-instruct` | Typhoon |
 | `minimax` free | Lucidity · Septor Labs |
