@@ -34,7 +34,6 @@ routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimera
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente||
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|modelli||free-ricorrente||
-teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|deepseek-v4-flash-free|chat||free-ricorrente|deepseek-flash-free;glm-5.3-flash-free|
 unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli||free-ricorrente|glm-5.3:free;glm-5.3-flash:free;qwen/qwen3.8-27b|
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat||free-ricorrente||
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat||free-ricorrente||
@@ -47,10 +46,9 @@ lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat||free-ricorrente||
 speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|Qwen/Qwen3-4B-Instruct-2507|chat||free-ricorrente|Qwen/Qwen3-8B;meta-llama/Llama-3.1-8B-Instruct;Qwen/Qwen3-4B-Thinking-2507|
-chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli||free-ricorrente||
 ovh|OVH|SENZA|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|Mistral-Nemo-Instruct-2407|modelli||keyless|gpt-oss-120b;Meta-Llama-3_3-70B-Instruct;Qwen3.5-397B-A17B;gpt-oss-20b|none
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli||free-ricorrente||
-aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic|chat||keyless|koboldcpp/gemma-3-270m-it-F16;koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic|sentinel
+aihorde|AI Horde|AI Horde|https://oai.aihorde.net/v1|koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic|chat||free-ricorrente|koboldcpp/gemma-3-270m-it-F16;koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic|
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat||keyless||none
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
@@ -90,14 +88,11 @@ gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-ligh
 speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce|free-ricorrente||
 jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding|free-ricorrente||
 qdrant|Qdrant Cloud|Qdrant Cloud — cluster «Bomber91»|https://4e506b83-cf3b-4dab-b1ff-774a090094ba.eu-central-1-0.aws.cloud.qdrant.io|—|no|db|free-ricorrente||
-fal|fal.ai|fal.ai|https://fal.run|—|no|immagini|free-ricorrente||
 wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video|free-ricorrente||
 moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream/moondream3-preview|no|visione|free-ricorrente||
 pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini|keyless||none
 
 ## NOTE DEL 21/10 NOTTE (provate una per una dal router)
-# · Chutes: la chiave risponde all'elenco modelli ma la chat dà 402 «balance is $0.0, please pay»:
-#   il loro piano free vuole un saldo diverso da zero → resta in lista ma il router lo mette in pausa da sé.
 # · Kilo: RISOLTO 2/11 — è keyless MA vuole NESSUN header Authorization (con un token
 #   qualunque, anche «free» o «0000000000», risponde 401 INVALID_TOKEN). Indirizzo giusto
 #   https://api.kilo.ai/api/gateway/v1 ; i modelli gratis arrivano dal catalogo freellmapi.
@@ -113,9 +108,7 @@ pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollin
 ## DA CONFERMARE — non contano nel numero del Portiere
 # Nome nel portachiavi | perché è fermo
 ✅ risolto 21/10 (riga chat qui sopra: apihub.agnes-ai.com/v1) — Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
-AI21|ritirato: il servizio Studio non esiste più
 Kilo|risolto 2/11: è dentro come «Kilo (senza chiave)» (keyless, senza header)
 ✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
 ✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
 ✅ risolto 21/10 (riga chat qui sopra: api.gizmoplatforms.com/api/v1) — Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
-Nebius|chiave mai presa: al signup chiede la carta
