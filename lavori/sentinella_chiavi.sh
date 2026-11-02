@@ -6,7 +6,8 @@
 #      i modelli gratis cambiano nome e id, il catalogo e' l'unica fonte sicura.
 #   2. ri-prova SOLO chi e' in cooldown/reset (appello --solo-problemi): chi
 #      rispondeva continua a valere, chi e' scaduto viene riprovato.
-#   3. check-in AgentRouter (+25$/giorno) se il browser degli agenti e' acceso
+#   3. sentinella dedicata di NavyAI: se il free tier torna, lo reintegriamo.
+#   4. check-in AgentRouter (+25$/giorno) se il browser degli agenti e' acceso
 #      e non e' gia' stato fatto oggi.
 #   4. lascia un rapporto in dal_pc/sentinella_chiavi.md (il postino lo pubblica).
 #
@@ -63,8 +64,15 @@ PY
 echo >> "$RAPPORTO"; echo "$RES" >> "$RAPPORTO"
 say "appello: $RES"
 
-# 3) check-in AgentRouter (+25$/giorno)
-echo >> "$RAPPORTO"; echo "## 3. Check-in AgentRouter" >> "$RAPPORTO"
+# 3) sentinella dedicata di NavyAI (2/11 sera): il free tier e' in pausa lato
+#    loro, non e' la chiave: se torna, va reintegrato nella lista.
+echo >> "$RAPPORTO"; echo "## 3. NavyAI (sentinella dedicata)" >> "$RAPPORTO"
+NAVY=$(timeout 180 bash fatti/prova_navyai.sh 2>&1 | tail -12)
+echo '```' >> "$RAPPORTO"; echo "$NAVY" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
+say "navyai: $(echo "$NAVY" | grep -c 'HTTP 200') risposte 200"
+
+# 4) check-in AgentRouter (+25$/giorno)
+echo >> "$RAPPORTO"; echo "## 4. Check-in AgentRouter" >> "$RAPPORTO"
 FLAG="$HOME/.ar_checkin_$(date +%F)"
 if [ "$(date +%H%M)" -ge 1805 ] && [ ! -f "$FLAG" ] && [ ! -f "$HOME/.ar_login_manuale" ] \
    && curl -s --max-time 2 http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
