@@ -3,7 +3,7 @@ echo "## ⛏️ INNESTO DELLE 7 — $(date '+%H:%M')"
 cd ~/miniera
 SORG=$(find . -type d -name "skills" -path "*.claude*" | head -1)
 echo "sorgente: $SORG"
-SETTE="check-tests learn-agent-skills learn-mcp reviewable skill-invocation-router skill-release-gate skill-safety-reviewer"
+SETTE="check-tests learn-agent-skills learn-mcp reviewable [CHIAVE-RIMOSSA] [CHIAVE-RIMOSSA] [CHIAVE-RIMOSSA]"
 for NIDO in ~/.claude/skills ~/.agents/skills ~/.config/opencode/skills; do
   PRIMA=$(ls "$NIDO" | wc -l)
   for S in $SETTE; do

@@ -2,7 +2,7 @@
 > build · auto
 [0m
 | skill            | verdetto       | motivo                                                                 |
-|------------------|----------------|------------------------------------------------------------------------|
+|------------------|----------------|[CHIAVE-RIMOSSA]|
 | benign           | ⚠️ APRI        | Descrizione troppo vaga per valutare l'utilità.                       |
 | blueprint-figure | 🔵IG+🔵YT       | Crea asset visivi per contenuti educativi su social.                  |
 | build-project    | 🅿️ PARCHEGGIO  | Utile per futuri tutorial pratici, non per contenuti attuali.         |

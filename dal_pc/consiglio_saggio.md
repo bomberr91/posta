@@ -32,7 +32,7 @@ Ecco il mio parere su ciascuna questione, con ragionamenti basati sulle regole f
 **Tabella riassuntiva**:
 
 | Questione | Tua decisione                     | Fase  |
-|-----------|------------------------------------|-------|
+|-----------|[CHIAVE-RIMOSSA]|-------|
 | 5         | Concordo (classifica salute+velocità) | F2    |
 | 8         | Parcheggio (ridondante)           | -     |
 | 13        | Concordo (JSON mini)              | F3    |

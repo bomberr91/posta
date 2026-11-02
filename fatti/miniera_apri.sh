@@ -14,7 +14,7 @@ ls "$D" 2>/dev/null
 head -12 "$D/SKILL.md" 2>/dev/null
 echo
 echo "### 4. Dove vivono le skills sul PC?"
-for d in ~/.claude/skills ~/.agents/skills "/mnt/c/Users/giopi/Documents/AgentWorkspace/.claude/skills" "/mnt/c/Users/giopi/Documents/AgentWorkspace/.agents/skills" ~/.config/opencode/skills; do
+for d in ~/.claude/skills ~/.agents/skills "[CHIAVE-RIMOSSA].claude/skills" "[CHIAVE-RIMOSSA].agents/skills" ~/.config/opencode/skills; do
   [ -d "$d" ] && echo "  ✓ ESISTE: $d ($(ls "$d" | wc -l) voci)" || echo "  — manca: $d"
 done
 echo "### 5. opencode e le skills"

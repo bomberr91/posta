@@ -1,5 +1,5 @@
 #!/bin/bash
-D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
+D="[CHIAVE-RIMOSSA]"
 echo "## 🕵️ IL MISTERO DEL CANE — $(date '+%H:%M')"
 echo "### 1. La logica del Setup (web_app.py, cuore della validazione)"
 sed -n '40,180p' "$D/web_app.py" | grep -vE "^\s*$" | head -60

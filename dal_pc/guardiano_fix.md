@@ -3,11 +3,11 @@
 _01/11/2026 22:47 · FilippoPC_
 
 ### 1. il guardiano vecchio era vivo?
-32602 bash /home/agenti/posta/lavori/scorta_cervello.sh
+32602 bash [CHIAVE-RIMOSSA].sh
    (fermo quello vecchio)
 
 ### 2. avvio il guardiano nuovo
-32660 bash /home/agenti/posta/lavori/scorta_cervello.sh
+32660 bash [CHIAVE-RIMOSSA].sh
 [01/11 22:47] guardiano avviato (pid 32602)
 [01/11 22:47] guardiano avviato (pid 32660)
 

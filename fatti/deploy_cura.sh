@@ -12,7 +12,7 @@ collaudo || { echo "❌ COLLAUDO FALLITO: il Portiere NON funziona, il deploy NO
 echo "### guardia solo-gratis (deve RIFIUTARE un modello a pagamento)"
 curl -s -m 30 -H 'Content-Type: application/json' \
   -d '{"model":"gemini-2.5-pro","messages":[{"role":"user","content":"x"}]}' \
-  "$CERVELLO_URL/v1/chat/completions" | python3 -c "
+  "$[CHIAVE-RIMOSSA]" | python3 -c "
 import json, sys
 d = json.load(sys.stdin)
 msg = (d.get('error') or {}).get('message', '')

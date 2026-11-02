@@ -27,7 +27,7 @@ echo "il capo comanda" > SOLO_CERVELLO.txt
 curl -fsS -m 30 "$CERVELLO_URL/cervello" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  interruttore:', d.get('interruttore_solo_cervello'), '· motore:', d.get('motore'), '· adesso:', d.get('adesso'))" || { echo "❌ /cervello non risponde"; exit 1; }
 curl -fsS -m 240 -H 'Content-Type: application/json' \
   -d '{"model":"auto","max_tokens":30,"messages":[{"role":"user","content":"OmniRoute e acceso ma io ti ignoro. Chi risponde? Breve."}]}' \
-  "$CERVELLO_URL/v1/chat/completions" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  richiesta auto →', d.get('model','?'))" || { echo "❌ la richiesta auto non è passata"; exit 1; }
+  "$[CHIAVE-RIMOSSA]" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  richiesta auto →', d.get('model','?'))" || { echo "❌ la richiesta auto non è passata"; exit 1; }
 echo
 echo "### 4. RISPONGO l'interruttore (torna il motore)"
 rm -f SOLO_CERVELLO.txt

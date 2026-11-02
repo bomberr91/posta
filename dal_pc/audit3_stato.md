@@ -6,7 +6,7 @@ _01/11/2026 15:39 · FilippoPC_
 ### processi vivi della catena
 
 ### il file LOCALE (non committato) — dimensione e coda
-63 /home/agenti/posta/dal_pc/esito_audit_v3.md
+63 [CHIAVE-RIMOSSA].md
 # 🔬 AUDIT v3 — operai locali + sintesi frontier — 15:14
 
 ### errori del giudice

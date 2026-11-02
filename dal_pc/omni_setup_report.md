@@ -35,4 +35,4 @@
 
 ## Riaccensione motore + test VERO
 ### Domanda di prova al modello auto (deve rispondere OK):
-{"id":"chatcmpl-3c4f3338-417c-406f-ad24-a09bb8a7d897","object":"chat.completion","created":1792528359,"model":"openai/gpt-oss-120b","choices":[{"index":0,"finish_reason":"length","message":{"role":"assistant","content":"","reasoning":"The user says: \"Rispondi solo con la parola: OK\". That means"},"logprobs":null}],"usage":{"prompt_tokens":80,"completion_tokens":20,"total_tokens":100,"completion_tokens_details":{"reasoning_tokens":18}},"system_fingerprint":"fp_8655ddce88"}
+{"id":"[CHIAVE-RIMOSSA]","object":"chat.completion","created":1792528359,"model":"openai/gpt-oss-120b","choices":[{"index":0,"finish_reason":"length","message":{"role":"assistant","content":"","reasoning":"The user says: \"Rispondi solo con la parola: OK\". That means"},"logprobs":null}],"usage":{"prompt_tokens":80,"completion_tokens":20,"total_tokens":100,"completion_tokens_details":{"reasoning_tokens":18}},"system_fingerprint":"fp_8655ddce88"}

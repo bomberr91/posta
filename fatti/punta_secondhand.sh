@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # punta_secondhand.sh — punta Secondhand (Open Interpreter 0.0.56, clone di Codex) al cervello e collauda
 set -u
-POSTA_DIR="$HOME/posta"; OUT="$POSTA_DIR/dal_pc/punta_secondhand.md"
+POSTA_DIR="$HOME/posta"; OUT="$[CHIAVE-RIMOSSA].md"
 TOKEN=""; [ -s "$HOME/.posta_token" ] && TOKEN="$(tr -d '\r\n' < "$HOME/.posta_token")"
 CFGDIR="$HOME/.openinterpreter"; CFG="$CFGDIR/config.toml"
 mkdir -p "$CFGDIR"

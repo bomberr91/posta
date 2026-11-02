@@ -20,7 +20,7 @@ pkill -f '^python3 cervello\.py$' 2>/dev/null
 attendi || { echo "❌ il Portiere non è tornato"; exit 1; }
 curl -fsS -m 60 -H 'Content-Type: application/json' \
   -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' \
-  "$CERVELLO_URL/v1/chat/completions" >/dev/null 2>&1
+  "$[CHIAVE-RIMOSSA]" >/dev/null 2>&1
 sleep 8
 
 echo "### occhi della sentinella"

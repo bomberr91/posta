@@ -6,7 +6,7 @@ _01/11/2026 16:05 · FilippoPC_
 ### processi della catena vivi?
   16611 bash lavori/audit_catena.sh
 ### file LOCALE (dimensione + coda)
-26 /home/agenti/posta/dal_pc/esito_audit_v4.md
+26 [CHIAVE-RIMOSSA].md
 # 🔬 AUDIT v4 — 15:43
 
 <!-- fine audit4_stato -->

@@ -8,5 +8,5 @@ nvm uninstall 24 >/dev/null 2>&1 || true
 export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
 
 echo "=== Eseguo estrazione commenti FB con Python 3 nativo ==="
-python3 "$HOME/posta/leggi_fb_cdp.py" "https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776" "$HOME/posta/dal_pc/fb_vibecod....md"
+python3 "$HOME/posta/leggi_fb_cdp.py" "https://www.facebook.[CHIAVE-RIMOSSA]" "$HOME/posta/dal_pc/fb_vibecod....md"
 cat "$HOME/posta/dal_pc/fb_vibecod....md" | head -c 1500

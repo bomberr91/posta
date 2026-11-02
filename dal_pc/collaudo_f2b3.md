@@ -35,7 +35,7 @@ openai/gpt-oss-120b →
   ✅ xKiro                  103 modelli
   ✅ DreamPrompting         29 modelli
   ✅ Gizmo                  206 modelli
-Catalogo: 46 provider, 6626 modelli → /home/agenti/posta/portiere_catalogo.json
+Catalogo: 46 provider, 6626 modelli → [CHIAVE-RIMOSSA].json
 RICORDA (idea 55): catalogo != accesso, la prova vera e' la risposta.
 
 ### 4. Peso del catalogo

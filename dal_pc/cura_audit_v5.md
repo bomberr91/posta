@@ -139,7 +139,7 @@ dall'ambiente dentro il blocco Python.
 
 | file | prima | adesso |
 |---|---|---|
-| `fatti/accendi_omniroute_e_rilancia.sh` | chiave in chiaro | `${OM_KEY}` |
+| `[CHIAVE-RIMOSSA].sh` | chiave in chiaro | `${OM_KEY}` |
 | `fatti/accendi_omniroute_2.sh` | chiave in chiaro | `${OM_KEY}` |
 | `fatti/controlla_omni.sh` | chiave in chiaro | `${OM_KEY}` |
 | `fatti/diagnosi_cervello.sh` | chiave in chiaro | `${OM_KEY}` |
@@ -284,7 +284,7 @@ risponda**.
 - `missione/REGOLE_VINCOLANTI.md` sono **vincolanti** (11 regole: costo zero,
   chiavi solo nel portachiavi, niente sonda LLM per ogni richiesta, porte
   20128/20129 intoccate, Python puro stdlib…).
-- Il quaderno delle idee è in `missione/CERVELLO_MACCHINA_PERFETTA.md`
+- Il quaderno delle idee è in `[CHIAVE-RIMOSSA].md`
   (**64/64 idee chiuse** + la **idea 65** di questa sera).
 - I risultati passano da `dal_pc/`, i comandi da `da_me/`.
 

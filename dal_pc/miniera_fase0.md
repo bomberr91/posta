@@ -25,18 +25,18 @@ site/
 skills/
 web/
 ### Dove vivono skills e prompt (cerco i pattern)
-./.claude/skills/blueprint-figure/SKILL.md
-./.claude/skills/build-project/SKILL.md
-./.claude/skills/check-understanding/SKILL.md
+./.[CHIAVE-RIMOSSA].md
+./.[CHIAVE-RIMOSSA].md
+./.[CHIAVE-RIMOSSA].md
 46
 570
-./certifications/claude/lessons/03-prompting-and-task-decomposition/docs/en.md
-./certifications/mcpa/lessons/13-prompts-and-completion/docs/en.md
-./certifications/mcpa/lessons/13-prompts-and-completion/outputs/prompt-and-completion-reference.md
+.[CHIAVE-RIMOSSA].md
+.[CHIAVE-RIMOSSA].md
+.[CHIAVE-RIMOSSA].md
 135
 ### Conteggi grezzi
 file .md totali: 2833
 ### Indice automatico (nome + prima descrizione di ogni skill)
-183 /home/agenti/posta/dal_pc/miniera_indice.md
+183 [CHIAVE-RIMOSSA].md
 
 <!-- fine miniera_fase0 -->

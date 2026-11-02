@@ -2,9 +2,9 @@
 
 _18/10/2026 09:33 · FilippoPC_
 
-==========================================================
+[CHIAVE-RIMOSSA]
  🚀 AGGIORNAMENTO POTENZIAMENTO FILIPPOPC (18/10/2026)
-==========================================================
+[CHIAVE-RIMOSSA]
 
 ── 1/6 · Sincronizzo il ponte ~/posta da GitHub...
   ✓ Ponte ~/posta aggiornato
@@ -25,11 +25,11 @@ _18/10/2026 09:33 · FilippoPC_
   · OpenClaw richiede Node >=24 (installo Node 24 in nvm per OpenClaw)...
   · OpenClaw: riproveremo al prossimo giro
 
-==========================================================
+[CHIAVE-RIMOSSA]
  🎉 TUTTO PRONTO SU FILIPPOPC!
  Sul Desktop ora hai anche:
    - BROWSER_AGENTI.bat  (apre il browser controllato dagli agenti)
    - SQUADRA_FUSION.bat  (lancia 3 agenti in sincronia su un compito)
-==========================================================
+[CHIAVE-RIMOSSA]
 
 <!-- fine aggiorna_26_skill_e_browser -->

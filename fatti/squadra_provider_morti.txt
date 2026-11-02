@@ -9,7 +9,7 @@ A) CHIAVE PROBABILMENTE MORTA (la chiave non basta più, o il provider chiede so
    Jina AI · BlockRun · Qdrant Cloud · Zhipu · Token Harbor · NaraRouter · Requesty ·
    OpenCode Zen (i suoi modelli gratis rispondono "free usage limit reached" via API ma
    funzionano DENTRO OpenCode: verifica e spiega come va usato).
-B) LE CHIAVI MANCANTI: TeamoRouter (nel vault c'è solo il prefisso sk-teamo-e0c685…:
+B) LE CHIAVI MANCANTI: TeamoRouter (nel vault c'è solo il prefisso [CHIAVE-RIMOSSA]…:
    cerca se il provider è ancora gratis e come si prende una chiave nuova senza carta)
    e fal.ai (è un provider MEDIA:images/video, non chat: verifica se ci serve).
 

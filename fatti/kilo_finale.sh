@@ -15,7 +15,7 @@ corpo = json.dumps({"model": "nvidia/nemotron-3.5-lightning:free", "max_tokens":
                     "messages": [{"role": "user", "content": "Di che colore e il cielo sereno? Una parola."}]}).encode()
 try:
     d = json.loads(urllib.request.urlopen(urllib.request.Request(
-        "https://kilo.ai/api/openrouter/v1/chat/completions", data=corpo, headers=UA), timeout=90).read().decode())
+        "https://kilo.[CHIAVE-RIMOSSA]", data=corpo, headers=UA), timeout=90).read().decode())
     m = (d.get("choices") or [{}])[0].get("message", {})
     print("content:", (m.get("content") or "(vuoto)")[:80])
 except Exception as e:

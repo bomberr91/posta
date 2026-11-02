@@ -4,11 +4,11 @@ _18/10/2026 10:07 · FilippoPC_
 
 === Eseguo estrazione commenti FB con Python 3 nativo ===
 Schede aperte nel Browser degli Agenti: 7
-  • (2) Vibe Coding is Life | Which AI model can I use for 24 ho -> https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776
+  • (2) Vibe Coding is Life | Which AI model can I use for 24 ho -> https://www.facebook.[CHIAVE-RIMOSSA]
 ⏳ Espando TUTTI i commenti e le sottorisposte (circa 20 secondi)...
-✓ Estratti 23846 caratteri in /home/agenti/posta/dal_pc/fb_vibecoding_145_commenti.md!
+✓ Estratti 23846 caratteri in [CHIAVE-RIMOSSA].md!
 # 📌 Post e Commenti Facebook Estratti
-- **URL**: https://www.facebook.com/groups/vibecodinglife/permalink/2167430827178776
+- **URL**: https://www.facebook.[CHIAVE-RIMOSSA]
 - **Titolo**: (2) Vibe Coding is Life | Which AI model can I use for 24 hours without hitting daily limits❓❓❓❓ | Facebook
 - **Caratteri estratti**: 23846
 

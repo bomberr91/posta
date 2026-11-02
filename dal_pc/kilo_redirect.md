@@ -4,7 +4,7 @@ _31/10/2026 17:20 · FilippoPC_
 
 ## KILO: DOVE PORTA IL 308? — 17:20
 ### 1. La meta del redirect
-redirect → https://kilo.ai/api/openrouter/v1/chat/completions
+redirect → https://kilo.[CHIAVE-RIMOSSA]
 codice → 308
 
 ### 2. Seguo il redirect (curl -L mantiene il POST sui 308)

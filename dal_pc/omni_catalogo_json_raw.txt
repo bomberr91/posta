@@ -20,7 +20,7 @@
       "name": "Azure OpenAI",
       "category": "api-key",
       "alias": "azure",
-      "website": "https://azure.microsoft.com/products/ai-services/openai-service",
+      "website": "https://azure.microsoft.[CHIAVE-RIMOSSA]",
       "deprecated": false,
       "hasFree": false,
       "passthroughModels": true
@@ -60,7 +60,7 @@
       "name": "OCI Generative AI",
       "category": "api-key",
       "alias": "oci",
-      "website": "https://www.oracle.com/artificial-intelligence/generative-ai",
+      "website": "https://www.oracle.[CHIAVE-RIMOSSA]",
       "deprecated": false,
       "hasFree": false,
       "passthroughModels": true
@@ -70,7 +70,7 @@
       "name": "SAP Generative AI Hub",
       "category": "api-key",
       "alias": "sap",
-      "website": "https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core",
+      "website": "https://help.sap.[CHIAVE-RIMOSSA]",
       "deprecated": false,
       "hasFree": false,
       "passthroughModels": true
@@ -120,7 +120,7 @@
       "name": "Scaleway AI",
       "category": "api-key",
       "alias": "scw",
-      "website": "https://www.scaleway.com/en/docs/ai-data/generative-apis/",
+      "website": "https://www.scaleway.[CHIAVE-RIMOSSA]",
       "deprecated": false,
       "hasFree": true,
       "passthroughModels": false

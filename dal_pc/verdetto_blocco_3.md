@@ -36,7 +36,7 @@
 - **VERDETTO**: SICURA
 - **FASE**: F1
 - **SFORZO**: S  **RISCHIO**: basso
-- **MOTIVO**: Struttura portachiavi in free-ricorrente/keyless/trial/disabilitato.
+- **MOTIVO**: Struttura portachiavi in [CHIAVE-RIMOSSA].
 
 ### Idea 40 - Nuove prede caccia (freellmpool)
 - **VERDETTO**: SICURA (CACCIA)

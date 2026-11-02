@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "## 🐕 RIEMPIO IL .env DI DEEP DOG — $(date '+%H:%M')"
-ENV="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/.env"
+ENV="[CHIAVE-RIMOSSA].env"
 OR=$(grep -A3 -i "openrouter" ~/CHIAVI_LOCALI.md | grep -oE "sk-or-[A-Za-z0-9_-]{30,}" | head -1)
 TV=$(grep -oE "tvly-[A-Za-z0-9_-]{20,}" ~/CHIAVI_LOCALI.md | head -1)
 echo "openrouter: ${OR:0:9}••• (${#OR} car) · tavily: ${TV:0:6}••• (${#TV} car)"

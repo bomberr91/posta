@@ -2,7 +2,7 @@
 
 - **Quando:** 1/11/2026, ore 23:00–23:15
 - **Cosa:** `~/posta/cervello.py` (2157 righe), lo stato vivo, i collaudi. Nessun file modificato tranne questo rapporto (in `dal_pc/`).
-- **sha256 `cervello.py`:** `4eb366fb2f7ae875be10755f773322a1677efe2c2d5dfc694703327be275db7c`
+- **sha256 `cervello.py`:** `[CHIAVE-RIMOSSA]`
 - **Git:** HEAD `d795749` (48 commit dopo `ca69a3b`, la versione del primo audit ZCode). **Albero pulito: zero modifiche non committate.**
 - **Processo vivo:** PID 270, `python3 cervello.py`, cwd `/home/agenti/posta`, avviato **22:48:29** — l'ultima modifica del file è 22:40:44 → **il server gira il codice del disco** (nessuna versione stantia). Guardiano `lavori/scorta_cervello.sh` vivo (pid 32660).
 
@@ -27,7 +27,7 @@
 
 - **`python3 -m unittest tests.test_cervello_offline` → 27/27 OK.** Nessun fallimento. Il nuovo `test_f1` (body malformato → 400, non disconnessione) passa.
 - **`python3 cervello.py --autoprova` → ✅ AUTOPROVA SUPERATA** (struttura pulita, 62 provider · 3 gruppi · 0 regole, chat risponde, 0 token).
-- **Policy "gratis" sul file REALE (collaudo indipendente importando il modulo):** 62 provider in BASE, classi `{free-ricorrente: 58, keyless: 4}`; **gratis ne prende 62 (58+4) ✓** — il buco corretto ieri sera (commit `bc0b473`) regge; **keyless ne prende 4, keyless-only ✓** (scelta rispettata). Nessun modello della lista flaggato a pagamento ✓. Test dedicato `test_su_62_provider_gratis_e_tutti` presente e verde.
+- **Policy "gratis" sul file REALE (collaudo indipendente importando il modulo):** 62 provider in BASE, classi `{free-ricorrente: 58, keyless: 4}`; **gratis ne prende 62 (58+4) ✓** — il buco corretto ieri sera (commit `bc0b473`) regge; **keyless ne prende 4, keyless-only ✓** (scelta rispettata). Nessun modello della lista flaggato a pagamento ✓. Test dedicato `[CHIAVE-RIMOSSA]` presente e verde.
 - **Prova viva della riserva (model `keyless`):** HTTP 200 in **1,04 s** via `pollinationsfree` — rotta `riserva` nel glass-box identica (ms 1044, tentativi 1). Il percorso riserva funziona davvero end-to-end.
 
 ## STEP 4 — Chat vera
@@ -72,7 +72,7 @@ Il glass-box racconta esattamente ciò che il client ha visto. Nota: 27,5 s per 
 
 ### N1 · MEDIA-ALTA — I test nuovi scrivono nel VERO `portiere_stato.json` e lo svuotano
 **Dove:** `tests/test_cervello_offline.py:443–465` (`ConcorrenzaTests` → `cerv.segna("p-test", …)`), `:363–390` (`test_f2` → `cerv.riserva(...)`); meccanismo: `stato_salva` (cervello.py:500–519) scrive `STATO_FILE`, che nel processo di test **non viene rediretto** (a differenza di `ProvaVivaTests`, che redirige solo `LOG_FILE`, righe 97–100).
-**Cosa succede (provato stanotte):** ogni collaudo del server (pull→restart→collaudo gira più volte a sera) sovrascrive `portiere_stato.json` con lo STATO del processo di test — che non ha mai chiamato `stato_carica()`, quindi **persone/agenti/sessioni/sentinella/castighi spariscono dal file**, e in `pagella` resta il provider finto `p-test` (oggi: `{'p-test': (1,0), 'pollinationsfree': (1,0)}`). Conseguenze concrete: i contatori di consumo di oggi (11 richieste nel log) sono perduti; le baseline della sentinella sono state perse e ricostruite alle 22:45:05 (ri- controllo di rete + rischio falso allarme "promo pubblicata", la piaga che il CURA-AUDIT v5 aveva spento); **se c'erano castighi attivi, un riavvio subito dopo un collaudo li perde** (provider in castigo tornano subito → 429).
+**Cosa succede (provato stanotte):** ogni collaudo del server (pull→restart→collaudo gira più volte a sera) sovrascrive `portiere_stato.json` con lo STATO del processo di test — che non ha mai chiamato `stato_carica()`, quindi **[CHIAVE-RIMOSSA] spariscono dal file**, e in `pagella` resta il provider finto `p-test` (oggi: `{'p-test': (1,0), 'pollinationsfree': (1,0)}`). Conseguenze concrete: i contatori di consumo di oggi (11 richieste nel log) sono perduti; le baseline della sentinella sono state perse e ricostruite alle 22:45:05 (ri- controllo di rete + rischio falso allarme "promo pubblicata", la piaga che il CURA-AUDIT v5 aveva spento); **se c'erano castighi attivi, un riavvio subito dopo un collaudo li perde** (provider in castigo tornano subito → 429).
 **Correzione esatta:** redirigere i due file UNA volta per tutta la suite, dopo `cerv = carica_cervello()` (riga 42):
 ```python
 import tempfile

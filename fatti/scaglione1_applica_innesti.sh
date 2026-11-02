@@ -8,7 +8,7 @@ mkdir -p "$HOME/.local/bin"
 
 echo "=== 1. Installazione Beads (bd — memoria a grafo per agenti) ==="
 if ! command -v bd >/dev/null 2>&1; then
-  BD_URL=$(curl -fsSL https://api.github.com/repos/gastownhall/beads/releases/latest | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); print(next((a['browser_download_url'] for a in assets if 'linux_amd64' in a['name'] and a['name'].endswith('.tar.gz')), ''))" 2>/dev/null)
+  BD_URL=$(curl -fsSL https://api.github.[CHIAVE-RIMOSSA] | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); print(next((a['browser_download_url'] for a in assets if 'linux_amd64' in a['name'] and a['name'].endswith('.tar.gz')), ''))" 2>/dev/null)
   if [ -n "$BD_URL" ]; then
     curl -fsSL "$BD_URL" -o /tmp/bd.tar.gz && tar -xzf /tmp/bd.tar.gz -C /tmp && mv -f /tmp/bd "$HOME/.local/bin/bd" && chmod +x "$HOME/.local/bin/bd"
     rm -f /tmp/bd.tar.gz

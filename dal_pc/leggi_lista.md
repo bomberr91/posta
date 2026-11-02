@@ -30,7 +30,7 @@ teamorouter|TeamoRouter|auto
 unorouter|UnoRouter|auto
 plugsky|Plugsky|plugsky-micro
 simplellm|SimpleLLM|free-Llama-3.1-8B-Instruct
-llmtr|LLMTR|nvidia/nemotron-3-ultra-550b-a55b
+llmtr|LLMTR|[CHIAVE-RIMOSSA]
 router9|Router9|auto
 waterfall|Waterfall|auto
 blazeapi|BlazeAPI|free/deepseek-v4-flash

@@ -1,5 +1,5 @@
 #!/bin/bash
-D="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog"
+D="[CHIAVE-RIMOSSA]"
 echo "## 🐕 TOLGO L'ESCA AVVELENATA — $(date '+%H:%M')"
 sed -i 's|^DEEPSEEK_API_KEY=.*|# DEEPSEEK_API_KEY= (chiave a saldo zero: PARCHEGGIATA, attirava il motore sulla via nativa vuota)|' "$D/.env"
 grep -E "^[A-Z_#]" "$D/.env" | sed 's/=\(.\{6\}\).*/=\1•••/' | head -10

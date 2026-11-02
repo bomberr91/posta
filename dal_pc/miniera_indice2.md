@@ -40,11 +40,11 @@ SKILLS VERE: 46
 | 35 | release-publish | "Publish an approved Orchard release" |
 | 36 | release-review | "Review Orchard deployment manifests" |
 | 37 | reviewable | Review a release proposal |
-| 38 | skill-catalog-builder | Build a bounded Agent Skill catalog across explicit discovery scopes and report collisions before loading instruction bodies. |
-| 39 | skill-contract-reviewer | Validate an Agent Skill package and choose the right instruction, capability, or lifecycle primitive before implementation. |
-| 40 | skill-invocation-router | Design and test explicit human, implicit model or agent, programmatic application, bounded skill-composition, and harness activation policies for an Agent Skill catalog. |
-| 41 | skill-release-gate | Evaluate an Agent Skill bundle for structural integrity, trigger quality, artifact improvement, script correctness, safety, installed-tree integrity, and target-host portability before release. |
-| 42 | skill-safety-reviewer | Review a skill-requested filesystem, command, network, secret, or destructive action against an explicit sandbox policy without executing it. |
+| 38 | [CHIAVE-RIMOSSA] | Build a bounded Agent Skill catalog across explicit discovery scopes and report collisions before loading instruction bodies. |
+| 39 | [CHIAVE-RIMOSSA] | Validate an Agent Skill package and choose the right instruction, capability, or lifecycle primitive before implementation. |
+| 40 | [CHIAVE-RIMOSSA] | Design and test explicit human, implicit model or agent, programmatic application, bounded [CHIAVE-RIMOSSA], and harness activation policies for an Agent Skill catalog. |
+| 41 | [CHIAVE-RIMOSSA] | Evaluate an Agent Skill bundle for structural integrity, trigger quality, artifact improvement, script correctness, safety, installed-tree integrity, and target-host portability before release. |
+| 42 | [CHIAVE-RIMOSSA] | Review a [CHIAVE-RIMOSSA] filesystem, command, network, secret, or destructive action against an explicit sandbox policy without executing it. |
 | 43 | start-learning | > One-time onboarding for the AI Engineering from Scratch curriculum (542 lessons, 20 phases). Interviews the learner, runs the placement quiz, and writes LEARNING.md, a persistent study plan the lear |
 | 44 | start-learning | > One-time onboarding for the AI Engineering from Scratch curriculum (542 lessons, 20 phases). Interviews the learner, runs the placement quiz, and writes LEARNING.md, a persistent study plan the lear |
 | 45 | write-manual | > Writes a long technical manual that explains one subject at one pinned version, from its purpose to each request and response. Every listing comes from an offline capture, every claim traces to a ra |

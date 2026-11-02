@@ -6,7 +6,7 @@
 # AgentRouter, ogni 6 ore). Il guardiano già in esecuzione ha il codice VECCHIO
 # in memoria: va riavviato, altrimenti la sentinella non parte mai.
 #
-# Uso:  bash ~/posta/fatti/riavvia_guardiano_cervello.sh
+# Uso:  bash ~[CHIAVE-RIMOSSA].sh
 #
 # NOTA: il pkill sta in un file di script e non in linea: così non uccide la
 # shell che lo esegue (è successo il 1/11: il pkill ha ammazzato il cmd).

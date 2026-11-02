@@ -9,7 +9,7 @@
 5. **MNN** (mnnai.ru) — Endpoint attivo, keyless. Dominio .ru meno comune ma non scartabile a priori.
 
 ② **SCARTARE SUBITO**:
-- **Atessa** (morto), **A4F/AwanLLM/FreeTheAI/Pixazo/ValorGPT/Xeven(img)** (404) — Non raggiungibili.
+- **Atessa** (morto), **[CHIAVE-RIMOSSA](img)** (404) — Non raggiungibili.
 - **AIchixia/Hetzner** (200 ma non-lista) — Endpoint non conforme.
 - **Tutti i "serve-chiave"** (Apertis, CoderPlan, ecc.) — Richiedono autenticazione, probabile necessità di carta.
 

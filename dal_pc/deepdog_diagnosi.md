@@ -38,7 +38,7 @@ TAVILY_API_KEY=tvly-d•••
 107:#                            Unset = inherit ROUTE_VIA_OPENROUTER.
 
 ### 3. Il .env viene letto da dove? (load_dotenv e percorso)
-/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/web_app.py:18:from dotenv import load_dotenv
-/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/web_app.py:29:load_dotenv(ROOT / ".env")
+[CHIAVE-RIMOSSA].py:18:from dotenv import load_dotenv
+[CHIAVE-RIMOSSA].py:29:load_dotenv(ROOT / ".env")
 
 <!-- fine deepdog_diagnosi -->

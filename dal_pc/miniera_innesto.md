@@ -9,8 +9,8 @@ sorgente: ./.claude/skills
   /home/agenti/.config/opencode/skills: 26 → 28 voci
 
 ### benign: caccia col nome largo
-./phases/19-capstone-projects/83-prompt-injection-detector/code/benign.py
-./projects/skill-scanner/examples/benign
+.[CHIAVE-RIMOSSA].py
+.[CHIAVE-RIMOSSA]
 
 ### collaudo: opencode vede e usa una skill?
 > build · auto

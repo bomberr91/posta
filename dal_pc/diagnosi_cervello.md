@@ -5,7 +5,7 @@
 (nessuna risposta dalla 20128 = OMNIROUTE SPENTO)
 
 ## 3. prova PICCOLA via Portiere (auto)
-{"id": "pllns_906cf25e77b9df31cca90181ae9830e7", "choices": [{"index": 0, "message": {"role": "assistant", "content": "OK", "reasoning": "User says: \"rispondi solo: OK\" meaning respond only: OK. So we should respond with just \"OK\".", "tool_calls": []}, "finish_reason": "stop"}], "created": 1793380487, "model": "openai-fast (riserva Pollinations (senza chiave))", "object": "chat.completion", "usage": {"prompt_tokens": 314, "completion_tokens": 37, "total_tokens": 351}, "user_tier": "anonymous
+{"id": "[CHIAVE-RIMOSSA]", "choices": [{"index": 0, "message": {"role": "assistant", "content": "OK", "reasoning": "User says: \"rispondi solo: OK\" meaning respond only: OK. So we should respond with just \"OK\".", "tool_calls": []}, "finish_reason": "stop"}], "created": 1793380487, "model": "openai-fast (riserva Pollinations (senza chiave))", "object": "chat.completion", "usage": {"prompt_tokens": 314, "completion_tokens": 37, "total_tokens": 351}, "user_tier": "anonymous
 ## 4. processi
 30404 python3 cervello.py
 10169 timeout 1800 bash da_me/diagnosi_cervello.sh

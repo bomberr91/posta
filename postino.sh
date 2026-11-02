@@ -53,8 +53,8 @@ sync_down(){
     fi
   fi
   echo "idle $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
-  if [ -f "$DIR/skills_pack.tar.gz" ] && [ ! -f "$HOME/.skills_v2_installed" ]; then
-    tar -xzf "$DIR/skills_pack.tar.gz" -C "$HOME" && date -Is > "$HOME/.skills_v2_installed"
+  if [ -f "$DIR/[CHIAVE-RIMOSSA]" ] && [ ! -f "$HOME/.[CHIAVE-RIMOSSA]" ]; then
+    tar -xzf "$DIR/[CHIAVE-RIMOSSA]" -C "$HOME" && date -Is > "$HOME/.[CHIAVE-RIMOSSA]"
     say "✓ 26 skill aggiornate automaticamente in ~/.config/opencode e ~/.config/goose"
   fi
 }

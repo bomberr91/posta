@@ -3,7 +3,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # Prima: ogni [8] rifaceva TUTTO (skill, npm -g, OpenClaw con Node 24, ecc.) = minuti buttati.
 # Adesso: ogni passo ha un TIMBRO in ~/.stato_aggiorna/. Se è già fatto → lo salta in un attimo.
-#   · si rifà da solo se qualcosa è cambiato (es. skills_pack.tar.gz nuovo → reinstalla le skill)
+#   · si rifà da solo se qualcosa è cambiato (es. [CHIAVE-RIMOSSA] nuovo → reinstalla le skill)
 #   · FORZA=1  → rifà tutto per davvero (riparazione completa)
 #   · DRY=1    → mostra cosa farebbe, senza toccare niente
 # Passo 1 (sincronizza il ponte) gira SEMPRE: è quello che porta le novità.
@@ -82,7 +82,7 @@ fi
 # ── 2 · SKILL (solo se il pacchetto è cambiato) ────────────────────────────────
 echo ""
 echo "── 2/6 · Skill (pacchetti A+B+C+D)..."
-PACK="$HOME/posta/skills_pack.tar.gz"
+PACK="$HOME/posta/[CHIAVE-RIMOSSA]"
 if [ -f "$PACK" ]; then
   IMP="$(md5sum "$PACK" 2>/dev/null | cut -d' ' -f1)"
   N_SKILL=$(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l)
@@ -94,14 +94,14 @@ if [ -f "$PACK" ]; then
     if [ "$DRY" = "1" ]; then
       nota "[DRY] installerei/aggiornerei le skill dal pacchetto nuovo"
     else
-      date -Is > "$HOME/.skills_v2_installed"; marca skills "$IMP"
+      date -Is > "$HOME/.[CHIAVE-RIMOSSA]"; marca skills "$IMP"
       ok "Skill installate/aggiornate ($(ls -1 "$HOME/.agents/skills" 2>/dev/null | wc -l) cartelle attive · 4 destinazioni) — pacchetto nuovo"
     fi
   else
     salto "Skill: $N_SKILL attive · pacchetto identico a quello già installato"
   fi
 else
-  nota "skills_pack.tar.gz non trovato nel ponte"
+  nota "[CHIAVE-RIMOSSA] non trovato nel ponte"
 fi
 
 # ── 3 · STRUMENTI BROWSER/WEB (solo se mancano) ───────────────────────────────
@@ -142,7 +142,7 @@ echo "── 5/6 · Hermes Agent (NousResearch)..."
 if c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; then
   salto "Hermes già installato"
 else
-  esegui bash -c "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --skip-computer-use >/dev/null 2>&1 || true"
+  esegui bash -c "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --non-interactive --skip-browser --[CHIAVE-RIMOSSA] >/dev/null 2>&1 || true"
   { c_e hermes || [ -d "$HOME/.hermes/hermes-agent" ]; } && ok "Hermes installato" || nota "Hermes: installazione saltata"
 fi
 

@@ -116,7 +116,7 @@ if vuole hermes; then
   else
     d "Installo Hermes (NousResearch)… può metterci alcuni minuti"
     if [ "$PROVA" = "1" ]; then
-      d "[prova] scaricherei lo script ufficiale Hermes e lo eseguirei con --non-interactive --skip-browser --skip-computer-use"
+      d "[prova] scaricherei lo script ufficiale Hermes e lo eseguirei con --non-interactive --skip-browser --[CHIAVE-RIMOSSA]"
     else
       HERMES_SETUP_TMP=$(mktemp "${TMPDIR:-/tmp}/hermes-install.XXXXXX.sh") || HERMES_SETUP_TMP=""
       if [ -z "$HERMES_SETUP_TMP" ]; then
@@ -133,7 +133,7 @@ if vuole hermes; then
         rm -f "$HERMES_SETUP_TMP"
       else
         # output visibile: nessun install fallito nascosto nel BAT
-        bash "$HERMES_SETUP_TMP" --non-interactive --skip-browser --skip-computer-use --verbose
+        bash "$HERMES_SETUP_TMP" --non-interactive --skip-browser --[CHIAVE-RIMOSSA] --verbose
         HERMES_RC=$?
         rm -f "$HERMES_SETUP_TMP"
         export PATH="$HOME/.hermes/hermes-agent/bin:$HOME/.hermes/hermes-agent/venv/bin:$PATH"

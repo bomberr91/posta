@@ -63,7 +63,7 @@ print("   scritto skills/manifesto_skills.json con", len(voci), "skill")
 PYEOF
 
 say "4. i 5 asset sociali: cerco immagini/video usati per i post"
-for d in "/mnt/c/Users/giopi/Documents/AgentWorkspace" "$HOME/posta"; do
+for d in "[CHIAVE-RIMOSSA]" "$HOME/posta"; do
   [ -d "$d" ] || continue
   echo "   --- $d"
   find "$d" -maxdepth 3 -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.mp4" -o -iname "*.webp" \) \

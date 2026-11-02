@@ -25,7 +25,7 @@ fi
 ESPR="${3:-}"
 
 out=$(curl -fsS -m "$T" -H 'Content-Type: application/json' -d "$BODY" \
-      "$CERVELLO_URL/v1/chat/completions" 2>/dev/null) || {
+      "$[CHIAVE-RIMOSSA]" 2>/dev/null) || {
   echo "   ✗ la chat non ha risposto (timeout ${T}s o connessione chiusa)" >&2
   exit 1
 }
