@@ -51,14 +51,16 @@ def chiavi_del_vault():
         return out
     for riga in righe:
         s = riga.strip()
-        if not s.startswith("- **"):          # solo le righe dei provider
-            continue
+        # i formati NOTI (sk_, gsk_, AIza, hf_, nvapi_, cfut_...) si cercano su
+        # TUTTE le righe: sono abbastanza specifici da non fare danni
         for f in FORMATI:
             for t in re.findall(f, s):
                 if len(t) >= 16:
                     out.add(t)
+        # la regola generica ("stringa lunga") solo sulle righe dei provider
+        if not s.startswith("- **"):
+            continue
         for t in re.findall(r"[A-Za-z0-9_\-+/=]{24,}", s):
-            # scarta le URL e le cose che non sono chiavi
             if "/" in t and "://" not in t and not t.startswith(("sk-", "sk_")):
                 continue
             out.add(t)
