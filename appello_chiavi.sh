@@ -162,6 +162,21 @@ prova(){
     mod="${mod}"
   fi
   [ -n "$key_hdr" ] && HAUTH=(-H "Authorization: Bearer $key_hdr")
+  # 2/11: AgentRouter parla in stile ANTHROPIC: POST /v1/messages con la
+  # chiave nell'header x-api-key, UA da Claude CLI, e NON accetta l'italiano
+  # (risponde content-blocked). Ha quindi strada, header e prompt suoi.
+  if [ "$modo" = "anthropic" ]; then
+    HAUTH=(-H "x-api-key: $key_hdr")
+    CHAT_UA="claude-cli/2.0.14 (external, cli)"
+    CHAT_URL="$base/messages"
+    CHAT_PROMPT="Reply with only OK"
+    CHAT_OK='"type":"message"|"stop_reason"|"content":'
+  else
+    CHAT_UA="$UA_BROWSER"
+    CHAT_URL="$base/chat/completions"
+    CHAT_PROMPT="Rispondi soltanto con OK"
+    CHAT_OK='choices'
+  fi
 
   # 1) elenco modelli: dice se la chiave vale e QUALE modello esiste OGGI
   code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} "$base_probe" 2>/dev/null)
@@ -246,11 +261,11 @@ PY
     while IFS= read -r tentativo; do
       [ -z "$tentativo" ] && continue
       i=$((i+1)); [ "$i" -gt 3 ] && break
-      body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
-        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":128}" \
-        "$base/chat/completions" 2>/dev/null)
+      body=$(curl -s -m 30 -A "$CHAT_UA" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
+        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"$CHAT_PROMPT\"}],\"max_tokens\":128}" \
+        "$CHAT_URL" 2>/dev/null)
       [ -n "$body" ] && ultimo="$body"
-      if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; ok=1; break; fi
+      if printf '%s' "$body" | grep -qiE "$CHAT_OK"; then modello="$tentativo"; ok=1; break; fi
       if printf '%s' "$body" | grep -qiE 'invalid.*key|unauthorized|forbidden|invalid.token|authentication'; then vede401=1; break; fi
       if printf '%s' "$body" | grep -qiE 'rate|429|quota|limit|credit|insufficient|overload|high demand|try again later|too many requests|busy|1305'; then vede429=1; break; fi
       modello="$tentativo"
@@ -270,10 +285,10 @@ PY
         *-*-*-*-*) SUGGERITO="" ;;
       esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
-        body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
-          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":128}" \
-          "$base/chat/completions" 2>/dev/null)
-        if printf '%s' "$body" | grep -qi 'choices'; then
+        body=$(curl -s -m 30 -A "$CHAT_UA" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
+          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"$CHAT_PROMPT\"}],\"max_tokens\":128}" \
+          "$CHAT_URL" 2>/dev/null)
+        if printf '%s' "$body" | grep -qiE "$CHAT_OK"; then
           modello="$SUGGERITO"; ok=1
         fi
       fi

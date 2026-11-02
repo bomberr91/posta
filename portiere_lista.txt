@@ -21,7 +21,7 @@ openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|ch
 nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
 huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat||free-ricorrente||
 pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat||free-ricorrente||
-agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli||free-ricorrente||
+agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|gpt-5.6-sol|anthropic||free-ricorrente|gpt-6-astra;gpt-6.1-sol|
 opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat||free-ricorrente||
 aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat||free-ricorrente||
 api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat||free-ricorrente||
