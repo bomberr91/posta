@@ -41,7 +41,7 @@ def leggi_input(path):
             riga = riga.rstrip("\n").rstrip("\r")
             if not riga.strip() or riga.lstrip().startswith("#"):
                 continue
-            m = re.split(r"\s*\|\||\|", riga, 1)
+            m = re.split(r"\s*::|\s*\|", riga, maxsplit=1)
             if len(m) != 2:
                 print("  riga saltata (manca il separatore): " + riga[:40])
                 continue
