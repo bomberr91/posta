@@ -15,8 +15,8 @@ Numero autorevole: **l'appello dal PC**. Ultimi due giri: 13:01 (tutti i 62) e 1
 | 6 | Speechify | 404 | text-to-speech | **togliere dalla lista** |
 | 7 | WaveSpeedAI | 404 | immagini/video | **togliere dalla lista** |
 | 8 | Moondream | 404 | visione | **togliere dalla lista** |
-| 9 | Aion Labs | chiave rifiutata | chiave rotta | **togliere dalla lista** |
-| 10 | Waterfall | chiave rifiutata | chiave rifiutata | **togliere dalla lista** |
+| 9 | ~~Aion Labs~~ | **risponde** | la chiave era buona: **era il mio estrattore** che tagliava la chiave all'underscore (`alv2_…_yQ058` → 401). Risolto il 2/11: ora risponde (`aion-labs/aion-3.5`) | — |
+| 10 | Waterfall | chiave rifiutata | **chiave morta**: "Unknown or revoked API key" su tutti e 20 i modelli gratis (il suo /models è pubblico, per questo sembrava vivo) | **ti serve una chiave nuova** (il modello gratis è già messo: `gemma-4-31b-free`) |
 | 11 | NavyAI | modello `navy-auto` inesistente | free tier **pausato da loro** + nome modello sbagliato | **togliere dalla lista** |
 | 12 | LongCat | `Unsupported model (auto)` | nome modello sbagliato + quota esaurita | **togliere dalla lista** |
 | 13 | NaraRouter | model not found | id del modello sbagliato (402/429) | riprovare col catalogo |
@@ -49,15 +49,17 @@ Numero autorevole: **l'appello dal PC**. Ultimi due giri: 13:01 (tutti i 62) e 1
 
 ## C. Le decisioni (per chiudere)
 
-1. **Togliere dalla lista i 4 non-chat** (Jina, Speechify, WaveSpeedAI, Moondream) e i
-   **2 che rispondono ma non sono chat** (Qdrant, Pollinations-immagini)
-2. **Togliere le chiavi rotte**: Aion Labs, Waterfall
-3. **NavyAI e LongCat**: il free tier è in pausa / la quota è esaurita → propose di
+1. ~~Togliere i non-chat~~ **NON si tolgono**: restano nella lista con il loro `tipo`
+   (immagini · video · voce · embedding · visione · db) e il cervello li usa quando
+   un agente chiede qualcosa in quel dominio (`cervello.py: immagini()`, `scopri()`).
+   Sono solo **esclusi dall'appello** (dal 2/11 l'appello non li interroga più:
+   prima dicevano "404" e sembravano guasti)
+2. ~~Togliere Aion Labs~~ **risolto**: la chiave era buona, era l'estrattore che la
+   tagliava. Ora Aion risponde
+3. **Waterfall**: la chiave è stata **revocata** → serve una chiave nuova
+4. **NavyAI e LongCat**: il free tier è in pausa / la quota è esaurita → propose di
    toglierli per ora (si possono rimettere quando tornano)
-4. **TeamoRouter**: serve la chiave intera, solo tu ce l'hai
-5. **AgentRouter**: capire perché il PC non la trova (è un vault diverso)
-6. Gli **8 "occupato"** e **AI Horde** non richiedono nulla: la sentinella li riprova
+5. **TeamoRouter**: serve la chiave intera, solo tu ce l'hai
+6. **AgentRouter**: capire perché il PC non la trova (è un vault diverso)
+7. Gli **8 "occupato"** e **AI Horde** non richiedono nulla: la sentinella li riprova
    ogni 6 ore e l'appello li riprova a ogni giro
-
-Risultato se si fanno 1+2+3: lista da 62 → **52**, tutti con una chiave davvero
-utilizzabile, di cui ~40 verdi subito e 12 in attesa di quota.

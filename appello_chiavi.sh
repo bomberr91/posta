@@ -34,7 +34,7 @@ try:
     d = json.load(open(sys.argv[1], encoding="utf-8"))
 except Exception:
     sys.exit(0)
-print(" ".join(v["id"] for v in d.get("voci", []) if v.get("esito") == "risponde"))
+print(" ".join(v["id"] for v in d.get("voci", []) if v.get("esito") in ("risponde", "non-chat")))
 PY
 )
 fi
@@ -129,7 +129,7 @@ prova(){
   # parametri 7 e 8. Prima «extra» finiva nella dichiarazione local e veniva
   # (a) lasciato vuoto e (b) letto PRIMA di essere valorizzato -> «unbound variable».
   # Ora sono local separati e non collidono con la nota finale.
-  local EXTRA_MODELLI="$7" auth="$8"
+  local EXTRA_MODELLI="$7" auth="$8" tipo="$9"
   local key NOAUTH=0
   if [ "$nome" = "SENZA" ]; then
     # I "SENZA" NON SONO TUTTI UGUALI (2/11, verificato con chat vera):
@@ -227,11 +227,11 @@ PY
     elif [ "$code" = "000" ] || [ -z "$code" ]; then esito="rete"; extra="non raggiungibile"
     else esito="strano"; extra="elenco modelli: risposta $code"; fi
   elif [ "$modo" = "no" ]; then
-    # provider NON-chat (immagini, video, visione): non si chat-provano
-    if [ "$code" = "200" ]; then esito="risponde"; extra="indirizzo valido (non e' un provider di chat)"
-    elif [ "$code" = "429" ]; then esito="occupato"; extra="troppe richieste adesso (429)"
-    elif [ "$code" = "000" ] || [ -z "$code" ]; then esito="rete"; extra="non raggiungibile"
-    else esito="strano"; extra="elenco modelli: risposta $code"; fi
+    # 2/11: i provider NON-chat (immagini, video, TTS, OCR, visione, db) NON
+    # vengono interrogati: non sono chat e non devono sporcare l'appello con
+    # "404" che sembrano guasti. RESTANO nella lista: se un agente chiede
+    # un'immagine, il cervello verifica e consegna (cervello.py: immagini()).
+    esito="non-chat"; extra="escluso dall'appello (tipo: ${tipo:-?}) - il cervello lo usa su richiesta"
   else
     # 2) domanda vera, col modello che il provider DICE di avere adesso
     local body=""
@@ -310,7 +310,7 @@ while IFS='|' read -r id eti nome base modello modo tipo classe extra auth; do
   if [ -n "$SKIP" ]; then
     case " $SKIP " in *" $id "*) continue ;; esac
   fi
-  prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" "$extra" "$auth" &
+  prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" "$extra" "$auth" "$tipo" &
   # max 6 alla volta
   while [ "$(jobs -rp | wc -l)" -ge 6 ]; do sleep 0.3; done
 done < "$LISTA"

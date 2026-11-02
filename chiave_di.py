@@ -35,7 +35,8 @@ FORMATI = [
     r"ek-[A-Za-z0-9]{20,}",
     r"sk_[A-Za-z0-9]{20,}",
     r"ak_[A-Za-z0-9]+",
-    r"alv2_[A-Za-z0-9]+",
+    r"alv2_[A-Za-z0-9_]+",   # 2/11: la chiave Aion finisce con _yQ058: il + tagliava via il coda e dava 401
+    r"wf-[A-Za-z0-9_-]{20,}", # Waterfall
     r"[0-9a-f]{32}:cfut_[A-Za-z0-9]+",   # Cloudflare: la chiave è «account_id:token»
     r"cfut_[A-Za-z0-9]+",
     r"lfu_[A-Za-z0-9]+",
