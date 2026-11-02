@@ -41,10 +41,11 @@ def leggi_input(path):
             riga = riga.rstrip("\n").rstrip("\r")
             if not riga.strip() or riga.lstrip().startswith("#"):
                 continue
-            if "|" not in riga:
-                print("  riga saltata (manca il separatore |): " + riga[:40])
+            m = re.split(r"\s*\|\||\|", riga, 1)
+            if len(m) != 2:
+                print("  riga saltata (manca il separatore): " + riga[:40])
                 continue
-            et, ch = riga.split("|", 1)
+            et, ch = m[0], m[1]
             coppie.append((et.strip(), ch.strip()))
     return coppie
 
