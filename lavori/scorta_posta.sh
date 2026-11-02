@@ -30,6 +30,15 @@ while true; do
     fi
   fi
 
-  flock -n /tmp/postino.lk bash -c 'cd ~/posta; timeout 120 git pull -q --autostash --rebase >/dev/null 2>&1 || true; bash postino.sh --loop'
+  # 2/11: via il FLOCK. Il lock veniva EREDITATO dai figli del postino (un
+  # `opencode run` interrotto): se il postino moriva, il figlio teneva ancora
+  # il lock e `flock -n` falliva PER SEMPRE, in silenzio (due ore di coda muta).
+  # Ora il guardiano chiede semplicemente: il postino c'e' gia'? se no, riavvialo.
+  if pgrep -f 'postino\.sh --loop' >/dev/null 2>&1; then
+    sleep 60
+    continue
+  fi
+  say "-> il postino non gira: lo riavvio"
+  ( cd "$HOME/posta" && nohup bash postino.sh --loop >> /tmp/postino_console.log 2>&1 & )
   sleep 60
 done
