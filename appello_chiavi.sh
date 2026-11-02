@@ -332,6 +332,7 @@ wait
       chiave-no) icona="🔴 chiave rifiutata" ;;
       rete) icona="⚪ non raggiungibile" ;;
       no-chiave) icona="— nessuna chiave" ;;
+      non-chat) icona="· non-chat (escluso)" ;;
       *) icona="🟡 $esito" ;;
     esac
     echo "| $eti | $icona | $ms | $extra |"
@@ -387,6 +388,7 @@ if [ "$JSON" = "0" ]; then
       risponde)  printf "  ${G}✓${O} %-18s %6s ms  %s\n" "$eti" "$ms" "$extra" ;;
       occupato)  printf "  ${Y}◐${O} %-18s %6s ms  %s\n" "$eti" "$ms" "$extra" ;;
       no-chiave) printf "  ${Y}—${O} %-18s %s\n" "$eti" "nessuna chiave nel portachiavi" ;;
+      non-chat) printf "  · %-18s %s\n" "$eti" "non-chat: escluso dall'appello (il cervello lo usa su richiesta)" ;;
       *)         printf "  ${R}✗${O} %-18s %6s ms  %s\n" "$eti" "$ms" "$extra" ;;
     esac
   done
