@@ -76,6 +76,7 @@ def main():
         return 1
     print("provider: %s | modello: %s | chiave: %d caratteri" % (nome, modello, len(chiave)))
 
+    timeout = int(os.environ.get("COLLAUDO_TIMEOUT", "60"))
     corpo = json.dumps({
         "model": modello,
         "messages": [{"role": "user", "content": "Rispondi solo con OK"}],
@@ -87,7 +88,7 @@ def main():
         headers={"Authorization": "Bearer " + chiave, "Content-Type": "application/json"},
     )
     try:
-        r = urllib.request.urlopen(req, timeout=60)
+        r = urllib.request.urlopen(req, timeout=timeout)
         txt = r.read().decode("utf-8", "replace").replace("\n", " ")
         print("HTTP %s :: %s" % (r.status, txt[:220]))
     except urllib.error.HTTPError as e:
