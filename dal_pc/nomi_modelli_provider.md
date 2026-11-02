@@ -5,7 +5,7 @@ _02/11/2026 10:20 · FilippoPC_
 [0m
 > build · big-pickle
 [0m
-[0m$ [0mls -la /home/agenti/posta/ && echo "---" && ls -la ~/CHIAVI_LOCALI.md 2>/dev/null && echo "---" && wc -l [CHIAVE-RIMOSSA].txt ~/CHIAVI_LOCALI.md 2>/dev/null
+[0m$ [0mls -la /home/agenti/posta/ && echo "---" && ls -la ~/CHIAVI_LOCALI.md 2>/dev/null && echo "---" && wc -l /home/agenti/posta/portiere_lista.txt ~/CHIAVI_LOCALI.md 2>/dev/null
 total 1808
 drwxr-xr-x 1 agenti agenti    4096 Nov  2 10:20 .
 drwxr-x--- 1 agenti agenti    4096 Nov  2 09:52 ..
@@ -72,7 +72,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 18:45 missione
 -rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
 -rw-r--r-- 1 agenti agenti    2269 Oct 27 15:20 ricerca_strategica.py
 -rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
--rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 [CHIAVE-RIMOSSA]
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
 -rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
 -rw-r--r-- 1 agenti agenti     315 Oct 27 15:20 stato_fusion.json
 drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
@@ -81,7 +81,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 23:23 tests
 ---
 -rw------- 1 agenti agenti 60580 Nov  1 16:58 /home/agenti/CHIAVI_LOCALI.md
 ---
-  111 [CHIAVE-RIMOSSA].txt
+  111 /home/agenti/posta/portiere_lista.txt
   265 /home/agenti/CHIAVI_LOCALI.md
   376 total
 [0m
@@ -109,14 +109,14 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 23:23 tests
 [0m
 [0m$ [0msed -n '27,75p' ~/CHIAVI_LOCALI.md | sed -E 's/([A-Za-z0-9_-]{20,})/<REDACTED>/g'
 ## 4 · PROVIDER LLM — CHIAVI (59:
-**🧮 CONTEGGIO FREELLMAPI (verificato 16/10 sui PLATFORMS del main):** delle **61 voci** di questo §4, **52 sono piattaforme di freellmapi** (di cui **2 senza chiave**: Kilo · AI Horde — Pollinations ora È keyed) → **50 chiavi con valore che freellmapi riconosce**; **8 voci FUORI dal roster**: AgentRouter · Token Harbor · TeamoRouter (❌) · **Chutes (❌ no-free)** · **Nscale (✅ funziona)** · **Jina AI + Qdrant Cloud** (strumenti BLOCCO 9) · **fal.ai** (piattaforma media 16/10 — key valida ma account **locked TOP_UP**) · **WaveSpeedAI** (piattaforma media 16/10 — **✅ funzionante, $1 confermato**). Le chiavi di ricerca (Tavily/Exa/Linkup/Firecrawl) stanno in §5 e non entrano in questo conteggio. *Piattaforme freellmapi che NON abbiamo (19, di cui 16 già chiuse dai divieti): aclide (bloccata), logfare (in corso), speka (**candidata nuova**), parallel (no-key), pinecone (solo catalogo .co, non nel pannello), [CHIAVE-RIMOSSA] (carta/KYC/telefono cinese/nessun free).* 26 del roster 14/10 + Ollama Cloud + SeaLION + OpenCode Zen + BazaarLink + NavyAI + Routeway + UnoRouter + OrcaRouter + Aion Labs + Typhoon + Septor Labs + NaraRouter + TeamoRouter + AgentRouter + CLōD + Api.Airforce + Token Harbor + Auray + Plugsky + SimpleLLM + LLMTR + Router9 + Waterfall [15/10 tarda notte] · ordine alfabetico · [tag] = giorno di arrivo)
+**🧮 CONTEGGIO FREELLMAPI (verificato 16/10 sui PLATFORMS del main):** delle **61 voci** di questo §4, **52 sono piattaforme di freellmapi** (di cui **2 senza chiave**: Kilo · AI Horde — Pollinations ora È keyed) → **50 chiavi con valore che freellmapi riconosce**; **8 voci FUORI dal roster**: AgentRouter · Token Harbor · TeamoRouter (❌) · **Chutes (❌ no-free)** · **Nscale (✅ funziona)** · **Jina AI + Qdrant Cloud** (strumenti BLOCCO 9) · **fal.ai** (piattaforma media 16/10 — key valida ma account **locked TOP_UP**) · **WaveSpeedAI** (piattaforma media 16/10 — **✅ funzionante, $1 confermato**). Le chiavi di ricerca (Tavily/Exa/Linkup/Firecrawl) stanno in §5 e non entrano in questo conteggio. *Piattaforme freellmapi che NON abbiamo (19, di cui 16 già chiuse dai divieti): aclide (bloccata), logfare (in corso), speka (**candidata nuova**), parallel (no-key), pinecone (solo catalogo .co, non nel pannello), experiential/cerebras/radeon/siliconflow/modelscope/qianfan/volcengine/xfyun/bai/reka/ainative (carta/KYC/telefono cinese/nessun free).* 26 del roster 14/10 + Ollama Cloud + SeaLION + OpenCode Zen + BazaarLink + NavyAI + Routeway + UnoRouter + OrcaRouter + Aion Labs + Typhoon + Septor Labs + NaraRouter + TeamoRouter + AgentRouter + CLōD + Api.Airforce + Token Harbor + Auray + Plugsky + SimpleLLM + LLMTR + Router9 + Waterfall [15/10 tarda notte] · ordine alfabetico · [tag] = giorno di arrivo)
 - **Agnes AI** — <REDACTED> — [13/10] — 🎬 **VIDEO 16/10**: catalogo attuale 10 modelli: **`agnes-video-2.5` · `agnes-video-2.5-flash`** (text→video, **image→video**, multi-immagine, keyframes), image 2.0/2.1/2.5-flash, chat 2.5/3.0; **free: 1-2 clip/minuto** (docs: video RPM free = 1 effettivo; nessun tetto giornaliero dichiarato per il free — piano a pagamento = 500 s/gg); clip fino a ~20 s (fonte terza); ⚠️ 429 = rate, non chiave · 🎬 16/10 sera (R3): endpoint video confermato (`POST /v1/videos` mode text/keyframe/reference 4-12 s + polling `GET /agnesapi?video_id=…&model_name=…`) MA 2 tentativi = **`video_queue_full`** (16:02/16:03 IT) → coda gratis intasata in punta: riprovare off-peak; terze parti: «$0/s in promozione» sul flash.
 - **Aion Labs** — <REDACTED> — [15/10] — base `api.aionlabs.ai/v1`; ✅ **collaudata 15/10 notte**: chat `aion-labs/aion-3.5` 1,6 s; 6 modelli (aion-2.0/3.0/3.5 + mini + rp-llama 3.1-8b); free 15 rpm · 20.000 tok/giorno, no carta (fonte freellm.net + hokai.io).
 - **AI Horde** — NO KEY (anonimo, lento, kudos) — endpoint oai.aihorde.net/v1 — [14/10] — anonimo, lento (kudos)
 - **Api.Airforce** — <REDACTED> — [15/10] — base `api.airforce/v1`; 657 modelli; free `glm-4.7-flash`; **1 rpm · 1000 req/gg**; ⚠️ **chiave VALIDA** (collaudo 15/10 tarda notte) ma canale free instabile: `glm-4.7-flash` 200 in 2,0 s (content vuoto) poi 503 «temporarily unavailable»; `gpt-oss-120b`/`qwen3.8-27b` → 402 `paid_model_required` → usare SOLO i free, 1 richiesta al minuto, con pazienza.
 - **AgentRouter** — `sk-mHof0hcg…` **stringa completa nel messaggio chat utente 15/10 tarda notte** — [15/10] — base `agentrouter.org/v1` (OpenAI-compat; Anthropic senza `/v1`); $100 free con GitHub; ⚠️ **collaudo 15/10 tarda notte = IMPOSSIBILE dal sandbox**: Aliyun WAF risponde HTML su `/v1/models`, `/v1/chat/completions`, `/v1/messages` (provati UA browser, Bearer, x-api-key, curl_cffi impersonate=chrome) → da provare dal browser/strumento dell'utente (console `agentrouter.org/console`); niente raffiche.
 - **AnyAPI** — <REDACTED> — [14/10]
-- **Auray** — <REDACTED> — [15/10] — base `api.auray.ai/openai/v1` (chat OpenAI-compat: es. `glm-5-3-flash`, 1M ctx) + coda media (`queue.auray.run`, immagini/video/musica/3D); piano **free: 50 crediti/mese** (rinnovo mensile, periodo 2026-10; ≈10 clip da 5 s o ~28 immagini); ✅ **collaudata 15/10**: `/v1/me` 200 (plan free, balance 50, address_proved) e chat OK (con `max_tokens` alto: i modelli reasoning si mangiano i token); 🎬 **VIDEO 16/10 notte — RISOLTO E COLLAUDATO**: sul free il video è **ON** (tier `fast` ≤15 s, 1 job alla volta) ma i **147 modelli video di catalogo** (LTX-2.3/2.5, Wan 3.0, Kling 3, Veo 3.1 Lite, Seedance 2.5, VEED Fabric, Grok Imagine…) danno **403 `model_not_in_plan`** (niente addebitato → non ritentare); gira **solo `[CHIAVE-RIMOSSA]`** → **5 cr per clip da 5 s** (tier fast · 16:9 · seed · first-frame/reference opzionali · **con audio** · rimborso se fallisce) = **≈10 clip/mese**; **CLIP VERA**: job `video_4b386ff2-…` **COMPLETED in ~210 s** (1344×768 · 5 s · 24 fps · audio) → `_MISSIONI/FREELLM_HUB/prove/<REDACTED>.mp4` · **45/50 residui** (rollover 1 mese). Submit `POST queue.auray.run/<address>` → poll **il `status_url` esatto** (URL senza `/status` = 400 `request_in_progress`) → a COMPLETED `GET api.auray.ai/v1/jobs/{id}/assets` (URL firmati 900 s; il download **non** consuma crediti); schema/prezzi per modello: `/v1/models/{address}/openapi.json` + `llms.txt`; ⚠️ **LA CHIAVE SCADE TRA 365 GIORNI (≈15/10/2027)** — nel loro pannello NON esiste l'opzione «non scade» → segnalato apposta per saperlo; ⚠️ non presente in freellmapi v0.14.2 (aggiunta dopo nel repo).
+- **Auray** — <REDACTED> — [15/10] — base `api.auray.ai/openai/v1` (chat OpenAI-compat: es. `glm-5-3-flash`, 1M ctx) + coda media (`queue.auray.run`, immagini/video/musica/3D); piano **free: 50 crediti/mese** (rinnovo mensile, periodo 2026-10; ≈10 clip da 5 s o ~28 immagini); ✅ **collaudata 15/10**: `/v1/me` 200 (plan free, balance 50, address_proved) e chat OK (con `max_tokens` alto: i modelli reasoning si mangiano i token); 🎬 **VIDEO 16/10 notte — RISOLTO E COLLAUDATO**: sul free il video è **ON** (tier `fast` ≤15 s, 1 job alla volta) ma i **147 modelli video di catalogo** (LTX-2.3/2.5, Wan 3.0, Kling 3, Veo 3.1 Lite, Seedance 2.5, VEED Fabric, Grok Imagine…) danno **403 `model_not_in_plan`** (niente addebitato → non ritentare); gira **solo `auray-ai/minimax-h3/text-to-video`** → **5 cr per clip da 5 s** (tier fast · 16:9 · seed · first-frame/reference opzionali · **con audio** · rimborso se fallisce) = **≈10 clip/mese**; **CLIP VERA**: job `video_4b386ff2-…` **COMPLETED in ~210 s** (1344×768 · 5 s · 24 fps · audio) → `_MISSIONI/FREELLM_HUB/prove/<REDACTED>.mp4` · **45/50 residui** (rollover 1 mese). Submit `POST queue.auray.run/<address>` → poll **il `status_url` esatto** (URL senza `/status` = 400 `request_in_progress`) → a COMPLETED `GET api.auray.ai/v1/jobs/{id}/assets` (URL firmati 900 s; il download **non** consuma crediti); schema/prezzi per modello: `/v1/models/{address}/openapi.json` + `llms.txt`; ⚠️ **LA CHIAVE SCADE TRA 365 GIORNI (≈15/10/2027)** — nel loro pannello NON esiste l'opzione «non scade» → segnalato apposta per saperlo; ⚠️ non presente in freellmapi v0.14.2 (aggiunta dopo nel repo).
 - **BazaarLink** — <REDACTED> — [15/10] — base `bazaarlink.ai/api/v1`; ✅ **collaudata 15/10 notte**: chat `auto:free` (2,3 s, cost 0 → instrada da solo, es. deepseek-v4-flash); 123 modelli; 10 RPM · 150 req/gg; ⭐ auto-registrazione AGENTI: `POST /api/v1/agents/register`.
 - **BlockRun** — <REDACTED> — [14/10]
 - **Cloudflare Workers AI** — <REDACTED>:<REDACTED> — [12/10] — formato ACCOUNT_ID:TOKEN
@@ -139,10 +139,10 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 23:23 tests
 - **NavyAI** — <REDACTED> — [15/10] — base `api.navy/v1`; ⚠️ **collaudo 15/10 notte: free PAUSED lato loro** (403 `insufficient_plan` «The Free plan is temporarily paused for all users» — provato su 2 modelli; NON è colpa della chiave) → riprovare nei prossimi giorni; catalogo 144 modelli (99 non-premium); attesi 150K tok/gg · 20 RPM; con User-Agent browser.
 - **NVIDIA** — <REDACTED> — [14/10]
 - **Ollama Cloud** — <REDACTED>.<REDACTED> — [15/10] — 17 modelli (gpt-oss:120b, qwen3-coder:480b…); login utente
-- **OpenCode Zen** — <REDACTED> — [15/10] — console: opencode.ai/console · base API: opencode.ai/zen/v1. ⚠️ **NON usare nel centralino** (fuori dal client dà `FreeTierError`). ✅ **SÌ con OpenCode CLI** (che È il client): installato in sandbox 15/10 — **aiutante di codice dell'agente**, ricetta in `[CHIAVE-RIMOSSA].md` (collaudo OK 15/10 notte: v1.19.0, big-pickle → «OK» in 7 s). **Limiti: NON illimitato** — 11 modelli free che ruotano, con caps per modello (community: ~200 req su big-pickle); uso/crediti sulla console; se un free cade → altro free. **Regola: montarlo all'inizio di ogni giornata** (BUONGIORNO §6.2) **e usare le dritte di `_MISSIONI/AGENTI_H24/<REDACTED>.md`** (ordine utente 16/10: potenziamento da consultare a ogni montaggio).
+- **OpenCode Zen** — <REDACTED> — [15/10] — console: opencode.ai/console · base API: opencode.ai/zen/v1. ⚠️ **NON usare nel centralino** (fuori dal client dà `FreeTierError`). ✅ **SÌ con OpenCode CLI** (che È il client): installato in sandbox 15/10 — **aiutante di codice dell'agente**, ricetta in `_MISSIONI/AGENTI_H24/OPENCODE_SANDBOX.md` (collaudo OK 15/10 notte: v1.19.0, big-pickle → «OK» in 7 s). **Limiti: NON illimitato** — 11 modelli free che ruotano, con caps per modello (community: ~200 req su big-pickle); uso/crediti sulla console; se un free cade → altro free. **Regola: montarlo all'inizio di ogni giornata** (BUONGIORNO §6.2) **e usare le dritte di `_MISSIONI/AGENTI_H24/<REDACTED>.md`** (ordine utente 16/10: potenziamento da consultare a ogni montaggio).
 - **OpenRouter** — <REDACTED> — [14/10] — 🎬 **16/10 sera (R3): API VIDEO verificata dalla sandbox**: `GET /api/v1/videos/models` → **200 · 30 modelli** (Veo 3.1/+Fast/+Lite · Wan 2.6/2.7/3.0 · Seedance 2.0/2.5 · Kling v3.0/O1 · Grok Imagine · Runway · HeyGen · Hailuo 3 · HappyHorse · FLUX 3 Video) · prezzi: **Veo 3.1 Fast $0,10/s** (720p+audio) · Veo 3.1 $0,40/s · **Wan 2.6 $0,08/s** · Kling O1 $0,112/s · **nessun video `:free`** → per generare serve credito (gateway del modulo Video, non fonte gratis).
 - **OrcaRouter** — `<REDACTED>` (creata 15/10) **+ 2ª chiave «google_251394 – initial token»**: `<REDACTED>` — [15/10] — base `api.orcarouter.ai/v1`. ✅ **COLLAUDATA 15/10 notte** (dopo che l'utente ha collegato GitHub nel profilo **+ attivato la 2FA** — prima il free dava `<REDACTED>`): chat OK su 4 rotte a **costo 0** — `z-ai/glm-5.3-flash-free` 3,3 s · `deepseek/<REDACTED>` 1,5 s · `tencent/hy4-preview-free` 3,3 s · rotta **`orcarouter/free`** 1,5 s (instrada da sola: `X-Orca-Router: free`, ha scelto <REDACTED>). Limiti fascia base: **10 rpm / 50 rpd** (reset 00:00 UTC; hy4-preview 50/250) · prompt-cap → `400 err_free_prompt_cap` · **mai fallback su modelli a pagamento** · `X-Orca-*` negli header per il debug. Pacchetto free corrente (ruota): glm-5.3-flash-free · <REDACTED> · hy3-free · hy4-preview-free · orcaverify-free.
-- **Pollinations** — <REDACTED> — [16/10] (prima era no-key) — base `gen.pollinations.ai/v1`; **355 modelli**; la rotta keyless `text.pollinations.ai/openai` resta come custom — vecchia nota: **NO KEY nel nostro uso** (tier anonimo, rotta legacy) — base `text.pollinations.ai/openai` — [15/10] — ⚠️ **16/10: in freellmapi v0.15 il provider pollinations è KEYED** (base `gen.pollinations.ai/v1`, verifica su `/account/key`): per averlo nell'app serve una **chiave Pollinations gratuita** da creare su `enter.pollinations.ai/keys` (account gratis; crediti free dalle Quest GitHub). Senza chiave, in freellmapi si può aggiungere a mano come **endpoint CUSTOM** → `https://text.pollinations.ai/openai` (rotta keyless che usiamo noi, collaudata 15/10). — ✅ collaudata 15/10 notte: chat `openai-fast` (GPT-OSS 20B via OVH) → «OK»; il nuovo `gen.pollinations.ai` vuole chiavi, la rotta legacy text è aperta (fair use). Account su auth.pollinations.ai solo per alzare i limiti. — 🎬 **16/10**: il **video su Pollinations NON è gratis** (modelli [CHIAVE-RIMOSSA] → servono **Pollen**, ≈1$=1 Pollen; i quest danno un bonus una-tantum ~3 Pollen) → **restano gratis solo le immagini Flux (illimitate!) + text free**
+- **Pollinations** — <REDACTED> — [16/10] (prima era no-key) — base `gen.pollinations.ai/v1`; **355 modelli**; la rotta keyless `text.pollinations.ai/openai` resta come custom — vecchia nota: **NO KEY nel nostro uso** (tier anonimo, rotta legacy) — base `text.pollinations.ai/openai` — [15/10] — ⚠️ **16/10: in freellmapi v0.15 il provider pollinations è KEYED** (base `gen.pollinations.ai/v1`, verifica su `/account/key`): per averlo nell'app serve una **chiave Pollinations gratuita** da creare su `enter.pollinations.ai/keys` (account gratis; crediti free dalle Quest GitHub). Senza chiave, in freellmapi si può aggiungere a mano come **endpoint CUSTOM** → `https://text.pollinations.ai/openai` (rotta keyless che usiamo noi, collaudata 15/10). — ✅ collaudata 15/10 notte: chat `openai-fast` (GPT-OSS 20B via OVH) → «OK»; il nuovo `gen.pollinations.ai` vuole chiavi, la rotta legacy text è aperta (fair use). Account su auth.pollinations.ai solo per alzare i limiti. — 🎬 **16/10**: il **video su Pollinations NON è gratis** (modelli Wan/Veo/Seedance/Nova/grok-video → servono **Pollen**, ≈1$=1 Pollen; i quest danno un bonus una-tantum ~3 Pollen) → **restano gratis solo le immagini Flux (illimitate!) + text free**
 - **NaraRouter** — <REDACTED> — [15/10] — base `router.bynara.id/v1`; ✅ **COLLAUDATA 15/10 tarda notte** (dopo Telegram + relink): chat `nemotron-3.5-lightning-free` 3,7 s. **48 modelli**; per il free usare SOLO gli id `-free` o a prezzo 0: **nemotron-3.5-lightning-free · <REDACTED> · mimo-v2.6-flash-free · muse-spark-1.3-contributor-free · laguna-s-2.1 · jev** (i modelli premium danno 402/429 «insufficient credits»). Free: 7M tok/giorno · 10 rpm (reset 00:00 UTC); per il free serve **Telegram: t.me/bynara_ai + relink in router.bynara.id/settings**.
 - **OVH** — NO KEY — endpoint oai.endpoints.kepler.ai.cloud.ovh.net/v1 (solo embedding) — [14/10] — 2 RPM
 - **Requesty** — <REDACTED>+CKxs+blITSMYsCM/<REDACTED>+<REDACTED>= — [13/10]
@@ -152,7 +152,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 23:23 tests
 - **SeaLION** (AI Singapore) — <REDACTED> — [15/10] — Llama-SEA-LION v3.5-70B; login Google; 10 RPM; api.sea-lion.ai/v1
 - **Typhoon** (SCB10X) — <REDACTED> — [15/10] — base `api.opentyphoon.ai/v1`; ✅ **collaudata 15/10 notte**: chat `typhoon-v2.5-30b-a3b-instruct` 0,7 s; 6 modelli (instruct + OCR + ASR realtime); **API free** (research showcase SCB10X), no carta.
 - **Token Harbor** — <REDACTED> — [15/10] — base `tokenharbor.ai/v1`; invito **TH-54P5-8P3N**; crediti: $0 di partenza, **match 100% sul 1° top-up** (≤$100 entro 14 gg) + milestone $10/$50/$200; free: 7×24h personali dal 1° uso; ✅ **COLLAUDATO 15/10 tarda notte** (dopo la verifica email dell'utente): `/models` 200 con **69 modelli** (free: `deepseek-v4-flash:free` · `mimo-v2.5:free` · `mimo-v2.6-flash:free` · `deepseek-v4.1-flash:free`) e chat `deepseek-v4-flash:free` → «OK» in 3,0 s; ⚠️ i prompt dei modelli free possono essere conservati.
-- **TeamoRouter** — `[CHIAVE-RIMOSSA]…` **stringa completa nel messaggio chat utente 15/10 tarda notte** — [15/10] — base `api.teamorouter.com/v1`; /models 200 (49 modelli); free: `deepseek-flash-free` · `<REDACTED>` · `glm-5.3-flash-free` (`<REDACTED>` = model_not_available); 200 req/gg dichiarate; ⚠️ **collaudata 15/10 tarda notte: chiave OK ma TUTTI i free → 400 `<REDACTED>`** (wallet a 0) → verificare in dashboard (attivazione/quota) o è bug loro; non martellare.
+- **TeamoRouter** — `sk-teamo-e0c685…` **stringa completa nel messaggio chat utente 15/10 tarda notte** — [15/10] — base `api.teamorouter.com/v1`; /models 200 (49 modelli); free: `deepseek-flash-free` · `<REDACTED>` · `glm-5.3-flash-free` (`<REDACTED>` = model_not_available); 200 req/gg dichiarate; ⚠️ **collaudata 15/10 tarda notte: chiave OK ma TUTTI i free → 400 `<REDACTED>`** (wallet a 0) → verificare in dashboard (attivazione/quota) o è bug loro; non martellare.
 - **UnoRouter** — <REDACTED> — [15/10] — base `api.unorouter.com/v1`; ✅ **collaudata 15/10 notte**: `qwen3.8-27b:free` (4,3 s); 253 modelli (94 `:free`); ~1 req/min per modello (429 → ruotare); rimpiazza AINative (FUORI: free finito).
 - **xKiro** — <REDACTED> — [13/10]
 - **Zhipu** — <REDACTED>.qFvBJiMSdkuIO6wp — [14/10]
@@ -163,7 +163,7 @@ drwxr-xr-x 1 agenti agenti    4096 Nov  1 23:23 tests
 247:- **NOTTE 15/10 (blocco 2 provider — collaudo fatto):** ✅ **BazaarLink** (chat `auto:free`, cost 0) · ✅ **Routeway** (chat 2,1 s `deepseek-v4-flash:free`; serve UA browser) · ✅ **UnoRouter** (chat 4,3 s `qwen3.8-27b:free`) · ⚠️ **NavyAI = free PAUSED lato loro** («temporarily paused for all users», provato 2 volte → NON è la chiave: riprovare nei prossimi giorni) · **OrcaRouter = chiave in arrivo** (l'utente spiega il da farsi).
 === NavyAI ===
 55:- **NavyAI** — <REDACTED> — [15/10] — base `api.navy/v1`; ⚠️ **collaudo 15/10 notte: free PAUSED lato loro** (403 `insufficient_plan` «The Free plan is temporarily paused for all users» — provato su 2 modelli; NON è colpa della chiave) → riprovare nei prossimi giorni; catalogo 144 modelli (99 non-premium); attesi 150K tok/gg · 20 RPM; con User-Agent browser.
-239:**MATTINA 16/10 (inventario ~9:20 IT) — esiti**: ✅ **Router9** chat 0,6 s · ✅ **Waterfall** chat 8,3 s (promosse «funziona ora») · ✅ Groq 200 (11) · ✅ NVIDIA 200 (81) · ✅ OpenRouter 200 (465) · ✅ Cloudflare chat OK · ✅ Kilo 200 (396, keyless) · ✅ LongCat 200 (2 modelli) · ⚠️ **Google** /models 500 (lato loro, da riprovare) · ⏳ **NavyAI** ancora «free plan temporarily paused» · 🔴 **ACLIDE** /dashboard ancora 500 (bug loro, invariato). Montaggi del giorno: **OpenCode ✅** (v1.19.2, big-pickle «OK») · **camofox ✅** (9377). **Pomeriggio 16/10**: ✅ **n3 Speechify** (entitlements 200 + sintesi reale 1,8 s — riga 51) · ✅ **n4 FreeAI** (/models 200: 12 modelli chat/img/video/TTS; chat `qwen7b` «OK» 2,6 s — riga 52); in freellmapi FreeAI resta «unknown» per design (TTS-only lì, nessun endpoint di validazione). **freellmapi aggiornato a v0.15.0** (15/10 22:38): +Parallel ricerca no-key (free 14/11) · +Auray (check senza spendere crediti) · embeddings LLMTR · via il Sign-In desktop · toggle proxy globale · MCP ([CHIAVE-RIMOSSA]).
+239:**MATTINA 16/10 (inventario ~9:20 IT) — esiti**: ✅ **Router9** chat 0,6 s · ✅ **Waterfall** chat 8,3 s (promosse «funziona ora») · ✅ Groq 200 (11) · ✅ NVIDIA 200 (81) · ✅ OpenRouter 200 (465) · ✅ Cloudflare chat OK · ✅ Kilo 200 (396, keyless) · ✅ LongCat 200 (2 modelli) · ⚠️ **Google** /models 500 (lato loro, da riprovare) · ⏳ **NavyAI** ancora «free plan temporarily paused» · 🔴 **ACLIDE** /dashboard ancora 500 (bug loro, invariato). Montaggi del giorno: **OpenCode ✅** (v1.19.2, big-pickle «OK») · **camofox ✅** (9377). **Pomeriggio 16/10**: ✅ **n3 Speechify** (entitlements 200 + sintesi reale 1,8 s — riga 51) · ✅ **n4 FreeAI** (/models 200: 12 modelli chat/img/video/TTS; chat `qwen7b` «OK» 2,6 s — riga 52); in freellmapi FreeAI resta «unknown» per design (TTS-only lì, nessun endpoint di validazione). **freellmapi aggiornato a v0.15.0** (15/10 22:38): +Parallel ricerca no-key (free 14/11) · +Auray (check senza spendere crediti) · embeddings LLMTR · via il Sign-In desktop · toggle proxy globale · MCP (provider_list/quota_outlook/clear_cache).
 === UnoRouter ===
 72:- **UnoRouter** — <REDACTED> — [15/10] — base `api.unorouter.com/v1`; ✅ **collaudata 15/10 notte**: `qwen3.8-27b:free` (4,3 s); 253 modelli (94 `:free`); ~1 req/min per modello (429 → ruotare); rimpiazza AINative (FUORI: free finito).
 247:- **NOTTE 15/10 (blocco 2 provider — collaudo fatto):** ✅ **BazaarLink** (chat `auto:free`, cost 0) · ✅ **Routeway** (chat 2,1 s `deepseek-v4-flash:free`; serve UA browser) · ✅ **UnoRouter** (chat 4,3 s `qwen3.8-27b:free`) · ⚠️ **NavyAI = free PAUSED lato loro** («temporarily paused for all users», provato 2 volte → NON è la chiave: riprovare nei prossimi giorni) · **OrcaRouter = chiave in arrivo** (l'utente spiega il da farsi).
@@ -311,8 +311,8 @@ gemini-3.1-flash-lite:free
 gemini-3.5-flash-lite:free
 === AnyAPI all ===
 google/gemma-4-26b-a4b-it:free
-[CHIAVE-RIMOSSA]:free
-[CHIAVE-RIMOSSA]:free
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free
+nvidia/nemotron-3-ultra-550b-a55b:free
 dots-studio/dots-3-note-preview:free
 nvidia/nemotron-3.5-lightning:free
 recursive/flint-v1.0:free
@@ -392,7 +392,7 @@ gemini-3.8-flash-thinking
 === Gizmo free ===
 xingchen-agi/xing4.0-29b-a4b:free
 nvidia/nemotron-3.5-lightning:free
-[CHIAVE-RIMOSSA]:free
+nvidia/nemotron-3-ultra-550b-a55b:free
 -- first 10 --
 moonshotai/kimi-k3.1-pro
 xingchen-agi/xing4.0-29b-a4b:free
@@ -589,7 +589,7 @@ command-r
   }
 ]
 === BlockRun billing_mode/pricing zero ===
-[CHIAVE-RIMOSSA]
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
 nvidia/nemotron-3.5-lightning
 nvidia/llama-3.2-11b-vision
 nvidia/nemotron-3-ultra-550b
@@ -658,7 +658,7 @@ qwen3.8-27b:free
 big-pickle:free
 gemini-3-flash:free
 --- blockrun free ---
-[CHIAVE-RIMOSSA]
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
 nvidia/nemotron-3.5-lightning
 nvidia/llama-3.2-11b-vision
 nvidia/nemotron-3-ultra-550b
@@ -680,8 +680,8 @@ AnyAPI         HTTP=200 model=nvidia/nemotron-3.5-lightning:free msg=
 ElectronHub    HTTP=403 model=gpt-oss-20b:free msg=To prevent abuse and high traffic on free models, phone verification is required. Visit https://app.electronhub.ai → Settings → Security → Identity Verifi
 Typhoon        HTTP=200 model=typhoon-v2.5-30b-a3b-instruct msg=OK
 [0m
-[0m$ [0mcat [CHIAVE-RIMOSSA].json | jq '.' | head -80
-cat: [CHIAVE-RIMOSSA].json: No such file or directory
+[0m$ [0mcat /tmp/opencode/probe/chat_Routeway.json | jq '.' | head -80
+cat: /tmp/opencode/probe/chat_Routeway.json: No such file or directory
 [0m
 [0m$ [0msource /tmp/opencode/probe/lib.sh
 probe_chat "Routeway" "https://api.routeway.ai/v1" "minimax-m3.1-flash:free"
@@ -702,16 +702,16 @@ BlockRun       HTTP=503 model=nvidia/nemotron-3.5-lightning msg=nvidia/nemotron-
 [0m$ [0mcd /tmp/opencode/probe
 for f in chat_Routeway.json chat_UnoRouter.json chat_AnyAPI.json chat_Gizmo.json; do echo "=== $f ==="; jq -c '.' "$f" | cut -c1-1200; echo; done
 === chat_Routeway.json ===
-{"id":"[CHIAVE-RIMOSSA]","object":"chat.completion","created":1793611486,"model":"minimax-m3.1-flash:free","system_fingerprint":null,"choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need respond only \"OK\" to user"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":183,"completion_tokens":10,"total_tokens":193}}
+{"id":"chatcmpl-1793611467624-576fd898836846d3","object":"chat.completion","created":1793611486,"model":"minimax-m3.1-flash:free","system_fingerprint":null,"choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need respond only \"OK\" to user"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":183,"completion_tokens":10,"total_tokens":193}}
 
 === chat_UnoRouter.json ===
-{"id":"[CHIAVE-RIMOSSA]","object":"chat.completion","created":1793611444,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":null,"reasoning":"The user wants me to reply only \"OK\"."},"finish_reason":"length"}],"usage":{"prompt_tokens":56,"completion_tokens":10,"total_tokens":66,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0}},"service_tier":"flex"}
+{"id":"chatcmpl-mqj9242cr94y3ylu6qcgszdy","object":"chat.completion","created":1793611444,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":null,"reasoning":"The user wants me to reply only \"OK\"."},"finish_reason":"length"}],"usage":{"prompt_tokens":56,"completion_tokens":10,"total_tokens":66,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0}},"service_tier":"flex"}
 
 === chat_AnyAPI.json ===
-{"id":"[CHIAVE-RIMOSSA]","created":1793611445,"model":"nvidia/nemotron-3.5-lightning:free","object":"chat.completion","choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","reasoning_content":"Here's a thinking process:\n\n1.  **","provider_specific_fields":{"reasoning":"Here's a thinking process:\n\n1.  **","reasoning_details":[{"type":"reasoning.text","text":"Here's a thinking process:\n\n1.  **","format":"unknown","index":0}],"refusal":null},"content":null}}],"usage":{"completion_tokens":10,"prompt_tokens":22,"total_tokens":32,"completion_tokens_details":{"audio_tokens":0,"reasoning_tokens":10,"image_tokens":0},"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"video_tokens":0,"cache_write_tokens":0,"cache_creation_tokens":0},"context_window_size":1000000,"cost":0.0}}
+{"id":"chatcmpl-e1d2361d-2045-46c8-a598-7418dc2bd23e","created":1793611445,"model":"nvidia/nemotron-3.5-lightning:free","object":"chat.completion","choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","reasoning_content":"Here's a thinking process:\n\n1.  **","provider_specific_fields":{"reasoning":"Here's a thinking process:\n\n1.  **","reasoning_details":[{"type":"reasoning.text","text":"Here's a thinking process:\n\n1.  **","format":"unknown","index":0}],"refusal":null},"content":null}}],"usage":{"completion_tokens":10,"prompt_tokens":22,"total_tokens":32,"completion_tokens_details":{"audio_tokens":0,"reasoning_tokens":10,"image_tokens":0},"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"video_tokens":0,"cache_write_tokens":0,"cache_creation_tokens":0},"context_window_size":1000000,"cost":0.0}}
 
 === chat_Gizmo.json ===
-{"id":"[CHIAVE-RIMOSSA]","object":"chat.completion","created":1793611488,"model":"nvidia/nemotron-3.5-lightning:free","provider":"NVIDIA","system_fingerprint":null,"service_tier":null,"choices":[{"index":0,"logprobs":null,"finish_reason":"length","native_finish_reason":"length","message":{"role":"assistant","content":null,"refusal":null,"reasoning":"Here's a thinking process:\n\n1.  **","reasoning_details":[{"type":"reasoning.text","text":"Here's a thinking process:\n\n1.  **","format":"unknown","index":0}]}}],"usage":{"prompt_tokens":22,"completion_tokens":10,"total_tokens":32,"cost":0,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"video_tokens":0},"cost_details":{"upstream_inference_cost":0,"upstream_inference_prompt_cost":0,"[CHIAVE-RIMOSSA]":0},"completion_tokens_details":{"reasoning_tokens":10,"image_tokens":0,"audio_tokens":0}},"gizmo_routing":{"requested":"fastest","route":"openrouter","provider":"OpenRouter","fallback":false,"attempts":[{"route":"openrouter","provider":"OpenRouter","status":200,"ok":true,"ms":668}]},"gizmo_notice":"The model spent its whole max_tokens budget (10 token
+{"id":"gen-1793611488-yi0cCSwmEHGzH6PdrYG0","object":"chat.completion","created":1793611488,"model":"nvidia/nemotron-3.5-lightning:free","provider":"NVIDIA","system_fingerprint":null,"service_tier":null,"choices":[{"index":0,"logprobs":null,"finish_reason":"length","native_finish_reason":"length","message":{"role":"assistant","content":null,"refusal":null,"reasoning":"Here's a thinking process:\n\n1.  **","reasoning_details":[{"type":"reasoning.text","text":"Here's a thinking process:\n\n1.  **","format":"unknown","index":0}]}}],"usage":{"prompt_tokens":22,"completion_tokens":10,"total_tokens":32,"cost":0,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"video_tokens":0},"cost_details":{"upstream_inference_cost":0,"upstream_inference_prompt_cost":0,"upstream_inference_completions_cost":0},"completion_tokens_details":{"reasoning_tokens":10,"image_tokens":0,"audio_tokens":0}},"gizmo_routing":{"requested":"fastest","route":"openrouter","provider":"OpenRouter","fallback":false,"attempts":[{"route":"openrouter","provider":"OpenRouter","status":200,"ok":true,"ms":668}]},"gizmo_notice":"The model spent its whole max_tokens budget (10 token
 [0m
 [0m$ [0mcat >> /tmp/opencode/probe/lib.sh <<'EOF'
 probe_chat_n() {
@@ -737,11 +737,11 @@ Gizmo          HTTP=200 model=nvidia/nemotron-3.5-lightning:free msg=OK
 [0m
 [0m$ [0msource /tmp/opencode/probe/lib.sh
 echo "=== Navy alt base models ==="
-k=$(getkey NavyAI); code=$(curl -sS -o [CHIAVE-RIMOSSA].json -w '%{http_code}' --max-time 30 -H "Authorization: Bearer $k" -H "User-Agent: $UA" https://api.navy.ai/v1/models 2>/dev/null); echo "HTTP=$code bytes=$(wc -c <[CHIAVE-RIMOSSA].json)"; jq -r '(.data//.models//[])|length' [CHIAVE-RIMOSSA].json 2>/dev/null
+k=$(getkey NavyAI); code=$(curl -sS -o /tmp/opencode/probe/models_NavyAI_alt.json -w '%{http_code}' --max-time 30 -H "Authorization: Bearer $k" -H "User-Agent: $UA" https://api.navy.ai/v1/models 2>/dev/null); echo "HTTP=$code bytes=$(wc -c </tmp/opencode/probe/models_NavyAI_alt.json)"; jq -r '(.data//.models//[])|length' /tmp/opencode/probe/models_NavyAI_alt.json 2>/dev/null
 echo "=== OVH models no key ==="
 code=$(curl -sS -o /tmp/opencode/probe/models_OVH.json -w '%{http_code}' --max-time 30 -H "User-Agent: $UA" https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/models 2>/dev/null); echo "HTTP=$code bytes=$(wc -c </tmp/opencode/probe/models_OVH.json)"; cat /tmp/opencode/probe/models_OVH.json | cut -c1-800
 === Navy alt base models ===
-/bin/bash: line 3: [CHIAVE-RIMOSSA].json: No such file or directory
+/bin/bash: line 3: /tmp/opencode/probe/models_NavyAI_alt.json: No such file or directory
 HTTP=000 bytes=
 === OVH models no key ===
 HTTP=200 bytes=6309
@@ -787,15 +787,15 @@ probe_chat_n "LongCat" "https://api.longcat.chat/openai/v1" "LongCat-2.0" 200
 probe_chat_n "Zhipu" "https://open.bigmodel.cn/api/paas/v4" "glm-4.5" 200
 probe_chat_n "NaraRouter" "https://router.bynara.id/v1" "laguna-s-2.1" 200
 probe_chat_n "BlockRun" "https://api.blockrun.ai/v1" "cohere/north-mini-code" 200
-probe_chat_n "BlockRun" "https://api.blockrun.ai/v1" "[CHIAVE-RIMOSSA]" 200
+probe_chat_n "BlockRun" "https://api.blockrun.ai/v1" "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning" 200
 LongCat        HTTP=402 model=LongCat-2.0 msg=Call failed: Insufficient token quota. 
 Zhipu          HTTP=429 model=glm-4.5 msg=余额不足或无可用资源包,请充值。 
 NaraRouter     HTTP=400 model=laguna-s-2.1 msg=The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter
 BlockRun       HTTP=503 model=cohere/north-mini-code msg=cohere/north-mini-code could not answer this request, and this API does not substitute another model. Nothing was charge
-BlockRun       HTTP=200 [CHIAVE-RIMOSSA] msg=OK
+BlockRun       HTTP=200 model=nvidia/nemotron-3-nano-omni-30b-a3b-reasoning msg=OK
 [0m
 [0m$ [0mcd /tmp/opencode/probe; jq -c '.' chat_NaraRouter.json | cut -c1-1000; echo; echo "=== LongCat full ==="; jq -c '.' chat_LongCat.json | cut -c1-600; echo; echo "=== Zhipu full ==="; jq -c '.' chat_Zhipu.json | cut -c1-600
-{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"[CHIAVE-RIMOSSA]"}}
+{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"7891ed04-1964-47f3-8cfb-436259572bbd"}}
 
 === LongCat full ===
 {"error":{"code":"too_many_requests","message":"Call failed: Insufficient token quota.","type":"rate_limit_error"}}
@@ -869,14 +869,14 @@ for f in dal_pc/nomi_modelli_provider.md fatti/ar_tutte_le_chiavi.sh dal_pc/ar_t
 --
 110-[0m$ [0msed -n '27,75p' ~/CHIAVI_LOCALI.md | sed -E 's/([A-Za-z0-9_-]{20,})/<REDACTED>/g'
 111-## 4 · PROVIDER LLM — CHIAVI (59:
-112:**🧮 CONTEGGIO FREELLMAPI (verificato 16/10 sui PLATFORMS del main):** delle **61 voci** di questo §4, **52 sono piattaforme di freellmapi** (di cui **2 senza chiave**: Kilo · AI Horde — Pollinations ora È keyed) → **50 chiavi con valore che freellmapi riconosce**; **8 voci FUORI dal roster**: AgentRouter · Token Harbor · TeamoRouter (❌) · **Chutes (❌ no-free)** · **Nscale (✅ funziona)** · **Jina AI + Qdrant Cloud** (strumenti BLOCCO 9) · **fal.ai** (piattaforma media 16/10 — key valida ma account **locked TOP_UP**) · **WaveSpeedAI** (piattaforma media 16/10 — **✅ funzionante, $1 confermato**). Le chiavi di ricerca (Tavily/Exa/Linkup/Firecrawl) stanno in §5 e non entrano in questo conteggio. *Piattaforme freellmapi che NON abbiamo (19, di cui 16 già chiuse dai divieti): aclide (bloccata), logfare (in corso), speka (**candidata nuova**), parallel (no-key), pinecone (solo catalogo .co, non nel pannello), [CHIAVE-RIMOSSA] (carta/KYC/telefono cinese/nessun free).* 26 del roster 14/10 + Ollama Cloud + SeaLION + OpenCode Zen + BazaarLink + NavyAI + Routeway + UnoRouter + OrcaRouter + Aion Labs + Typhoon + Septor Labs + NaraRouter + TeamoRouter + AgentRouter + CLōD + Api.Airforce + Token Harbor + Auray + Plugsky + SimpleLLM + LLMTR + Router9 + Waterfall [15/10 tarda notte] · ordine alfabetico · [tag] = giorno di arrivo)
+112:**🧮 CONTEGGIO FREELLMAPI (verificato 16/10 sui PLATFORMS del main):** delle **61 voci** di questo §4, **52 sono piattaforme di freellmapi** (di cui **2 senza chiave**: Kilo · AI Horde — Pollinations ora È keyed) → **50 chiavi con valore che freellmapi riconosce**; **8 voci FUORI dal roster**: AgentRouter · Token Harbor · TeamoRouter (❌) · **Chutes (❌ no-free)** · **Nscale (✅ funziona)** · **Jina AI + Qdrant Cloud** (strumenti BLOCCO 9) · **fal.ai** (piattaforma media 16/10 — key valida ma account **locked TOP_UP**) · **WaveSpeedAI** (piattaforma media 16/10 — **✅ funzionante, $1 confermato**). Le chiavi di ricerca (Tavily/Exa/Linkup/Firecrawl) stanno in §5 e non entrano in questo conteggio. *Piattaforme freellmapi che NON abbiamo (19, di cui 16 già chiuse dai divieti): aclide (bloccata), logfare (in corso), speka (**candidata nuova**), parallel (no-key), pinecone (solo catalogo .co, non nel pannello), experiential/cerebras/radeon/siliconflow/modelscope/qianfan/volcengine/xfyun/bai/reka/ainative (carta/KYC/telefono cinese/nessun free).* 26 del roster 14/10 + Ollama Cloud + SeaLION + OpenCode Zen + BazaarLink + NavyAI + Routeway + UnoRouter + OrcaRouter + Aion Labs + Typhoon + Septor Labs + NaraRouter + TeamoRouter + AgentRouter + CLōD + Api.Airforce + Token Harbor + Auray + Plugsky + SimpleLLM + LLMTR + Router9 + Waterfall [15/10 tarda notte] · ordine alfabetico · [tag] = giorno di arrivo)
 113-- **Agnes AI** — <REDACTED> — [13/10] — 🎬 **VIDEO 16/10**: catalogo attuale 10 modelli: **`agnes-video-2.5` · `agnes-video-2.5-flash`** (text→video, **image→video**, multi-immagine, keyframes), image 2.0/2.1/2.5-flash, chat 2.5/3.0; **free: 1-2 clip/minuto** (docs: video RPM free = 1 effettivo; nessun tetto giornaliero dichiarato per il free — piano a pagamento = 500 s/gg); clip fino a ~20 s (fonte terza); ⚠️ 429 = rate, non chiave · 🎬 16/10 sera (R3): endpoint video confermato (`POST /v1/videos` mode text/keyframe/reference 4-12 s + polling `GET /agnesapi?video_id=…&model_name=…`) MA 2 tentativi = **`video_queue_full`** (16:02/16:03 IT) → coda gratis intasata in punta: riprovare off-peak; terze parti: «$0/s in promozione» sul flash.
 114-- **Aion Labs** — <REDACTED> — [15/10] — base `api.aionlabs.ai/v1`; ✅ **collaudata 15/10 notte**: chat `aion-labs/aion-3.5` 1,6 s; 6 modelli (aion-2.0/3.0/3.5 + mini + rp-llama 3.1-8b); free 15 rpm · 20.000 tok/giorno, no carta (fonte freellm.net + hokai.io).
 115-- **AI Horde** — NO KEY (anonimo, lento, kudos) — endpoint oai.aihorde.net/v1 — [14/10] — anonimo, lento (kudos)
 116-- **Api.Airforce** — <REDACTED> — [15/10] — base `api.airforce/v1`; 657 modelli; free `glm-4.7-flash`; **1 rpm · 1000 req/gg**; ⚠️ **chiave VALIDA** (collaudo 15/10 tarda notte) ma canale free instabile: `glm-4.7-flash` 200 in 2,0 s (content vuoto) poi 503 «temporarily unavailable»; `gpt-oss-120b`/`qwen3.8-27b` → 402 `paid_model_required` → usare SOLO i free, 1 richiesta al minuto, con pazienza.
 117:- **AgentRouter** — `<REDACTED>…` **stringa completa nel messaggio chat utente 15/10 tarda notte** — [15/10] — base `agentrouter.org/v1` (OpenAI-compat; Anthropic senza `/v1`); $100 free con GitHub; ⚠️ **collaudo 15/10 tarda notte = IMPOSSIBILE dal sandbox**: Aliyun WAF risponde HTML su `/v1/models`, `/v1/chat/completions`, `/v1/messages` (provati UA browser, Bearer, x-api-key, curl_cffi impersonate=chrome) → da provare dal browser/strumento dell'utente (console `agentrouter.org/console`); niente raffiche.
 118-- **AnyAPI** — <REDACTED> — [14/10]
-119-- **Auray** — <REDACTED> — [15/10] — base `api.auray.ai/openai/v1` (chat OpenAI-compat: es. `glm-5-3-flash`, 1M ctx) + coda media (`queue.auray.run`, immagini/video/musica/3D); piano **free: 50 crediti/mese** (rinnovo mensile, periodo 2026-10; ≈10 clip da 5 s o ~28 immagini); ✅ **collaudata 15/10**: `/v1/me` 200 (plan free, balance 50, address_proved) e chat OK (con `max_tokens` alto: i modelli reasoning si mangiano i token); 🎬 **VIDEO 16/10 notte — RISOLTO E COLLAUDATO**: sul free il video è **ON** (tier `fast` ≤15 s, 1 job alla volta) ma i **147 modelli video di catalogo** (LTX-2.3/2.5, Wan 3.0, Kling 3, Veo 3.1 Lite, Seedance 2.5, VEED Fabric, Grok Imagine…) danno **403 `model_not_in_plan`** (niente addebitato → non ritentare); gira **solo `[CHIAVE-RIMOSSA]`** → **5 cr per clip da 5 s** (tier fast · 16:9 · seed · first-frame/reference opzionali · **con audio** · rimborso se fallisce) = **≈10 clip/mese**; **CLIP VERA**: job `video_4b386ff2-…` **COMPLETED in ~210 s** (1344×768 · 5 s · 24 fps · audio) → `_MISSIONI/FREELLM_HUB/prove/<REDACTED>.mp4` · **45/50 residui** (rollover 1 mese). Submit `POST queue.auray.run/<address>` → poll **il `status_url` esatto** (URL senza `/status` = 400 `request_in_progress`) → a COMPLETED `GET api.auray.ai/v1/jobs/{id}/assets` (URL firmati 900 s; il download **non** consuma crediti); schema/prezzi per modello: `/v1/models/{address}/openapi.json` + `llms.txt`; ⚠️ **LA CHIAVE SCADE TRA 365 GIORNI (≈15/10/2027)** — nel loro pannello NON esiste l'opzione «non scade» → segnalato apposta per saperlo; ⚠️ non presente in freellmapi v0.14.2 (aggiunta dopo nel repo).
+119-- **Auray** — <REDACTED> — [15/10] — base `api.auray.ai/openai/v1` (chat OpenAI-compat: es. `glm-5-3-flash`, 1M ctx) + coda media (`queue.auray.run`, immagini/video/musica/3D); piano **free: 50 crediti/mese** (rinnovo mensile, periodo 2026-10; ≈10 clip da 5 s o ~28 immagini); ✅ **collaudata 15/10**: `/v1/me` 200 (plan free, balance 50, address_proved) e chat OK (con `max_tokens` alto: i modelli reasoning si mangiano i token); 🎬 **VIDEO 16/10 notte — RISOLTO E COLLAUDATO**: sul free il video è **ON** (tier `fast` ≤15 s, 1 job alla volta) ma i **147 modelli video di catalogo** (LTX-2.3/2.5, Wan 3.0, Kling 3, Veo 3.1 Lite, Seedance 2.5, VEED Fabric, Grok Imagine…) danno **403 `model_not_in_plan`** (niente addebitato → non ritentare); gira **solo `auray-ai/minimax-h3/text-to-video`** → **5 cr per clip da 5 s** (tier fast · 16:9 · seed · first-frame/reference opzionali · **con audio** · rimborso se fallisce) = **≈10 clip/mese**; **CLIP VERA**: job `video_4b386ff2-…` **COMPLETED in ~210 s** (1344×768 · 5 s · 24 fps · audio) → `_MISSIONI/FREELLM_HUB/prove/<REDACTED>.mp4` · **45/50 residui** (rollover 1 mese). Submit `POST queue.auray.run/<address>` → poll **il `status_url` esatto** (URL senza `/status` = 400 `request_in_progress`) → a COMPLETED `GET api.auray.ai/v1/jobs/{id}/assets` (URL firmati 900 s; il download **non** consuma crediti); schema/prezzi per modello: `/v1/models/{address}/openapi.json` + `llms.txt`; ⚠️ **LA CHIAVE SCADE TRA 365 GIORNI (≈15/10/2027)** — nel loro pannello NON esiste l'opzione «non scade» → segnalato apposta per saperlo; ⚠️ non presente in freellmapi v0.14.2 (aggiunta dopo nel repo).
 --
 158-- **Zhipu** — <REDACTED>.qFvBJiMSdkuIO6wp — [14/10]
 159-[0m
@@ -953,10 +953,10 @@ line 259 agentrouter tokens: [(51, 'sk-mHo...')]
 - **16/10 notte**: nessun consumo sui provider **NON-giornalieri** (oggi: archive.org, yt-dlp+Whisper su **Groq** = giornaliero/gratis, opencode Zen = free tier) → **residui invariati** (Linkup **$19,983**; resto come da §E). I **giornalieri** si misurano domattina ~9:00.
 omniroute <REDACTED>
 agentrouter <REDACTED>
-gemini AQ.[CHIAVE-RIMOSSA]
+gemini [CHIAVE-RIMOSSA]
 mistral [CHIAVE-RIMOSSA]
 cohere [CHIAVE-RIMOSSA]
-GEMINI_STUDIO=AQ.[CHIAVE-RIMOSSA]
+GEMINI_STUDIO=[CHIAVE-RIMOSSA]
 [0m
 [0m$ [0mcd /tmp/opencode/probe
 UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -1094,7 +1094,7 @@ K=$(grep -m1 '^agentrouter ' ~/CHIAVI_LOCALI.md | awk '{print $2}')
 code=$(curl -sS -o ar_chat2.json -w '%{http_code}' --max-time 90 -X POST https://agentrouter.org/v1/messages -H "x-api-key: $K" -H "anthropic-version: 2023-06-01" -H "Content-Type: application/json" -H "User-Agent: $UA_CLAUDE" -d '{"model":"gpt-6-astra","max_tokens":20,"messages":[{"role":"user","content":"Reply exactly: OK"}]}' 2>/dev/null)
 echo "AgentRouter gpt-6-astra HTTP=$code"; sed -E 's/(sk-[A-Za-z0-9_-]{6,}|request id: [A-Za-z0-9]+)/<RED>/g' ar_chat2.json | head -c 500; echo
 AgentRouter gpt-6-astra HTTP=200
-{"id":"[CHIAVE-RIMOSSA]","type":"message","role":"assistant","content":[{"type":"text","text":"OK"}],"stop_reason":"end_turn","model":"gpt-6-astra","usage":{"input_tokens":10,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":19,"server_tool_use":null}}
+{"id":"chatcmpl-EfigGro0pzN56Ey0uTwrptwXiwp7S","type":"message","role":"assistant","content":[{"type":"text","text":"OK"}],"stop_reason":"end_turn","model":"gpt-6-astra","usage":{"input_tokens":10,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":19,"server_tool_use":null}}
 [0m
 [0m$ [0mcd /tmp/opencode/probe
 UA_CODEX="codex_cli_rs/0.149.1"
@@ -1129,31 +1129,31 @@ AgentRouter gpt-6.1-sol HTTP=400
 ./cervello.py:1928:        if not self.path.startswith("/v1/chat/completions"):
 ./cervello.py:1929:            self._json({"errore": "solo /v1/chat/completions"}, 404)
 ./chiavi_env.sh:68:export OPENAI_BASE_PATH="${OPENAI_BASE_PATH:-v1/chat/completions}"
-./fatti/buongiorno_1_11.sh:24:curl -fsS -m 60 -H 'Content-Type: application/json' -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' "$[CHIAVE-RIMOSSA]" >/dev/null 2>&1
+./fatti/buongiorno_1_11.sh:24:curl -fsS -m 60 -H 'Content-Type: application/json' -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' "$CERVELLO_URL/v1/chat/completions" >/dev/null 2>&1
 ./fatti/chat_leggi.sh:5:#     curl -s -m N .../v1/chat/completions | python3 -c "json.load(sys.stdin)"
-./fatti/chat_leggi.sh:28:      "$[CHIAVE-RIMOSSA]" 2>/dev/null) || {
+./fatti/chat_leggi.sh:28:      "$CERVELLO_URL/v1/chat/completions" 2>/dev/null) || {
 ./fatti/collaudo_cervello.sh:5:#     curl -s -m 10 .../v1/chat/completions | python3 -c "import json,sys; print(json.load(sys.stdin)...)"
-./fatti/collaudo_cervello.sh:58:        "$[CHIAVE-RIMOSSA]" 2>/dev/null) || {
+./fatti/collaudo_cervello.sh:58:        "$CERVELLO_URL/v1/chat/completions" 2>/dev/null) || {
 ./fatti/collaudo_f2b4.sh:31:req = urllib.request.Request("http://127.0.0.1:20128/v1/chat/completions", data=corpo,
 ./fatti/collaudo_fase1.sh:27:curl -fsS -m 60 -H 'Content-Type: application/json' -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}' "$B/v1/chat/completions" | python3 -c "
 ./fatti/collaudo_fase1.sh:36:curl -s -m 60 -H 'Content-Type: application/json' -d '{"model":"gpt-5","messages":[{"role":"user","content":"x"}]}' "$B/v1/chat/completions" | python3 -c "
 ./fatti/collaudo_gruppi_kilo.sh:38:        d = json.loads(urllib.request.urlopen(urllib.request.Request(url + "/chat/completions", data=corpo, headers=UA), timeout=45).read().decode())
 ./fatti/consigliere_saggio.sh:29:req = urllib.request.Request(base + '/v1/chat/completions',
 ./fatti/controprova_keyless.sh:28:            d = json.loads(urllib.request.urlopen(urllib.request.Request(base + "/chat/completions", data=corpo, headers=UA), timeout=25).read().decode())
-./fatti/deploy_cura.sh:15:  "$[CHIAVE-RIMOSSA]" | python3 -c "
-./fatti/deploy_sent_pagine.sh:23:  "$[CHIAVE-RIMOSSA]" >/dev/null 2>&1
+./fatti/deploy_cura.sh:15:  "$CERVELLO_URL/v1/chat/completions" | python3 -c "
+./fatti/deploy_sent_pagine.sh:23:  "$CERVELLO_URL/v1/chat/completions" >/dev/null 2>&1
 ./fatti/diagnosi_cervello.sh:15:curl -s -m 60 http://127.0.0.1:20129/v1/chat/completions -H "Content-Type: application/json" \
 ./fatti/github_morto.sh:7:curl -s -m 30 -X POST "$URL/chat/completions" -H "Authorization: Bearer $K" -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0 cervello/2.1" -d '{"model":"openai/gpt-4o-mini","max_tokens":10,"messages":[{"role":"user","content":"ping"}]}' | head -c 300
 ./fatti/github_morto2.sh:10:echo "### POST chat/completions (codice + corpo)"
 ./fatti/github_morto2.sh:11:curl -s -m 30 -w "\n[HTTP %{http_code}]\n" -X POST "$URL/chat/completions" -H "Authorization: Bearer $K" -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0 cervello/2.1" -d '{"model":"openai/gpt-4o-mini","max_tokens":10,"messages":[{"role":"user","content":"Rispondi: vivo"}]}' | head -c 500
-./fatti/kilo_finale.sh:18:        "https://kilo.[CHIAVE-RIMOSSA]", data=corpo, headers=UA), timeout=90).read().decode())
+./fatti/kilo_finale.sh:18:        "https://kilo.ai/api/openrouter/v1/chat/completions", data=corpo, headers=UA), timeout=90).read().decode())
 ./fatti/kilo_finale.sh:26:curl -s -m 120 -H Content-Type:application/json -d '{"model":"nvidia/nemotron-3.5-lightning:free","messages":[{"role":"user","content":"Due piu due? Solo il numero."}]}' http://127.0.0.1:20129/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('model','?'),'→',(d.get('choices') or [{}])[0].get('message',{}).get('content','')[:60] or d.get('error',{}).get('message','')[:100])"
-./fatti/kilo_free.sh:11:URL = "https://kilo.[CHIAVE-RIMOSSA]"
-./fatti/kilo_grezzo.sh:6:URL = "https://kilo.[CHIAVE-RIMOSSA]"
-./fatti/kilo_pregiati.sh:7:URL = "https://kilo.[CHIAVE-RIMOSSA]"
-./fatti/kilo_redirect.sh:3:U="https://kilocode.[CHIAVE-RIMOSSA]"
+./fatti/kilo_free.sh:11:URL = "https://kilo.ai/api/openrouter/v1/chat/completions"
+./fatti/kilo_grezzo.sh:6:URL = "https://kilo.ai/api/openrouter/v1/chat/completions"
+./fatti/kilo_pregiati.sh:7:URL = "https://kilo.ai/api/openrouter/v1/chat/completions"
+./fatti/kilo_redirect.sh:3:U="https://kilocode.ai/api/openrouter/v1/chat/completions"
 ./fatti/motore_collaudo.sh:23:curl -s -m 120 -H Content-Type:application/json -d '{"model":"auto","max_tokens":30,"messages":[{"role":"user","content":"Scrivi solo: motore nuovo funzionante"}]}' http://127.0.0.1:20129/v1/chat/completions | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('model','?'),'→',(d.get('choices') or [{}])[0].get('message',{}).get('content','')[:70] or d.get('error',{}).get('message','')[:120])" 2>&1
-./fatti/rito_nuovo.sh:30:  "$[CHIAVE-RIMOSSA]" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  richiesta auto →', d.get('model','?'))" || { echo "❌ la richiesta auto non è passata"; exit 1; }
+./fatti/rito_nuovo.sh:30:  "$CERVELLO_URL/v1/chat/completions" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  richiesta auto →', d.get('model','?'))" || { echo "❌ la richiesta auto non è passata"; exit 1; }
 ./fatti/test_blackout.sh:24:curl -fsS -m 240 -H 'Content-Type: application/json' -d '{"model":"auto","max_tokens":40,"messages":[{"role":"user","content":"Il motore e morto. Chi mi sta rispondendo? Una frase."}]}' "$B/v1/chat/completions" | leggi || { echo "  ✗ auto non ha risposto"; exit 1; }
 ./fatti/test_blackout.sh:27:curl -fsS -m 240 -H 'Content-Type: application/json' -d '{"model":"migliore","max_tokens":40,"messages":[{"role":"user","content":"Quanto fa 17 per 23? Solo il numero."}]}' "$B/v1/chat/completions" | leggi || { echo "  ✗ migliore non ha risposto"; exit 1; }
 ./fatti/test_blackout.sh:30:curl -fsS -m 240 -H 'Content-Type: application/json' -d '{"model":"gratis","max_tokens":40,"messages":[{"role":"user","content":"Capitale della Francia? Una parola."}]}' "$B/v1/chat/completions" | leggi || { echo "  ✗ gratis non ha risposto"; exit 1; }
@@ -1168,18 +1168,18 @@ jq -c '(.data//.models//[]) | map(select(.id=="laguna-s-2.1" or .id=="jev-1.14.0
 [{"id":"jev-1.14.0","object":"model","owned_by":"byNara","name":"Jev 1.14","context_window":31998,"payg_enabled":true,"input_idr_per_1k":0.3,"output_idr_per_1k":0,"input_idr_per_1m":300,"output_idr_per_1m":0,"web_search":true,"web_search_per_call_idr":45,"web_fetch_per_call_idr":5},{"id":"laguna-s-2.1","object":"model","owned_by":"byNara","name":"Laguna S 2.1","context_window":262000,"input_idr_per_1k":0,"output_idr_per_1k":0,"input_idr_per_1m":0,"output_idr_per_1m":0,"web_search":true,"web_search_per_call_idr":45,"web_fetch_per_call_idr":5},{"id":"mimo-v2.6-flash","object":"model","owned_by":"byNara","name":"MiMo V2.6 Flash","context_window":1000000,"vision":true,"payg_enabled":true,"input_idr_per_1k":0.7472,"output_idr_per_1k":1.4944,"cache_read_idr_per_1k":0.054944,"input_idr_per_1m":747.2,"output_idr_per_1m":1494.4,"cache_read_idr_per_1m":54.944,"web_search":true,"web_search_per_call_idr":45,"web_fetch_per_call_idr":5},{"id":"muse-spark-1.2-contributor","object":"model","owned_by":"byNara","name":"Muse Spark 1.2 Contributor","context_window":1000000,"vision":true,"payg_enabled":true,"input_idr_per_1k":0.352572,"output_idr_per_1k":0.705145,"cache_read_idr_per_1k":0.027051,"input_idr_per_1m":352.572,"output_idr_per_1m":705.145,"cache_read_idr_per_1m":27.051,"web_search":true,"web_search_per_call_idr":45,"web_fetch_per_call_idr":5},{"id":"muse-spark-1.3-contributor","object":"model","owned_by":"byNara","name":"Muse Spark 1.3 Contributor","context_window":1000000,"vision":true,"payg_enabled":true,"input_idr_per_1k":0.352572,"output_idr_per_1k":0.705145,"cache_read_idr_per_1k":0.087051,"input_idr_per_1m":352.572,"output_idr_per_1m":705.145,"cache_read_idr_per_1m":87.051,"web_search":true,"web_search_per_call_idr":45,"web_fetch_per_call_idr":5}]
 [0m
 [0m$ [0msource /tmp/opencode/probe/lib.sh
-K=$(getkey NaraRouter); [CHIAVE-RIMOSSA].json
+K=$(getkey NaraRouter); out=/tmp/opencode/probe/chat_NaraRouter.json
 code=$(curl -sS -o "$out" -w '%{http_code}' --max-time 90 -H "Authorization: Bearer $K" -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"laguna-s-2.1","messages":[{"role":"user","content":"Reply exactly: OK"}]}' https://router.bynara.id/v1/chat/completions 2>/dev/null)
 echo "NaraRouter laguna minimal HTTP=$code"; jq -c '.' "$out" 2>/dev/null | cut -c1-600
 NaraRouter laguna minimal HTTP=400
-{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"[CHIAVE-RIMOSSA]"}}
+{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"5dc7fce7-413a-4229-a8bc-2fa87fdadd7b"}}
 [0m
 [0m$ [0msource /tmp/opencode/probe/lib.sh
 K=$(getkey NaraRouter)
-code=$(curl -sS -o [CHIAVE-RIMOSSA].json -w '%{http_code}' --max-time 90 -H "Authorization: Bearer $K" -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"laguna-s-2.1","messages":[{"role":"user","content":"Reply exactly: OK"}],"max_tokens":5}' https://router.bynara.id/v1/chat/completions 2>/dev/null)
-echo "NaraRouter laguna+mt HTTP=$code"; jq -c '.' [CHIAVE-RIMOSSA].json 2>/dev/null | cut -c1-800
+code=$(curl -sS -o /tmp/opencode/probe/chat_NaraRouter2.json -w '%{http_code}' --max-time 90 -H "Authorization: Bearer $K" -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"laguna-s-2.1","messages":[{"role":"user","content":"Reply exactly: OK"}],"max_tokens":5}' https://router.bynara.id/v1/chat/completions 2>/dev/null)
+echo "NaraRouter laguna+mt HTTP=$code"; jq -c '.' /tmp/opencode/probe/chat_NaraRouter2.json 2>/dev/null | cut -c1-800
 NaraRouter laguna+mt HTTP=400
-{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"[CHIAVE-RIMOSSA]"}}
+{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"91df286e-8188-456f-accf-f46d1ea6ac06"}}
 [0m
 [0m$ [0mcd /tmp/opencode/probe
 jq -r '(.data//.models//[])|.[]|select((.input_idr_per_1k==0) and (.output_idr_per_1k==0))|.id' models_NaraRouter.json
@@ -1200,7 +1200,7 @@ for f in chat_ElectronHub.json chat_NavyAI.json chat_LongCat.json chat_Zhipu.jso
 {"error":{"code":"1113","message":"余额不足或无可用资源包,请充值。"}}
 
 === chat_NaraRouter2.json ===
-{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"[CHIAVE-RIMOSSA]"}}
+{"error":{"type":"bad_request","message":"The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.","request_id":"91df286e-8188-456f-accf-f46d1ea6ac06"}}
 [0m
 [0m$ [0mcd /home/agenti/posta && grep -rIl 'HA RISPOSTO\|base corretta\|id del modello che risponde' . --exclude-dir=.git 2>/dev/null | head -20; echo "--- parsers ---"; grep -rn 'portiere_lista' --include='*.py' --include='*.sh' . 2>/dev/null | grep -v __pycache__ | head -20
 ./da_me/nomi_modelli_provider.txt
@@ -1640,8 +1640,8 @@ LOCK = threading.Lock()  # cura-audit
 _ultimo_salvataggio = [0.0]
 [0m
 [0m$ [0mUA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-code=$(curl -sS -o [CHIAVE-RIMOSSA].json -w '%{http_code}' --max-time 60 -H "Authorization: Bearer free" -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"gpt-oss-20b","messages":[{"role":"user","content":"Reply exactly: OK"}],"max_tokens":20}' https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions 2>/dev/null)
-echo "OVH Bearer free HTTP=$code"; jq -r '.choices[0].message.content // .error.message // .message // empty' [CHIAVE-RIMOSSA].json 2>/dev/null | head -c 200; echo
+code=$(curl -sS -o /tmp/opencode/probe/chat_OVH_auth.json -w '%{http_code}' --max-time 60 -H "Authorization: Bearer free" -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"gpt-oss-20b","messages":[{"role":"user","content":"Reply exactly: OK"}],"max_tokens":20}' https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions 2>/dev/null)
+echo "OVH Bearer free HTTP=$code"; jq -r '.choices[0].message.content // .error.message // .message // empty' /tmp/opencode/probe/chat_OVH_auth.json 2>/dev/null | head -c 200; echo
 OVH Bearer free HTTP=403
 Forbidden: authentication failed.  Please generate a new one at https://kepler.ai.cloud.ovh.net/v1/oauth/ovh/authorize?iam_action=publicCloudProject:ai:endpoints/call
 [0m
@@ -1769,7 +1769,7 @@ tests/test_gateway_offline.py:391:        handler = FakeHandler("/v1/models", {"
 tests/test_gateway_offline.py:446:            "Content-Type": "application/json", "Authorization": "Bearer " + created["token"]},
 [0m
 [0m$ [0mUA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-echo "=== AI Horde no auth ==="; curl -sS -o [CHIAVE-RIMOSSA].json -w 'HTTP=%{http_code}\n' --max-time 60 -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"google/gemma-4-31b","messages":[{"role":"user","content":"Say OK"}],"max_tokens":10}' https://oai.aihorde.net/v1/chat/completions 2>/dev/null; jq -r '.choices[0].message.content // .error.message // .message // empty' [CHIAVE-RIMOSSA].json 2>/dev/null | head -c 120; echo
+echo "=== AI Horde no auth ==="; curl -sS -o /tmp/opencode/probe/horde_noauth.json -w 'HTTP=%{http_code}\n' --max-time 60 -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"google/gemma-4-31b","messages":[{"role":"user","content":"Say OK"}],"max_tokens":10}' https://oai.aihorde.net/v1/chat/completions 2>/dev/null; jq -r '.choices[0].message.content // .error.message // .message // empty' /tmp/opencode/probe/horde_noauth.json 2>/dev/null | head -c 120; echo
 echo "=== Pollinations no auth ==="; curl -sS -o /tmp/opencode/probe/poll_noauth.json -w 'HTTP=%{http_code}\n' --max-time 60 -H "Content-Type: application/json" -H "User-Agent: $UA" -d '{"model":"openai-fast","messages":[{"role":"user","content":"Say OK"}],"max_tokens":10}' https://text.pollinations.ai/openai 2>/dev/null; jq -r '.choices[0].message.content // .error.message // .message // empty' /tmp/opencode/probe/poll_noauth.json 2>/dev/null | head -c 120; echo
 === AI Horde no auth ===
 HTTP=400
@@ -1807,7 +1807,7 @@ repl={
 'typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli':'typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|chat',
 'gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|minimax/minimax-m3.1-flash:free|chat':'gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat',
 'tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli':'tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|chat',
-'blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli':'blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat',
+'blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli':'blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat',
 'agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli':'agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|gpt-6-astra|modelli',
 }
 for a,b in repl.items():
@@ -1823,13 +1823,13 @@ grep -nE '^(routeway|unorouter|anyapi|ovh|typhoon|gizmo|tokenharbor|blockrun|age
 31:tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|chat
 33:unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|chat
 46:ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|gpt-oss-20b|chat
-59:blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
+59:blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 61:anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat
 82:gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat
 [0m
 [0m← [0mEdit chiave_di.py
 Index: /home/agenti/posta/chiave_di.py
-[CHIAVE-RIMOSSA]
+===================================================================
 --- /home/agenti/posta/chiave_di.py
 +++ /home/agenti/posta/chiave_di.py
 @@ -56,8 +56,14 @@
@@ -1856,18 +1856,18 @@ AgentRouter  len=51 empty=no
 Routeway     len=97 empty=no
 Typhoon      len=51 empty=no
 [0m
-[0m$ [0mcode=$(curl -sS -o [CHIAVE-RIMOSSA].json -w '%{http_code}' --max-time 60 -H "Authorization: Bearer " -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1" -d '{"model":"gpt-oss-20b","messages":[{"role":"user","content":"Rispondi solo OK"}],"max_tokens":10}' https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions 2>/dev/null)
-echo "OVH con header Portiere HTTP=$code"; jq -r '.choices[0].message.content // .error.message // .message // empty' [CHIAVE-RIMOSSA].json 2>/dev/null | head -c 120; echo
+[0m$ [0mcode=$(curl -sS -o /tmp/opencode/probe/ovh_portiere_headers.json -w '%{http_code}' --max-time 60 -H "Authorization: Bearer " -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) cervello/2.1" -d '{"model":"gpt-oss-20b","messages":[{"role":"user","content":"Rispondi solo OK"}],"max_tokens":10}' https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions 2>/dev/null)
+echo "OVH con header Portiere HTTP=$code"; jq -r '.choices[0].message.content // .error.message // .message // empty' /tmp/opencode/probe/ovh_portiere_headers.json 2>/dev/null | head -c 120; echo
 OVH con header Portiere HTTP=200
 [0m
-[0m$ [0mjq -c '.' [CHIAVE-RIMOSSA].json | cut -c1-500
+[0m$ [0mjq -c '.' /tmp/opencode/probe/ovh_portiere_headers.json | cut -c1-500
 {"id":"chatcmpl-946b8902edfa48c9","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user says in Italian: \"","tool_calls":[]},"finish_reason":"length"}],"created":1793612277,"model":"gpt-oss-20b","object":"chat.completion","usage":{"prompt_tokens":72,"completion_tokens":10,"total_tokens":82}}
 [0m
 [0m← [0mEdit portiere_lista.txt
-Index: [CHIAVE-RIMOSSA].txt
-[CHIAVE-RIMOSSA]
---- [CHIAVE-RIMOSSA].txt
-+++ [CHIAVE-RIMOSSA].txt
+Index: /home/agenti/posta/portiere_lista.txt
+===================================================================
+--- /home/agenti/posta/portiere_lista.txt
++++ /home/agenti/posta/portiere_lista.txt
 @@ -108,4 +108,50 @@
  ✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
  ✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
@@ -1891,7 +1891,7 @@ Index: [CHIAVE-RIMOSSA].txt
 +| Zhipu | https://open.bigmodel.cn/api/paas/v4 | — | SERVE CREDITO (saldo/pacchetto esaurito) |
 +| Token Harbor | https://tokenharbor.ai/v1 | deepseek-v4-flash:free | HA RISPOSTO |
 +| NaraRouter | https://router.bynara.id/v1 | — | NESSUNO (laguna 400; jev 402 crediti) |
-+| BlockRun | https://api.blockrun.ai/v1 | [CHIAVE-RIMOSSA] | HA RISPOSTO |
++| BlockRun | https://api.blockrun.ai/v1 | nvidia/nemotron-3-nano-omni-30b-a3b-reasoning | HA RISPOSTO |
 +| AgentRouter | https://agentrouter.org/v1 | gpt-6-astra | HA RISPOSTO (via /v1/messages; su /chat/completions chiede /v1/responses) |
 +
 +### Righe per portiere_lista.txt (HA RISPOSTO)
@@ -1903,7 +1903,7 @@ Index: [CHIAVE-RIMOSSA].txt
 +typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|chat
 +gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat
 +tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|chat
-+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
++blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 +```
 +
 +AgentRouter: la riga chat non è utilizzabile dal Portiere attuale, perché tutti e tre i modelli del suo `/models` (gpt-5.6-sol, gpt-6-astra, gpt-6.1-sol) rifiutano `/v1/chat/completions` con «does not support /v1/chat/completions, please use /v1/responses». La chiamata vera è riuscita su `POST /v1/messages` (Anthropic) con `gpt-6-astra` → `{"content":[{"type":"text","text":"OK"}]}`. Richiede UA `codex_cli_rs/0.149.1` (con UA browser generico: 401 «unauthorized client detected»).
@@ -1940,7 +1940,7 @@ ovh -> gpt-oss-20b
 typhoon -> typhoon-v2.5-30b-a3b-instruct
 gizmo -> nvidia/nemotron-3.5-lightning:free
 tokenharbor -> deepseek-v4-flash:free
-blockrun -> [CHIAVE-RIMOSSA]
+blockrun -> nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
 unorouter -> qwen3.8-27b:free
 anyapi -> nvidia/nemotron-3.5-lightning:free
 agentrouter -> gpt-6-astra
@@ -1953,7 +1953,7 @@ Nessuna chiave nel file
 [0m
 [0m$ [0mcd /home/agenti/posta && sed -n '15,47p' portiere_lista.txt && echo "..." && sed -n '55,84p' portiere_lista.txt && echo "..." && tail -55 portiere_lista.txt
 openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat
-nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|[CHIAVE-RIMOSSA]|chat
+nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
 pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat
 agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|gpt-6-astra|modelli
@@ -1973,14 +1973,14 @@ teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
 unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|chat
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
-llmtr|LLMTR|LLMTR|https://llmtr.com/v1|[CHIAVE-RIMOSSA]|chat
+llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 router9|Router9|Router9|https://api.router9.com/v1|deepseek-v4-flash|modelli
 waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
 blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-v4-flash|chat
 logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
 lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
-speka|Speka|Speka|https://speka.me/v1|[CHIAVE-RIMOSSA]|chat
+speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli
 ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|gpt-oss-20b|chat
@@ -1990,7 +1990,7 @@ requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli
 zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli
 electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|auto|modelli
 inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
-blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat
 anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat
 kilo|Kilo (senza chiave)|SENZA|https://kilo.ai/api/openrouter/v1|nvidia/nemotron-3.5-lightning:free|modelli
@@ -2044,7 +2044,7 @@ Nebius|chiave mai presa: al signup chiede la carta
 | Zhipu | https://open.bigmodel.cn/api/paas/v4 | — | SERVE CREDITO (saldo/pacchetto esaurito) |
 | Token Harbor | https://tokenharbor.ai/v1 | deepseek-v4-flash:free | HA RISPOSTO |
 | NaraRouter | https://router.bynara.id/v1 | — | NESSUNO (laguna 400; jev 402 crediti) |
-| BlockRun | https://api.blockrun.ai/v1 | [CHIAVE-RIMOSSA] | HA RISPOSTO |
+| BlockRun | https://api.blockrun.ai/v1 | nvidia/nemotron-3-nano-omni-30b-a3b-reasoning | HA RISPOSTO |
 | AgentRouter | https://agentrouter.org/v1 | gpt-6-astra | HA RISPOSTO (via /v1/messages; su /chat/completions chiede /v1/responses) |
 
 ### Righe per portiere_lista.txt (HA RISPOSTO)
@@ -2056,7 +2056,7 @@ ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|gpt-oss-20b|chat
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|chat
 gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|chat
-blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 ```
 
 AgentRouter: la riga chat non è utilizzabile dal Portiere attuale, perché tutti e tre i modelli del suo `/models` (gpt-5.6-sol, gpt-6-astra, gpt-6.1-sol) rifiutano `/v1/chat/completions` con «does not support /v1/chat/completions, please use /v1/responses». La chiamata vera è riuscita su `POST /v1/messages` (Anthropic) con `gpt-6-astra` → `{"content":[{"type":"text","text":"OK"}]}`. Richiede UA `codex_cli_rs/0.149.1` (con UA browser generico: 401 «unauthorized client detected»).
@@ -2176,10 +2176,10 @@ wait
   echo "# 🗣️ Appello delle chiavi — $(date '+%d/%m/%Y %H:%M')"
 [0m
 [0m← [0mEdit portiere_lista.txt
-Index: [CHIAVE-RIMOSSA].txt
-[CHIAVE-RIMOSSA]
---- [CHIAVE-RIMOSSA].txt
-+++ [CHIAVE-RIMOSSA].txt
+Index: /home/agenti/posta/portiere_lista.txt
+===================================================================
+--- /home/agenti/posta/portiere_lista.txt
++++ /home/agenti/posta/portiere_lista.txt
 @@ -149,8 +149,9 @@
  - ElectronHub — https://api.electronhub.ai/v1/chat/completions — «To prevent abuse and high traffic on free models, phone verification is required. Visit https://app.electronhub.ai → Settings → Security → Identity Verification to verify your account.»
  - NaraRouter — https://router.bynara.id/v1/chat/completions — `laguna-s-2.1`: «The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.»; `jev-1.14.0`: «Insufficient credits. Please top up your balance.»
@@ -2194,7 +2194,7 @@ Index: [CHIAVE-RIMOSSA].txt
 [0m
 [0m$ [0mcd /home/agenti/posta && git diff --stat && git diff -- chiave_di.py | head -40 && echo "--- lista changed lines ---" && git diff -- portiere_lista.txt | grep -E '^[+-][a-z]' | head -30
 chiave_di.py       |  6 +++++
- portiere_lista.txt | 65 [CHIAVE-RIMOSSA]
+ portiere_lista.txt | 65 ++++++++++++++++++++++++++++++++++++++++++++++--------
  portiere_log.jsonl |  1 +
  3 files changed, 63 insertions(+), 9 deletions(-)
 diff --git a/chiave_di.py b/chiave_di.py
@@ -2228,7 +2228,7 @@ index 27a19aa..7416a8b 100644
 -ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
 +ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|gpt-oss-20b|chat
 -blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
-+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
++blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 -anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
 +anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat
 -gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|minimax/minimax-m3.1-flash:free|chat
@@ -2240,7 +2240,7 @@ index 27a19aa..7416a8b 100644
 +typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|chat
 +gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat
 +tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|deepseek-v4-flash:free|chat
-+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|[CHIAVE-RIMOSSA]|chat
++blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|chat
 [0m
 [0m$ [0mcd /home/agenti/posta && sed -n '1150,1235p' cervello.py
 (no output)
@@ -2359,10 +2359,10 @@ anyapi       HTTP=200 OK
 gizmo        HTTP=200 OK
 [0m
 [0m← [0mEdit portiere_lista.txt
-Index: [CHIAVE-RIMOSSA].txt
-[CHIAVE-RIMOSSA]
---- [CHIAVE-RIMOSSA].txt
-+++ [CHIAVE-RIMOSSA].txt
+Index: /home/agenti/posta/portiere_lista.txt
+===================================================================
+--- /home/agenti/posta/portiere_lista.txt
++++ /home/agenti/posta/portiere_lista.txt
 @@ -149,8 +149,9 @@
  - ElectronHub — https://api.electronhub.ai/v1/chat/completions — «To prevent abuse and high traffic on free models, phone verification is required. Visit https://app.electronhub.ai → Settings → Security → Identity Verification to verify your account.»
  - NaraRouter — https://router.bynara.id/v1/chat/completions — `laguna-s-2.1`: «The model rejected this request. It may not support the input you sent (e.g. images on a text-only model) or a parameter is invalid.»; `jev-1.14.0`: «Insufficient credits. Please top up your balance.»
