@@ -1,68 +1,68 @@
-# 🗣️ Appello delle chiavi — 02/11/2026 09:01
+# 🗣️ Appello delle chiavi — 02/11/2026 09:26
 
 Chiavi provate: 62
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | 🟡 strano | 1927 | elenco modelli: risposta 404 |
-| Agnes AI | 🟡 strano | 810 | elenco modelli: risposta 404 |
-| AI Horde (senza chiave) | 🟡 strano | 805 | elenco modelli: risposta 404 |
-| Aion Labs | 🟡 strano | 1048 | elenco modelli: risposta 404 |
-| AnyAPI | 🔴 chiave rifiutata | 426 | chiave rifiutata (403) |
-| Api.Airforce | 🟡 strano | 1421 | elenco modelli: risposta 404 |
-| BazaarLink | 🟡 strano | 2353 | elenco modelli: risposta 404 |
-| BlazeAPI | 🟡 strano | 655 | elenco modelli: risposta 302 |
-| BlockRun | 🟡 strano | 756 | elenco modelli: risposta 404 |
-| Chutes | 🟡 strano | 848 | elenco modelli: risposta 404 |
-| CLōD | 🟡 strano | 1062 | elenco modelli: risposta 404 |
-| Cloudflare Workers AI | ✅ risponde | 966 | chiave valida · modello visto: eaf31752-a074-441f-8b70-d593255d2811 |
-| Cohere | 🟡 strano | 12258 | elenco modelli: risposta 404 |
-| DreamPrompting | 🟡 strano | 752 | elenco modelli: risposta 404 |
-| ElectronHub | 🔴 chiave rifiutata | 475 | chiave rifiutata (403) |
+| AgentRouter | 🟡 strano | 3244 | {"error":{"code":"content-blocked","message":"content-blocked (request id: 202611021625194 |
+| Agnes AI | ✅ risponde | 1532 | ha risposto davvero (agnes-2.5-flash) |
+| AI Horde (senza chiave) | 🟡 occupato adesso | 1760 | limite o credito finito adesso |
+| Aion Labs | 🔴 chiave rifiutata | 1847 | chiave rifiutata |
+| AnyAPI | 🔴 chiave rifiutata | 263 | chiave rifiutata (403) |
+| Api.Airforce | ✅ risponde | 15599 | ha risposto davvero (glm-4.7-flash) |
+| BazaarLink | ✅ risponde | 7930 | ha risposto davvero (auto:free) |
+| BlazeAPI | 🟡 occupato adesso | 18583 | limite o credito finito adesso |
+| BlockRun | 🟡 strano | 1882 | {"error":{"message":"Cannot price this request for /v1/chat/completions. Send a \"model\"  |
+| Chutes | 🟡 occupato adesso | 2567 | limite o credito finito adesso |
+| CLōD | ✅ risponde | 4910 | ha risposto davvero (Trinity Mini) |
+| Cloudflare Workers AI | 🟡 strano | 5232 | {"errors":[{"message":"AiError: No such model: No such model af274959-cb47-4ba8-9d8e-5a0a5 |
+| Cohere | ✅ risponde | 2062 | ha risposto davvero (command-r-plus-08-2024) |
+| DreamPrompting | ✅ risponde | 5830 | ha risposto davvero (groq/openai/gpt-oss-20b) |
+| ElectronHub | 🔴 chiave rifiutata | 581 | chiave rifiutata (403) |
 | fal.ai | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| FreeAI | 🟡 strano | 896 | elenco modelli: risposta 404 |
-| Google AI Studio | 🟡 strano | 12315 | elenco modelli: risposta 404 |
-| Gizmo | 🟡 strano | 616 | elenco modelli: risposta 404 |
-| Groq | 🟡 strano | 12281 | elenco modelli: risposta 404 |
-| HuggingFace Router | 🟡 strano | 829 | elenco modelli: risposta 404 |
-| Inferbase | 🟡 strano | 840 | elenco modelli: risposta 404 |
-| Jina AI | 🟡 strano | 860 | elenco modelli: risposta 404 |
-| Kilo (senza chiave) | 🟡 strano | 771 | elenco modelli: risposta 404 |
-| LLM7 | 🟡 strano | 1110 | elenco modelli: risposta 404 |
-| LLMTR | 🟡 strano | 678 | elenco modelli: risposta 301 |
-| Logfare | 🟡 strano | 683 | elenco modelli: risposta 404 |
-| LongCat | 🟡 strano | 1581 | elenco modelli: risposta 404 |
-| Lucidity | 🟡 strano | 987 | elenco modelli: risposta 404 |
-| Mistral | 🟡 strano | 12291 | elenco modelli: risposta 404 |
-| Moondream | 🟡 strano | 701 | elenco modelli: risposta 404 |
-| NaraRouter | 🟡 strano | 2333 | elenco modelli: risposta 404 |
-| NavyAI | 🔴 chiave rifiutata | 6311 | chiave rifiutata (403) |
-| Nscale | 🔴 chiave rifiutata | 451 | chiave rifiutata (401) |
-| NVIDIA | 🟡 strano | 12175 | elenco modelli: risposta 404 |
-| Ollama Cloud | 🟡 strano | 969 | elenco modelli: risposta 404 |
-| OpenCode Zen | 🟡 strano | 1108 | elenco modelli: risposta 404 |
-| OpenRouter | 🟡 strano | 12176 | elenco modelli: risposta 404 |
-| OrcaRouter | 🟡 strano | 1437 | elenco modelli: risposta 404 |
-| OVH | 🔴 chiave rifiutata | 467 | chiave rifiutata (403) |
-| Plugsky | 🟡 strano | 685 | elenco modelli: risposta 404 |
-| Pollinations | ✅ risponde | 764 | chiave valida · modello visto: openai-fast |
-| Pollinations (senza chiave) | ✅ risponde | 594 | chiave valida · modello visto: openai-fast |
-| Pollinations (immagini, senza chiave) | ✅ risponde | 871 | chiave valida · modello visto: flux |
-| Qdrant Cloud | ✅ risponde | 832 | chiave valida · modello visto: — |
-| Requesty | 🟡 strano | 627 | elenco modelli: risposta 404 |
-| Router9 | 🟡 strano | 738 | elenco modelli: risposta 404 |
-| Routeway | 🔴 chiave rifiutata | 488 | chiave rifiutata (403) |
-| Sail | 🟡 strano | 1135 | elenco modelli: risposta 404 |
-| SeaLION | 🟡 strano | 1007 | elenco modelli: risposta 404 |
-| Septor Labs | 🟡 strano | 458 | elenco modelli: risposta 404 |
-| SimpleLLM | 🟡 strano | 745 | elenco modelli: risposta 404 |
-| Speechify | 🟡 strano | 718 | elenco modelli: risposta 404 |
-| Speka | 🟡 strano | 1184 | elenco modelli: risposta 404 |
+| FreeAI | ✅ risponde | 2848 | ha risposto davvero (qwen7b) |
+| Google AI Studio | ⚪ non raggiungibile | 47113 | non raggiungibile |
+| Gizmo | 🟡 strano | 1372 | {"error":{"message":"Model unavailable for API routing; check /api/v1/models","type":"api_ |
+| Groq | 🟡 strano | 2158 | {"error":{"message":"The model `llama-3.3-70b-versatile` does not exist or you do not have |
+| HuggingFace Router | 🟡 occupato adesso | 1503 | limite o credito finito adesso |
+| Inferbase | ✅ risponde | 4677 | ha risposto davvero (auto) |
+| Jina AI | 🟡 strano | 1481 | {"detail":"Validation error: 'body -> model' Input should be 'jina-ocr-v1'","request_id":" |
+| Kilo (senza chiave) | 🟡 strano | 1244 | {"error":{"code":"INVALID_TOKEN","message":"Your authentication token is invalid. Please s |
+| LLM7 | 🟡 strano | 2350 | {"error":{"message":"Model 'auto' is currently unavailable.","type":"invalid_request_error |
+| LLMTR | 🟡 occupato adesso | 1647 | limite o credito finito adesso |
+| Logfare | ✅ risponde | 4956 | ha risposto davvero (auto) |
+| LongCat | 🟡 strano | 2477 | {"error":{"code":"invalid_parameter","message":"Unsupported model (model=auto)","type":"in |
+| Lucidity | 🟡 strano | 3520 | {"error":{"message":"Model /v1/models. was not found. Check the model ID or use /v1/models |
+| Mistral | 🟡 occupato adesso | 1990 | limite o credito finito adesso |
+| Moondream | 🟡 strano | 1013 | {"error":{"message":"The model `moondream2` does not exist or you do not have access to it |
+| NaraRouter | 🟡 strano | 4889 | {"error":{"type":"not_found","message":"The requested model does not exist.","request_id": |
+| NavyAI | 🔴 chiave rifiutata | 526 | chiave rifiutata (403) |
+| Nscale | 🔴 chiave rifiutata | 433 | chiave rifiutata (401) |
+| NVIDIA | 🟡 strano | 1810 | {"type":"about:blank","title":"Gone","status":410,"detail":"The model 'meta/llama-3.1-8b-i |
+| Ollama Cloud | ✅ risponde | 2595 | ha risposto davvero (gemma4:31b-cloud) |
+| OpenCode Zen | 🟡 strano | 1801 | {"error":{"type":"server_error","message":"Upstream request failed: Insufficient account f |
+| OpenRouter | ✅ risponde | 3151 | ha risposto davvero (openrouter/auto) |
+| OrcaRouter | 🟡 strano | 1898 | {"error":{"code":"model_not_found","message":"No available capacity for model auto right n |
+| OVH | 🔴 chiave rifiutata | 523 | chiave rifiutata (403) |
+| Plugsky | ✅ risponde | 3658 | ha risposto davvero (plugsky-micro) |
+| Pollinations | ✅ risponde | 1235 | ha risposto davvero (openai-fast) |
+| Pollinations (senza chiave) | ✅ risponde | 1110 | ha risposto davvero (openai-fast) |
+| Pollinations (immagini, senza chiave) | 🟡 strano | 1344 | <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head |
+| Qdrant Cloud | ⚪ non raggiungibile | 1242 | non raggiungibile |
+| Requesty | 🟡 strano | 2310 | {"error":{"origin":"router","message":"Invalid model ID. See https://app.requesty.ai/model |
+| Router9 | 🟡 strano | 1762 | {"error":{"code":"model_not_found","message":"Model not found: auto","type":"invalid_reque |
+| Routeway | 🔴 chiave rifiutata | 596 | chiave rifiutata (403) |
+| Sail | ✅ risponde | 2908 | ha risposto davvero (moonshotai/Kimi-K2.6) |
+| SeaLION | 🔴 chiave rifiutata | 2708 | chiave rifiutata |
+| Septor Labs | 🟡 occupato adesso | 13874 | limite o credito finito adesso |
+| SimpleLLM | ✅ risponde | 1503 | ha risposto davvero (free-Llama-3.1-8B-Instruct) |
+| Speechify | 🟡 strano | 1125 | {"error":{"code":"not_found","message":"The requested resource was not found."},"request_i |
+| Speka | 🟡 strano | 2943 | {"error":{"message":"Model 'google/gemma-4-31b-it' is temporarily unavailable (status: dow |
 | TeamoRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Token Harbor | ✅ risponde | 974 | chiave valida · modello visto: auto |
-| Typhoon | 🟡 strano | 857 | elenco modelli: risposta 404 |
-| UnoRouter | 🔴 chiave rifiutata | 369 | chiave rifiutata (403) |
-| Waterfall | 🟡 strano | 679 | elenco modelli: risposta 404 |
-| WaveSpeedAI | 🟡 strano | 750 | elenco modelli: risposta 404 |
-| xKiro | 🟡 strano | 829 | elenco modelli: risposta 404 |
-| Zhipu | 🟡 strano | 1643 | elenco modelli: risposta 404 |
+| Token Harbor | 🟡 strano | 2917 | {"error":{"message":"Model 'auto' is not available. Browse models at https://tokenharbor.a |
+| Typhoon | 🟡 strano | 2093 | {"detail":"Model not found"} |
+| UnoRouter | 🔴 chiave rifiutata | 373 | chiave rifiutata (403) |
+| Waterfall | 🔴 chiave rifiutata | 1292 | chiave rifiutata |
+| WaveSpeedAI | 🔴 chiave rifiutata | 1846 | chiave rifiutata |
+| xKiro | ✅ risponde | 2145 | ha risposto davvero (mistralai/ministral-14b) |
+| Zhipu | 🟡 strano | 2510 | {"error":{"code":"1211","message":"模型不存在，请检查模型代码。"}} |
