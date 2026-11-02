@@ -33,7 +33,8 @@ FORMATI = [
     r"sk-xt-[A-Za-z0-9_-]+",
     r"rqsty-sk-[A-Za-z0-9+/=_-]+",
     r"ek-[A-Za-z0-9]{20,}",
-    r"sk_[A-Za-z0-9]{20,}",
+    r"fal_sk_[A-Za-z0-9]+:[A-Za-z0-9]+",  # fal.ai: chiave:segreto — PRIMA di sk_ generico
+    r"sk_[A-Za-z0-9]{20,}",   # 2/11: ATTENZIONE: questo matcha DENTRO fal_sk_... -> il fal va prima
     r"ak_[A-Za-z0-9]+",
     r"alv2_[A-Za-z0-9_]+",   # 2/11: la chiave Aion finisce con _yQ058: il + tagliava via il coda e dava 401
     r"wf-[A-Za-z0-9_-]{20,}", # Waterfall
@@ -42,7 +43,6 @@ FORMATI = [
     r"lfu_[A-Za-z0-9]+",
     r"sk-free-[A-Za-z0-9_-]+",
     r"sk-teamo-[A-Za-z0-9_-]{16,}",   # TeamoRouter
-    r"fal_sk_[A-Za-z0-9]+:[A-Za-z0-9]+",  # fal.ai: chiave:segreto
     r"ghp_[A-Za-z0-9]+",
     r"sk-[A-Za-z0-9_-]{16,}",
     r"AIza[A-Za-z0-9_-]{30,}",
