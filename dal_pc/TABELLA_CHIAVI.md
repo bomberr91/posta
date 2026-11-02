@@ -31,8 +31,8 @@ a richiesta)
 | 8 | Moondream | non-chat | visione: escluso dall'appello | resta, il cervello lo usa su richiesta |
 | 9 | ~~Aion Labs~~ | **risponde** | la chiave era buona: **era il mio estrattore** che tagliava la chiave all'underscore (`alv2_…_yQ058` → 401). Risolto il 2/11: ora risponde (`aion-labs/aion-3.5`) | — |
 | 10 | Waterfall | chiave rifiutata | **chiave morta**: "Unknown or revoked API key" su tutti e 20 i modelli gratis (il suo /models è pubblico, per questo sembrava vivo e su freellmapi resta verde) | **ti serve una chiave nuova** (modello `auto` + 10 id gratis già in lista). In cima nei SOSPESI: controllo quotidiano |
-| 11 | NavyAI | modello `navy-auto` inesistente | free tier **pausato da loro** + nome modello sbagliato | **togliere dalla lista** |
-| 12 | LongCat | `Unsupported model (auto)` | nome modello sbagliato + quota esaurita | **togliere dalla lista** |
+| 11 | NavyAI | 403 «Free plan is temporarily paused» | la chiave **è valida** (catalogo 200, 132 modelli): `navy-auto` non esisteva (nome sbagliato), sui nomi veri risponde 403 perché **il free tier è in pausa lato loro** | **nome-modello corretti in lista** (`schizogpt` + 3 extra): si riprende da solo se riattivano il free; per usarlo ora serve comprare un piano (carta) → escluso |
+| 12 | LongCat | 402 «Usage limit reached» | la chiave **è valida** (catalogo 200, 3 modelli): `auto` non esisteva; sui nomi verci la chat dice **quota esaurita** | **nome-modello corretti in lista** (`LongCat-2.5` + 2 extra): si riprende al reset |
 | 13 | NaraRouter | model not found | id del modello sbagliato (402/429) | riprovare col catalogo |
 | 14 | UnoRouter | occupato (429) | quota/free finita **adesso** | si riprende da solo |
 | 15 | Chutes | occupato | quota | si riprende da solo |
@@ -72,11 +72,20 @@ a richiesta)
 2. ~~Togliere Aion Labs~~ **risolto**: la chiave era buona, era l'estrattore che la
    tagliava. Ora Aion risponde
 3. **Waterfall**: la chiave è stata **revocata** → serve una chiave nuova
-4. **NavyAI e LongCat**: il free tier è in pausa / la quota è esaurita → propose di
-   toglierli per ora (si possono rimettere quando tornano)
+4. **NavyAI e LongCat**: **restano in lista**, ma non per un errore della chiave: entrambe
+   le chiavi sono valide e i nomi-modello sono stati corretti (il "strano" era il nome
+   sbagliato: `navy-auto` e `auto` non esistono). NavyAI è ferma perché **il free tier è
+   in pausa lato loro** (per ripartire serve un piano a pagamento = carta, escluso);
+   LongCat è ferma perché **la quota dell'AppId è esaurita** (si riprende al reset)
 5. ~~TeamoRouter: serve la chiave intera~~ **fatto**: la chiave è nel vault, ma il
    wallet è vuoto → resta in lista, non ricaricare
 6. ~~AgentRouter: capire perché il PC non la trova~~ **fatto**: il vault PC aveva la
    chiave **troncata** → sostituita con l'intera
-7. Gli **8 "occupato"** e **AI Horde** non richiedono nulla: la sentinella li riprova
+7. Gli **"occupato"** e **AI Horde** non richiedono nulla: la sentinella li riprova
    ogni 6 ore e l'appello li riprova a ogni giro
+8. **Rotazione chiavi GCP e Cohere: NON SERVE, non eseguita.** Passate tutte le 62 chiavi
+   del portachiavi contro l'intera storia del repo pubblico: **zero occorrenze** (solo nomi
+   di modelli). Le due chiavi non sono mai state pubblicate (la push protection le ha
+   bloccate prima) e l'unico repo pubblico è `posta`. Ruotarle non sarebbe un
+   ottimizzazione: sarebbe solo rischio (le due rotte, il cervello a terra finché non le
+   sostituisci) → proposta respinta
