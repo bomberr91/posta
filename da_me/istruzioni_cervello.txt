@@ -1,0 +1,92 @@
+COMPITO: scrivere nel file GIÀ ESISTENTE `missione/CERVELLO_MACCHINA_PERFETTA.md` la sezione
+definitiva con le istruzioni permanenti del cervello per l'appello delle chiavi.
+NON creare file .md nuovi: il capitolo va dentro quel file, in fondo, con un titolo
+chiaro. Non toccare altri file del repo (fuori dal report che il postino salva da solo).
+
+PERCHÉ ESISTE: il 2/11 abbiamo scoperto che il catalogo firmato di freellmapi è PUBBLICO
+e che quasi tutte le "chiavi rotte" erano in realtà modelli sbagliati o header sbagliati.
+Queste istruzioni servono perché il cervello (e chi ci mette le mani dentro) non inciampi
+più sugli stessi errori.
+
+SCRIVI (in italiano, prosa, niente spunte verdi, niente marketing) una sezione con questi
+contenuti, usando i fatti qui sotto e SOLO quelli (se un fatto non è in questo elenco e non
+lo verifichi tu nel repo, scrivilo come "non verificato"):
+
+1) DOVE SI GUARDA IL CATALOGO
+   - Il catalogo firmato di freellmapi è pubblico e si scarica senza chiave:
+     https://api.freellmapi.co/v1/latest  (versione 2026.11.01.395dc3, 41 piattaforme,
+     427 modelli, 123 quirk; si aggiorna da solo ogni ~12 ore lato freellmapi).
+   - La copia compatta per i nostri provider sta in `lavori/catalogo_freellmapi.json`
+     (33 provider, 342 modelli, 80 quirk). Si rigenera con:
+       python3 lavori/aggiorna_catalogo.py
+     (fa il download da solo; `--dry` mostra il riassunto senza scrivere).
+   - Cosa contiene per ogni provider: i modelli GRATIS con l'id ESATTO da mettere nella
+     richiesta, il rango (1 = migliore), rpm/rpd, il contesto e i "quirk" (le istruzioni
+     operative del provider).
+
+2) IL FORMATO DELLA LISTA (portiere_lista.txt) — 10 colonne, nell'ordine:
+   id|etichetta|nome nel portachiavi|indirizzo|modello|modo|tipo|classe|extra|auth
+   - `classe` = keyless | free-ricorrente | trial | pin-only (la legge del capo: gratis e
+     senza carta; "keyless" = provider anonimo senza chiave).
+   - `extra` = altri modelli da provare, separati da ';'.
+   - `auth` = none (NESSUN header Authorization) | sentinel (Bearer 0000000000).
+   - `modo` = chat (prova una domanda vera) | modelli (solo elenco) | no (non è un provider
+     di chat: immagini, video, visione).
+   ATTENZIONE: `cervello.py` legge le colonne 1-8 (id, etichetta, nome, url, modello, modo,
+   tipo, classe): se cambi il numero o l'ordine delle colonne, il cervello va in pezzi.
+   Le colonne 9 e 10 (extra, auth) le legge solo l'appello.
+
+3) LE RICETTE DI AUTENTICAZIONE (la parte che ha fatto perdere più tempo)
+   - I provider "SENZA" NON sono tutti uguali:
+     · Kilo, OVH, Pollinations → `auth=none`: NESSUN header Authorization. Mandare un
+       header qualunque (anche "Bearer free") li' fa rispondere 401/403.
+     · AI Horde → `auth=sentinel`: "Bearer 0000000000", e max_tokens >= 16 (sotto, risponde
+       vuoto).
+   - Senza User-Agent di browser il WAF risponde "error 1010": sembra una chiave rotta ma
+     non lo è. Sempre un UA vero (Chrome).
+   - Cloudflare: la chiave è "account_id:token" e l'indirizzo si compone con l'account id.
+
+4) COME SI AGGIORNANO I MODELLI (in freellmapi, e cosa facciamo noi)
+   - Lato freellmapi: catalogo firmato (sync ~12 h, firma verificata, chiave pubblica
+     appuntata nel codice) → per i provider built-in non coperti dal catalogo, discovery
+     `/models` con source='discovered' → il catalogo adotta o ritira quelle righe →
+     stato per modello (healthy / cooldown / dead) → quota letta dagli header, da
+     Retry-After o dall'API di quota → al posto del cooldown il modello viene riprovato →
+     i ranking decidono l'ordine.
+   - Lato nostro: `lavori/sentinella_chiavi.sh` (ogni 6 ore, agganciata al guardiano
+     `lavori/scorta_cervello.sh`) rigenera il catalogo, ri-prova chi è in cooldown con
+     `bash appello_chiavi.sh --solo-problemi` e fa il check-in AgentRouter (+25$/giorno).
+     Il rapporto sta in `dal_pc/sentinella_chiavi.md`.
+
+5) LA PROCEDURA DELL'APPELLO (come si fa, e cosa NON si fa)
+   - `bash appello_chiavi.sh` (chat vera dove si può) · `--solo-problemi` (solo chi non
+     rispondeva) · `--svelto` (solo elenco modelli) · `--json`.
+   - Il rapporto Markdown va in `dal_pc/appello_chiavi.md`; il catalogo per la GUI in
+     `~/.posta_appello.json`.
+   - L'appello NON si esegue dentro il clone mentre ci si lavora (scrive in dal_pc/): si
+     esegue in una copia, tipo /tmp/appello_run/.
+   - Non fidarti mai del nome del modello: si provano i candidati in ordine (curato, extra,
+     catalogo, /models) e si va avanti finché uno risponde davvero; se il provider dice
+     401 o 429 non si insiste (è un limite, non un modello sbagliato).
+   - MAI una chiave nel repo: le chiavi stanno solo in ~/CHIAVI_LOCALI.md (mai pushato).
+
+6) I QUIRK PIÙ IMPORTANTI (quelli che cambiano il risultato)
+   - mai max_tokens troppo piccoli: alcuni modelli (che "ragionano", le rotte "auto",
+     Gemini con thinking dentro) rispondono a vuoto → usare almeno 20, e 128 se il
+     modello ragiona.
+   - OpenRouter: i modelli ":free" sono 50 al giorno e il conto è TUTTO il account.
+   - OVH: 2 richieste al minuto, tier anonimo.
+   - AI Horde: coda di volontari, il roster cambia ogni ora; i modelli con worker online si
+     vedono su https://aihorde.net/api/v2/status/models (campo count) → è quello che usa
+     `lavori/modelli_aihorde.py`.
+   - Zhipu: il modello gratis è `glm-4.6v-flash` e va con la chiave che abbiamo già; quando
+     risponde 1305 ("访问量过大") è solo momentarily intasato, non è una chiave rotta.
+   - Cloudflare: format "account_id:token".
+   - Requesty: temperature diversa da 0. ElectronHub: rinnovo mensile e alias ":free".
+   - Router9: crediti mensili, reset il 1°. Septor: 50 richieste al giorno. CLōD: 100 al
+     giorno, id con spazi. Speechify: 500.000 caratteri al mese (è TTS). Logfare: solo
+     `logfare/auto` e `gemma-4-26b`. Mistral TTS: `voxtral-tts-26-03`.
+
+CONSEGNA: alla fine del file, in fondo al tuo intervento, scrivi 5 righe: che sezione hai
+aggiunto, in che file, quante righe, e se hai trovato qualche fatto in disaccordo con
+quello scritto sopra (se sì, dimmi quale: si verifica e si corregge).

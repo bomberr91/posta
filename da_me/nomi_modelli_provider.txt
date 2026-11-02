@@ -50,3 +50,44 @@ AGGIORNAMENTO DAL CAPO (2/11, ~10:30) — GIÀ RISOLTI, NON RICERCARLI:
   `_MISSIONI/HUB_CENTRALE/FREELLM_HUB/FREELLM_HUB.md` (tabella degli indirizzi).
   ➜ NOTA: quando cerchi un provider, MAI fidarti del nome del modello: prendi gli id
   da /models e prova la chat. Con User-Agent di browser (Chrome) + max_tokens 20.
+
+---
+AGGIORNAMENTO DAL CAPO (2/11, ~11:40) — IL CATALOGO C'È, È PUBBLICO, È LA TUA FERRAMENTA:
+  Il catalogo firmato di freellmapi si scarica SENZA CHIAVE:
+      https://api.freellmapi.co/v1/latest   (41 piattaforme, 427 modelli, 123 quirk)
+  La copia per i nostri provider è già in `lavori/catalogo_freellmapi.json`
+  (33 provider, 342 modelli, 80 quirk) e si rigenera con:
+      python3 lavori/aggiorna_catalogo.py
+  Per ogni provider ci sono: i modelli GRATIS con l'id ESATTO, il rango (1 = migliore),
+  rpm/rpd, il contesto e i QUIRK (le istruzioni operative del provider: formato della
+  chiave, header da mandare, max_tokens minimi, rate limit). Sono le "istruzioni" del
+  cervello: leggile PRIMA di andare a spulciare il web.
+  I modelli nel catalogo sono già in ordine di rango: il primo è il migliore.
+  Il file catalogo è JSON: per cercare un provider apri la sezione "provider" e guarda
+  la voce con la sua etichetta; "modelli" è la lista dei suoi id, "quirk" le sue note.
+  ➜ Non cominciare dal web: parti dal catalogo, prova i suoi id con una chat vera, e usa
+  il web solo per quello che il catalogo non copre.
+
+  VERDETTI AGGIORNATI (non più validi quelli di prima):
+  · OVH → NON serve una chiave: è keyless. Con NESSUN header Authorization risponde
+    `Mistral-Nemo-Instruct-2407` (200). Con una chiave qualunque risponde 403. NON
+    cercare una chiave OVH.
+  · Kilo → NON serve una chiave: è keyless e vuole NESSUN header (con "Bearer free" o
+    "Bearer 0000000000" risponde 401 INVALID_TOKEN). Indirizzo giusto:
+    https://api.kilo.ai/api/gateway/v1 → `liquid/lfm-2.5-2.6b:free` (200).
+  · Zhipu → la chiave che abbiamo VA bene: il modello gratis è `glm-4.6v-flash`. Quando
+    risponde 1305 ("访问量过大") è solo intasato in quel momento: non è una chiave rotta,
+    non serve cercare crediti.
+  · AI Horde → il roster cambia ogni ora. I modelli con worker ONLINE si prendono da
+    https://aihorde.net/api/v2/status/models?type=text (campo "count"); è quello che fa
+    `python3 lavori/modelli_aihorde.py`. Il sentinel è "Bearer 0000000000" e
+    max_tokens >= 16.
+  ➜ RESTANO DA CERCARE (solo questi): NavyAI · Typhoon · Gizmo · LongCat · Token Harbor ·
+    NaraRouter · BlockRun · AnyAPI · AgentRouter.
+  ➜ METODO PER CHI RESTA: guarda nel catalogo se c'è (campo "provider" → nome del
+    provider → "modelli" e "quirk"); se c'è, prova i suoi id con la chat vera; se non
+    c'è, allora web (prezzi, free tier, nome del modello).
+  ➜ VINCOLI NUOVI: l'appello (appello_chiavi.sh) sa già fare tutto questo: ci puoi
+    chiamare `bash appello_chiavi.sh --solo-problemi` per vedere lo stato vero, ma NON
+    scrivere dentro portiere_lista.txt (lo fa il capo): metti i risultati SOLO nel
+    report. Chiavi mai nel report.
