@@ -1,0 +1,35 @@
+COMPITO (squadra a 3 ruoli: cerca → verifica → correggi): per i provider che ci restano,
+dire con i fatti se si possono recuperare GRATIS (senza carta, senza abbonamento) e con
+quale alternativa; e dire chi va semplicemente RITIRATO dalla lista del Portiere.
+
+I due gruppi:
+
+A) CHIAVE PROBABILMENTE MORTA (la chiave non basta più, o il provider chiede soldi):
+   WaveSpeedAI · Aion Labs · SeaLION · Waterfall · Nscale · Kilo · Speechify ·
+   Jina AI · BlockRun · Qdrant Cloud · Zhipu · Token Harbor · NaraRouter · Requesty ·
+   OpenCode Zen (i suoi modelli gratis rispondono "free usage limit reached" via API ma
+   funzionano DENTRO OpenCode: verifica e spiega come va usato).
+B) LE CHIAVI MANCANTI: TeamoRouter (nel vault c'è solo il prefisso sk-teamo-e0c685…:
+   cerca se il provider è ancora gratis e come si prende una chiave nuova senza carta)
+   e fal.ai (è un provider MEDIA:images/video, non chat: verifica se ci serve).
+
+METODO (usa le skill che hai: archivio-consulta e ricerca-contenitori sull'archivio-repo,
+firecrawl/agent-browser per il web, oss-review se guardi licenze):
+1) per ogni provider: è ancora gratis? serve una carta? il free tier esiste e come funziona?
+   (leggi la pagina pricing/ToS/dashboard: citazione esatta, con la data).
+2) se c'è una alternativa gratis equivalente, cercala (canali: awesome, FMHY,
+   definitive-opensource, AlternativeTo, LibHunt, APIVault) e verifica con il protocollo
+   dell'archivio (licenza letta nel FILE, data ultimo commit, quota, dove gira).
+3) NON riproporre quello che è già in NON_RIPROPORRE.md o che fa già da noi un provider
+   vivo della nostra lista (la lista dei vivi: OpenRouter, Ollama Cloud, Groq, Mistral,
+   NVIDIA, Cloudflare Workers AI, Speka, Lucidity, Moondream, OrcaRouter, LLM7, Router9,
+   Jina AI, Cohere, FreeAI, Inferbase, Logfare, Sail, SimpleLLM, xKiro, Plugsky,
+   DreamPrompting, BazaarLink, Agnes AI, CLōD, Pollinations, Google AI Studio, LLMTR).
+
+CONSEGNA (in fondo al file, markdown): una tabella
+| provider | stato reale (con la prova) | si recupera gratis? | alternativa proposta | azione (TENERE / SOSTITUIRE / RITIRARE) |
+e in fondo le 2 righe di lista delle chiavi mancanti (TeamoRouter, fal.ai) con le fonti.
+Se un fatto non è verificabile, scrivi "NON VERIFICATO" e da dove hai letto.
+
+VINCOLI: costo 0 e MAI carte; niente chiavi/token nel report; conti solo le righe dati
+(le liste gonfiano i numeri); una riga per voce, con la data della verifica.

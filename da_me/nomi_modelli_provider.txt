@@ -1,0 +1,37 @@
+COMPITO: trovare l'id ESATTO del modello che risponde su questi provider, e verificarlo
+con una chiamata vera. Sono provider che già abbiamo nella lista del Portiere
+(portiere_lista.txt) ma a cui stiamo mandando il modello sbagliato ("auto" o un nome
+vecchio): finora rispondevano "model not found" o "Invalid model".
+
+Provider da sbloccare (priorità: dal primo all'ultimo):
+1. Routeway      2. NavyAI       3. UnoRouter     4. AnyAPI
+5. ElectronHub   6. OVH          7. Typhoon       8. Gizmo
+9. LongCat      10. Zhipu       11. Token Harbor 12. NaraRouter
+13. BlockRun    14. AgentRouter (questa la sua il WAF aliyun: prova dal PC, non da un datacenter)
+
+COME LAVORARE (le basi sono in portiere_lista.txt, formato id|etichetta|nome-vault|base|modello|modo):
+1) elenca i modelli che offre: GET {base}/models; se risponde vuoto o un HTML di errore,
+   vai sulla pagina dei modelli / docs / dashboard del provider (usa firecrawl o agent-browser
+   o la ricerca web). NON fidarti del badge: guarda l'elenco vero.
+2) se la base URL che abbiamo è sbagliata (404/WAF/redirect), trova quella giusta.
+   Per NavyAI la base giusta potrebbe essere api.navy.ai/v1 (non quella che abbiamo).
+3) prova la chat con i candidati, dal più promettente: POST {base}/chat/completions
+   {"model":"<id>","messages":[{"role":"user","content":"Rispondi solo OK"}],"max_tokens":10}
+   massimo 6 tentativi per provider.
+4) la chiave la trovi in ~/CHIAVI_LOCALI.md: LEGGILA IN LOCALE e usala, ma MAI
+   STAMPARLA, MAI scriverla nel report, MAI metterla in un comando che venga riportato
+   (caricala in una variabile: K=$(grep ... | cut -d= -f2) e usa $K).
+   User-Agent: metti sempre un browser vero, altrimenti il WAF risponde "error 1010"
+   e sembra che la chiave sia rotta.
+5) se il provider chiede soldi o carta, non insistere: scrivi "SERVE CREDITO".
+
+CONSEGNA (in fondo al file, in markdown):
+- una tabella: | provider | base corretta | id del modello che risponde | esito |
+  con esito = HA RISPOSTO / QUOTA SCADUTA / SERVE CREDITO / NESSUNO (e la ragione).
+- per ogni provider con esito HA RISPOSTO, la riga esatta da mettere in portiere_lista.txt:
+  id|etichetta|nome-vault|base|modello|chat
+- per ogni provider con esito NESSUNO: il link della pagina che hai letto e cosa dice
+  (una riga, con la citazione esatta).
+
+VINCOLI: costo 0, niente carte; MAI chiavi/token nel report; niente numeri inventati;
+se non sei sicuro scrivi "NON VERIFICATO" invece di tirare a indovinare.

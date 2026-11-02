@@ -18,11 +18,26 @@ K="$HOME/CHIAVI_LOCALI.md"
 OUT="$HOME/.posta_appello.json"
 RAP="$QUI/dal_pc/appello_chiavi.md"
 LISTA="$QUI/portiere_lista.txt"   # la lista del Portiere: una sola per tutti
-SVELTO=0; JSON=0
+SVELTO=0; JSON=0; SOLOPROBLEMI=0
 for a in "$@"; do
   [ "$a" = "--svelto" ] && SVELTO=1
   [ "$a" = "--json" ] && JSON=1
+  [ "$a" = "--solo-problemi" ] && SOLOPROBLEMI=1
 done
+# --solo-problemi: salta chi ha gia' risposto all'ultimo appello (il capo lavora solo
+# sui casi ancora rotti). Si legge il catalogo dell'ultima run.
+SKIP=""
+if [ "$SOLOPROBLEMI" = "1" ] && [ -f "$OUT" ]; then
+  SKIP=$(python3 - "$OUT" << 'PY'
+import json, sys
+try:
+    d = json.load(open(sys.argv[1], encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+print(" ".join(v["id"] for v in d.get("voci", []) if v.get("esito") == "risponde"))
+PY
+)
+fi
 if [ "${1:-}" = "--chiave" ]; then
   ID="${2:-}"
   # cerca l'id nella lista del Portiere e tira fuori la chiave col vero estrattore
@@ -37,6 +52,7 @@ mkdir -p "$QUI/dal_pc"
 TMP=$(mktemp -d)
 [ -f "$K" ] || { echo "  ✗ ~/CHIAVI_LOCALI.md non trovato"; exit 0; }
 
+UA_BROWSER="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 G="$(printf '\033[32m')"; R="$(printf '\033[31m')"; Y="$(printf '\033[33m')"; O="$(printf '\033[0m')"
 
 # cerca_chiave <etichetta> <pattern>
@@ -114,7 +130,7 @@ prova(){
   if [ -z "$key" ]; then
     printf '%s\t%s\tno-chiave\t0\tnessuna chiave nel portachiavi\t\n' "$id" "$eti" > "$TMP/$id.res"; return
   fi
-  local t0 t1 code esito extra modello
+  local t0 t1 code esito extra modello MODELLI_KO=""
   t0=$(date +%s%N)
 
   # CLOUDFLARE: l'indirizzo dipende dall'account, che sta DENTRO la chiave («account_id:token»),
@@ -128,9 +144,9 @@ prova(){
   fi
 
   # 1) elenco modelli: dice se la chiave vale e QUALE modello esiste OGGI
-  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -H "Authorization: Bearer $key_hdr" "$base_probe" 2>/dev/null)
+  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" "$base_probe" 2>/dev/null)
   case "$code" in
-    401|403) printf '%s\t%s\tchiave-no\t%s\tchiave rifiutata (%s)\t\n' "$id" "$eti" "$(( ($(date +%s%N)-t0)/1000000 ))" "$code" > "$TMP/$id.res"; return ;;
+    401|403) MODELLI_KO="$code" ;;   # non si esce: si prova anche la chat (2/11)
   esac
   CAND=$(scegli_modello "$TMP/$id.mod")
   ORIG="$mod"                       # il modello CURATO (quello della nostra lista)
@@ -161,7 +177,7 @@ prova(){
     # (i nomi cambiano spesso: così non resta mai indietro)
     while IFS= read -r tentativo; do
       [ -z "$tentativo" ] && continue
-      body=$(curl -s -m 45 -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
+      body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
         -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
         "$base/chat/completions" 2>/dev/null)
       if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; break; fi
@@ -185,7 +201,7 @@ prova(){
         *-*-*-*-*) SUGGERITO="" ;;
       esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
-        body=$(curl -s -m 45 -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
+        body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
           -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
           "$base/chat/completions" 2>/dev/null)
         if printf '%s' "$body" | grep -qi 'choices'; then
@@ -222,6 +238,9 @@ echo
 while IFS='|' read -r id eti nome base modello modo; do
   if [ "${id:0:2}" = "##" ]; then break; fi          # da qui in poi sono i "da confermare"
   case "$id" in ''|\#*) continue ;; esac
+  if [ -n "$SKIP" ]; then
+    case " $SKIP " in *" $id "*) continue ;; esac
+  fi
   prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" &
   # max 6 alla volta
   while [ "$(jobs -rp | wc -l)" -ge 6 ]; do sleep 0.3; done
@@ -255,6 +274,19 @@ python3 - "$TMP" "$OUT" <<'PY'
 import glob, json, os, sys
 tmp, out = sys.argv[1], sys.argv[2]
 voci = []
+# --solo-problemi: si unisce anche il catalogo precedente (chi non e' stato
+# riprovato continua a valere, altrimenti la GUI perderebbe la riserva).
+try:
+    vecchio = json.load(open(out, encoding="utf-8"))
+except Exception:
+    vecchio = {"voci": []}
+gia = {v["id"]: v for v in vecchio.get("voci", [])}
+provati = set()
+for f in glob.glob(os.path.join(tmp, "*.res")):
+    provati.add(os.path.basename(f)[:-4])
+for vid, v in gia.items():
+    if vid not in provati:
+        voci.append(v)
 for f in glob.glob(os.path.join(tmp, "*.res")):
     riga = open(f, encoding="utf-8", errors="replace").read().rstrip("\n").split("\t")
     while len(riga) < 7:
