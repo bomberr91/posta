@@ -25,18 +25,18 @@ clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat
 navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli
 orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli
 nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli
-routeway|Routeway|Routeway|https://api.routeway.ai/v1|auto|modelli
+routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli
 septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli
 typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli
 tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli
 teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
-unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|auto|modelli
+unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli
 plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
 simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
 llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 router9|Router9|Router9|https://api.router9.com/v1|deepseek-v4-flash|modelli
 waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
-blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/deepseek-v4-flash|chat
+blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/claude-haiku-4.5|chat
 logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
 lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli
 freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
@@ -44,8 +44,8 @@ speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
 chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli
 ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
-sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|auto|modelli
-aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|google/gemma-4-31b|chat
+sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli
+aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/L3-8B-Lunaris-v1-Q4_K_M|chat
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
@@ -54,7 +54,7 @@ longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli
 ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli
 requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli
 zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli
-electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|auto|modelli
+electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli
 inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
 blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
 sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat

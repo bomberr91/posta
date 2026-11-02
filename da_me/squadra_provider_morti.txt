@@ -33,3 +33,16 @@ Se un fatto non è verificabile, scrivi "NON VERIFICATO" e da dove hai letto.
 
 VINCOLI: costo 0 e MAI carte; niente chiavi/token nel report; conti solo le righe dati
 (le liste gonfiano i numeri); una riga per voce, con la data della verifica.
+
+---
+AGGIORNAMENTO DAL CAPO (2/11, ~10:30) — IL VERDETTO DI ALCUNI È GIÀ NOTO:
+  OVH → NON è recuperabile gratis: la chiave va RIGENERATA nella dashboard
+  (risponde "Forbidden: authentication failed" e rimanda a kepler.ai.cloud.ovh.net).
+  Kilo → 401 INVALID_TOKEN: serve una chiave vera o il token anonimo giusto → cerca
+  solo COME si prende gratis, non un altro modello.
+  Token Harbor · NaraRouter · Requesty · BlockRun · Zhipu → tutti "402/429: servono
+  crediti" (confermato oggi) → NON cercare un altro modello: cerca solo se esiste un
+  free tier vero senza carta, e se no scrivi "NO GRATIS".
+  LongCat → quota esaurita (402), non è un problema di nome.
+  ➜ Il resto del compito (le alternative gratis e le due chiavi mancanti) resta come
+  scritto sopra.

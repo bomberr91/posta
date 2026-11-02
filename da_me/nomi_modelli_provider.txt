@@ -35,3 +35,18 @@ CONSEGNA (in fondo al file, in markdown):
 
 VINCOLI: costo 0, niente carte; MAI chiavi/token nel report; niente numeri inventati;
 se non sei sicuro scrivi "NON VERIFICATO" invece di tirare a indovinare.
+
+---
+AGGIORNAMENTO DAL CAPO (2/11, ~10:30) — GIÀ RISOLTI, NON RICERCARLI:
+  Routeway → `gemma-4-26b-a4b-it-chimerax:free` (VIVO) · UnoRouter → `qwen3.8-27b:free`
+  (VIVO) · SeaLION → `aisingapore/Llama-SEA-LION-v3-70B-IT` (VIVO) · ElectronHub → `gpt-4o`
+  (VIVO, e la sua finestra mensile rinnova oggi) · BlazeAPI → `free/claude-haiku-4.5` (VIVO) ·
+  AI Horde → `koboldcpp/L3-8B-Lunaris-v1-Q4_K_M` (VIVO; ATTENZIONE: AI Horde RIFIUTA
+  max_tokens sotto 16 → è un bug del nostro appello, già corretto).
+  ➜ RESTANO DA CERCARE SOLO: NavyAI · Typhoon · Gizmo · LongCat · Zhipu · Token Harbor ·
+  NaraRouter · BlockRun · AnyAPI · AgentRouter.
+  ➜ AIUTO: le basi e i nomi storici sono in `_MISSIONI/HUB_CENTRALE/AGENTI_H24/squadre/
+  20261014_2000_hunt/06_hunt_vps_provider.md` (ROSTER26 §B0/§B1) e in
+  `_MISSIONI/HUB_CENTRALE/FREELLM_HUB/FREELLM_HUB.md` (tabella degli indirizzi).
+  ➜ NOTA: quando cerchi un provider, MAI fidarti del nome del modello: prendi gli id
+  da /models e prova la chat. Con User-Agent di browser (Chrome) + max_tokens 20.

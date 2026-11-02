@@ -178,7 +178,7 @@ prova(){
     while IFS= read -r tentativo; do
       [ -z "$tentativo" ] && continue
       body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
-        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
+        -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
         "$base/chat/completions" 2>/dev/null)
       if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; break; fi
       if printf '%s' "$body" | grep -qiE "model|not found|does not exist|no longer"; then
@@ -202,7 +202,7 @@ prova(){
       esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
         body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
-          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":10}" \
+          -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
           "$base/chat/completions" 2>/dev/null)
         if printf '%s' "$body" | grep -qi 'choices'; then
           modello="$SUGGERITO"
