@@ -1,7 +1,14 @@
 # Chiavi: quadro ordinato (2/11, 13:33)
 
-Numero autorevole: **l'appello dal PC**. Ultimi due giri: 13:01 (tutti i 62) e 13:33
-(solo i 21 che non avevano risposto). Esito: **42 su 62 rispondono davvero**.
+Numero autorevole: **l'appello dal PC**. Ultimo giro completo+parziale: 14:33.
+Esito: **42 chat verdi su 62** (i 6 non-chat escono dall'appello) — stamattina erano 32.
+
+**Chiusi oggi:** Aion Labs (era il mio estrattore: tagliava la chiave all'underscore) ·
+AgentRouter (chiave troncata nel vault + strada sbagliata: ora va su `/v1/messages`
+in stile Anthropic, con `x-api-key`, UA da Claude CLI e domanda **in inglese**) ·
+AnyAPI · Typhoon · Gizmo · Token Harbor · BlockRun (nomi-modello nuovi, verificati con
+chat vera) · Zhipu (glm-4.6v-flash) · i 6 non-chat esclusi dall'appello ma tenuti in
+lista per il cervello.
 
 ## A. I 21 che NON rispondono — con la causa e la decisione
 
@@ -16,7 +23,7 @@ Numero autorevole: **l'appello dal PC**. Ultimi due giri: 13:01 (tutti i 62) e 1
 | 7 | WaveSpeedAI | 404 | immagini/video | **togliere dalla lista** |
 | 8 | Moondream | 404 | visione | **togliere dalla lista** |
 | 9 | ~~Aion Labs~~ | **risponde** | la chiave era buona: **era il mio estrattore** che tagliava la chiave all'underscore (`alv2_…_yQ058` → 401). Risolto il 2/11: ora risponde (`aion-labs/aion-3.5`) | — |
-| 10 | Waterfall | chiave rifiutata | **chiave morta**: "Unknown or revoked API key" su tutti e 20 i modelli gratis (il suo /models è pubblico, per questo sembrava vivo) | **ti serve una chiave nuova** (il modello gratis è già messo: `gemma-4-31b-free`) |
+| 10 | Waterfall | chiave rifiutata | **chiave morta**: "Unknown or revoked API key" su tutti e 20 i modelli gratis (il suo /models è pubblico, per questo sembrava vivo e su freellmapi resta verde) | **ti serve una chiave nuova** (modello `auto` + 10 id gratis già in lista). In cima nei SOSPESI: controllo quotidiano |
 | 11 | NavyAI | modello `navy-auto` inesistente | free tier **pausato da loro** + nome modello sbagliato | **togliere dalla lista** |
 | 12 | LongCat | `Unsupported model (auto)` | nome modello sbagliato + quota esaurita | **togliere dalla lista** |
 | 13 | NaraRouter | model not found | id del modello sbagliato (402/429) | riprovare col catalogo |
