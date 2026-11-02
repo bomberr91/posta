@@ -1,66 +1,69 @@
 # portiere_lista.txt — LA LISTA DEL PORTIERE (motore nostro, porta 20129)
-# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo|tipo
+# formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo|tipo|classe|extra|auth
 #   nome nel portachiavi = SENZA  → provider che non vuole chiave
 #   modo = chat (prova una domanda vera) · modelli (solo elenco modelli)
 #   tipo = chat · immagini · video · voce · embedding · visione · db   (assente = chat)
+#   classe = keyless | free-ricorrente | trial | pin-only   (gratis e senza carta)
+#   extra  = altri modelli da provare, separati da ';'
+#   auth   = none (NESSUN header Authorization) | sentinel (Bearer 0000000000)
 # Regola: qui ci stanno TUTTE le chiavi di cui conosciamo l'indirizzo, anche quelle che
 # non fanno chat: il Portiere è nostro e deve poter pescare la chiave giusta.
 # Indirizzi verificati uno per uno il 21/10/2026 (elenco modelli 200), dal portachiavi.
 
 # ── CHAT ────────────────────────────────────────────────────────────────────
-groq|Groq|Groq|https://api.groq.com/openai/v1|qwen/qwen3.8-27b|chat
-gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat
-mistral|Mistral|Mistral|https://api.mistral.ai/v1|ministral-8b-latest|chat
-cohere|Cohere|Cohere|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat
-openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat
-nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
-huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat
-pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat
-agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli
-opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat
-aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat
-api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat
-bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat
-clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat
-navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli
-orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli
-nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli
-routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli
-septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli
-typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli
-tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli
-teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli
-unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli
-plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat
-simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat
-llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
-router9|Router9|Router9|https://api.router9.com/v1|deepseek-v4-flash|modelli
-waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli
-blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/claude-haiku-4.5|chat
-logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli
-lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli
-freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat
-speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat
-nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli
-chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli
-ovh|OVH|OVH|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|auto|modelli
-sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli
-aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/L3-8B-Lunaris-v1-Q4_K_M|chat
-pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat
+groq|Groq|Groq|https://api.groq.com/openai/v1|qwen/qwen3.8-27b|chat||free-ricorrente||
+gemini|Google AI Studio|Google AI Studio|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.0-flash|chat||free-ricorrente||
+mistral|Mistral|Mistral|https://api.mistral.ai/v1|ministral-8b-latest|chat||free-ricorrente||
+cohere|Cohere|Cohere|https://api.cohere.ai/compatibility/v1|command-r-plus-08-2024|chat||free-ricorrente||
+openrouter|OpenRouter|OpenRouter|https://openrouter.ai/api/v1|openrouter/auto|chat||free-ricorrente||
+nvidia|NVIDIA|NVIDIA|https://integrate.api.nvidia.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
+huggingface|HuggingFace Router|HuggingFace Router|https://router.huggingface.co/v1|meta-llama/Llama-3.1-8B-Instruct|chat||free-ricorrente||
+pollinations|Pollinations|Pollinations|https://text.pollinations.ai/openai|openai-fast|chat||free-ricorrente||
+agentrouter|AgentRouter|AgentRouter|https://agentrouter.org/v1|auto|modelli||free-ricorrente||
+opencode|OpenCode Zen|OpenCode Zen|https://opencode.ai/zen/v1|glm-5.3|chat||free-ricorrente||
+aion|Aion Labs|Aion Labs|https://api.aionlabs.ai/v1|aion-labs/aion-3.5|chat||free-ricorrente||
+api-airforce|Api.Airforce|Api.Airforce|https://api.airforce/v1|glm-4.7-flash|chat||free-ricorrente||
+bazaarlink|BazaarLink|BazaarLink|https://bazaarlink.ai/api/v1|auto:free|chat||free-ricorrente||
+clod|CLōD|CLōD|https://api.clod.io/v1|Trinity Mini|chat||free-ricorrente||
+navy|NavyAI|NavyAI|https://api.navy/v1|navy-auto|modelli||free-ricorrente||
+orcarouter|OrcaRouter|OrcaRouter|https://api.orcarouter.ai/v1|orcarouter/free|modelli||free-ricorrente||
+nara|NaraRouter|NaraRouter|https://router.bynara.id/v1|auto|modelli||free-ricorrente||
+routeway|Routeway|Routeway|https://api.routeway.ai/v1|gemma-4-26b-a4b-it-chimerax:free|modelli||free-ricorrente||
+septorlabs|Septor Labs|Septor Labs|https://api.septorlabs.com/v1|auto|modelli||free-ricorrente||
+typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2-70b-instruct|modelli||free-ricorrente||
+tokenharbor|Token Harbor|Token Harbor|https://tokenharbor.ai/v1|auto|modelli||free-ricorrente||
+teamorouter|TeamoRouter|TeamoRouter|https://api.teamorouter.com/v1|auto|modelli||free-ricorrente||
+unorouter|UnoRouter|UnoRouter|https://api.unorouter.com/v1|qwen3.8-27b:free|modelli||free-ricorrente||
+plugsky|Plugsky|Plugsky|https://plugsky.com/v1|plugsky-micro|chat||free-ricorrente||
+simplellm|SimpleLLM|SimpleLLM|https://api.simplellm.eu/v1|free-Llama-3.1-8B-Instruct|chat||free-ricorrente||
+llmtr|LLMTR|LLMTR|https://llmtr.com/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
+router9|Router9|Router9|https://api.router9.com/v1|deepseek-v4-flash|modelli||free-ricorrente||
+waterfall|Waterfall|Waterfall|https://api.getwaterfall.org/v1|auto|modelli||free-ricorrente||
+blazeapi|BlazeAPI|BlazeAPI|https://api.blazeapi.org/paid/v1|free/claude-haiku-4.5|chat||free-ricorrente||
+logfare|Logfare|Logfare|https://logfare.ai/v1|auto|modelli||free-ricorrente||
+lucidity|Lucidity|Lucidity (Composite)|https://composite.lucidity.sh/v1|minimax/minimax-m3.1-flash:free|modelli||free-ricorrente||
+freeai|FreeAI|FreeAI|https://api.free.ai/v1|qwen7b|chat||free-ricorrente||
+speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||free-ricorrente||
+nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|auto|modelli||free-ricorrente||
+chutes|Chutes|Chutes.ai|https://llm.chutes.ai/v1|google/gemma-4-31B-turbo-TEE|modelli||free-ricorrente||
+ovh|OVH|SENZA|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|Mistral-Nemo-Instruct-2407|modelli||keyless|gpt-oss-120b;Meta-Llama-3_3-70B-Instruct;Qwen3.5-397B-A17B|none
+sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli||free-ricorrente||
+aihorde|AI Horde (senza chiave)|SENZA|https://oai.aihorde.net/v1|koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic|chat||keyless|koboldcpp/gemma-3-270m-it-F16;koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic|sentinel
+pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat||keyless||none
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
-llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli
-longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli
-ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli
-requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli
-zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli
-electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli
-inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli
-blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli
-sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat
-anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli
-kilo|Kilo (senza chiave)|SENZA|https://kilo.ai/api/openrouter/v1|nvidia/nemotron-3.5-lightning:free|modelli
-cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat
+llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli||free-ricorrente||
+longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|auto|modelli||free-ricorrente||
+ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli||free-ricorrente||
+requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli||free-ricorrente||
+zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli||free-ricorrente||
+electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli||free-ricorrente||
+inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli||free-ricorrente||
+blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|auto|modelli||free-ricorrente||
+sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat||free-ricorrente||
+anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|auto|modelli||free-ricorrente||
+kilo|Kilo (senza chiave)|SENZA|https://api.kilo.ai/api/gateway/v1|liquid/lfm-2.5-2.6b:free|modelli||keyless|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;openrouter/free;kilo-auto/free|none
+cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat||free-ricorrente||
 #   Cloudflare: la chiave nel registro è «account_id:token», e il router ricava l'indirizzo da lì
 #   (https://api.cloudflare.com/client/v4/accounts/<account_id>/ai/v1). L'elenco modelli NON sta su
 #   /models: sta su /ai/models/search. Il vecchio llama-3.1-8b è stato deprecato (410) → 3.3-70b-fast.
@@ -76,25 +79,30 @@ cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/m
 #   · DreamPrompting = gli id sono «fornitore/modello» (groq/…, mistral/…) oppure «auto».
 #   · Gizmo = api.gizmoplatforms.com; i modelli a pagamento dicono «add a payment method»,
 #     quelli liberi finiscono con «:free».
-agnes|Agnes AI|Agnes AI|https://apihub.agnes-ai.com/v1|agnes-2.5-flash|chat
-xkiro|xKiro|xKiro|https://api.xkiro.com/v1|mistralai/ministral-14b|chat
-dreamprompting|DreamPrompting|DreamPrompting|https://dreamprompting.com/api/v1|groq/openai/gpt-oss-20b|chat
-gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|minimax/minimax-m3.1-flash:free|chat
+agnes|Agnes AI|Agnes AI|https://apihub.agnes-ai.com/v1|agnes-2.5-flash|chat||free-ricorrente||
+xkiro|xKiro|xKiro|https://api.xkiro.com/v1|mistralai/ministral-14b|chat||free-ricorrente||
+dreamprompting|DreamPrompting|DreamPrompting|https://dreamprompting.com/api/v1|groq/openai/gpt-oss-20b|chat||free-ricorrente||
+gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|minimax/minimax-m3.1-flash:free|chat||free-ricorrente||
 
 # ── NON CHAT (restano chiavi nostre: immagini, video, voce, memoria) ────────
-speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce
-jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding
-qdrant|Qdrant Cloud|Qdrant Cloud — cluster «Bomber91»|https://4e506b83-cf3b-4dab-b1ff-774a090094ba.eu-central-1-0.aws.cloud.qdrant.io|—|no|db
-fal|fal.ai|fal.ai|https://fal.run|—|no|immagini
-wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video
-moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream/moondream3-preview|no|visione
-pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini
+speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce|free-ricorrente||
+jina|Jina AI|Jina AI (n2)|https://api.jina.ai/v1|jina-embeddings-v3|no|embedding|free-ricorrente||
+qdrant|Qdrant Cloud|Qdrant Cloud — cluster «Bomber91»|https://4e506b83-cf3b-4dab-b1ff-774a090094ba.eu-central-1-0.aws.cloud.qdrant.io|—|no|db|free-ricorrente||
+fal|fal.ai|fal.ai|https://fal.run|—|no|immagini|free-ricorrente||
+wavespeed|WaveSpeedAI|WaveSpeedAI|https://api.wavespeed.ai/api/v3|—|no|video|free-ricorrente||
+moondream|Moondream|Moondream|https://api.moondream.ai/v1|moondream/moondream3-preview|no|visione|free-ricorrente||
+pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollinations.ai|flux|no|immagini|keyless||none
 
 ## NOTE DEL 21/10 NOTTE (provate una per una dal router)
 # · Chutes: la chiave risponde all'elenco modelli ma la chat dà 402 «balance is $0.0, please pay»:
 #   il loro piano free vuole un saldo diverso da zero → resta in lista ma il router lo mette in pausa da sé.
-# · Kilo: l'indirizzo giusto è https://api.kilo.ai/api/gateway/v1 ma risponde 401 (INVALID_TOKEN)
-#   con qualunque token, anche senza: serve una chiave Kilo vera dal loro sito.
+# · Kilo: RISOLTO 2/11 — è keyless MA vuole NESSUN header Authorization (con un token
+#   qualunque, anche «free» o «0000000000», risponde 401 INVALID_TOKEN). Indirizzo giusto
+#   https://api.kilo.ai/api/gateway/v1 ; i modelli gratis arrivano dal catalogo freellmapi.
+# · OVH: è keyless e vuole NESSUN header Authorization (con una chiave qualunque risponde 403).
+#   Chat: Mistral-Nemo-Instruct-2407 · 2 richieste al minuto.
+# · AI Horde: vuole il sentinel «Bearer 0000000000» e max_tokens >= 16. Il roster cambia ogni
+#   ora: i modelli con worker online si vedono su https://aihorde.net/api/v2/status/models
 # · Cloudflare Workers AI: la chiave deve essere nel formato «account_id:api_token»; la nostra è
 #   solo il token, quindi l'indirizzo non si può comporre. Appena c'è l'account id si accende.
 # · Sail e i modelli che «ragionano» (Agnes): rispondono col pensiero e il testo vuoto → ora il
@@ -104,7 +112,7 @@ pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollin
 # Nome nel portachiavi | perché è fermo
 ✅ risolto 21/10 (riga chat qui sopra: apihub.agnes-ai.com/v1) — Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
 AI21|ritirato: il servizio Studio non esiste più
-Kilo|ha risposto ma è senza chiave: già dentro come «Kilo (senza chiave)»
+Kilo|risolto 2/11: è dentro come «Kilo (senza chiave)» (keyless, senza header)
 ✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
 ✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
 ✅ risolto 21/10 (riga chat qui sopra: api.gizmoplatforms.com/api/v1) — Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)

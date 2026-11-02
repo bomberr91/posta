@@ -47,24 +47,28 @@ FORMATI = [
 
 
 def chiave(testo, percorso):
+    """Tira fuori la chiave del provider giusto.
+
+    Regola (2/11 sera-fix): si guarda PRIMA la riga che INIZIA col nome del
+    provider in grassetto («- **OVH** — ...»). Solo se non esiste si passa alla
+    parola semplice. Serve perche' la riga di Pollinations nomina OVH fra
+    parentesi: con la sola parola semplice «OVH» prendeva la chiave di
+    Pollinations (403 a runtime).
+    """
     try:
         righe = open(percorso, encoding="utf-8", errors="replace").read().splitlines()
     except Exception:
         return "", ""
-    # 1/11 sera: la ricerca pretendeva il prefisso "**" e quindi NON trovava
-    # le righe del registro scritte cosi' ("agentrouter sk-..."): AgentRouter
-    # risultava "nessuna chiave" pur avendo la chiave. Ora si prova anche il
-    # nome semplice, come parola intera.
-    cercato = "**" + testo.lower()
-    semplice = testo.lower()
-    for i, riga in enumerate(righe):
-        rl = riga.lower()
-        if cercato in rl:
-            pass
-        elif re.search(r"\b" + re.escape(semplice) + r"\b", rl):
-            pass
-        else:
-            continue
+
+    rx_grassetto = re.compile(r"^\s*(?:[-|*#>\u2022]\s*)*\*\*" + re.escape(testo) + r"\*\*", re.I)
+    rx_parola = re.compile(r"\b" + re.escape(testo.lower()) + r"\b", re.I)
+
+    indici = [i for i, riga in enumerate(righe) if rx_grassetto.search(riga)]
+    if not indici:
+        indici = [i for i, riga in enumerate(righe) if rx_parola.search(riga)]
+
+    for i in indici:
+        riga = righe[i]
         pezzo = [riga]
         if i + 1 < len(righe) and "chiave completa" in righe[i + 1].lower():
             pezzo.append(righe[i + 1])
@@ -74,7 +78,9 @@ def chiave(testo, percorso):
             if trovati:
                 return max(trovati, key=len), riga.strip()[:90]
         candidati = [t for t in re.findall(r"[A-Za-z0-9_+=.-]{24,}", testo_riga)
-                     if "/" not in t and not t.lower().startswith(("https", "chiave"))]
+                     if "/" not in t and not t.lower().startswith(("https", "chiave"))
+                     and not re.match(r"^[a-z0-9-]+(\.[a-z0-9-]+)+$", t)   # non e' un dominio
+                     and not re.match(r"^[0-9a-f]{8}-", t)]                  # non e' un uuid
         if candidati:
             return max(candidati, key=len), riga.strip()[:90]
     return "", ""

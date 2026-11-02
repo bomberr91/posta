@@ -125,9 +125,20 @@ PY
 # prova <id> <etichetta> <riga-portachiavi> <pattern> <base_url> <modello-suggerito> <chat|modelli>
 prova(){
   local id="$1" eti="$2" nome="$3" base="$4" mod="$5" modo="$6"
-  local key
-  if [ "$nome" = "SENZA" ]; then key="free"; else key=$(chiave_di "$nome"); fi
-  if [ -z "$key" ]; then
+  local key NOAUTH=0
+  if [ "$nome" = "SENZA" ]; then
+    # I "SENZA" NON SONO TUTTI UGUALI (2/11, verificato con chat vera):
+    #   auth=none     -> NESSUN header Authorization (Kilo, OVH, Pollinations)
+    #   auth=sentinel -> Bearer 0000000000 (AI Horde)
+    # Mandare un header Authorization QUALSIASI a Kilo/OVH li' fa rispondere 401/403.
+    case "$auth" in
+      sentinel) key="0000000000" ;;
+      *)        key="" ;;
+    esac
+  else
+    key=$(chiave_di "$nome")
+  fi
+  if [ "$nome" != "SENZA" ] && [ -z "$key" ]; then
     printf '%s\t%s\tno-chiave\t0\tnessuna chiave nel portachiavi\t\n' "$id" "$eti" > "$TMP/$id.res"; return
   fi
   local t0 t1 code esito extra modello MODELLI_KO=""
@@ -136,15 +147,17 @@ prova(){
   # CLOUDFLARE: l'indirizzo dipende dall'account, che sta DENTRO la chiave («account_id:token»),
   # e l'elenco modelli non sta su /models ma su /ai/models/search. (21/10: verificato)
   local base_probe="$base" key_hdr="$key"
+  local -a HAUTH=()
   if [ "$base" = "SPECIALE-CLOUDFLARE" ]; then
     base="https://api.cloudflare.com/client/v4/accounts/${key%%:*}/ai/v1"
     base_probe="https://api.cloudflare.com/client/v4/accounts/${key%%:*}/ai/models/search?per_page=200"
     key_hdr="${key#*:}"          # nel «Bearer» va solo il token
     mod="${mod}"
   fi
+  [ -n "$key_hdr" ] && HAUTH=(-H "Authorization: Bearer $key_hdr")
 
   # 1) elenco modelli: dice se la chiave vale e QUALE modello esiste OGGI
-  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" "$base_probe" 2>/dev/null)
+  code=$(curl -s -o "$TMP/$id.mod" -w '%{http_code}' -m 25 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} "$base_probe" 2>/dev/null)
   case "$code" in
     401|403) MODELLI_KO="$code" ;;   # non si esce: si prova anche la chat (2/11)
   esac
@@ -152,11 +165,47 @@ prova(){
   ORIG="$mod"                       # il modello CURATO (quello della nostra lista)
   [ -z "$CAND" ] && CAND="$mod"
   modello=$(printf '%s\n' "$CAND" | head -1)
+  # CATALOGO FREELLMAPI (2/11): il catalogo firmato di freellmapi e' PUBBLICO
+  # (api.freellmapi.co/v1/latest, si aggiorna ogni 12h) e dice per ogni provider
+  # quali modelli sono gratis e come si chiamano. Con quel catalogo non si piu'
+  # tirare a indovinare ("auto"): si provano i suoi id, in ordine di intelligenza.
+  # NB: il file va letto con "python3 -": con "python3 file" python esegue il
+  # JSON come script e la lettura non avviene MAI (bug trovato e corretto 2/11).
+  CATMOD=$(python3 - "$QUI/lavori/catalogo_freellmapi.json" "$eti" << 'PY'
+import json, re, sys
+try:
+    d = json.load(open(sys.argv[1], encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+cattivi = re.compile(r"embed|whisper|tts|audio|image|vision|rerank|moderation|guard|safety|dall|stable-diffusion|sd-|flux|ocr|document", re.I)
+for p in d.get("provider", {}).values():
+    if str(p.get("etichetta", "")).lower() == sys.argv[2].lower():
+        ms = [m for m in p.get("modelli", []) if isinstance(m.get("id"), str)]
+        ms = [m for m in ms if not cattivi.search(m["id"])]
+        # il file e' gia' ordinato per rango crescente (1 = migliore)
+        for m in ms[:6]:
+            print(m["id"])
+        break
+PY
+)
   # AUDIT 2/11: il modello curato si prova per PRIMO. Prima questo script buttava
   # via quello scelto da noi e usava il primo id che tornava da /models: e quel
   # primo id era spesso un UUID o un modello morto (Cloudflare, NVIDIA, Moondream...).
+  EXTRA=$(printf '%s' "$extra" | tr ';' '\n' | awk 'NF && !v[$0]++')
+  # AI HORDE: il roster cambia ogni ora e un modello puo' essere valido ma senza
+  # nessun worker online. L'unica fonte affidabile e' il contatore dei worker.
+  if [ "$base" = "https://oai.aihorde.net/v1" ]; then
+    ROSTER=$(python3 "$QUI/lavori/modelli_aihorde.py" 2>/dev/null)
+    [ -n "$ROSTER" ] && CAND=$(printf '%s\n%s\n' "$ROSTER" "$CAND" | awk 'NF && !v[$0]++')
+  fi
   if [ -n "$ORIG" ] && [ "$ORIG" != "auto" ] && [ "$ORIG" != "free" ]; then
     CAND=$(printf '%s\n%s\n' "$ORIG" "$CAND" | awk 'NF && !v[$0]++')
+  fi
+  if [ -n "$EXTRA" ]; then
+    CAND=$(printf '%s\n%s\n' "$EXTRA" "$CAND" | awk 'NF && !v[$0]++')
+  fi
+  if [ -n "$CATMOD" ]; then
+    CAND=$(printf '%s\n%s\n' "$CATMOD" "$CAND" | awk 'NF && !v[$0]++')
   fi
 
   # AUDIT FINALE (1/11 sera): i provider in modo "modelli" NON venivano
@@ -170,21 +219,34 @@ prova(){
     elif [ "$code" = "429" ]; then esito="occupato"; extra="troppe richieste adesso (429)"
     elif [ "$code" = "000" ] || [ -z "$code" ]; then esito="rete"; extra="non raggiungibile"
     else esito="strano"; extra="elenco modelli: risposta $code"; fi
+  elif [ "$modo" = "no" ]; then
+    # provider NON-chat (immagini, video, visione): non si chat-provano
+    if [ "$code" = "200" ]; then esito="risponde"; extra="indirizzo valido (non e' un provider di chat)"
+    elif [ "$code" = "429" ]; then esito="occupato"; extra="troppe richieste adesso (429)"
+    elif [ "$code" = "000" ] || [ -z "$code" ]; then esito="rete"; extra="non raggiungibile"
+    else esito="strano"; extra="elenco modelli: risposta $code"; fi
   else
     # 2) domanda vera, col modello che il provider DICE di avere adesso
     local body=""
     # provo i modelli che il provider dichiara di avere, dal più promettente in giù
     # (i nomi cambiano spesso: così non resta mai indietro)
+    # 2/11: si provano TUTTI i candidati, non solo il primo. Motivi: il nome del
+    # modello cambia spesso, qualche modello e' valido ma senza worker online in
+    # quel momento (AI Horde), e il catalogo sa quale id e' gratis ma l'id puo'
+    # essere vecchio. Gli errori "decisivi" (chiave rifiutata / quota esaurita /
+    # servizio intasato) si ricordano su qualunque tentativo.
+    local ok=0 vede401=0 vede429=0 ultimo="" i=0
     while IFS= read -r tentativo; do
       [ -z "$tentativo" ] && continue
-      body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
+      i=$((i+1)); [ "$i" -gt 3 ] && break
+      body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
         -d "{\"model\":\"$tentativo\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
         "$base/chat/completions" 2>/dev/null)
-      if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; break; fi
-      if printf '%s' "$body" | grep -qiE "model|not found|does not exist|no longer"; then
-        modello="$tentativo"; continue          # modello cambiato: provo il prossimo
-      fi
-      modello="$tentativo"; break
+      [ -n "$body" ] && ultimo="$body"
+      if printf '%s' "$body" | grep -qi 'choices'; then modello="$tentativo"; ok=1; break; fi
+      if printf '%s' "$body" | grep -qiE 'invalid.*key|unauthorized|forbidden|invalid.token|authentication'; then vede401=1; break; fi
+      if printf '%s' "$body" | grep -qiE 'rate|429|quota|limit|credit|insufficient|overload|high demand|try again later|too many requests|busy|1305'; then vede429=1; break; fi
+      modello="$tentativo"
     done <<< "$CAND"
     # AUDIT FINALE (1/11 sera): molti provider rispondono "model not found" e
     # NELLO STESSO ERRORE dicono quale modello usare ("Try gemma4:31b-cloud",
@@ -201,26 +263,24 @@ prova(){
         *-*-*-*-*) SUGGERITO="" ;;
       esac
       if [ -n "$SUGGERITO" ] && [ "$SUGGERITO" != "$modello" ]; then
-        body=$(curl -s -m 45 -A "$UA_BROWSER" -H "Authorization: Bearer $key_hdr" -H "Content-Type: application/json" \
+        body=$(curl -s -m 30 -A "$UA_BROWSER" ${HAUTH[@]+"${HAUTH[@]}"} -H "Content-Type: application/json" \
           -d "{\"model\":\"$SUGGERITO\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi soltanto con OK\"}],\"max_tokens\":20}" \
           "$base/chat/completions" 2>/dev/null)
         if printf '%s' "$body" | grep -qi 'choices'; then
-          modello="$SUGGERITO"
+          modello="$SUGGERITO"; ok=1
         fi
       fi
     fi
-    if printf '%s' "$body" | grep -qi 'choices'; then
+    if [ "$ok" = "1" ]; then
       esito="risponde"; extra="ha risposto davvero ($modello)"
-    elif printf '%s' "$body" | grep -qiE '^\s*OK'; then
-      esito="risponde"; extra="ha risposto davvero ($modello)"
-    elif printf '%s' "$body" | grep -qiE 'invalid.*key|unauthorized'; then
+    elif [ "$vede401" = "1" ]; then
       esito="chiave-no"; extra="chiave rifiutata"
-    elif printf '%s' "$body" | grep -qiE 'rate|429|quota|limit|credit'; then
+    elif [ "$vede429" = "1" ]; then
       esito="occupato"; extra="limite o credito finito adesso"
-    elif [ -z "$body" ]; then
+    elif [ -z "$ultimo" ]; then
       esito="rete"; extra="non raggiungibile"
     else
-      esito="strano"; extra=$(printf '%s' "$body" | head -c 90 | tr '\n\t' '  ')
+      esito="strano"; extra=$(printf '%s' "$ultimo" | head -c 90 | tr '\n\t' '  ')
     fi
     printf '%s' "$body" > "$TMP/$id.body"
   fi
@@ -235,13 +295,13 @@ echo
 
 # La lista è UNA: portiere_lista.txt (id|etichetta|nome nel portachiavi|indirizzo|modello|modo)
 # L'ordine è quello del file: prima le più affidabili (diventano riserva in quest'ordine).
-while IFS='|' read -r id eti nome base modello modo; do
+while IFS='|' read -r id eti nome base modello modo tipo classe extra auth; do
   if [ "${id:0:2}" = "##" ]; then break; fi          # da qui in poi sono i "da confermare"
   case "$id" in ''|\#*) continue ;; esac
   if [ -n "$SKIP" ]; then
     case " $SKIP " in *" $id "*) continue ;; esac
   fi
-  prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" &
+  prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" "$extra" "$auth" &
   # max 6 alla volta
   while [ "$(jobs -rp | wc -l)" -ge 6 ]; do sleep 0.3; done
 done < "$LISTA"

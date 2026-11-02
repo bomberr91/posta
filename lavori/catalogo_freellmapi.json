@@ -1,0 +1,5230 @@
+{
+ "generato": "02/11/2026 10:12",
+ "versione": "2026.11.01.395dc3",
+ "tier": "monthly",
+ "provider": {
+  "google": {
+   "nome": "Google AI Studio",
+   "etichetta": "Google AI Studio",
+   "modelli": [
+    {
+     "id": "gemini-3.8-flash",
+     "rank": 25,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-flash-latest",
+     "rank": 25,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": null,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.7-flash",
+     "rank": 29,
+     "vel": 4,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.6-flash",
+     "rank": 39,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.5-flash",
+     "rank": 41,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.8-live",
+     "rank": 49,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": null,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.8-live-extended-thinking",
+     "rank": 49,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": null,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-robotics-er-2-preview",
+     "rank": 57,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.5-flash-lite",
+     "rank": 63,
+     "vel": 3,
+     "rpm": 15,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-flash-lite-latest",
+     "rank": 63,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": null,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemma-4-31b-it",
+     "rank": 69,
+     "vel": 4,
+     "rpm": 15,
+     "rpd": 1000,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "gemini-3-flash-preview",
+     "rank": 71,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemma-4-26b-a4b-it",
+     "rank": 73,
+     "vel": 4,
+     "rpm": 15,
+     "rpd": 1000,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.1-flash-lite",
+     "rank": 75,
+     "vel": 3,
+     "rpm": 15,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-3.1-flash-lite-preview",
+     "rank": 75,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": null,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-2.5-flash",
+     "rank": 81,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-2.5-flash-lite",
+     "rank": 89,
+     "vel": 3,
+     "rpm": 15,
+     "rpd": 20,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": true
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "gemini-thinking-token-room",
+     "titolo": "Thinking tokens use output cap",
+     "testo": "Gemini Flash can spend hidden thinking tokens inside maxOutputTokens. Avoid tiny max_tokens values or set thinkingBudget to 0 when provider support is available.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-google-gemini-3-5-transcribe",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing Gemini API free-tier quota; account limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://ai.google.dev/gemini-api/docs/pricing",
+     "gravita": "info"
+    }
+   ]
+  },
+  "ovh": {
+   "nome": "OVH AI Endpoints",
+   "etichetta": "OVH",
+   "modelli": [
+    {
+     "id": "Qwen3.8-27B",
+     "rank": 39,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Qwen3.6-27B",
+     "rank": 65,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Qwen3.5-397B-A17B",
+     "rank": 71,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Qwen3.5-9B",
+     "rank": 79,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-oss-120b",
+     "rank": 83,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-oss-20b",
+     "rank": 89,
+     "vel": 10,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Meta-Llama-3_3-70B-Instruct",
+     "rank": 91,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Mistral-Small-3.2-24B-Instruct-2506",
+     "rank": 91,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "Qwen2.5-VL-72B-Instruct",
+     "rank": 92,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "Mistral-Nemo-Instruct-2407",
+     "rank": 99,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "keyless-anonymous",
+     "titolo": "No API key required",
+     "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+     "gravita": "info"
+    },
+    {
+     "slug": "reasoning-token-room",
+     "titolo": "Needs token room",
+     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+     "gravita": "info"
+    },
+    {
+     "slug": "ovh-anon-trickle",
+     "titolo": "Anonymous tier is 2 req/min",
+     "testo": "OVH AI Endpoints anonymous mode is documented at 2 req/min per IP per model (observed even stricter across models). The 400 req/min authenticated tier requires a Public Cloud project with a payment method, so the catalog ships the keyless path. Treat as a breadth/fallback tier, not a throughput tier.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "safety-classifier-output",
+     "titolo": "Safety classifier output",
+     "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+     "gravita": "info"
+    },
+    {
+     "slug": "ovh-qwen-think-trace",
+     "titolo": "May emit thinking trace",
+     "testo": "OVH Qwen reasoning routes can include <think> blocks or reasoning prose. Strip or suppress the thinking trace when a plain answer is required.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "ovh-sdxl-withdrawn-2026-09-21",
+     "titolo": "Route withdrawn upstream",
+     "testo": "Key-tested on September 21, 2026: OVH answers stable-diffusion-xl-base-v10 with model_not_found. Separately, only nine models on OVH AI Endpoints are priced at €0; the rest are reachable solely through the anonymous two-requests-per-minute-per-IP path.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-ovh-nvr-tts-en-us",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-ovh-nvr-tts-de-de",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-ovh-nvr-tts-es-es",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-ovh-nvr-tts-it-it",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+     "gravita": "info"
+    }
+   ]
+  },
+  "cloudflare": {
+   "nome": "Cloudflare Workers AI",
+   "etichetta": "Cloudflare Workers AI",
+   "modelli": [
+    {
+     "id": "@cf/qwen/qwen3.8-27b",
+     "rank": 39,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "@cf/google/gemma-4-26b-a4b-it",
+     "rank": 73,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/zai-org/glm-4.7-flash",
+     "rank": 77,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/nvidia/nemotron-3-120b-a12b",
+     "rank": 81,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/openai/gpt-oss-120b",
+     "rank": 83,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/qwen/qwq-32b",
+     "rank": 88,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/openai/gpt-oss-20b",
+     "rank": 89,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+     "rank": 90,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/meta/llama-4-scout-17b-16e-instruct",
+     "rank": 91,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "rank": 91,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 24000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/qwen/qwen3-30b-a3b-fp8",
+     "rank": 92,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+     "rank": 93,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "@cf/meta/llama-3.1-8b-instruct-fp8",
+     "rank": 93,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/qwen/qwen2.5-coder-32b-instruct",
+     "rank": 94,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "@cf/meta/llama-3.2-3b-instruct",
+     "rank": 95,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/aisingapore/gemma-sea-lion-v4-27b-it",
+     "rank": 97,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/meta/llama-3.2-1b-instruct",
+     "rank": 97,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/ibm-granite/granite-4.0-h-micro",
+     "rank": 101,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/mistral/mistral-7b-instruct-v0.2-lora",
+     "rank": 101,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/meta-llama/llama-2-7b-chat-hf-lora",
+     "rank": 101,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/moondream/moondream3.1-9B-A2B",
+     "rank": 103,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "@cf/google/gemma-2b-it-lora",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/google/gemma-7b-it-lora",
+     "rank": 105,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "@cf/llava-hf/llava-1.5-7b-hf",
+     "rank": 105,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": true
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "cloudflare-key-format",
+     "titolo": "Key is account_id:token",
+     "testo": "Cloudflare Workers AI authenticates with a combined credential in the form \"account_id:token\", not a bare token.",
+     "gravita": "info"
+    },
+    {
+     "slug": "reasoning-token-room",
+     "titolo": "Needs token room",
+     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "groq": {
+   "nome": "Groq",
+   "etichetta": "Groq",
+   "modelli": [
+    {
+     "id": "qwen/qwen3.8-27b",
+     "rank": 39,
+     "vel": 2,
+     "rpm": 30,
+     "rpd": 250,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "openai/gpt-oss-120b",
+     "rank": 83,
+     "vel": 2,
+     "rpm": 30,
+     "rpd": 1000,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "openai/gpt-oss-20b",
+     "rank": 89,
+     "vel": 2,
+     "rpm": 30,
+     "rpd": 1000,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "allam-2-7b",
+     "rank": 101,
+     "vel": 2,
+     "rpm": 30,
+     "rpd": 1000,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": []
+  },
+  "openrouter": {
+   "nome": "OpenRouter",
+   "etichetta": "OpenRouter",
+   "modelli": [
+    {
+     "id": "dots-studio/dots-3-note-preview:free",
+     "rank": 35,
+     "vel": 7,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 512000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "rank": 61,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "google/gemma-4-31b-it:free",
+     "rank": 69,
+     "vel": 9,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "google/gemma-4-26b-a4b-it:free",
+     "rank": 73,
+     "vel": 9,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3.5-lightning:free",
+     "rank": 81,
+     "vel": 2,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "cohere/north-mini-code:free",
+     "rank": 87,
+     "vel": 8,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "rank": 89,
+     "vel": 9,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "liquid/lfm-2.5-2.6b:free",
+     "rank": 90,
+     "vel": 3,
+     "rpm": 20,
+     "rpd": 50,
+     "ctx": 32768,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "or-free-cap-account-wide",
+     "titolo": "Daily :free cap is account-wide",
+     "testo": "OpenRouter’s :free daily cap (50/day, or 1000/day once you have ever bought $10 of credits) is shared across ALL :free models on the account, not per model. Per-row rpd values here are therefore optimistic; the router’s cooldown handling absorbs the shared 429s.",
+     "gravita": "info"
+    },
+    {
+     "slug": "reasoning-token-room",
+     "titolo": "Needs token room",
+     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+     "gravita": "info"
+    },
+    {
+     "slug": "or-ultra-hangs",
+     "titolo": "OpenRouter ultra route hangs",
+     "testo": "nemotron-3-ultra (550B) on OpenRouter takes 180s+ even on trivial prompts (heavily congested), so its OR row is seeded disabled. Use the OpenCode Zen route instead.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "deepseek-v4-flash-0731-free-withdrawn-2026-09-21",
+     "titolo": "Free route withdrawn, paid route remains",
+     "testo": "Key-tested on September 21, 2026. OpenRouter answers deepseek/deepseek-v4-flash-0731:free with \"This model is unavailable for free. The paid version is available now - use this slug instead: deepseek/deepseek-v4-flash-0731\"; Kilo's gateway no longer lists the :free id at all; and NVIDIA returns 410 Gone, \"the model has reached its end of life on 2026-09-21\". ModelScope is the remaining zero-cost route to these weights.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "openrouter-zero-price-oct04",
+     "titolo": "Zero-priced access, not monthly credits",
+     "testo": "Both routes returned matching-model text completions on October 4, 2026 with usage.cost=0. Shared provider rate limits still apply; free access is not a monthly cash grant and pricing may change. Ling first hit a temporary upstream rate limit and passed on retry. Tool and vision flags remain off until separately tested. See https://openrouter.ai/apodex/apodex-1.1-mini:free and https://openrouter.ai/inclusionai/ling-3.1-flash.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nvidia-trial-oct15-evening",
+     "titolo": "Developer evaluation and data-use terms",
+     "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "cohere": {
+   "nome": "Cohere",
+   "etichetta": "Cohere",
+   "modelli": [
+    {
+     "id": "command-a-plus-05-2026",
+     "rank": 81,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "north-mini-code-1-0",
+     "rank": 87,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-a-reasoning-08-2025",
+     "rank": 89,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-a-03-2025",
+     "rank": 93,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-a-translate-08-2025",
+     "rank": 97,
+     "vel": 8,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "tiny-aya-global",
+     "rank": 97,
+     "vel": 6,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "north-small-translate-09-2026",
+     "rank": 97,
+     "vel": 10,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "tiny-aya-earth",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "tiny-aya-fire",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "tiny-aya-water",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "command-r-plus-08-2024",
+     "rank": 101,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-r-08-2024",
+     "rank": 103,
+     "vel": 11,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "c4ai-aya-expanse-32b",
+     "rank": 103,
+     "vel": 10,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "command-r7b-12-2024",
+     "rank": 103,
+     "vel": 6,
+     "rpm": 20,
+     "rpd": 33,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-r7b-arabic-02-2025",
+     "rank": 103,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "cohere-reasoning-output",
+     "titolo": "May emit reasoning prose",
+     "testo": "Cohere Command A Reasoning can spend output budget explaining its thought process on terse prompts. Use a larger max_tokens cap or a stricter no-reasoning instruction when exact short answers are required.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "oct30-cohere-embed-v5-0-fast",
+     "titolo": "Evaluation-only free access",
+     "testo": "1,000 API calls/month shared trial/evaluation key; production is paid. Embeddings tested with semantic and dimension checks. Verified 2026-10-30. https://docs.cohere.com/docs/rate-limits",
+     "gravita": "warning"
+    },
+    {
+     "slug": "oct30-cohere-embed-v5-0-pro",
+     "titolo": "Evaluation-only free access",
+     "testo": "1,000 API calls/month shared trial/evaluation key; production is paid. Embeddings tested with semantic and dimension checks. Verified 2026-10-30. https://docs.cohere.com/docs/rate-limits",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "llm7": {
+   "nome": "LLM7",
+   "etichetta": "LLM7",
+   "modelli": [
+    {
+     "id": "default",
+     "rank": 87,
+     "vel": 7,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "codestral-latest",
+     "rank": 99,
+     "vel": 8,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistral-Nemo-Instruct-2407",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "keyless-anonymous",
+     "titolo": "No API key required",
+     "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "mistral": {
+   "nome": "Mistral",
+   "etichetta": "Mistral",
+   "modelli": [
+    {
+     "id": "mistral-code-latest",
+     "rank": 89,
+     "vel": 8,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ministral-14b-latest",
+     "rank": 95,
+     "vel": 8,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ministral-14b-2512",
+     "rank": 95,
+     "vel": 8,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "ministral-8b-latest",
+     "rank": 97,
+     "vel": 8,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ministral-3b-2512",
+     "rank": 97,
+     "vel": 10,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "ministral-3b-latest",
+     "rank": 97,
+     "vel": 10,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "ministral-8b-2512",
+     "rank": 97,
+     "vel": 9,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "codestral-latest",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "codestral-2508",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistral-code-fim-latest",
+     "rank": 99,
+     "vel": 7,
+     "rpm": 2,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "mistral-free-plan-zero-cap",
+     "titolo": "Free plan caps this model at 0 requests per minute",
+     "testo": "On September 15, 2026 the Free-plan key returned x-ratelimit-limit-req-minute: 0 for this model on every attempt over 30 minutes, while Codestral, Ministral and Voxtral routes served at 30 to 750 RPM. The row is disabled until Mistral includes the model in the Free plan again. Retired Magistral and Medium 3 rows were removed.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "mistral-voxtral-tts-id-2026-09-21",
+     "titolo": "Model id does not exist",
+     "testo": "Key-tested on September 21, 2026: Mistral answers voxtral-mini-tts-2603 with 400 invalid_model. The TTS model is published as voxtral-tts-26-03. A replacement row should be added under the correct id rather than this one re-enabled.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "oct30-mistral-mistral-large-4",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Free mode has included monthly API usage; amount and model caps depend on account. Do not assume the previous $10 figure.. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://docs.mistral.ai/admin/billing-usage/usage-limits",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-mistral-voxtral-mini-tts-3-0",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Free mode included monthly usage; account-specific limits, not a universal $10 grant. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.mistral.ai/admin/billing-usage/usage-limits",
+     "gravita": "info"
+    }
+   ]
+  },
+  "zhipu": {
+   "nome": "Zhipu AI",
+   "etichetta": "Zhipu",
+   "modelli": [
+    {
+     "id": "glm-4.7-flash",
+     "rank": 77,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "glm-4.5-flash",
+     "rank": 91,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "glm-4.6v-flash",
+     "rank": 97,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": true
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "zhipu-shared-key",
+     "titolo": "Works with existing Zhipu key",
+     "testo": "glm-4.6v-flash is listed Free on Z.AI and answers 200 with the existing bigmodel.cn key; vision and structured tool calls both live-verified.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "nvidia": {
+   "nome": "NVIDIA NIM",
+   "etichetta": "NVIDIA",
+   "modelli": [
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b",
+     "rank": 61,
+     "vel": 8,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "meta/muse-glimmer-30b",
+     "rank": 67,
+     "vel": 5,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "google/gemma-4-31b-it",
+     "rank": 69,
+     "vel": 9,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "poolside/laguna-xs-2.1",
+     "rank": 77,
+     "vel": 8,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-super-120b-a12b",
+     "rank": 81,
+     "vel": 9,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "rank": 81,
+     "vel": 4,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "google/diffusiongemma-26b-a4b-it",
+     "rank": 88,
+     "vel": 6,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "openai/gpt-oss-20b",
+     "rank": 89,
+     "vel": 6,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "rank": 89,
+     "vel": 9,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "nvidia/ising-calibration-1.5-31b",
+     "rank": 91,
+     "vel": 7,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "nvidia/riva-translate-4b-instruct-v2",
+     "rank": 101,
+     "vel": 10,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "nvidia-rate-limited",
+     "titolo": "Recurring free, 40 RPM, eval-only ToS",
+     "testo": "NVIDIA NIM replaced its depleting trial credits with a recurring per-account rate limit (40 RPM default, varies by model), verified June 2026. The trial ToS still scopes usage to evaluation/prototyping, not production.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nvidia-route-hangs",
+     "titolo": "NVIDIA almost never answers this model",
+     "testo": "Over the 14 days to September 17, 2026 this route answered 1 of 15 attempts (Kimi K3) and 1 of 10 (DeepSeek V4 Flash 0731) on a valid key. The rest hung for 40 to 180 seconds until timeout, and direct calls hung past 240 seconds. The rows are disabled so auto routing stops spending its failover budget on them.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nvidia-flux-not-on-nim-2026-09-21",
+     "titolo": "Image models are not on the NIM chat host",
+     "testo": "Key-tested on September 21, 2026: black-forest-labs/flux.1-dev and flux.2-klein-4b return a bare 404 from integrate.api.nvidia.com. NVIDIA serves these from a different host, so they cannot be reached through the NIM OpenAI-compatible endpoint this catalog uses.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nvidia-trial-oct15-evening",
+     "titolo": "Developer evaluation and data-use terms",
+     "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+     "gravita": "warning"
+    },
+    {
+     "slug": "oct30-nvidia-mistralai-mistral-large-4-1t-a52b",
+     "titolo": "Evaluation-only free access",
+     "testo": "Rate-limited free development/evaluation endpoint; not a monthly credit grant or unrestricted production access. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://build.nvidia.com/mistralai/mistral-large-4-1t-a52b",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "agnes": {
+   "nome": "Agnes AI",
+   "etichetta": "Agnes AI",
+   "modelli": [
+    {
+     "id": "agnes-3.0-flash",
+     "rank": 35,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "agnes-2.5-pro",
+     "rank": 37,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "agnes-2.5-pro-alpha",
+     "rank": 53,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "agnes-2.5-flash",
+     "rank": 63,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "agnes-2.0-flash",
+     "rank": 79,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    }
+   ],
+   "quirk": []
+  },
+  "bazaarlink": {
+   "nome": "BazaarLink",
+   "etichetta": "BazaarLink",
+   "modelli": [
+    {
+     "id": "deepseek/deepseek-v4-flash-0731free:free",
+     "rank": 38,
+     "vel": 6,
+     "rpm": 10,
+     "rpd": 50,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.7-flash:free",
+     "rank": 69,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": 50,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "auto:free",
+     "rank": 83,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": 50,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": []
+  },
+  "aihorde": {
+   "nome": "AI Horde",
+   "etichetta": "AI Horde (senza chiave)",
+   "modelli": [
+    {
+     "id": "koboldcpp/gemma-4-31B-it-heretic",
+     "rank": 73,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive",
+     "rank": 93,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Gemma-4-E4B-it-Ultra-Uncensored-Heretic",
+     "rank": 93,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive-Q4_K_M",
+     "rank": 93,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Llama-3.2-3B",
+     "rank": 95,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Qwen/Qwen3.5-0.8B",
+     "rank": 95,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "meta-llama/Llama-3.2-3B-Instruct",
+     "rank": 95,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Llama-3.2-3B-Instruct-Q4_K_M",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Qwen3-4B-Nymphaea-RP.i1-Q4_K_S",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/llama-3.2-3b-instruct-q4_k_m",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Qwen_Qwen3-0.6B-IQ4_XS",
+     "rank": 97,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/digo-prayudha/unsloth-llama-3.2-1b-gguf",
+     "rank": 97,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Llama-3.2-1B-Instruct",
+     "rank": 97,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/L3-8B-Stheno-v3.2",
+     "rank": 99,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/L3-Super-Nova-RP-8B",
+     "rank": 99,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aphrodite/SicariusSicariiStuff/Impish_LLAMA_4B",
+     "rank": 99,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/TheDrummer_Behemoth-128B-v3-Q4_K_M",
+     "rank": 101,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+     "rank": 101,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/[ctx:65536] Magidonia-24B-heretic-",
+     "rank": 101,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aphrodite/TheDrummer/Cydonia-24B-v4.3",
+     "rank": 103,
+     "vel": 205,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aphrodite/TheDrummer/Skyfall-31B-v4.2",
+     "rank": 103,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Cydonia-24B-v4.3",
+     "rank": 103,
+     "vel": 205,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8192,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/mini-magnum-12b-v1.1",
+     "rank": 105,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Angelic_Eclipse-12B",
+     "rank": 105,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/Rocinante-X-12B",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/L3-8B-Stheno-v3.2-Q5_K_M",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aphrodite/SicariusSicariiStuff/Impish_Bloodmoon_12B",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/MN-Violet-Lotus-12B.Q8_0",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/ReadyArt/Forgotten-Safeword-22B",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/lunahr/thea-rp-3b-25r",
+     "rank": 106,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/mradermacher/Cerebras-GPT-111M-instruction-GGUF",
+     "rank": 202,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "koboldcpp/mradermacher/pythia-70m-deduped.f16.gguf",
+     "rank": 203,
+     "vel": 206,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4096,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "aihorde-anon-slow",
+     "titolo": "Free volunteer queue, slow",
+     "testo": "AI Horde routes to volunteer-run workers through a priority queue, so latency is seconds to minutes, not the sub-second of hosted providers. The anonymous key 0000000000 runs at the lowest priority; register a free key at aihorde.net for higher priority. The provider uses a 120s timeout.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "aihorde-no-tools",
+     "titolo": "No tool calling",
+     "testo": "AI Horde's OpenAI-compatible proxy does not support function/tool calling. The provider drops tools, tool_choice and parallel_tool_calls so a tool-using request still completes as plain chat instead of failing.",
+     "gravita": "info"
+    },
+    {
+     "slug": "aihorde-usage-estimated",
+     "titolo": "Usage is kudos; tokens estimated",
+     "testo": "The proxy returns usage as {\"kudos\": N} with no token counts, and rejects max_tokens below 16 and a non-array stop. The AIHordeProvider normalizes the request (floors max_tokens, wraps stop) and synthesizes prompt/completion token estimates so analytics and savings math aren't zero.",
+     "gravita": "info"
+    },
+    {
+     "slug": "aihorde-roster-rotates",
+     "titolo": "Roster + context depend on online workers",
+     "testo": "Model availability changes as volunteer workers come and go, so a listed model can be temporarily unserved. The effective context window is set by the worker (often 4-8K), not the model's native maximum.",
+     "gravita": "info"
+    },
+    {
+     "slug": "aihorde-quality-uneven",
+     "titolo": "Uneven quality",
+     "testo": "Output quality varies by worker and quantization, and some workers append template or instruction text after the answer. Best treated as free fallback capacity, not a primary model.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "aihorde-behemoth-slow",
+     "titolo": "123B has heavy queue (seeded disabled)",
+     "testo": "Behemoth-X-123B has deep queue depth (50s+ ETA even on trivial prompts). Seeded disabled; enable only if minute-scale latency is acceptable.",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "kilo": {
+   "nome": "Kilo Gateway",
+   "etichetta": "Kilo (senza chiave)",
+   "modelli": [
+    {
+     "id": "dots-studio/dots-3-note-preview:free",
+     "rank": 35,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 512000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "rank": 61,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "kilo-auto/free",
+     "rank": 79,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "openrouter/free",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 200000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "nvidia/nemotron-3.5-lightning:free",
+     "rank": 81,
+     "vel": 2,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "cohere/north-mini-code:free",
+     "rank": 87,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "rank": 89,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "liquid/lfm-2.5-2.6b:free",
+     "rank": 90,
+     "vel": 3,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "keyless-anonymous",
+     "titolo": "No API key required",
+     "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+     "gravita": "info"
+    },
+    {
+     "slug": "reasoning-token-room",
+     "titolo": "Needs token room",
+     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+     "gravita": "info"
+    },
+    {
+     "slug": "kilo-auto-token-room",
+     "titolo": "Auto route needs token room",
+     "testo": "Kilo auto/free can route to reasoning models that spend 100+ internal reasoning tokens. Avoid tiny max_tokens or a request can finish by length with empty content.",
+     "gravita": "info"
+    },
+    {
+     "slug": "safety-classifier-output",
+     "titolo": "Safety classifier output",
+     "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+     "gravita": "info"
+    },
+    {
+     "slug": "deepseek-v4-flash-0731-free-withdrawn-2026-09-21",
+     "titolo": "Free route withdrawn, paid route remains",
+     "testo": "Key-tested on September 21, 2026. OpenRouter answers deepseek/deepseek-v4-flash-0731:free with \"This model is unavailable for free. The paid version is available now - use this slug instead: deepseek/deepseek-v4-flash-0731\"; Kilo's gateway no longer lists the :free id at all; and NVIDIA returns 410 Gone, \"the model has reached its end of life on 2026-09-21\". ModelScope is the remaining zero-cost route to these weights.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nvidia-trial-oct15-evening",
+     "titolo": "Developer evaluation and data-use terms",
+     "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "aion": {
+   "nome": "Aion Labs",
+   "etichetta": "Aion Labs",
+   "modelli": [
+    {
+     "id": "aion-labs/aion-3.0",
+     "rank": 67,
+     "vel": 6,
+     "rpm": 15,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aion-labs/aion-3.0-mini",
+     "rank": 75,
+     "vel": 5,
+     "rpm": 15,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aion-labs/aion-2.0",
+     "rank": 83,
+     "vel": 7,
+     "rpm": 15,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aion-labs/aion-rp-llama-3.1-8b",
+     "rank": 97,
+     "vel": 4,
+     "rpm": 15,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": []
+  },
+  "requesty": {
+   "nome": "Requesty",
+   "etichetta": "Requesty",
+   "modelli": [
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b",
+     "rank": 61,
+     "vel": 9,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "google/gemma-4-31b-it",
+     "rank": 69,
+     "vel": 9,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "nvidia/muse-glimmer-30b",
+     "rank": 73,
+     "vel": 8,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-super-120b-a12b",
+     "rank": 81,
+     "vel": 9,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "rank": 81,
+     "vel": 3,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "rank": 89,
+     "vel": 9,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "mistral/leanstral-1-5",
+     "rank": 97,
+     "vel": 7,
+     "rpm": null,
+     "rpd": 200,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "reasoning-token-room",
+     "titolo": "Needs token room",
+     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+     "gravita": "info"
+    },
+    {
+     "slug": "safety-classifier-output",
+     "titolo": "Safety classifier output",
+     "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+     "gravita": "info"
+    },
+    {
+     "slug": "hy3-limited-free",
+     "titolo": "Free route can change",
+     "testo": "Tencent Hy3 is currently free on these routes, but provider announcements describe some access as limited-time promotional availability. Monitor before aging into the monthly catalog.",
+     "gravita": "warning"
+    },
+    {
+     "slug": "requesty-non-greedy-sampling",
+     "titolo": "Requires non-greedy sampling",
+     "testo": "Requesty rejected this route when temperature was 0 with greedy sampling. Use a nonzero temperature or provider-compatible sampling parameters.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "sealion": {
+   "nome": "SEA-LION",
+   "etichetta": "SeaLION",
+   "modelli": [
+    {
+     "id": "aisingapore/Qwen-SEA-LION-v4.5-27B-IT",
+     "rank": 69,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B",
+     "rank": 81,
+     "vel": 9,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "aisingapore/Qwen-SEA-LION-v4-32B-IT",
+     "rank": 92,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aisingapore/Llama-SEA-LION-v3-70B-IT",
+     "rank": 95,
+     "vel": 6,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "aisingapore/Gemma-SEA-LION-v4-27B-IT",
+     "rank": 97,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": []
+  },
+  "nara": {
+   "nome": "NaraRouter",
+   "etichetta": "NaraRouter",
+   "modelli": [
+    {
+     "id": "nex-n2.5-pro",
+     "rank": 49,
+     "vel": 10,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "laguna-s-2.1",
+     "rank": 57,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ling-3.0-flash-vl-free",
+     "rank": 57,
+     "vel": 4,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ling-3.0-flash-fin-free",
+     "rank": 61,
+     "vel": 4,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-ultra-free",
+     "rank": 61,
+     "vel": 4,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "agnes-2.5-flash",
+     "rank": 63,
+     "vel": 5,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "ling-3.0-flash-sante-free",
+     "rank": 65,
+     "vel": 4,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-super-free",
+     "rank": 81,
+     "vel": 7,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3.5-lightning-free",
+     "rank": 81,
+     "vel": 2,
+     "rpm": 10,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "nara-free-plan",
+     "titolo": "Daily free quota",
+     "testo": "NaraRouter free access requires a no-card account key plus Telegram channel/link verification. The free plan is documented at 7M tokens/day and 10 req/min, with daily reset.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nara-stepfun-paid-2026-09-21",
+     "titolo": "Moved to a paid plan",
+     "testo": "Key-tested on September 21, 2026: NaraRouter answers stepfun-3.7-flash with 402 payment_required, \"Insufficient credits. Please top up your balance.\" The route left the free plan.",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "xkiro": {
+   "nome": "xKiro",
+   "etichetta": "xKiro",
+   "modelli": [
+    {
+     "id": "qwen/qwen3.8-max:free",
+     "rank": 17,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.8-omni-flash:free",
+     "rank": 31,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3.7-max:free",
+     "rank": 49,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.6-max-preview:free",
+     "rank": 50,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.6-plus:free",
+     "rank": 53,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.7-plus:free",
+     "rank": 57,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "sensenova/sensenova-6.8-flash-lite",
+     "rank": 65,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3.6-27b:free",
+     "rank": 65,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.5-omni-plus:free",
+     "rank": 67,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3.7-flash:free",
+     "rank": 69,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.5-plus:free",
+     "rank": 69,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.6-35b-a3b:free",
+     "rank": 71,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.5-397b-a17b:free",
+     "rank": 71,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3-max:free",
+     "rank": 76,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3.5-flash:free",
+     "rank": 77,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistralai/mistral-medium-3.5",
+     "rank": 79,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3.5-omni-flash:free",
+     "rank": 83,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "mistralai/mistral-small-2603",
+     "rank": 85,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3-coder-plus:free",
+     "rank": 85,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3-vl-plus:free",
+     "rank": 87,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen-plus-2025-07-28:free",
+     "rank": 87,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistralai/mistral-large-2512",
+     "rank": 89,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "mistralai/devstral-medium",
+     "rank": 89,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3-omni-flash:free",
+     "rank": 91,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "mistralai/ministral-14b",
+     "rank": 95,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistralai/ministral-8b",
+     "rank": 97,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistralai/ministral-3b",
+     "rank": 97,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "mistralai/codestral-2508",
+     "rank": 99,
+     "vel": 6,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "xkiro-lfm25-reasoning-room",
+     "titolo": "Allow room for reasoning",
+     "testo": "This route uses reasoning. A 128-token output budget returned empty content in the 2026-09-30 check; a retry with 768 returned a valid answer. Allow sufficient output tokens for reasoning and the final answer.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "unorouter": {
+   "nome": "UnoRouter",
+   "etichetta": "UnoRouter",
+   "modelli": [
+    {
+     "id": "glm-5.3:free",
+     "rank": 17,
+     "vel": 7,
+     "rpm": 1,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "glm-5.3-flash:free",
+     "rank": 23,
+     "vel": 9,
+     "rpm": 1,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    }
+   ],
+   "quirk": []
+  },
+  "routeway": {
+   "nome": "Routeway",
+   "etichetta": "Routeway",
+   "modelli": [
+    {
+     "id": "muse-glimmer-30b:free",
+     "rank": 67,
+     "vel": 7,
+     "rpm": 5,
+     "rpd": 200,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-chimerax:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-darksoul:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-luminous:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-moonlight:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-musica:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-26b-a4b-it-meromero:free",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 62000,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": []
+  },
+  "electronhub": {
+   "nome": "ElectronHub",
+   "etichetta": "ElectronHub",
+   "modelli": [
+    {
+     "id": "qwen3.8-flash",
+     "rank": 27,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-5.6-luna",
+     "rank": 33,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen3.8-27b",
+     "rank": 39,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "minimax-m3",
+     "rank": 48,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "laguna-s-2.1",
+     "rank": 57,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "deepseek-v4-flash",
+     "rank": 59,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-5.4-mini",
+     "rank": 59,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 400000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "deepseek-v4-flash-thinking",
+     "rank": 59,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-ultra-550b-a55b",
+     "rank": 61,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "minimax-m2.5",
+     "rank": 61,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 200000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "minimax-m2.7",
+     "rank": 61,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 200000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gemini-3.5-flash-lite",
+     "rank": 63,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-5.4-nano",
+     "rank": 65,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 400000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "step-3.7-flash",
+     "rank": 68,
+     "vel": 3,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemma-4-31b-it",
+     "rank": 69,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen3.7-flash",
+     "rank": 69,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemma-4-26b-a4b-it",
+     "rank": 73,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-5-mini",
+     "rank": 73,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 400000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "step-3.5-flash",
+     "rank": 73,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "laguna-xs-2.1",
+     "rank": 77,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "glm-4.7-flash",
+     "rank": 77,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 200000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3.5-lightning",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-5-nano",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 400000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-2.5-flash",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-4.1",
+     "rank": 81,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-oss-120b",
+     "rank": 83,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "longcat-flash-chat",
+     "rank": 85,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-4.1-mini",
+     "rank": 87,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen3-coder-30-a3b-instruct",
+     "rank": 88,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-nano-omni-30b-a3b-reasoning",
+     "rank": 89,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gemini-2.5-flash-lite",
+     "rank": 89,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "deepseek-r1-distill-qwen-32b",
+     "rank": 90,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "llama-4-scout-17b-16e-instruct",
+     "rank": 91,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "gpt-4o",
+     "rank": 91,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "mistral-small-3.2-24b-instruct",
+     "rank": 91,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen-2.5-72b-instruct",
+     "rank": 92,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen3-30b-a3b-instruct-2507",
+     "rank": 92,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen-2.5-32b-instruct",
+     "rank": 93,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gpt-4o-mini",
+     "rank": 93,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "qwen-2.5-coder-32b-instruct",
+     "rank": 94,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 33000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "llama-3.2-3b",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen-2.5-7b-instruct",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen-2.5-coder-7b-instruct",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ministral-14b-2512",
+     "rank": 95,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "llama-3.2-1b",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "ministral-3b-2512",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "ministral-8b-2512",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": true,
+     "visione": true
+    },
+    {
+     "id": "phi-4",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 16000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gemma-3-4b-it",
+     "rank": 97,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gemma-3-1b-it",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "hunyuan-a13b-instruct",
+     "rank": 97,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "codestral-2508",
+     "rank": 99,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 256000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gemma-3-12b-it",
+     "rank": 99,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "open-mistral-nemo-2407",
+     "rank": 99,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "hermes-4-14b",
+     "rank": 99,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 40000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "labs-devstral-small-2512",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mytho-max-l2-13b",
+     "rank": 100,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 4000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-2-9b-it",
+     "rank": 101,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "command-r-08-2024",
+     "rank": 103,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "l3-lunaris-8b",
+     "rank": 105,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8000,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "electronhub-shared-weekly-credit",
+     "titolo": "Shared weekly free credits",
+     "testo": "ElectronHub Free renews $0.25 each week (Sunday 21:00 UTC), shared across eligible non-premium models; unused weekly credit does not roll over. These are credit-backed routes, not the separate daily :free aliases. Paid top-ups are optional and not included in this allowance. Text inference was tested; other capability flags come from the provider roster.",
+     "gravita": "info"
+    },
+    {
+     "slug": "electronhub-free-suffix-needs-phone",
+     "titolo": "The :free aliases need phone verification",
+     "testo": "ElectronHub's zero-credit \":free\" aliases answered 403 \"To prevent abuse and high traffic on free models, phone verification is required\" on September 18, 2026. The ordinary ids this catalog carries are NOT affected and were re-tested working the same day, so the :free aliases are simply not worth adding. ElectronHub's recurring grant is $0.25 credited every Sunday at 21:00 UTC plus a separate daily Neutrino allowance.",
+     "gravita": "info"
+    },
+    {
+     "slug": "electronhub-speech-weekly-credit",
+     "titolo": "Speech shares weekly free credits",
+     "testo": "ElectronHub Free supplies $0.25 each week across eligible models; these speech routes share that wallet with chat. Tests used no purchased balance. Gemini speech returns WAV; HUMAIN returns MP3. Update the application to a build with ElectronHub speech support. See https://docs.electronhub.ai/billing/credits.",
+     "gravita": "info"
+    },
+    {
+     "slug": "electronhub-embedding-weekly-credit",
+     "titolo": "Embeddings share weekly free credits",
+     "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov01-media-electronhub-gpt-4o-mini-tts",
+     "titolo": "Shared renewable free allowance",
+     "testo": "$0.25/week shared free credits; test account had no purchased balance. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.electronhub.ai/billing/credits",
+     "gravita": "info"
+    }
+   ]
+  },
+  "router9": {
+   "nome": "Router9",
+   "etichetta": "Router9",
+   "modelli": [
+    {
+     "id": "deepseek/deepseek-v4-flash",
+     "rank": 38,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "z-ai/glm-5.2",
+     "rank": 39,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "deepseek/deepseek-v4-pro",
+     "rank": 46,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "minimax/minimax-m3",
+     "rank": 48,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "qwen/qwen3-235b-a22b-2507",
+     "rank": 83,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "router9-shared-monthly-credit",
+     "titolo": "Shared monthly free credits",
+     "testo": "Router9 Free renews 20,000 credits (about $2) each calendar month, shared across allowlisted routes, resetting on the first day at 00:00 UTC with no rollover. Current credit documentation and authenticated Free-plan headers agree on 20,000; older marketing pages still quote 50,000. Six added routes passed short non-streaming text tests on September 14, 2026; MiniMax M3 passed earlier text and streaming checks. Context and vision capabilities are provider-advertised, not newly feature-tested. Paid top-ups are outside the free allowance. https://www.router9.com/docs/token-plan/credits",
+     "gravita": "info"
+    },
+    {
+     "slug": "router9-deepseek-flash-0731-alias",
+     "titolo": "Unversioned route resolves to 0731",
+     "testo": "On September 14, 2026, deepseek/deepseek-v4-flash returned a valid completion identifying deepseek/deepseek-v4-flash-0731. The public free-model listing still labels this route 0423. The catalog displays the observed 0731 revision while preserving the tested request ID. Response identifiers are provider assertions, not independent verification of weights.",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct31-router9-z-ai-glm-5-3",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct31-router9-qwen-qwen3-8-flash",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+     "gravita": "info"
+    }
+   ]
+  },
+  "septor": {
+   "nome": "Septor Labs",
+   "etichetta": "Septor Labs",
+   "modelli": [
+    {
+     "id": "minimax-m2.5-free",
+     "rank": 61,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "gemma-4-31b-it-free",
+     "rank": 69,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen3-coder-free",
+     "rank": 83,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "qwen3-next-80b-a3b-instruct-free",
+     "rank": 88,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "hermes-3-llama-3.1-405b-free",
+     "rank": 93,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "septor-shared-daily-free",
+     "titolo": "Shared daily free-model allowance",
+     "testo": "Septor zero-price routes share 50 requests and 500K tokens per day. This resets daily, not monthly. Its separate $1 signup grant expires after 90 days and is not recurring. These four routes returned matching model IDs in text and streaming tests with usage.cost=0; model-ID matching is not independent verification of weights. Other aliases that silently substituted MiniMax M2.5 are excluded. Tool capability flags are provider-advertised, not live-tested.",
+     "gravita": "info"
+    },
+    {
+     "slug": "septor-gemma-daily-free",
+     "titolo": "Shared daily free-model allowance",
+     "testo": "This named Gemma route returned a matching model ID and usage.cost=0. It shares the provider daily free allowance; the separate signup credit is not recurring. No tool or vision capability was advertised for this route.",
+     "gravita": "info"
+    },
+    {
+     "slug": "septor-free-aliases-substitute",
+     "titolo": "Most -free aliases serve MiniMax M2.5",
+     "testo": "On September 18, 2026 eleven candidate Septor -free ids (glm-4.5-air, ling-2.6-flash, llama-3.1-8b, llama-3.2-1b and -3b, llama-3.3-70b, minimax-m2, nemotron-3-nano-30b-a3b, mistral-nemo, step-3.5-flash, dolphin-mistral-24b) all answered with response model minimax-m2.5-free. Only the ids already in this catalog were re-verified as serving their own weights. Never add a Septor alias without comparing the responding model id.",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "clod": {
+   "nome": "CLōD",
+   "etichetta": "CLōD",
+   "modelli": [
+    {
+     "id": "Gemma 4 31B IT",
+     "rank": 69,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "Qwen 3.5 9B",
+     "rank": 79,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "GPT OSS 120B",
+     "rank": 83,
+     "vel": 11,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "GPT OSS 20B",
+     "rank": 89,
+     "vel": 2,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "clod-shared-daily-free",
+     "titolo": "Shared daily free requests",
+     "testo": "CLōD grants 100 requests per day across eligible free models, automatically replenished, with no card required. This is daily, not monthly, and not a separate grant per model. Use the exact friendly model IDs including spaces. Only four routes returned consistent upstream identities in live tests; Llama and Trinity aliases that substituted Gemma are excluded. Matching response IDs do not independently verify the served weights. Context and tool support are not claimed without provider-specific evidence.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "speechify": {
+   "nome": "Speechify",
+   "etichetta": "Speechify",
+   "modelli": [
+    {
+     "id": "simba-3.2",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "simba-3.0",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "speechify-shared-monthly-characters",
+     "titolo": "Monthly free text-to-speech characters",
+     "testo": "Speechify Free includes 500,000 characters per month shared across TTS models, with no card required. Free usage pauses when exhausted. Characters are not tokens and are not a grant per model. Both Simba 3.0 and Simba 3.2 generated valid MP3 audio. Use the native TTS adapter; these are not chat models. API version 2026-09-08, default tested voice alec. See https://speechify.ai/pricing and the workspace allowance.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "airforce": {
+   "nome": "Api.Airforce",
+   "etichetta": "Api.Airforce",
+   "modelli": [
+    {
+     "id": "gpt-oss-20b",
+     "rank": 89,
+     "vel": 2,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-code-latest",
+     "rank": 89,
+     "vel": 8,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 256000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "rnj-1",
+     "rank": 91,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "unmoderated-gpt",
+     "rank": 91,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "llama-instant",
+     "rank": 95,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-14b-2512",
+     "rank": 95,
+     "vel": 8,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-14b-latest",
+     "rank": 95,
+     "vel": 8,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-3b-2512",
+     "rank": 97,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-3b-latest",
+     "rank": 97,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-8b-2512",
+     "rank": 97,
+     "vel": 9,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ministral-8b-latest",
+     "rank": 97,
+     "vel": 8,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "codestral-2508",
+     "rank": 99,
+     "vel": 6,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 256000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "codestral-latest",
+     "rank": 99,
+     "vel": 8,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 32000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-code-fim-latest",
+     "rank": 99,
+     "vel": 7,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 256000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "open-mistral-nemo",
+     "rank": 99,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "open-mistral-nemo-2407",
+     "rank": 99,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": 131000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-tiny-2407",
+     "rank": 99,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-tiny-latest",
+     "rank": 99,
+     "vel": 10,
+     "rpm": 1,
+     "rpd": 1000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "airforce-free-plan-limits",
+     "titolo": "Free plan is 1 request per minute",
+     "testo": "Api.Airforce Free grants 1,000 requests per day at 1 request per minute per account with per-model token caps and no card. The 21 listed routes returned matching model IDs on September 15. kimi-k2.7-code requires a paid plan; gpt-oss-120b, Mistral Large and Mistral Medium returned 503 and are excluded. Most routes are proxied Mistral free-plan models; treat them as sharing that upstream capacity.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "dreamprompting": {
+   "nome": "DreamPrompting",
+   "etichetta": "DreamPrompting",
+   "modelli": [
+    {
+     "id": "google/gemini-3.1-flash-lite",
+     "rank": 75,
+     "vel": 3,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nvidia/nemotron-3-super-120b-a12b",
+     "rank": 81,
+     "vel": 9,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+     "rank": 81,
+     "vel": 9,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "google/gemini-2.5-flash",
+     "rank": 81,
+     "vel": 5,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 1048576,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "auto",
+     "rank": 83,
+     "vel": 7,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "groq/openai/gpt-oss-120b",
+     "rank": 83,
+     "vel": 11,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "groq/openai/gpt-oss-20b",
+     "rank": 89,
+     "vel": 2,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "chat/ch.at",
+     "rank": 91,
+     "vel": 10,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "rank": 91,
+     "vel": 11,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 24000,
+     "strumenti": true,
+     "visione": false
+    },
+    {
+     "id": "groq/groq/compound-mini",
+     "rank": 93,
+     "vel": 2,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "codestral/codestral-latest",
+     "rank": 99,
+     "vel": 8,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 32000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "cloudflare/@cf/ibm-granite/granite-4.0-h-micro",
+     "rank": 101,
+     "vel": 11,
+     "rpm": 100,
+     "rpd": 5000,
+     "ctx": 131072,
+     "strumenti": true,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "dreamprompting-failover-router",
+     "titolo": "Pooled fail-over router; most routes substitute models",
+     "testo": "DreamPrompting pools upstream free tiers and fails over between them. Free is 500,000 tokens and 5,000 requests per rolling 24 hours, 100 requests per minute per IP, no card. Only the nine listed routes returned the requested model on September 15 (retried twice). The other 19 routes (Cohere, Gemini, Qwen, Llama, Granite, Mistral Small and Large, gemma-4) consistently served Nemotron 3 Super, gpt-oss-120b or Codestral instead and are excluded. Prompts may be stored or publicly shared per the provider.",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "waterfall": {
+   "nome": "Waterfall",
+   "etichetta": "Waterfall",
+   "modelli": [
+    {
+     "id": "nex-n2.5-pro-free",
+     "rank": 49,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "laguna-s-2.1-free",
+     "rank": 57,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ling-3.0-flash-vl-free",
+     "rank": 57,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nex-n2.5-mini-free",
+     "rank": 63,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "ling-3.0-flash-sante-free",
+     "rank": 65,
+     "vel": 4,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-super-120b-a12b-free",
+     "rank": 81,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-super-120b-free",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3.5-lightning-free",
+     "rank": 81,
+     "vel": 2,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nemotron-3-nano-omni-30b-a3b-reasoning-free",
+     "rank": 89,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "lfm-2.5-2.6b-free",
+     "rank": 90,
+     "vel": 3,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 32768,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "waterfall-free-routes",
+     "titolo": "Free routes depend on upstream availability",
+     "testo": "Waterfall serves -free routes at no charge with no card under unpublished community rate limits. The ten listed routes returned matching model IDs on September 15. Twelve other -free routes (gemma-4 variants, nemotron-3-ultra, content-safety, laguna-xs, north-mini-code, dots-3, glm-5.2, ling-fin) returned 503 upstream_unavailable on two attempts and are not listed; inkling routes are forbidden and Lyria routes require payment.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "logfare": {
+   "nome": "Logfare",
+   "etichetta": "Logfare",
+   "modelli": [
+    {
+     "id": "gemma-4-26b",
+     "rank": 73,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "logfare/auto",
+     "rank": 83,
+     "vel": 7,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131072,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "logfare-fair-use-logging",
+     "titolo": "Fair-use free tier funded by logging all traffic",
+     "testo": "Logfare offers registered accounts unmetered fair-use access with no card, funded by logging every request for research; do not send private data. Only logfare/auto and gemma-4-26b are free-tier routes; glm-5.3, glm-5.3-flash, kimi-k3, kimi-k2.6, qwen-3.8-27b and moondream3.1 return 403 premium. mimo-v2.5 hit an account rate limit twice and is excluded. Usage reports a neurons field. Responses include reasoning content.",
+     "gravita": "warning"
+    }
+   ]
+  },
+  "moondream": {
+   "nome": "Moondream",
+   "etichetta": "Moondream",
+   "modelli": [
+    {
+     "id": "moondream3.1-9B-A2B",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": true
+    },
+    {
+     "id": "moondream3-preview",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": true
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "moondream-shared-monthly-credits",
+     "titolo": "Shared $5 monthly hosted usage credits",
+     "testo": "Moondream Cloud Free includes $5 per workspace in recurring monthly usage credits, shared across models; usage beyond that allowance is metered. Both listed routes passed live vision and streaming tests through the adapter on 2026-09-22. Images must be base64 data URLs; remote image URLs, tool calling and stop sequences are unsupported. Output is limited by the upstream API to 4096 tokens including reasoning. Context and request-rate limits are not claimed without verification. This uses the hosted BYOK API, not self-hosted weights. Sources: https://moondream.ai/pricing and https://docs.moondream.ai/openai/.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "speka": {
+   "nome": "Speka",
+   "etichetta": "Speka",
+   "modelli": [
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b",
+     "rank": 61,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "google/gemma-4-31b-it",
+     "rank": 69,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "poolside/laguna-xs-2.1",
+     "rank": 77,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "rank": 81,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "openai/gpt-oss-20b",
+     "rank": 89,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "speka-shared-monthly-credit",
+     "titolo": "Shared monthly free credits",
+     "testo": "Speka Free includes $1 of model usage renewed monthly, shared across chat and embeddings, not a separate grant per model. Paid usage beyond the grant may apply according to account billing settings. Text inference and embeddings were tested on 2026-09-24; untested tool and vision capabilities are not enabled. Matching model IDs do not independently authenticate served weights. See https://speka.me/pricing and https://speka.me/docs.",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct30-speka-mistralai-mistral-large-4-1t-a52b",
+     "titolo": "Shared renewable free allowance",
+     "testo": "$1/month shared free-plan allowance. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://speka.me/pricing",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct30-speka-meta-llama-3-2-90b-vision-instruct",
+     "titolo": "Shared renewable free allowance",
+     "testo": "$1/month shared free-plan allowance; text chat tested, vision not tested. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://speka.me/pricing",
+     "gravita": "info"
+    }
+   ]
+  },
+  "llmtr": {
+   "nome": "LLMTR",
+   "etichetta": "LLMTR",
+   "modelli": [
+    {
+     "id": "qwen/qwen3.8-27b-free",
+     "rank": 39,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131042,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "nvidia/nemotron-3-ultra-550b-a55b",
+     "rank": 61,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "llmtr-renewable-free-quota",
+     "titolo": "Renewable free-model quotas",
+     "testo": "Selected LLMTR routes are zero-priced with daily or rolling request quotas, not monthly cash credits. Motif 3 replenishes each allowance after 24 hours. New accounts have reduced free allowances until 24 hours old; no top-up is required to wait for that increase. Exact account caps are not assumed. Text completions passed on 2026-09-29; tool and vision flags remain off until separately tested. The public roster also includes paid, temporary and BYOK-only models which are not included here. See https://llmtr.com/docs/en/migration/openai-openrouter/ and https://llmtr.com/docs/en/gateway/motif-3/.",
+     "gravita": "info"
+    },
+    {
+     "slug": "llmtr-agnes-rolling-free-oct04",
+     "titolo": "Free allowance replenishes after 24 hours",
+     "testo": "Agnes 2.5 Flash and 3.0 Flash are zero-priced on LLMTR. Each successful request replenishes after 24 hours; this is a rolling request quota, not monthly cash credits. Matching-model text completions passed on October 4, 2026. Exact account limits are not assumed. Tool and vision flags remain off until separately tested. See https://llmtr.com/docs/en/gateway/agnes/.",
+     "gravita": "info"
+    },
+    {
+     "slug": "llmtr-laguna-xs-free-oct04",
+     "titolo": "Ongoing zero-price Poolside route",
+     "testo": "LLMTR lists Laguna XS 2.1 at zero input/output/cache cost, without drawing on the account credit balance. Standard rate limits apply; there is no monthly token grant. A matching-model text completion passed on October 4, 2026 with a 1024-token output budget; tiny caps can produce reasoning without visible output. Poolside may use free-access prompts and completions to improve its products. Tool and vision flags remain off until separately tested. See https://llmtr.com/docs/en/gateway/poolside-laguna/.",
+     "gravita": "info"
+    },
+    {
+     "slug": "llmtr-nemotron-daily-oct15",
+     "titolo": "Selected daily free route",
+     "testo": "This exact -free model is listed at zero input/output cost with a daily quota. This is not a provider-wide free credit balance; the paid sibling is not included. Exact-model text completion passed October 15, 2026; tool and vision flags remain off until separately tested. Source: https://llmtr.com/v1/models",
+     "gravita": "info"
+    },
+    {
+     "slug": "llmtr-embedding-free-oct15",
+     "titolo": "Zero-price embeddings and input data use",
+     "testo": "These exact routes are currently listed at zero input cost without a published expiry; they are not a monthly cash grant. Fixed vector dimensions were live-tested. LFM2.5 free successful requests may be retained for training: do not send sensitive or customer data. Requires the LLMTR embeddings adapter. Sources: https://llmtr.com/v1/models and https://llmtr.com/docs/en/gateway/embeddings/",
+     "gravita": "warning"
+    }
+   ]
+  }
+ },
+ "quirk": {
+  "cloudflare": [
+   {
+    "slug": "cloudflare-key-format",
+    "titolo": "Key is account_id:token",
+    "testo": "Cloudflare Workers AI authenticates with a combined credential in the form \"account_id:token\", not a bare token.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   }
+  ],
+  "kilo": [
+   {
+    "slug": "keyless-anonymous",
+    "titolo": "No API key required",
+    "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "kilo-auto-token-room",
+    "titolo": "Auto route needs token room",
+    "testo": "Kilo auto/free can route to reasoning models that spend 100+ internal reasoning tokens. Avoid tiny max_tokens or a request can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "safety-classifier-output",
+    "titolo": "Safety classifier output",
+    "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+    "gravita": "info"
+   },
+   {
+    "slug": "deepseek-v4-flash-0731-free-withdrawn-2026-09-21",
+    "titolo": "Free route withdrawn, paid route remains",
+    "testo": "Key-tested on September 21, 2026. OpenRouter answers deepseek/deepseek-v4-flash-0731:free with \"This model is unavailable for free. The paid version is available now - use this slug instead: deepseek/deepseek-v4-flash-0731\"; Kilo's gateway no longer lists the :free id at all; and NVIDIA returns 410 Gone, \"the model has reached its end of life on 2026-09-21\". ModelScope is the remaining zero-cost route to these weights.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nvidia-trial-oct15-evening",
+    "titolo": "Developer evaluation and data-use terms",
+    "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+    "gravita": "warning"
+   }
+  ],
+  "llm7": [
+   {
+    "slug": "keyless-anonymous",
+    "titolo": "No API key required",
+    "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+    "gravita": "info"
+   }
+  ],
+  "ovh": [
+   {
+    "slug": "keyless-anonymous",
+    "titolo": "No API key required",
+    "testo": "Routes anonymously — the catalog ships a keyless sentinel row and calls work with no account or key.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "ovh-anon-trickle",
+    "titolo": "Anonymous tier is 2 req/min",
+    "testo": "OVH AI Endpoints anonymous mode is documented at 2 req/min per IP per model (observed even stricter across models). The 400 req/min authenticated tier requires a Public Cloud project with a payment method, so the catalog ships the keyless path. Treat as a breadth/fallback tier, not a throughput tier.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "safety-classifier-output",
+    "titolo": "Safety classifier output",
+    "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+    "gravita": "info"
+   },
+   {
+    "slug": "ovh-qwen-think-trace",
+    "titolo": "May emit thinking trace",
+    "testo": "OVH Qwen reasoning routes can include <think> blocks or reasoning prose. Strip or suppress the thinking trace when a plain answer is required.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "ovh-sdxl-withdrawn-2026-09-21",
+    "titolo": "Route withdrawn upstream",
+    "testo": "Key-tested on September 21, 2026: OVH answers stable-diffusion-xl-base-v10 with model_not_found. Separately, only nine models on OVH AI Endpoints are priced at €0; the rest are reachable solely through the anonymous two-requests-per-minute-per-IP path.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-ovh-nvr-tts-en-us",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-ovh-nvr-tts-de-de",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-ovh-nvr-tts-es-es",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-ovh-nvr-tts-it-it",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing free, keyless endpoints; anonymous rate limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.ovhcloud.com/en-gb/public-cloud/ai-endpoints/catalog/",
+    "gravita": "info"
+   }
+  ],
+  "nvidia": [
+   {
+    "slug": "nvidia-rate-limited",
+    "titolo": "Recurring free, 40 RPM, eval-only ToS",
+    "testo": "NVIDIA NIM replaced its depleting trial credits with a recurring per-account rate limit (40 RPM default, varies by model), verified June 2026. The trial ToS still scopes usage to evaluation/prototyping, not production.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nvidia-route-hangs",
+    "titolo": "NVIDIA almost never answers this model",
+    "testo": "Over the 14 days to September 17, 2026 this route answered 1 of 15 attempts (Kimi K3) and 1 of 10 (DeepSeek V4 Flash 0731) on a valid key. The rest hung for 40 to 180 seconds until timeout, and direct calls hung past 240 seconds. The rows are disabled so auto routing stops spending its failover budget on them.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nvidia-route-hangs",
+    "titolo": "NVIDIA almost never answers this model",
+    "testo": "Over the 14 days to September 17, 2026 this route answered 1 of 15 attempts (Kimi K3) and 1 of 10 (DeepSeek V4 Flash 0731) on a valid key. The rest hung for 40 to 180 seconds until timeout, and direct calls hung past 240 seconds. The rows are disabled so auto routing stops spending its failover budget on them.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nvidia-flux-not-on-nim-2026-09-21",
+    "titolo": "Image models are not on the NIM chat host",
+    "testo": "Key-tested on September 21, 2026: black-forest-labs/flux.1-dev and flux.2-klein-4b return a bare 404 from integrate.api.nvidia.com. NVIDIA serves these from a different host, so they cannot be reached through the NIM OpenAI-compatible endpoint this catalog uses.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nvidia-trial-oct15-evening",
+    "titolo": "Developer evaluation and data-use terms",
+    "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+    "gravita": "warning"
+   },
+   {
+    "slug": "oct30-nvidia-mistralai-mistral-large-4-1t-a52b",
+    "titolo": "Evaluation-only free access",
+    "testo": "Rate-limited free development/evaluation endpoint; not a monthly credit grant or unrestricted production access. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://build.nvidia.com/mistralai/mistral-large-4-1t-a52b",
+    "gravita": "warning"
+   }
+  ],
+  "openrouter": [
+   {
+    "slug": "or-free-cap-account-wide",
+    "titolo": "Daily :free cap is account-wide",
+    "testo": "OpenRouter’s :free daily cap (50/day, or 1000/day once you have ever bought $10 of credits) is shared across ALL :free models on the account, not per model. Per-row rpd values here are therefore optimistic; the router’s cooldown handling absorbs the shared 429s.",
+    "gravita": "info"
+   },
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "or-ultra-hangs",
+    "titolo": "OpenRouter ultra route hangs",
+    "testo": "nemotron-3-ultra (550B) on OpenRouter takes 180s+ even on trivial prompts (heavily congested), so its OR row is seeded disabled. Use the OpenCode Zen route instead.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "deepseek-v4-flash-0731-free-withdrawn-2026-09-21",
+    "titolo": "Free route withdrawn, paid route remains",
+    "testo": "Key-tested on September 21, 2026. OpenRouter answers deepseek/deepseek-v4-flash-0731:free with \"This model is unavailable for free. The paid version is available now - use this slug instead: deepseek/deepseek-v4-flash-0731\"; Kilo's gateway no longer lists the :free id at all; and NVIDIA returns 410 Gone, \"the model has reached its end of life on 2026-09-21\". ModelScope is the remaining zero-cost route to these weights.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "openrouter-zero-price-oct04",
+    "titolo": "Zero-priced access, not monthly credits",
+    "testo": "Both routes returned matching-model text completions on October 4, 2026 with usage.cost=0. Shared provider rate limits still apply; free access is not a monthly cash grant and pricing may change. Ling first hit a temporary upstream rate limit and passed on retry. Tool and vision flags remain off until separately tested. See https://openrouter.ai/apodex/apodex-1.1-mini:free and https://openrouter.ai/inclusionai/ling-3.1-flash.",
+    "gravita": "info"
+   },
+   {
+    "slug": "openrouter-zero-price-oct04",
+    "titolo": "Zero-priced access, not monthly credits",
+    "testo": "Both routes returned matching-model text completions on October 4, 2026 with usage.cost=0. Shared provider rate limits still apply; free access is not a monthly cash grant and pricing may change. Ling first hit a temporary upstream rate limit and passed on retry. Tool and vision flags remain off until separately tested. See https://openrouter.ai/apodex/apodex-1.1-mini:free and https://openrouter.ai/inclusionai/ling-3.1-flash.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nvidia-trial-oct15-evening",
+    "titolo": "Developer evaluation and data-use terms",
+    "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+    "gravita": "warning"
+   }
+  ],
+  "requesty": [
+   {
+    "slug": "reasoning-token-room",
+    "titolo": "Needs token room",
+    "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
+    "gravita": "info"
+   },
+   {
+    "slug": "safety-classifier-output",
+    "titolo": "Safety classifier output",
+    "testo": "This route returns moderation/safety labels rather than normal assistant prose. Use it as a guardrail model, not a primary chat model.",
+    "gravita": "info"
+   },
+   {
+    "slug": "hy3-limited-free",
+    "titolo": "Free route can change",
+    "testo": "Tencent Hy3 is currently free on these routes, but provider announcements describe some access as limited-time promotional availability. Monitor before aging into the monthly catalog.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "requesty-non-greedy-sampling",
+    "titolo": "Requires non-greedy sampling",
+    "testo": "Requesty rejected this route when temperature was 0 with greedy sampling. Use a nonzero temperature or provider-compatible sampling parameters.",
+    "gravita": "info"
+   }
+  ],
+  "google": [
+   {
+    "slug": "gemini-thinking-token-room",
+    "titolo": "Thinking tokens use output cap",
+    "testo": "Gemini Flash can spend hidden thinking tokens inside maxOutputTokens. Avoid tiny max_tokens values or set thinkingBudget to 0 when provider support is available.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-google-gemini-3-5-transcribe",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing Gemini API free-tier quota; account limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://ai.google.dev/gemini-api/docs/pricing",
+    "gravita": "info"
+   }
+  ],
+  "cohere": [
+   {
+    "slug": "cohere-reasoning-output",
+    "titolo": "May emit reasoning prose",
+    "testo": "Cohere Command A Reasoning can spend output budget explaining its thought process on terse prompts. Use a larger max_tokens cap or a stricter no-reasoning instruction when exact short answers are required.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "oct30-cohere-embed-v5-0-fast",
+    "titolo": "Evaluation-only free access",
+    "testo": "1,000 API calls/month shared trial/evaluation key; production is paid. Embeddings tested with semantic and dimension checks. Verified 2026-10-30. https://docs.cohere.com/docs/rate-limits",
+    "gravita": "warning"
+   },
+   {
+    "slug": "oct30-cohere-embed-v5-0-pro",
+    "titolo": "Evaluation-only free access",
+    "testo": "1,000 API calls/month shared trial/evaluation key; production is paid. Embeddings tested with semantic and dimension checks. Verified 2026-10-30. https://docs.cohere.com/docs/rate-limits",
+    "gravita": "warning"
+   }
+  ],
+  "pollinations": [
+   {
+    "slug": "pollinations-degraded",
+    "titolo": "Zero-priced community routes can rotate",
+    "testo": "These are community routes: individual publishers (e.g. AkshayCoder48 \"FreeAIXYZ\", NamanSoni78, morriszdweck) register relays in Pollinations’ registry, and the catalog lists only the ones priced at zero Pollen. A publisher can re-price, rotate or withdraw a route, and Pollinations can delist it from the public registry, without notice; delisted routes may keep answering for a while. Use the 10 RPM per-user ceiling shown in the catalog and expect occasional fail-over.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "pollinations-pollen-priced-2026-09-21",
+    "titolo": "No longer zero-pollen",
+    "testo": "Key-tested on September 21, 2026 against gen.pollinations.ai, the live API. openai-fast now carries prompt and completion pollen rates and resolves to the paid upstream gpt-5-nano-2025-08-07; z-ai/glm-5.3-flash and deepseek/deepseek-v4.1-flash are likewise pollen-priced. community/NamanSoni78/opus-5-max and community/NamanSoni78/gpt-5.4-nano are absent from the model list and answer 200 with zero completion tokens. The legacy text.pollinations.ai host is a one-model stub and must not be used to judge this provider.",
+    "gravita": "warning"
+   }
+  ],
+  "opencode": [
+   {
+    "slug": "zen-promo-roster",
+    "titolo": "Limited-time promo, roster rotates",
+    "testo": "OpenCode Zen free models are explicitly limited-time promotional access (\"available for a limited time\" per the docs), not a recurring quota. The roster rotates: qwen3.6-plus and minimax-m3 promos already ended. Expect any row here to die without notice; prompts/outputs may be used for model improvement.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "opencode-responses-only",
+    "titolo": "Responses API only",
+    "testo": "OpenCode Zen exposes this model through POST /v1/responses rather than /v1/chat/completions. Clients and adapters must use the Responses API transport.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "zen-serves-ultra-fast",
+    "titolo": "Zen serves the 550B fast",
+    "testo": "OpenCode Zen serves nemotron-3-ultra in ~2s with working tool calls where the OpenRouter route hangs — the live-verified path for this model.",
+    "gravita": "info"
+   },
+   {
+    "slug": "zen-free-client-locked",
+    "titolo": "OpenCode's free tier only works inside OpenCode",
+    "testo": "On September 17, 2026 every free Zen model answered 403 FreeTierError (\"OpenCode's free tier can only be used from within OpenCode\") on a valid key, with or without the OpenCode client headers, and deepseek-v4-flash-free answered 400 \"Model is unavailable\". The rows are disabled until OpenCode opens the free roster to API clients again.",
+    "gravita": "warning"
+   }
+  ],
+  "zhipu": [
+   {
+    "slug": "zhipu-shared-key",
+    "titolo": "Works with existing Zhipu key",
+    "testo": "glm-4.6v-flash is listed Free on Z.AI and answers 200 with the existing bigmodel.cn key; vision and structured tool calls both live-verified.",
+    "gravita": "info"
+   }
+  ],
+  "aihorde": [
+   {
+    "slug": "aihorde-anon-slow",
+    "titolo": "Free volunteer queue, slow",
+    "testo": "AI Horde routes to volunteer-run workers through a priority queue, so latency is seconds to minutes, not the sub-second of hosted providers. The anonymous key 0000000000 runs at the lowest priority; register a free key at aihorde.net for higher priority. The provider uses a 120s timeout.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "aihorde-no-tools",
+    "titolo": "No tool calling",
+    "testo": "AI Horde's OpenAI-compatible proxy does not support function/tool calling. The provider drops tools, tool_choice and parallel_tool_calls so a tool-using request still completes as plain chat instead of failing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "aihorde-usage-estimated",
+    "titolo": "Usage is kudos; tokens estimated",
+    "testo": "The proxy returns usage as {\"kudos\": N} with no token counts, and rejects max_tokens below 16 and a non-array stop. The AIHordeProvider normalizes the request (floors max_tokens, wraps stop) and synthesizes prompt/completion token estimates so analytics and savings math aren't zero.",
+    "gravita": "info"
+   },
+   {
+    "slug": "aihorde-roster-rotates",
+    "titolo": "Roster + context depend on online workers",
+    "testo": "Model availability changes as volunteer workers come and go, so a listed model can be temporarily unserved. The effective context window is set by the worker (often 4-8K), not the model's native maximum.",
+    "gravita": "info"
+   },
+   {
+    "slug": "aihorde-quality-uneven",
+    "titolo": "Uneven quality",
+    "testo": "Output quality varies by worker and quantization, and some workers append template or instruction text after the answer. Best treated as free fallback capacity, not a primary model.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "aihorde-behemoth-slow",
+    "titolo": "123B has heavy queue (seeded disabled)",
+    "testo": "Behemoth-X-123B has deep queue depth (50s+ ETA even on trivial prompts). Seeded disabled; enable only if minute-scale latency is acceptable.",
+    "gravita": "warning"
+   }
+  ],
+  "nara": [
+   {
+    "slug": "nara-free-plan",
+    "titolo": "Daily free quota",
+    "testo": "NaraRouter free access requires a no-card account key plus Telegram channel/link verification. The free plan is documented at 7M tokens/day and 10 req/min, with daily reset.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nara-stepfun-paid-2026-09-21",
+    "titolo": "Moved to a paid plan",
+    "testo": "Key-tested on September 21, 2026: NaraRouter answers stepfun-3.7-flash with 402 payment_required, \"Insufficient credits. Please top up your balance.\" The route left the free plan.",
+    "gravita": "warning"
+   }
+  ],
+  "huggingface": [
+   {
+    "slug": "hf-tiny-credit",
+    "titolo": "Small $0.10/month routed credit",
+    "testo": "HuggingFace Inference Providers grants only ~$0.10/month of routed credit on the free tier (PRO is $2/month). Enough for light experimentation; exhausts quickly. Credits apply only to HF-routed requests.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "hf-monthly-credits-exhausted",
+    "titolo": "Monthly included credits run out",
+    "testo": "HuggingFace meters Inference Providers in dollars, not tokens: free accounts get $0.10 credited every month. When it is spent every route answers 402 \"You have depleted your monthly included credits\", as happened during the September 18, 2026 audit. This is a spent-wallet state, not a dead route, and it clears when the monthly grant renews. Rows are kept enabled and the router should treat 402 here as a provider-level cooldown to the start of next month rather than a per-model failure.",
+    "gravita": "info"
+   },
+   {
+    "slug": "hf-router-no-enabled-provider-2026-09-21",
+    "titolo": "No inference provider serves this model",
+    "testo": "Key-tested on September 21, 2026: the HuggingFace router answered these ids with \"The requested model is not supported by any provider you have enabled\". They are catalogued on the Hub but no Inference Provider serves them, so the route cannot succeed for any account. Separately, the router meters dollars against a $0.10 monthly included credit, not tokens; when that credit is spent every other row returns 402 until the monthly reset.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "huggingface-free-credits-ended-20261007",
+    "titolo": "Free-account inference credits ended",
+    "testo": "Hugging Face now lists no included Inference Providers credits for Free accounts. The official documentation change merged October 7, 2026 (huggingface/hub-docs#2865). Routed inference requires purchased credits or a paid subscription; ZeroGPU Spaces are a separate service and do not fund these router endpoints. Existing records are retained but disabled. See https://huggingface.co/docs/inference-providers/pricing.",
+    "gravita": "warning"
+   }
+  ],
+  "github": [
+   {
+    "slug": "github-free-quota",
+    "titolo": "Daily GitHub Models free quota",
+    "testo": "GitHub Models free API quotas reset daily and are shared by rate-limit tier: low-tier models allow 15 RPM / 150 requests per day, high-tier models 10 RPM / 50 per day, and DeepSeek R1 1 RPM / 8 per day. Intended for experimentation, not production.",
+    "gravita": "info"
+   }
+  ],
+  "modelscope": [
+   {
+    "slug": "modelscope-aliyun-binding",
+    "titolo": "Requires Alibaba Cloud (China) account binding",
+    "testo": "Free, but requires binding your ModelScope account to an Alibaba Cloud CHINA-site (cn) account with Chinese real-name verification — international (alibabacloud.com) accounts do not qualify (maintainer-confirmed). The API token mints without the binding, but every call then fails with `401 please bind your alibaba cloud account before use`.",
+    "gravita": "warning"
+   }
+  ],
+  "bai": [
+   {
+    "slug": "bai-limited-time-free",
+    "titolo": "Limited-time 0-credit promotion",
+    "testo": "B.AI currently bills selected launch models at 0 Credits under limited-time promotions. B.AI says standard pricing resumes when an offer ends; re-check pricing before use after any provider notice.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "bai-limited-time-free",
+    "titolo": "Limited-time 0-credit promotion",
+    "testo": "B.AI currently bills selected launch models at 0 Credits under limited-time promotions. B.AI says standard pricing resumes when an offer ends; re-check pricing before use after any provider notice.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "bai-limited-time-free",
+    "titolo": "Limited-time 0-credit promotion",
+    "testo": "B.AI currently bills selected launch models at 0 Credits under limited-time promotions. B.AI says standard pricing resumes when an offer ends; re-check pricing before use after any provider notice.",
+    "gravita": "warning"
+   }
+  ],
+  "qianfan": [
+   {
+    "slug": "cn-real-name-verification",
+    "titolo": "Requires Chinese real-name verification",
+    "testo": "Free, but the cloud account must pass Chinese real-name verification (实名认证) — normally a mainland ID or business licence — before the key will serve traffic. A key can usually be created without it, and then every call fails on auth or permission. Baidu Qianfan, Volcengine Ark and iFlytek Spark all sit behind this gate. LongCat is the exception: its platform accepts an email signup from outside mainland China.",
+    "gravita": "warning"
+   }
+  ],
+  "volcengine": [
+   {
+    "slug": "cn-real-name-verification",
+    "titolo": "Requires Chinese real-name verification",
+    "testo": "Free, but the cloud account must pass Chinese real-name verification (实名认证) — normally a mainland ID or business licence — before the key will serve traffic. A key can usually be created without it, and then every call fails on auth or permission. Baidu Qianfan, Volcengine Ark and iFlytek Spark all sit behind this gate. LongCat is the exception: its platform accepts an email signup from outside mainland China.",
+    "gravita": "warning"
+   }
+  ],
+  "xfyun": [
+   {
+    "slug": "cn-real-name-verification",
+    "titolo": "Requires Chinese real-name verification",
+    "testo": "Free, but the cloud account must pass Chinese real-name verification (实名认证) — normally a mainland ID or business licence — before the key will serve traffic. A key can usually be created without it, and then every call fails on auth or permission. Baidu Qianfan, Volcengine Ark and iFlytek Spark all sit behind this gate. LongCat is the exception: its platform accepts an email signup from outside mainland China.",
+    "gravita": "warning"
+   }
+  ],
+  "sail": [
+   {
+    "slug": "sail-monthly-credit-wallet",
+    "titolo": "Monthly credit requires a payment method",
+    "testo": "Sail grants $5 in free credits each month only while a payment method is attached. Usage becomes pay-as-you-go after that credit is exhausted, so configure Sail spend controls and monitor the account balance. Requests run as background jobs and may remain queued for several minutes.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "sail-glm52-is-glm53-alias",
+    "titolo": "Legacy GLM 5.2 ID resolves to GLM 5.3",
+    "testo": "The legacy zai-org/GLM-5.2-FP8 request ID returned zai-org/GLM-5.3 in the September 12 live test. It is retained as an explicitly labeled compatibility alias, not a separate GLM-5.2 model or a new GLM-5.3 addition. Use the existing canonical GLM-5.3 row for new integrations.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "sail-qwen36-flex-only",
+    "titolo": "Only the flex completion window is offered",
+    "testo": "Sail returns 400 \"supports: flex\" for this model even with completion_window=flex on the standard chat endpoint. Disabled until a working request shape is confirmed.",
+    "gravita": "info"
+   }
+  ],
+  "radeon": [
+   {
+    "slug": "radeon-shared-free-rotating",
+    "titolo": "Free shared roster rotates",
+    "testo": "AMD Radeon Cloud's shared Model API is free and does not consume GPU-instance credits. Its public models are experimental and may rotate; per-account request and daily allowance values are reported dynamically in response headers rather than guaranteed as fixed catalog limits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "radeon-qwen-request-shape",
+    "titolo": "Strict Qwen request shape",
+    "testo": "Qwen3.8 Flash Next accepts at most one leading system message, low or medium reasoning effort, single tool calls, and JSON-object output. The adapter coalesces system instructions, disables parallel tool calls, and downgrades JSON Schema requests to JSON-object mode.",
+    "gravita": "info"
+   }
+  ],
+  "electronhub": [
+   {
+    "slug": "electronhub-shared-weekly-credit",
+    "titolo": "Shared weekly free credits",
+    "testo": "ElectronHub Free renews $0.25 each week (Sunday 21:00 UTC), shared across eligible non-premium models; unused weekly credit does not roll over. These are credit-backed routes, not the separate daily :free aliases. Paid top-ups are optional and not included in this allowance. Text inference was tested; other capability flags come from the provider roster.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-free-suffix-needs-phone",
+    "titolo": "The :free aliases need phone verification",
+    "testo": "ElectronHub's zero-credit \":free\" aliases answered 403 \"To prevent abuse and high traffic on free models, phone verification is required\" on September 18, 2026. The ordinary ids this catalog carries are NOT affected and were re-tested working the same day, so the :free aliases are simply not worth adding. ElectronHub's recurring grant is $0.25 credited every Sunday at 21:00 UTC plus a separate daily Neutrino allowance.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-speech-weekly-credit",
+    "titolo": "Speech shares weekly free credits",
+    "testo": "ElectronHub Free supplies $0.25 each week across eligible models; these speech routes share that wallet with chat. Tests used no purchased balance. Gemini speech returns WAV; HUMAIN returns MP3. Update the application to a build with ElectronHub speech support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-speech-weekly-credit",
+    "titolo": "Speech shares weekly free credits",
+    "testo": "ElectronHub Free supplies $0.25 each week across eligible models; these speech routes share that wallet with chat. Tests used no purchased balance. Gemini speech returns WAV; HUMAIN returns MP3. Update the application to a build with ElectronHub speech support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-speech-weekly-credit",
+    "titolo": "Speech shares weekly free credits",
+    "testo": "ElectronHub Free supplies $0.25 each week across eligible models; these speech routes share that wallet with chat. Tests used no purchased balance. Gemini speech returns WAV; HUMAIN returns MP3. Update the application to a build with ElectronHub speech support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-embedding-weekly-credit",
+    "titolo": "Embeddings share weekly free credits",
+    "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-embedding-weekly-credit",
+    "titolo": "Embeddings share weekly free credits",
+    "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-embedding-weekly-credit",
+    "titolo": "Embeddings share weekly free credits",
+    "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-embedding-weekly-credit",
+    "titolo": "Embeddings share weekly free credits",
+    "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "electronhub-embedding-weekly-credit",
+    "titolo": "Embeddings share weekly free credits",
+    "testo": "ElectronHub Free provides $0.25/week shared across eligible chat and embedding models. These routes passed live adapter tests using free weekly credits. After that allowance is spent, stop or wait for renewal; purchased balance or paid top-ups are separate. Update FreeLLMAPI to a build with ElectronHub embedding support. See https://docs.electronhub.ai/billing/credits.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-electronhub-gpt-4o-mini-tts",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.25/week shared free credits; test account had no purchased balance. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.electronhub.ai/billing/credits",
+    "gravita": "info"
+   }
+  ],
+  "experiential": [
+   {
+    "slug": "experiential-shared-monthly-credit",
+    "titolo": "Shared monthly Free-plan credits",
+    "testo": "Experiential publishes 500 Free-plan credits each month at one cent per credit ($5 shared across hosted models). Check your plan and balance in the provider dashboard; successful inference alone does not distinguish monthly, welcome or purchased credits. BYOK usage and optional paid top-ups are outside the free grant. Text inference was tested; other capability flags come from the provider roster.",
+    "gravita": "info"
+   },
+   {
+    "slug": "experiential-card-verification-required",
+    "titolo": "$1 card verification gates the monthly pool",
+    "testo": "On September 15, 2026 every Experiential Labs completion returned 429 card_required: \"Complete the $1 card verification to spend platform credits\", including the ordinary 500-credit monthly pool. The catalog's no-card rule therefore disables these rows until the account is verified or the gate is lifted.",
+    "gravita": "warning"
+   }
+  ],
+  "router9": [
+   {
+    "slug": "router9-shared-monthly-credit",
+    "titolo": "Shared monthly free credits",
+    "testo": "Router9 Free renews 20,000 credits (about $2) each calendar month, shared across allowlisted routes, resetting on the first day at 00:00 UTC with no rollover. Current credit documentation and authenticated Free-plan headers agree on 20,000; older marketing pages still quote 50,000. Six added routes passed short non-streaming text tests on September 14, 2026; MiniMax M3 passed earlier text and streaming checks. Context and vision capabilities are provider-advertised, not newly feature-tested. Paid top-ups are outside the free allowance. https://www.router9.com/docs/token-plan/credits",
+    "gravita": "info"
+   },
+   {
+    "slug": "router9-deepseek-flash-0731-alias",
+    "titolo": "Unversioned route resolves to 0731",
+    "testo": "On September 14, 2026, deepseek/deepseek-v4-flash returned a valid completion identifying deepseek/deepseek-v4-flash-0731. The public free-model listing still labels this route 0423. The catalog displays the observed 0731 revision while preserving the tested request ID. Response identifiers are provider assertions, not independent verification of weights.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct31-router9-z-ai-glm-5-3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct31-router9-qwen-qwen3-8-flash",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+    "gravita": "info"
+   }
+  ],
+  "septor": [
+   {
+    "slug": "septor-shared-daily-free",
+    "titolo": "Shared daily free-model allowance",
+    "testo": "Septor zero-price routes share 50 requests and 500K tokens per day. This resets daily, not monthly. Its separate $1 signup grant expires after 90 days and is not recurring. These four routes returned matching model IDs in text and streaming tests with usage.cost=0; model-ID matching is not independent verification of weights. Other aliases that silently substituted MiniMax M2.5 are excluded. Tool capability flags are provider-advertised, not live-tested.",
+    "gravita": "info"
+   },
+   {
+    "slug": "septor-gemma-daily-free",
+    "titolo": "Shared daily free-model allowance",
+    "testo": "This named Gemma route returned a matching model ID and usage.cost=0. It shares the provider daily free allowance; the separate signup credit is not recurring. No tool or vision capability was advertised for this route.",
+    "gravita": "info"
+   },
+   {
+    "slug": "septor-free-aliases-substitute",
+    "titolo": "Most -free aliases serve MiniMax M2.5",
+    "testo": "On September 18, 2026 eleven candidate Septor -free ids (glm-4.5-air, ling-2.6-flash, llama-3.1-8b, llama-3.2-1b and -3b, llama-3.3-70b, minimax-m2, nemotron-3-nano-30b-a3b, mistral-nemo, step-3.5-flash, dolphin-mistral-24b) all answered with response model minimax-m2.5-free. Only the ids already in this catalog were re-verified as serving their own weights. Never add a Septor alias without comparing the responding model id.",
+    "gravita": "warning"
+   }
+  ],
+  "clod": [
+   {
+    "slug": "clod-shared-daily-free",
+    "titolo": "Shared daily free requests",
+    "testo": "CLōD grants 100 requests per day across eligible free models, automatically replenished, with no card required. This is daily, not monthly, and not a separate grant per model. Use the exact friendly model IDs including spaces. Only four routes returned consistent upstream identities in live tests; Llama and Trinity aliases that substituted Gemma are excluded. Matching response IDs do not independently verify the served weights. Context and tool support are not claimed without provider-specific evidence.",
+    "gravita": "info"
+   }
+  ],
+  "speechify": [
+   {
+    "slug": "speechify-shared-monthly-characters",
+    "titolo": "Monthly free text-to-speech characters",
+    "testo": "Speechify Free includes 500,000 characters per month shared across TTS models, with no card required. Free usage pauses when exhausted. Characters are not tokens and are not a grant per model. Both Simba 3.0 and Simba 3.2 generated valid MP3 audio. Use the native TTS adapter; these are not chat models. API version 2026-09-08, default tested voice alec. See https://speechify.ai/pricing and the workspace allowance.",
+    "gravita": "info"
+   }
+  ],
+  "blaze": [
+   {
+    "slug": "blaze-shared-daily-free",
+    "titolo": "Daily free tokens require Discord verification",
+    "testo": "BlazeAPI Free grants 200,000 tokens daily shared across free-plan routes. Join its Discord and complete free-tier verification. These three named routes passed ordinary and streaming requests with plan=free and zero paid balance. Use https://api.blazeapi.org/paid/v1 even on the Free plan. Per-token price metadata describes paid usage; the tested requests used the free plan. A transient 503 is not evidence of paid access. Optional paid balances and upgrades are outside this free allowance.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-shared-daily-free",
+    "titolo": "Daily free tokens require Discord verification",
+    "testo": "BlazeAPI Free grants 200,000 tokens daily shared across free-plan routes. Join its Discord and complete free-tier verification. These three named routes passed ordinary and streaming requests with plan=free and zero paid balance. Use https://api.blazeapi.org/paid/v1 even on the Free plan. Per-token price metadata describes paid usage; the tested requests used the free plan. A transient 503 is not evidence of paid access. Optional paid balances and upgrades are outside this free allowance.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-shared-daily-free",
+    "titolo": "Daily free tokens require Discord verification",
+    "testo": "BlazeAPI Free grants 200,000 tokens daily shared across free-plan routes. Join its Discord and complete free-tier verification. These three named routes passed ordinary and streaming requests with plan=free and zero paid balance. Use https://api.blazeapi.org/paid/v1 even on the Free plan. Per-token price metadata describes paid usage; the tested requests used the free plan. A transient 503 is not evidence of paid access. Optional paid balances and upgrades are outside this free allowance.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "blaze-free-daily-oct05",
+    "titolo": "Shared daily free allowance",
+    "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   }
+  ],
+  "navy": [
+   {
+    "slug": "navy-free-plan-suspended",
+    "titolo": "Free plan suspended by the provider",
+    "testo": "On September 18, 2026 every NavyAI route answered 403 \"The Free plan is temporarily disabled due to abuse. You can purchase a plan at https://api.navy/dashboard/billing to continue using the API.\" on a valid free key. Separately, 52 of the 69 catalog ids now carry non-zero prompt and completion prices in NavyAI's own model list, so most of them would not be free even if the plan were re-opened. All rows stay disabled until the free plan returns AND the pricing reads zero.",
+    "gravita": "warning"
+   }
+  ],
+  "orcarouter": [
+   {
+    "slug": "orcarouter-github-link-required",
+    "titolo": "Free routes need a linked GitHub account",
+    "testo": "OrcaRouter moved to api.orcarouter.ai and now returns 429 err_free_access_denied (\"Link a GitHub account\") on free routes for accounts without a linked GitHub identity. Rows are disabled until the account is linked. qwen/qwen3.8-27b-free was removed from the roster.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "orcarouter-aged-github-gate",
+    "titolo": "Free models need an aged GitHub account",
+    "testo": "OrcaRouter free routes answered 429 \"Free models are not available to this account yet. They require the workspace owner to link a GitHub account that has been registered for some time\" on September 18, 2026. The free package is live and the ids are real, but this account cannot reach it, so the rows stay disabled. Note also that OrcaRouter silently drops a free id from an extra_body.models fallback chain, and returns its prompt-length rejection as a non-retryable 400 rather than a 429.",
+    "gravita": "warning"
+   }
+  ],
+  "mistral": [
+   {
+    "slug": "mistral-free-plan-zero-cap",
+    "titolo": "Free plan caps this model at 0 requests per minute",
+    "testo": "On September 15, 2026 the Free-plan key returned x-ratelimit-limit-req-minute: 0 for this model on every attempt over 30 minutes, while Codestral, Ministral and Voxtral routes served at 30 to 750 RPM. The row is disabled until Mistral includes the model in the Free plan again. Retired Magistral and Medium 3 rows were removed.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "mistral-voxtral-tts-id-2026-09-21",
+    "titolo": "Model id does not exist",
+    "testo": "Key-tested on September 21, 2026: Mistral answers voxtral-mini-tts-2603 with 400 invalid_model. The TTS model is published as voxtral-tts-26-03. A replacement row should be added under the correct id rather than this one re-enabled.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "oct30-mistral-mistral-large-4",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Free mode has included monthly API usage; amount and model caps depend on account. Do not assume the previous $10 figure.. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://docs.mistral.ai/admin/billing-usage/usage-limits",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-mistral-voxtral-mini-tts-3-0",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Free mode included monthly usage; account-specific limits, not a universal $10 grant. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.mistral.ai/admin/billing-usage/usage-limits",
+    "gravita": "info"
+   }
+  ],
+  "lucidity": [
+   {
+    "slug": "lucidity-shared-daily-free",
+    "titolo": "Shared daily free-model requests; open/* routes are aliases",
+    "testo": "Lucidity Composite grants 250 free-model requests per day per account with no card. Only the four listed routes returned the requested model in the September 15 live test. Every open/* route (DeepSeek, Kimi, Llama, Nemotron, Gemma, GPT-OSS, Granite, Inkling) silently returned synth-2.5-preview roleplay text and is excluded. The two synth routes are Lucidity's own model and identify inconsistently. A 429 \"Free, subscription, and BYOK\" error is the shared free cap, not a per-model limit.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "lucidity-open-routes-substitute",
+    "titolo": "open/* routes serve a different model",
+    "testo": "Re-confirmed on September 18, 2026: every Lucidity open/* route requested (DeepSeek V4 Flash 0731, Kimi K2.6, Llama 3.3 70B, Nemotron 3 Super and Ultra, Mixtral 8x22B) returned HTTP 200 whose response model field read synth-2.5-preview, with roleplay text. They are not the advertised models and must not be added. Free traffic is also capped at 5 requests per minute per account, returned as a 429 naming free, subscription and BYOK together.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "lucidity-synth-2-5-withdrawn-2026-09-21",
+    "titolo": "Route withdrawn upstream",
+    "testo": "Key-tested on September 21, 2026: lucidityai/synth-2.5-pro:free and lucidityai/synth-2.5-flash:free return 404 upstream_rejected with the message Unknown model \"synth-2.5\" / \"synth-2.5-preview\". The models behind Lucidity's own branded routes are gone.",
+    "gravita": "warning"
+   }
+  ],
+  "airforce": [
+   {
+    "slug": "airforce-free-plan-limits",
+    "titolo": "Free plan is 1 request per minute",
+    "testo": "Api.Airforce Free grants 1,000 requests per day at 1 request per minute per account with per-model token caps and no card. The 21 listed routes returned matching model IDs on September 15. kimi-k2.7-code requires a paid plan; gpt-oss-120b, Mistral Large and Mistral Medium returned 503 and are excluded. Most routes are proxied Mistral free-plan models; treat them as sharing that upstream capacity.",
+    "gravita": "info"
+   }
+  ],
+  "dreamprompting": [
+   {
+    "slug": "dreamprompting-failover-router",
+    "titolo": "Pooled fail-over router; most routes substitute models",
+    "testo": "DreamPrompting pools upstream free tiers and fails over between them. Free is 500,000 tokens and 5,000 requests per rolling 24 hours, 100 requests per minute per IP, no card. Only the nine listed routes returned the requested model on September 15 (retried twice). The other 19 routes (Cohere, Gemini, Qwen, Llama, Granite, Mistral Small and Large, gemma-4) consistently served Nemotron 3 Super, gpt-oss-120b or Codestral instead and are excluded. Prompts may be stored or publicly shared per the provider.",
+    "gravita": "warning"
+   }
+  ],
+  "waterfall": [
+   {
+    "slug": "waterfall-free-routes",
+    "titolo": "Free routes depend on upstream availability",
+    "testo": "Waterfall serves -free routes at no charge with no card under unpublished community rate limits. The ten listed routes returned matching model IDs on September 15. Twelve other -free routes (gemma-4 variants, nemotron-3-ultra, content-safety, laguna-xs, north-mini-code, dots-3, glm-5.2, ling-fin) returned 503 upstream_unavailable on two attempts and are not listed; inkling routes are forbidden and Lyria routes require payment.",
+    "gravita": "info"
+   }
+  ],
+  "logfare": [
+   {
+    "slug": "logfare-fair-use-logging",
+    "titolo": "Fair-use free tier funded by logging all traffic",
+    "testo": "Logfare offers registered accounts unmetered fair-use access with no card, funded by logging every request for research; do not send private data. Only logfare/auto and gemma-4-26b are free-tier routes; glm-5.3, glm-5.3-flash, kimi-k3, kimi-k2.6, qwen-3.8-27b and moondream3.1 return 403 premium. mimo-v2.5 hit an account rate limit twice and is excluded. Usage reports a neurons field. Responses include reasoning content.",
+    "gravita": "warning"
+   }
+  ],
+  "reka": [
+   {
+    "slug": "reka-prepaid-credits",
+    "titolo": "New accounts need prepaid credits",
+    "testo": "Reka's FAQ now says to add credits before making requests, and a $0 balance returns P001 Insufficient Balance. Accounts that still hold credit keep working: reka-flash-3 and reka-edge-2603 answered 200 on September 17, 2026. The old reka-flash id returns 404 \"Unknown chat model\" and is disabled.",
+    "gravita": "warning"
+   }
+  ],
+  "aclide": [
+   {
+    "slug": "aclide-shared-monthly-credit",
+    "titolo": "Shared monthly free usage credits",
+    "testo": "ACLIDE Free includes €20 of internal usage credits renewed monthly with no payment card required. This is one account-wide allowance, not a separate grant per model or a cash token budget. These four routes passed text and function-call tests with matching returned model IDs. The native Responses adapter buffers streaming replies until completion. Vision and context limits are not claimed without route-specific verification. Matching response IDs do not independently authenticate the served weights. See https://aclide.com/en/pricing and https://aclide.com/en/documentation.",
+    "gravita": "info"
+   }
+  ],
+  "moondream": [
+   {
+    "slug": "moondream-shared-monthly-credits",
+    "titolo": "Shared $5 monthly hosted usage credits",
+    "testo": "Moondream Cloud Free includes $5 per workspace in recurring monthly usage credits, shared across models; usage beyond that allowance is metered. Both listed routes passed live vision and streaming tests through the adapter on 2026-09-22. Images must be base64 data URLs; remote image URLs, tool calling and stop sequences are unsupported. Output is limited by the upstream API to 4096 tokens including reasoning. Context and request-rate limits are not claimed without verification. This uses the hosted BYOK API, not self-hosted weights. Sources: https://moondream.ai/pricing and https://docs.moondream.ai/openai/.",
+    "gravita": "info"
+   }
+  ],
+  "speka": [
+   {
+    "slug": "speka-shared-monthly-credit",
+    "titolo": "Shared monthly free credits",
+    "testo": "Speka Free includes $1 of model usage renewed monthly, shared across chat and embeddings, not a separate grant per model. Paid usage beyond the grant may apply according to account billing settings. Text inference and embeddings were tested on 2026-09-24; untested tool and vision capabilities are not enabled. Matching model IDs do not independently authenticate served weights. See https://speka.me/pricing and https://speka.me/docs.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-speka-mistralai-mistral-large-4-1t-a52b",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$1/month shared free-plan allowance. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://speka.me/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-speka-meta-llama-3-2-90b-vision-instruct",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$1/month shared free-plan allowance; text chat tested, vision not tested. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://speka.me/pricing",
+    "gravita": "info"
+   }
+  ],
+  "llmtr": [
+   {
+    "slug": "llmtr-renewable-free-quota",
+    "titolo": "Renewable free-model quotas",
+    "testo": "Selected LLMTR routes are zero-priced with daily or rolling request quotas, not monthly cash credits. Motif 3 replenishes each allowance after 24 hours. New accounts have reduced free allowances until 24 hours old; no top-up is required to wait for that increase. Exact account caps are not assumed. Text completions passed on 2026-09-29; tool and vision flags remain off until separately tested. The public roster also includes paid, temporary and BYOK-only models which are not included here. See https://llmtr.com/docs/en/migration/openai-openrouter/ and https://llmtr.com/docs/en/gateway/motif-3/.",
+    "gravita": "info"
+   },
+   {
+    "slug": "llmtr-agnes-rolling-free-oct04",
+    "titolo": "Free allowance replenishes after 24 hours",
+    "testo": "Agnes 2.5 Flash and 3.0 Flash are zero-priced on LLMTR. Each successful request replenishes after 24 hours; this is a rolling request quota, not monthly cash credits. Matching-model text completions passed on October 4, 2026. Exact account limits are not assumed. Tool and vision flags remain off until separately tested. See https://llmtr.com/docs/en/gateway/agnes/.",
+    "gravita": "info"
+   },
+   {
+    "slug": "llmtr-agnes-rolling-free-oct04",
+    "titolo": "Free allowance replenishes after 24 hours",
+    "testo": "Agnes 2.5 Flash and 3.0 Flash are zero-priced on LLMTR. Each successful request replenishes after 24 hours; this is a rolling request quota, not monthly cash credits. Matching-model text completions passed on October 4, 2026. Exact account limits are not assumed. Tool and vision flags remain off until separately tested. See https://llmtr.com/docs/en/gateway/agnes/.",
+    "gravita": "info"
+   },
+   {
+    "slug": "llmtr-laguna-xs-free-oct04",
+    "titolo": "Ongoing zero-price Poolside route",
+    "testo": "LLMTR lists Laguna XS 2.1 at zero input/output/cache cost, without drawing on the account credit balance. Standard rate limits apply; there is no monthly token grant. A matching-model text completion passed on October 4, 2026 with a 1024-token output budget; tiny caps can produce reasoning without visible output. Poolside may use free-access prompts and completions to improve its products. Tool and vision flags remain off until separately tested. See https://llmtr.com/docs/en/gateway/poolside-laguna/.",
+    "gravita": "info"
+   },
+   {
+    "slug": "llmtr-nemotron-daily-oct15",
+    "titolo": "Selected daily free route",
+    "testo": "This exact -free model is listed at zero input/output cost with a daily quota. This is not a provider-wide free credit balance; the paid sibling is not included. Exact-model text completion passed October 15, 2026; tool and vision flags remain off until separately tested. Source: https://llmtr.com/v1/models",
+    "gravita": "info"
+   },
+   {
+    "slug": "llmtr-embedding-free-oct15",
+    "titolo": "Zero-price embeddings and input data use",
+    "testo": "These exact routes are currently listed at zero input cost without a published expiry; they are not a monthly cash grant. Fixed vector dimensions were live-tested. LFM2.5 free successful requests may be retained for training: do not send sensitive or customer data. Requires the LLMTR embeddings adapter. Sources: https://llmtr.com/v1/models and https://llmtr.com/docs/en/gateway/embeddings/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "llmtr-embedding-free-oct15",
+    "titolo": "Zero-price embeddings and input data use",
+    "testo": "These exact routes are currently listed at zero input cost without a published expiry; they are not a monthly cash grant. Fixed vector dimensions were live-tested. LFM2.5 free successful requests may be retained for training: do not send sensitive or customer data. Requires the LLMTR embeddings adapter. Sources: https://llmtr.com/v1/models and https://llmtr.com/docs/en/gateway/embeddings/",
+    "gravita": "warning"
+   }
+  ],
+  "xkiro": [
+   {
+    "slug": "xkiro-lfm25-reasoning-room",
+    "titolo": "Allow room for reasoning",
+    "testo": "This route uses reasoning. A 128-token output budget returned empty content in the 2026-09-30 check; a retry with 768 returned a valid answer. Allow sufficient output tokens for reasoning and the final answer.",
+    "gravita": "info"
+   }
+  ],
+  "gizmo": [
+   {
+    "slug": "gizmo-monthly-free-text",
+    "titolo": "Shared monthly free-model requests",
+    "testo": "Gizmo Free includes 1,000 zero-cost-model API requests per calendar month, shared by account and reset on the first day UTC. Only tested :free routes are included. The chat endpoint accepts text only: tools, image/audio messages and structured output are unsupported. Six exact-model routes returned valid text with usage.cost=0 on 2026-10-03. Selected adapter chat and streaming checks also passed. Paid-model weekly credits did not bypass the account payment-method requirement. https://gizmoplatforms.com/developers?tab=docs",
+    "gravita": "info"
+   }
+  ],
+  "blockrun": [
+   {
+    "slug": "blockrun-free-identity-guard",
+    "titolo": "Zero-priced routes; exact-model guard",
+    "testo": "Ongoing zero-priced, rate-limited routes, not a monthly credit grant. These four routes returned their requested model IDs and valid text on 2026-10-03; inference ledger costs settled at $0 on a zero-funded account. BlockRun may substitute another free model when capacity is unavailable; FreeLLMAPI v0.13.4 rejects substitutions rather than mislabeling responses. Tool and vision flags remain off until tested separately. https://blockrun.ai/free and https://blockrun.ai/docs/getting-started/enterprise-api",
+    "gravita": "info"
+   }
+  ],
+  "typhoon": [
+   {
+    "slug": "typhoon-free-research",
+    "titolo": "Ongoing free research API",
+    "testo": "Typhoon provides an ongoing, rate-limited research API, not monthly credits or a production SLA. Usage data is collected to improve the models and API; review the provider data-use terms before sending sensitive content. Chat, streaming, tool calling and both ASR endpoints were smoke-tested on October 7, 2026. The Isan model was tested with standard Thai speech, not an Isan accuracy benchmark. See https://docs.opentyphoon.ai/en/faq/ and https://docs.opentyphoon.ai/en/asr/.",
+    "gravita": "info"
+   }
+  ],
+  "plugsky": [
+   {
+    "slug": "plugsky-permanent-free-aliases",
+    "titolo": "Permanent free aliases, shared fair use",
+    "testo": "Plugsky Free includes Micro and Lite chat/JSON aliases without a card, separately from the wider seven-day trial. Shared fair-use rate limits apply, not a separate monthly credit grant per model. Backing models may change or fail over; streaming can identify the underlying upstream. Chat, JSON mode and streaming were tested on October 8, 2026. Tools and vision are not enabled without Free-plan route-specific verification. See https://plugsky.com/docs.",
+    "gravita": "info"
+   }
+  ],
+  "inferbase": [
+   {
+    "slug": "inferbase-managed-free-allowance",
+    "titolo": "Shared monthly and daily free allowance",
+    "testo": "Inferbase Free needs no card. The shared account allowance is 5,000 requests/month, also capped at 100 managed requests and $0.50 of model usage/day. Free managed chat permits 8,192 input and 1,024 output tokens per request. Counts are shared, not per-model grants. Model IDs including FP8 and Turbo variants are explicit; a changed response identity fails rather than silently substituting another model. Update FreeLLMAPI to a build with the Inferbase adapter. See https://inferbase.ai/pricing.",
+    "gravita": "info"
+   }
+  ],
+  "simplellm": [
+   {
+    "slug": "simplellm-shared-free-model-quota",
+    "titolo": "Shared hourly and daily free-model quota",
+    "testo": "Only the selected free aliases qualify. Tests ran with zero purchased balance and cost_sc=0. Account-reported free quotas are shared across models: 100 requests/hour, 1,000/day, 50K tokens/hour and 500K/day at verification; account limits may change. This is renewable free access, not a monthly dollar grant. Update FreeLLMAPI to a build with the SimpleLLM adapter. See https://simplellm.eu/docs/limits.html.",
+    "gravita": "info"
+   }
+  ],
+  "freeai": [
+   {
+    "slug": "freeai-shared-daily-allowance",
+    "titolo": "Shared daily free allowance",
+    "testo": "Free accounts share 30,000 internal tokens per day and 1,000 API requests per month across eligible self-hosted models. No card is required. These are shared account allowances, not grants per model. Kokoro returns WAV audio; other formats are not supported by this adapter. Automatic key validation is inconclusive because the tested public endpoints did not distinguish valid and bogus credentials. Use your own Free.ai key for generation. Verified 2026-10-11 against the free-account dashboard and live Kokoro output. https://free.ai/api/ https://free.ai/account/#api-keys",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-freeai-melotts",
+    "titolo": "Shared renewable free allowance",
+    "testo": "30,000 shared internal tokens/day; 1,000 API requests/month. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://free.ai/api/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-freeai-chatterbox",
+    "titolo": "Shared renewable free allowance",
+    "testo": "30,000 shared internal tokens/day; 1,000 API requests/month. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://free.ai/api/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-freeai-qwen3-tts",
+    "titolo": "Shared renewable free allowance",
+    "testo": "30,000 shared internal tokens/day; 1,000 API requests/month. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://free.ai/api/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-freeai-vibevoice",
+    "titolo": "Shared renewable free allowance",
+    "testo": "30,000 shared internal tokens/day; 1,000 API requests/month. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://free.ai/api/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov01-media-freeai-whisper",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Same shared Free.ai allowance; not an additional grant. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://free.ai/api/",
+    "gravita": "info"
+   }
+  ],
+  "kenari": [
+   {
+    "slug": "oct30-kenari-llama-3-3-70b-instruct-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 requests/day and 5 RPM shared on new accounts. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-kenari-qwen3-5-397b-a17b-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 requests/day and 5 RPM shared on new accounts. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-kenari-qwen3-6-27b-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 requests/day and 5 RPM shared on new accounts. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-kenari-qwen3-8-27b-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 requests/day and 5 RPM shared on new accounts. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   }
+  ],
+  "jamai": [
+   {
+    "slug": "oct30-jamai-ellm-qwen-qwen3-6-35b-a3b",
+    "titolo": "Shared renewable free allowance",
+    "testo": "3M ELLM chat tokens/month shared per organization. Text chat, normal and streaming; image/tool capabilities advertised, not tested Verified 2026-10-30. https://www.jamaibase.com/pricing Enter the PAT and project ID separately in provider setup. Both are required; raw import/export uses project_id:PAT. Third-party paid models are excluded.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-jamai-ellm-google-gemma-4-26b-a4b-it",
+    "titolo": "Shared renewable free allowance",
+    "testo": "3M ELLM chat tokens/month shared per organization. Text chat, normal and streaming; image/tool capabilities advertised, not tested Verified 2026-10-30. https://www.jamaibase.com/pricing Enter the PAT and project ID separately in provider setup. Both are required; raw import/export uses project_id:PAT. Third-party paid models are excluded.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-jamai-ellm-qwen-qwen-2-audio-7b",
+    "titolo": "Shared renewable free allowance",
+    "testo": "3M ELLM chat tokens/month shared per organization. Synthetic speech correctly transcribed through chat endpoint, normal and streaming Verified 2026-10-30. https://www.jamaibase.com/pricing Enter the PAT and project ID separately in provider setup. Both are required; raw import/export uses project_id:PAT. Third-party paid models are excluded.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-jamai-ellm-tencent-hunyuan-ocr",
+    "titolo": "Shared renewable free allowance",
+    "testo": "3M ELLM chat tokens/month shared per organization. Synthetic document correctly read, normal and streaming; specialist OCR, not general-purpose chat Verified 2026-10-30. https://www.jamaibase.com/pricing Enter the PAT and project ID separately in provider setup. Both are required; raw import/export uses project_id:PAT. Third-party paid models are excluded.",
+    "gravita": "info"
+   },
+   {
+    "slug": "oct30-jamai-ellm-baai-bge-m3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "4M ELLM embedding tokens/month shared per organization. Embeddings tested with semantic and dimension checks. Verified 2026-10-30. https://www.jamaibase.com/pricing Enter the PAT and project ID separately in provider setup. Both are required; raw import/export uses project_id:PAT. Third-party paid models are excluded.",
+    "gravita": "info"
+   }
+  ],
+  "nabh": [
+   {
+    "slug": "oct31-nabh-gpt-oss-20b",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 credits/month shared (1 credit = INR 1). Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. No card required. Only GPT OSS 20B is included on the Free plan; other listed models may require paid plans. https://nabh.cloud/docs/pricing/",
+    "gravita": "info"
+   }
+  ],
+  "novai": [
+   {
+    "slug": "nov01-media-novai-cogvideox-flash",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Five free video generations/day within ten shared free-model calls/day; no card or top-up. Resets 00:00 UTC+8. Watermarked on never-topped-up accounts.. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.aiapi-pro.com/free/index.html",
+    "gravita": "info"
+   }
+  ]
+ }
+}

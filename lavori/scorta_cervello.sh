@@ -40,5 +40,18 @@ while true; do
       say "lock /tmp/cervello.lk occupato: aspetto e riprovo"
     fi
   fi
+  # ── la sentinella delle chiavi (una volta ogni 6 ore) ──
+  # Rigenera il catalogo freellmapi, ri-prova chi e' in cooldown e fa il
+  # check-in AgentRouter. Il file di stato dentro la sentinella fa la guardia
+  # precisa; qui si controlla solo per non lanciarla ogni 30 secondi.
+  PRIMA_S=$(cat /tmp/sentinella_giro 2>/dev/null || echo 0)
+  case "$PRIMA_S" in ''|*[!0-9]*) PRIMA_S=0 ;; esac
+  if [ $(( $(date +%s) - PRIMA_S )) -ge 21600 ]; then
+    date +%s > /tmp/sentinella_giro
+    say "lancio la sentinella delle chiavi"
+    timeout 1200 bash "$HOME/posta/lavori/sentinella_chiavi.sh" >> "$LOG" 2>&1 \
+      || say "sentinella: esito non zero (vedi /tmp/sentinella_chiavi.log)"
+  fi
+
   sleep 30
 done
