@@ -1,68 +1,68 @@
-# 🗣️ Appello delle chiavi — 02/11/2026 09:52
+# 🗣️ Appello delle chiavi — 02/11/2026 13:01
 
 Chiavi provate: 62
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | 🟡 strano | 3169 | {"error":{"code":"content-blocked","message":"content-blocked (request id: 202611021651305 |
-| Agnes AI | ✅ risponde | 3220 | ha risposto davvero (agnes-2.5-flash) |
-| AI Horde (senza chiave) | 🟡 occupato adesso | 3312 | limite o credito finito adesso |
-| Aion Labs | 🔴 chiave rifiutata | 1508 | chiave rifiutata |
-| AnyAPI | 🔴 chiave rifiutata | 405 | chiave rifiutata (403) |
-| Api.Airforce | ✅ risponde | 1607 | ha risposto davvero (glm-4.7-flash) |
-| BazaarLink | ✅ risponde | 5088 | ha risposto davvero (auto:free) |
-| BlazeAPI | 🟡 occupato adesso | 18790 | limite o credito finito adesso |
-| BlockRun | 🟡 strano | 1256 | {"error":{"message":"Cannot price this request for /v1/chat/completions. Send a \"model\"  |
-| Chutes | 🟡 occupato adesso | 1886 | limite o credito finito adesso |
-| CLōD | ✅ risponde | 1988 | ha risposto davvero (Trinity Mini) |
-| Cloudflare Workers AI | ✅ risponde | 1154 | ha risposto davvero (@cf/meta/llama-3.3-70b-instruct-fp8-fast) |
-| Cohere | ✅ risponde | 1776 | ha risposto davvero (command-r-plus-08-2024) |
-| DreamPrompting | ✅ risponde | 4040 | ha risposto davvero (groq/openai/gpt-oss-20b) |
-| ElectronHub | 🔴 chiave rifiutata | 256 | chiave rifiutata (403) |
+| AgentRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
+| Agnes AI | ✅ risponde | 7933 | ha risposto davvero (agnes-3.0-flash) |
+| AI Horde (senza chiave) | 🟡 strano | 70230 | {"error":{"message":"The model 'koboldcpp/Gemma-4-E4B-it-Ultra-Uncensored-Heretic' is not  |
+| Aion Labs | 🔴 chiave rifiutata | 1495 | chiave rifiutata |
+| AnyAPI | ✅ risponde | 6982 | ha risposto davvero (nvidia/nemotron-3.5-lightning:free) |
+| Api.Airforce | 🟡 occupato adesso | 2858 | limite o credito finito adesso |
+| BazaarLink | ✅ risponde | 6379 | ha risposto davvero (deepseek/deepseek-v4-flash-0731free:free) |
+| BlazeAPI | ✅ risponde | 28863 | ha risposto davvero (free/claude-haiku-4.5) |
+| BlockRun | ✅ risponde | 2858 | ha risposto davvero (nvidia/nemotron-3-nano-omni-30b-a3b-reasoning) |
+| Chutes | 🟡 occupato adesso | 1562 | limite o credito finito adesso |
+| CLōD | ✅ risponde | 2933 | ha risposto davvero (Gemma 4 31B IT) |
+| Cloudflare Workers AI | ✅ risponde | 2147 | ha risposto davvero (@cf/qwen/qwen3.8-27b) |
+| Cohere | ✅ risponde | 2399 | ha risposto davvero (command-a-plus-05-2026) |
+| DreamPrompting | ✅ risponde | 7224 | ha risposto davvero (google/gemini-3.1-flash-lite) |
+| ElectronHub | ✅ risponde | 2932 | ha risposto davvero (qwen3.8-flash) |
 | fal.ai | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| FreeAI | ✅ risponde | 1816 | ha risposto davvero (qwen7b) |
-| Google AI Studio | ⚪ non raggiungibile | 46523 | non raggiungibile |
-| Gizmo | 🟡 strano | 2970 | {"error":{"message":"Model unavailable for API routing; check /api/v1/models","type":"api_ |
-| Groq | ✅ risponde | 1563 | ha risposto davvero (qwen/qwen3.8-27b) |
-| HuggingFace Router | 🟡 occupato adesso | 1024 | limite o credito finito adesso |
-| Inferbase | ✅ risponde | 3893 | ha risposto davvero (auto) |
-| Jina AI | 🟡 strano | 1470 | {"detail":"Validation error: 'body -> model' Input should be 'jina-ocr-v1'","request_id":" |
-| Kilo (senza chiave) | 🟡 strano | 1133 | {"error":{"code":"INVALID_TOKEN","message":"Your authentication token is invalid. Please s |
-| LLM7 | ✅ risponde | 1139 | ha risposto davvero (DeepSeek-V4-Flash-0731) |
-| LLMTR | ✅ risponde | 2380 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
-| Logfare | ✅ risponde | 10650 | ha risposto davvero (auto) |
-| LongCat | 🟡 strano | 1793 | {"error":{"code":"invalid_parameter","message":"Unsupported model (model=auto)","type":"in |
-| Lucidity | ✅ risponde | 1554 | ha risposto davvero (minimax/minimax-m3.1-flash:free) |
-| Mistral | ✅ risponde | 1391 | ha risposto davvero (ministral-8b-latest) |
-| Moondream | ✅ risponde | 2426 | ha risposto davvero (moondream/moondream3-preview) |
-| NaraRouter | 🟡 strano | 2772 | {"error":{"type":"not_found","message":"The requested model does not exist.","request_id": |
-| NavyAI | 🔴 chiave rifiutata | 845 | chiave rifiutata (403) |
-| Nscale | 🔴 chiave rifiutata | 343 | chiave rifiutata (401) |
-| NVIDIA | ✅ risponde | 2766 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
-| Ollama Cloud | ✅ risponde | 1766 | ha risposto davvero (gemma4:31b-cloud) |
-| OpenCode Zen | 🟡 strano | 1595 | {"error":{"type":"server_error","message":"Upstream request failed: Insufficient account f |
-| OpenRouter | ✅ risponde | 4462 | ha risposto davvero (openrouter/auto) |
-| OrcaRouter | ✅ risponde | 2539 | ha risposto davvero (orcarouter/free) |
-| OVH | 🔴 chiave rifiutata | 382 | chiave rifiutata (403) |
-| Plugsky | ✅ risponde | 3136 | ha risposto davvero (plugsky-micro) |
-| Pollinations | ✅ risponde | 853 | ha risposto davvero (openai-fast) |
-| Pollinations (senza chiave) | ✅ risponde | 2101 | ha risposto davvero (openai-fast) |
-| Pollinations (immagini, senza chiave) | 🟡 strano | 1479 | <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head |
-| Qdrant Cloud | ⚪ non raggiungibile | 1210 | non raggiungibile |
-| Requesty | 🟡 strano | 1077 | {"error":{"origin":"router","message":"Invalid model ID. See https://app.requesty.ai/model |
-| Router9 | 🟡 occupato adesso | 1343 | limite o credito finito adesso |
-| Routeway | 🔴 chiave rifiutata | 344 | chiave rifiutata (403) |
-| Sail | ✅ risponde | 2657 | ha risposto davvero (moonshotai/Kimi-K2.6) |
-| SeaLION | 🔴 chiave rifiutata | 3846 | chiave rifiutata |
-| Septor Labs | 🟡 occupato adesso | 11896 | limite o credito finito adesso |
-| SimpleLLM | ✅ risponde | 1352 | ha risposto davvero (free-Llama-3.1-8B-Instruct) |
-| Speechify | 🟡 strano | 1236 | {"error":{"code":"not_found","message":"The requested resource was not found."},"request_i |
-| Speka | ✅ risponde | 2768 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| FreeAI | ✅ risponde | 1756 | ha risposto davvero (qwen7b) |
+| Google AI Studio | 🟡 occupato adesso | 32252 | limite o credito finito adesso |
+| Gizmo | ✅ risponde | 6743 | ha risposto davvero (nvidia/nemotron-3.5-lightning:free) |
+| Groq | ✅ risponde | 3138 | ha risposto davvero (qwen/qwen3.8-27b) |
+| HuggingFace Router | 🟡 occupato adesso | 1190 | limite o credito finito adesso |
+| Inferbase | ✅ risponde | 4059 | ha risposto davvero (auto) |
+| Jina AI | 🟡 strano | 1339 | elenco modelli: risposta 404 |
+| Kilo (senza chiave) | ✅ risponde | 5541 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| LLM7 | ✅ risponde | 3560 | ha risposto davvero (default) |
+| LLMTR | ✅ risponde | 4215 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Logfare | ✅ risponde | 5201 | ha risposto davvero (gemma-4-26b) |
+| LongCat | 🟡 strano | 1967 | {"error":{"code":"invalid_parameter","message":"Unsupported model (model=auto)","type":"in |
+| Lucidity | ✅ risponde | 2451 | ha risposto davvero (minimax/minimax-m3.1-flash:free) |
+| Mistral | ✅ risponde | 2066 | ha risposto davvero (mistral-code-latest) |
+| Moondream | 🟡 strano | 724 | elenco modelli: risposta 404 |
+| NaraRouter | 🟡 strano | 8805 | {"error":{"type":"not_found","message":"The requested model does not exist.","request_id": |
+| NavyAI | 🟡 strano | 1381 | {"error":{"message":"The model 'navy-auto' does not exist or is not supported for chat com |
+| Nscale | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
+| NVIDIA | ✅ risponde | 3122 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Ollama Cloud | ✅ risponde | 1832 | ha risposto davvero (gemma4:31b-cloud) |
+| OpenCode Zen | 🟡 occupato adesso | 1762 | limite o credito finito adesso |
+| OpenRouter | ✅ risponde | 2848 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| OrcaRouter | ✅ risponde | 3085 | ha risposto davvero (orcarouter/free) |
+| OVH | ✅ risponde | 33163 | ha risposto davvero (Qwen3.6-27B) |
+| Plugsky | ✅ risponde | 3376 | ha risposto davvero (plugsky-micro) |
+| Pollinations | ✅ risponde | 1120 | ha risposto davvero (openai-fast) |
+| Pollinations (senza chiave) | ✅ risponde | 871 | ha risposto davvero (openai-fast) |
+| Pollinations (immagini, senza chiave) | ✅ risponde | 1107 | indirizzo valido (non e' un provider di chat) |
+| Qdrant Cloud | ✅ risponde | 974 | indirizzo valido (non e' un provider di chat) |
+| Requesty | ✅ risponde | 2237 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Router9 | ✅ risponde | 3191 | ha risposto davvero (deepseek/deepseek-v4-flash) |
+| Routeway | ✅ risponde | 17379 | ha risposto davvero (muse-glimmer-30b:free) |
+| Sail | ✅ risponde | 10209 | ha risposto davvero (moonshotai/Kimi-K2.6) |
+| SeaLION | ✅ risponde | 4873 | ha risposto davvero (aisingapore/Qwen-SEA-LION-v4.5-27B-IT) |
+| Septor Labs | ✅ risponde | 4383 | ha risposto davvero (minimax-m2.5-free) |
+| SimpleLLM | ✅ risponde | 1989 | ha risposto davvero (free-Llama-3.1-8B-Instruct) |
+| Speechify | 🟡 strano | 811 | elenco modelli: risposta 404 |
+| Speka | ✅ risponde | 4179 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
 | TeamoRouter | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Token Harbor | 🟡 strano | 1466 | {"error":{"message":"Model 'auto' is not available. Browse models at https://tokenharbor.a |
-| Typhoon | 🟡 strano | 1880 | {"detail":"Model not found"} |
-| UnoRouter | 🔴 chiave rifiutata | 273 | chiave rifiutata (403) |
-| Waterfall | 🔴 chiave rifiutata | 1005 | chiave rifiutata |
-| WaveSpeedAI | 🔴 chiave rifiutata | 1561 | chiave rifiutata |
-| xKiro | ✅ risponde | 3638 | ha risposto davvero (mistralai/ministral-14b) |
-| Zhipu | 🟡 strano | 1509 | {"error":{"code":"1211","message":"模型不存在，请检查模型代码。"}} |
+| Token Harbor | ✅ risponde | 3801 | ha risposto davvero (deepseek-v4-flash:free) |
+| Typhoon | ✅ risponde | 2180 | ha risposto davvero (typhoon-v2.5-30b-a3b-instruct) |
+| UnoRouter | 🟡 occupato adesso | 1119 | limite o credito finito adesso |
+| Waterfall | 🔴 chiave rifiutata | 1189 | chiave rifiutata |
+| WaveSpeedAI | 🟡 strano | 806 | elenco modelli: risposta 404 |
+| xKiro | ✅ risponde | 7447 | ha risposto davvero (qwen/qwen3.8-max:free) |
+| Zhipu | 🟡 occupato adesso | 14736 | limite o credito finito adesso |
