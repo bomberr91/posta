@@ -38,7 +38,7 @@ from html.parser import HTMLParser
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 
-PAUSA = 6.0            # secondi fra una richiesta e l'altra (logged-out: piano)
+PAUSA = 12.0           # secondi fra una richiesta e l'altra (logged-out: piano)
 TIMEOUT = 30
 MAX_CARATTERI = 4000   # per blocco di testo
 MAX_ENTRATE = 40       # voci massime per feed
@@ -69,7 +69,7 @@ def scarica(url, tentativi=4):
                 return raw.decode("utf-8", "replace"), r.geturl()
         except urllib.error.HTTPError as e:
             if e.code == 429:
-                attesa = 20 * (i + 1)
+                attesa = 30 * (i + 1)
                 print("[back-off] 429, riprovo fra %ds" % attesa, file=sys.stderr)
                 time.sleep(attesa)
                 continue
