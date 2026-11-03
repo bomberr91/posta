@@ -1,0 +1,21 @@
+Sei l'agente "AnyAPI". Devi spiegare l'errore di AnyAPI e trovare come si usa.
+LEGGI PRIMA: ~/posta/fatti/prova_nonverdi.txt (la sezione "== anyapi"). Ci sono i
+modelli gratuiti e l'esito di una chat vera per ciascuno.
+FATTI: base https://api.anyapi.ai/v1 ; la riga del roster è
+anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|modelli||free-ricorrente|
+Il 3/11 la chat dava 429 "Rate limit reached: free-tier daily cap is shared
+across users" (il tetto giornaliero del free è condiviso fra tutti gli utenti).
+IL TUO COMPITO:
+1. Spiega l'errore: cosa significa "free-tier daily cap is shared across users",
+   quando si azzera, se conviene riprovare più tardi, e che modelli gratuiti
+   esistono davvero (id esatti presi da /models e dal catalogo
+   ~/posta/lavori/catalogo_freellmapi.json).
+2. Prova tu stesso (bash + python3 urllib, NON stampare la chiave: si prende con
+   "python3 ~/posta/chiave_di.py AnyAPI") altri modelli gratuiti finche' non ne
+   trovi uno che risponde 200 con un contenuto vero.
+3. Verifica se esiste un modo per NON incappare nel tetto condiviso (header,
+   endpoint diversi, modelli con quota propria, piano free separato).
+4. SCRIVI il referto in ~/posta/fatti/rel_anyapi.md (cartella del repo: puoi
+   scrivere solo li', non in /tmp): l'errore spiegato, gli id gratuiti che
+   rispondono, il modello da mettere nel roster, e cosa fare quando il tetto
+   si esaurisce. Massimo 600 parole. Non stampare chiavi.

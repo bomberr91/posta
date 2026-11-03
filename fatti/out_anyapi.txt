@@ -1,0 +1,4 @@
+[91m[1mError: [0mUnexpected error
+
+locking protocol
+(agente anyapi non riuscito)

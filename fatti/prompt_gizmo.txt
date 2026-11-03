@@ -1,0 +1,22 @@
+Sei l'agente "Gizmo". Devi spiegare l'errore di Gizmo e trovare come si usa.
+LEGGI PRIMA: ~/posta/fatti/prova_nonverdi.txt (la sezione "== gizmo"). Ci sono i
+modelli gratuiti e l'esito di una chat vera per ciascuno.
+FATTI: base https://api.gizmoplatforms.com/api/v1 ; la riga del roster è
+gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat||free-ricorrente|
+Il 3/11 la chat dava 429 "Every provider for nvidia/nemotron-3.5-lightning:free
+failed: openrouter 429 (Nothing was charged; try again shortly)" e /models
+rispondeva 200. I modelli gratuiti su Gizmo finiscono con ":free".
+IL TUO COMPITO:
+1. Spiega l'errore: Gizmo e' un router che a sua volta chiama altri provider
+   (openrouter, groq...): quale catena e' scesa e perche'. Cosa significa che
+   "non e' stato addebitato niente" e in che momento conviene riprovare.
+2. Trova i modelli gratuiti di Gizmo che rispondono davvero con un contenuto:
+   prova con bash + python3 urllib (chiave con "python3 ~/posta/chiave_di.py
+   Gizmo", non stamparla), sia con id ":free" sia con id di altri provider che
+   Gizmo ruota (tipo "groq/...", "openrouter/...", "mistral/...").
+3. Verifica se conviene un altro endpoint (es. /api/v1/chat/completions vs
+   altre strade) o un altro UA.
+4. SCRIVI il referto in ~/posta/fatti/rel_gizmo.md (cartella del repo: puoi
+   scrivere solo li', non in /tmp): l'errore spiegato, gli id che funzionano, il
+   modello da mettere nel roster e quando riprovare. Massimo 600 parole. Non
+   stampare chiavi.

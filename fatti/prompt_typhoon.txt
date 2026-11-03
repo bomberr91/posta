@@ -1,0 +1,18 @@
+Sei l'agente "Typhoon". Devi spiegare perché Typhoon era segnato "strano" e
+confermare che è usabile.
+LEGGI PRIMA: ~/posta/fatti/prova_nonverdi.txt (la sezione "== typhoon").
+FATTI: base https://api.opentyphoon.ai/v1 ; la riga del roster è
+typhoon|Typhoon|Typhoon|https://api.opentyphoon.ai/v1|typhoon-v2.5-30b-a3b-instruct|modelli||free-ricorrente|
+Il 3/11 la chat vera su typhoon-v2.5-30b-a3b-instruct ha risposto 200 "OK", ma
+all'appello del 2/11 risultava "strano" (l'elenco modelli non rispondeva 200) e la
+riga era in modo "modelli" (cioè il portiere non le faceva mai una domanda).
+IL TUO COMPITO:
+1. Spiega la differenza fra "elenco modelli" e "chat vera": perché il primo può
+   fallire mentre il secondo funziona, e perché il roster adesso è in modo chat.
+2. Verifica con una chat vera (bash + python3 urllib, chiave con
+   "python3 ~/posta/chiave_di.py Typhoon", non stamparla) altri modelli
+   gratuiti di Typhoon, e se ci sono limiti (richieste al minuto, quota).
+3. Dì se Typhoon è pronto per entrare nella riserva del Portiere come chat di
+   scorta e con quale modello.
+4. SCRIVI il referto in ~/posta/fatti/rel_typhoon.md (cartella del repo: puoi
+   scrivere solo li', non in /tmp). Massimo 500 parole. Non stampare chiavi.
