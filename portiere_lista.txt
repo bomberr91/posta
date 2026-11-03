@@ -48,6 +48,7 @@ speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||fr
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|Qwen/Qwen3-4B-Instruct-2507|chat||free-ricorrente|Qwen/Qwen3-8B;meta-llama/Llama-3.1-8B-Instruct;Qwen/Qwen3-4B-Thinking-2507|
 ovh|OVH|SENZA|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|Mistral-Nemo-Instruct-2407|modelli||keyless|gpt-oss-120b;Meta-Llama-3_3-70B-Instruct;Qwen3.5-397B-A17B;gpt-oss-20b|none
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli||free-ricorrente||
+aihorde|AI Horde|AI Horde|https://oai.aihorde.net/v1|koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic|chat||free-ricorrente|koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic;koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic||
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat||keyless||none
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
@@ -60,7 +61,7 @@ electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli
 inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli||free-ricorrente||
 blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|modelli||free-ricorrente||
 sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat||free-ricorrente||
-anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|modelli||free-ricorrente||
+anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat||free-ricorrente|google/gemma-4-26b-a4b-it:free;nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;nvidia/nemotron-3-ultra-550b-a55b:free;recursive/flint-v1.0:free;dots-studio/dots-3-note-preview:free;xingchen-agi/xing4.0-29b-a4b:free|
 kilo|Kilo (senza chiave)|SENZA|https://api.kilo.ai/api/gateway/v1|liquid/lfm-2.5-2.6b:free|modelli||keyless|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;openrouter/free;kilo-auto/free|none
 cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat||free-ricorrente||
 #   Cloudflare: la chiave nel registro è «account_id:token», e il router ricava l'indirizzo da lì
@@ -81,7 +82,7 @@ cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/m
 agnes|Agnes AI|Agnes AI|https://apihub.agnes-ai.com/v1|agnes-2.5-flash|chat||free-ricorrente||
 xkiro|xKiro|xKiro|https://api.xkiro.com/v1|mistralai/ministral-14b|chat||free-ricorrente||
 dreamprompting|DreamPrompting|DreamPrompting|https://dreamprompting.com/api/v1|groq/openai/gpt-oss-20b|chat||free-ricorrente||
-gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|nvidia/nemotron-3.5-lightning:free|chat||free-ricorrente||
+gizmo|Gizmo|Gizmo|https://api.gizmoplatforms.com/api/v1|xingchen-agi/xing4.0-29b-a4b:free|chat||free-ricorrente|nvidia/nemotron-3.5-lightning:free;nvidia/nemotron-3-ultra-550b-a55b:free|
 
 # ── NON CHAT (restano chiavi nostre: immagini, video, voce, memoria) ────────
 speechify|Speechify|Speechify|https://api.speechify.ai/v1|—|no|voce|free-ricorrente||

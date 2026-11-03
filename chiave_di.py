@@ -21,6 +21,7 @@ FORMATI = [
     r"sk-speka-[A-Za-z0-9_-]+",
     r"gsk_[A-Za-z0-9_-]+",
     r"AQ\.[A-Za-z0-9_.-]{20,}",
+    r"AQ[A-Za-z0-9]{10,}[A-Za-z0-9_-]{4,}",  # 3/11: AI Horde, chiave «AQ...» SENZA il punto
     r"nvapi-[A-Za-z0-9_-]+",
     r"mstrl_[A-Za-z0-9_-]+",
     r"hf_[A-Za-z0-9]{20,}",

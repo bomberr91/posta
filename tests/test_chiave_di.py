@@ -47,5 +47,23 @@ class TestChiaveDi(unittest.TestCase):
         self.assertEqual(out, CHIAVE)
 
 
+class TestChiaveAiHorde(unittest.TestCase):
+    """3/11: la chiave di AI Horde e' «AQ...» SENZA il punto: senza questo
+    formato l'estrattore non la trovava e il provider sembrava morto."""
+
+    RIGA = "3. **AI Horde** — AQYPvI1ilb9rAz0Gg8-WmA — https://oai.aihorde.net/v1"
+
+    def test_ai_horde(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as f:
+            f.write(self.RIGA + "\n")
+            percorso = f.name
+        try:
+            out = subprocess.run([sys.executable, CHIAVE_DI, "AI Horde"], capture_output=True, text=True,
+                                 env={**os.environ, "CHIAVI_FILE": percorso}).stdout.strip()
+        finally:
+            os.unlink(percorso)
+        self.assertEqual(out, "AQYPvI1ilb9rAz0Gg8-WmA")
+
+
 if __name__ == "__main__":
     unittest.main()
