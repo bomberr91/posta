@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 """Lettore di discussioni Reddit pubbliche, SENZA credenziali.
 
-Perche' esiste: la Data API di Reddit richiede approvazione (ticket in attesa),
-ma le pagine pubbliche si possono leggere normalmente dal PC (IP residenziale).
-Il canale che funziona oggi e' questo; quando arriva l'approvazione si puo'
-passare al client OAuth ufficiale (reddit_search.py nel repo pubblico).
+Perche' esiste: la Data API di Reddit richiede approvazione (ticket NNJ0GP-27J47
+in attesa), ma le pagine pubbliche si leggono normalmente dal PC (IP residenziale):
+old.reddit.com risponde in HTML pieno, www.reddit.com invece manda solo il guscio
+JavaScript e non serve a nulla.
 
-Niente login, niente cookie, niente account: solo pagine pubbliche, con un
-User-Agent descrittivo, a 1 richiesta al secondo con back-off sul 429.
+Niente login, niente cookie, niente account: solo pagine pubbliche, User-Agent
+descrittivo, 1 richiesta al secondo con back-off sul 429.
 
 Uso:
   python3 ~/posta/fatti/reddit_leggi.py --q "free llm api" --max 5
-  python3 ~/posta/fatti/reddit_leggi.py --url "https://old.reddit.com/r/X/comments/..."
-  python3 ~/posta/fatti/reddit_leggi.py --q "..." --max 3 --out ~/reddit_due.txt
+  python3 ~/posta/fatti/reddit_leggi.py --q "..." --max 3 --commenti
+  python3 ~/posta/fatti/reddit_leggi.py --url "https://www.reddit.com/r/X/comments/..."
+  python3 ~/posta/fatti/reddit_leggi.py --urls "url1,url2"
+  python3 ~/posta/fatti/reddit_leggi.py --urls-file ~/link.txt
   python3 ~/posta/fatti/reddit_leggi.py --file /tmp/pagina.html      (prova offline)
+
+La ricerca usa, in ordine: Tavily (se la chiave c'e'), poi la scansione delle
+liste dei subreddit (nessuna chiave richiesta), poi la ricerca di old.reddit.com.
 """
 import argparse
 import gzip
 import html as htmllib
+import json
 import os
 import re
 import sys
@@ -30,15 +36,20 @@ from html.parser import HTMLParser
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 
-PAUSA = 1.5          # secondi fra una richiesta e l'altra
+PAUSA = 1.5           # secondi fra una richiesta e l'altra
 TIMEOUT = 25
-MAX_CARATTERI = 4000  # per commento
+MAX_CARATTERI = 4000  # per blocco di testo
+
+SUBS_PREDEFINITI = ["LLM", "LocalLLaMA", "GeminiAI", "ClaudeAI",
+                    "openclaw", "MachineLearning", "ChatGPTCoding"]
 
 
 def spiega_403():
     return ("HTTP 403: Reddit ha bloccato questo IP (WAF). Da un IP residenziale "
-            "come il PC normalmente va; se arrivi qui, prova dal PC e non dal sandbox.")
+            "come il PC di solito passa; se arrivi qui, stai provando dal sandbox.")
 
+
+# ----------------------------------------------------------------- rete
 
 def scarica(url, tentativi=3):
     """Scarica una pagina e restituisce (html, url_effettivo)."""
@@ -63,7 +74,7 @@ def scarica(url, tentativi=3):
                 continue
             if e.code == 403:
                 raise RuntimeError(spiega_403())
-            if e.code in (503, 502, 500) and i < tentativi - 1:
+            if e.code in (500, 502, 503) and i < tentativi - 1:
                 time.sleep(3)
                 continue
             raise RuntimeError("HTTP %s (%s)" % (e.code, e.reason))
@@ -74,6 +85,24 @@ def scarica(url, tentativi=3):
             raise RuntimeError("%s: %s" % (type(e).__name__, str(e)[:120]))
     raise RuntimeError("nessuna risposta")
 
+
+def chiave_tavily():
+    for k in ("TAVILY_API_KEY", "TVLY_API_KEY"):
+        v = os.environ.get(k)
+        if v:
+            return v.strip()
+    p = os.path.expanduser("~/.tavily/config.json")
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+        v = d.get("api_key") or d.get("apiKey") or d.get("key")
+        if v:
+            return str(v).strip()
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
+# ----------------------------------------------------------------- parser
 
 class RedditParser(HTMLParser):
     """Estrae: titoli/link, blocchi di testo (post + commenti) e autori."""
@@ -102,11 +131,8 @@ class RedditParser(HTMLParser):
             if "author" in cls:
                 self._cattura = "author"
                 self._buffer = []
-            elif "search-link" in cls or "search-title" in cls:
-                self._cattura = "title"
-                self._buffer = []
-                self._buf_link = d.get("href")
-            elif "title" in cls and "may-blank" in cls:
+            elif "search-link" in cls or "search-title" in cls or \
+                    ("title" in cls and "may-blank" in cls):
                 self._cattura = "title"
                 self._buffer = []
                 self._buf_link = d.get("href")
@@ -125,9 +151,8 @@ class RedditParser(HTMLParser):
         if tag == "a" and self._cattura in ("author", "title"):
             if self._cattura == "author" and testo:
                 self._autore = testo
-            elif self._cattura == "title" and testo:
-                if self._buf_link:
-                    self.titoli.append((self._buf_link, testo))
+            elif self._cattura == "title" and testo and self._buf_link:
+                self.titoli.append((self._buf_link, testo))
             self._cattura = None
             self._buffer = []
             self._buf_link = None
@@ -150,55 +175,112 @@ def normalizza(href):
         return ""
     if href.startswith("//"):
         return "https:" + href
+    if href.startswith("/"):
+        return "https://old.reddit.com" + href
     return href
 
 
-def cerca(query, max_risultati=5, sott=""):
-    q = urllib.parse.quote_plus(query)
-    if sott:
-        url = "https://old.reddit.com/r/%s/search?q=%s&sort=relevance&t=all" % (
-            urllib.parse.quote(sott), q)
-    else:
-        url = "https://old.reddit.com/search?q=%s&sort=relevance&t=all" % q
-    testo, _ = scarica(url)
-    p = RedditParser()
-    p.feed(testo)
-    risultati = []
-    for href, titolo in p.titoli:
-        u = normalizza(href)
+def in_old(url):
+    """www.reddit.com -> old.reddit.com (solo HTML pieno, niente guscio JS)."""
+    return url.replace("https://www.reddit.com", "https://old.reddit.com")
+
+
+# ----------------------------------------------------------------- ricerca
+
+def cerca_tavily(query, max_risultati=5):
+    chiave = chiave_tavily()
+    if not chiave:
+        return None
+    corpo = json.dumps({
+        "query": query,
+        "include_domains": ["reddit.com"],
+        "max_results": max(max_risultati * 2, 5),
+        "search_depth": "advanced",
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        "https://api.tavily.com/search", data=corpo,
+        headers={"Authorization": "Bearer " + chiave,
+                 "Content-Type": "application/json",
+                 "User-Agent": UA})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            d = json.loads(r.read().decode("utf-8", "replace"))
+    except Exception as e:  # noqa: BLE001
+        print("[tavily] fallita: %s" % str(e)[:100], file=sys.stderr)
+        return None
+    out = []
+    for r in d.get("results", []) or []:
+        u = r.get("url") or ""
         if "/comments/" not in u:
             continue
-        if any(u == r[0] for r in risultati):
-            continue
-        risultati.append((u, titolo))
-        if len(risultati) >= max_risultati:
+        out.append((in_old(u), (r.get("title") or "").strip()))
+        if len(out) >= max_risultati:
             break
-    if not risultati:
-        # riprova con l'URL "r/all" (a volte /search non restituisce risultati)
-        try:
-            testo2, _ = scarica("https://old.reddit.com/r/all/search?q=%s&sort=relevance&t=all" % q)
-            p2 = RedditParser()
-            p2.feed(testo2)
-            for href, titolo in p2.titoli:
-                u = normalizza(href)
-                if "/comments/" in u and not any(u == r[0] for r in risultati):
-                    risultati.append((u, titolo))
-                if len(risultati) >= max_risultati:
-                    break
-        except RuntimeError:
-            pass
-    if not risultati:
-        # fallback: link grezzi che contengono /comments/
-        for m in re.finditer(r'href="(https?://[^"]*?/comments/[^"]+)"', testo):
-            u = htmllib.unescape(m.group(1))
-            if not any(u == r[0] for r in risultati):
-                risultati.append((u, ""))
-            if len(risultati) >= max_risultati:
-                break
-    return risultati
+    return out
 
+
+def cerca_subreddit(query, max_risultati=5, subs=None, per_pagina=25):
+    """Scansiona le liste (nuovi/piu' votati) dei subreddit: nessuna chiave."""
+    parole = [p for p in re.split(r"\W+", query.lower()) if len(p) > 2]
+    subs = subs or SUBS_PREDEFINITI
+    trovati = []
+    for sub in subs:
+        for pagina in ("new", "top?t=month"):
+            url = "https://old.reddit.com/r/%s/%s/" % (urllib.parse.quote(sub), pagina)
+            try:
+                testo, _ = scarica(url)
+            except RuntimeError as e:
+                print("[%s] non leggibile: %s" % (sub, str(e)[:60]), file=sys.stderr)
+                break
+            p = RedditParser()
+            p.feed(testo)
+            for href, titolo in p.titoli:
+                u = normalizza(href)
+                if "/comments/" not in u:
+                    continue
+                t = titolo.lower()
+                if parole and not any(w in t for w in parole):
+                    continue
+                u = in_old(u)
+                if any(u == x[0] for x in trovati):
+                    continue
+                trovati.append((u, titolo))
+                if len(trovati) >= max_risultati:
+                    return trovati
+            time.sleep(PAUSA)
+    return trovati
+
+
+def cerca_old(query, max_risultati=5):
+    q = urllib.parse.quote_plus(query)
+    for url in ("https://old.reddit.com/search?q=%s&sort=relevance&t=all" % q,
+                "https://old.reddit.com/r/all/search?q=%s&sort=relevance&t=all" % q):
+        try:
+            testo, _ = scarica(url)
+        except RuntimeError:
+            continue
+        p = RedditParser()
+        p.feed(testo)
+        out = []
+        for href, titolo in p.titoli:
+            u = in_old(normalizza(href))
+            if "/comments/" in u and not any(u == x[0] for x in out):
+                out.append((u, titolo))
+            if len(out) >= max_risultati:
+                return out
+        for m in re.finditer(r'href="(https?://[^"]*?/comments/[^"]+)"', testo):
+            u = in_old(htmllib.unescape(m.group(1)))
+            if not any(u == x[0] for x in out):
+                out.append((u, ""))
+            if len(out) >= max_risultati:
+                return out
+    return []
+
+
+# ----------------------------------------------------------------- lettura
 
 def leggi(url):
+    url = in_old(url)
     testo, effettivo = scarica(url)
     p = RedditParser()
     p.feed(testo)
@@ -206,15 +288,14 @@ def leggi(url):
     m = re.search(r"<title>(.*?)</title>", testo, re.S | re.I)
     if m:
         titolo_pagina = " ".join(htmllib.unescape(m.group(1)).split())
-    out = []
-    out.append("URL: %s" % effettivo)
+    out = ["URL: %s" % effettivo]
     if titolo_pagina:
         out.append("PAGINA: %s" % titolo_pagina)
     if p.titoli:
         out.append("TITOLO: %s" % p.titoli[0][1])
     blocchi = p.blocchi
     if blocchi:
-        autore, corpo = blocchi[0]
+        _, corpo = blocchi[0]
         out.append("")
         out.append("--- POST ---")
         out.append(corpo[:MAX_CARATTERI])
@@ -222,10 +303,9 @@ def leggi(url):
             out.append("")
             out.append("--- COMMENTI (%d) ---" % (len(blocchi) - 1))
             for i, (a, t) in enumerate(blocchi[1:], 1):
-                t = t[:MAX_CARATTERI]
-                out.append("[%d] %s: %s" % (i, a or "?", t))
+                out.append("[%d] %s: %s" % (i, a or "?", t[:MAX_CARATTERI]))
     else:
-        out.append("(nessun testo estratto: la pagina potrebbe essere la versione JS)")
+        out.append("(nessun testo estratto: pagina vuota o versione JS)")
     return "\n".join(out)
 
 
@@ -233,46 +313,77 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--q", help="domanda di ricerca")
     ap.add_argument("--url", help="link diretto a una discussione")
+    ap.add_argument("--urls", help="lista di link separati da virgola")
+    ap.add_argument("--urls-file", help="file con un link per riga")
     ap.add_argument("--file", help="legge un HTML locale invece di scaricare")
-    ap.add_argument("--sub", help="cerca dentro un subreddit specifico")
+    ap.add_argument("--sub", help="subreddit da scansionare (comma separati)")
     ap.add_argument("--max", type=int, default=5, help="quante discussioni (default 5)")
-    ap.add_argument("--commenti", action="store_true",
-                    help="leggi anche i commenti delle discussioni trovate")
+    ap.add_argument("--commenti", action="store_true", help="leggi i commenti")
     ap.add_argument("--out", help="salva il testo su file")
+    ap.add_argument("--no-tavily", action="store_true", help="salta Tavily")
+    ap.add_argument("--max-righe", type=int, default=0,
+                    help="taglia l'output a N righe (0 = tutto)")
     args = ap.parse_args()
 
     testo_out = []
 
     if args.file:
-        testo = open(args.file, encoding="utf-8", errors="replace").read()
+        t = open(args.file, encoding="utf-8", errors="replace").read()
         p = RedditParser()
-        p.feed(testo)
-        for a, t in p.blocchi:
-            testo_out.append("[%s] %s" % (a or "?", t[:MAX_CARATTERI]))
-    elif args.url:
-        testo_out.append(leggi(args.url))
-    elif args.q:
-        risultati = cerca(args.q, args.max, args.sub)
-        if not risultati:
-            print("nessun risultato (o pagina bloccata)")
-            return 1
-        testo_out.append("RISULTATI per: %s" % args.q)
-        for i, (u, t) in enumerate(risultati, 1):
-            testo_out.append("%d. %s" % (i, t or "(senza titolo)"))
-            testo_out.append("   %s" % u)
-        if args.commenti:
-            for u, t in risultati:
-                testo_out.append("")
-                try:
-                    testo_out.append(leggi(u))
-                except RuntimeError as e:
-                    testo_out.append("(lettura fallita: %s)" % e)
-                time.sleep(PAUSA)
+        p.feed(t)
+        for a, corpo in p.blocchi:
+            testo_out.append("[%s] %s" % (a or "?", corpo[:MAX_CARATTERI]))
     else:
-        ap.print_help()
-        return 2
+        link_da_leggere = []
+        if args.url:
+            link_da_leggere.append(args.url)
+        if args.urls:
+            link_da_leggere += [u.strip() for u in args.urls.split(",") if u.strip()]
+        if args.urls_file:
+            link_da_leggere += [l.strip() for l in
+                                open(os.path.expanduser(args.urls_file), encoding="utf-8")
+                                if l.strip()]
+
+        if args.q:
+            risultati = None
+            if not args.no_tavily:
+                risultati = cerca_tavily(args.q, args.max)
+                if risultati:
+                    testo_out.append("[ricerca: Tavily]")
+            if risultati is None:
+                subs = [s.strip() for s in args.sub.split(",")] if args.sub else None
+                risultati = cerca_subreddit(args.q, args.max, subs)
+                if risultati:
+                    testo_out.append("[ricerca: liste subreddit, senza chiave]")
+            if not risultati:
+                risultati = cerca_old(args.q, args.max)
+                if risultati:
+                    testo_out.append("[ricerca: old.reddit.com]")
+            if not risultati:
+                print("nessun risultato (o pagina bloccata)")
+                return 1
+            testo_out.append("RISULTATI per: %s" % args.q)
+            for i, (u, t) in enumerate(risultati, 1):
+                testo_out.append("%d. %s" % (i, t or "(senza titolo)"))
+                testo_out.append("   %s" % u)
+            if args.commenti:
+                link_da_leggere += [u for u, _ in risultati]
+            elif not link_da_leggere:
+                return 0
+
+        for u in link_da_leggere:
+            testo_out.append("")
+            try:
+                testo_out.append(leggi(u))
+            except RuntimeError as e:
+                testo_out.append("(lettura fallita: %s)" % e)
+            time.sleep(PAUSA)
 
     testo = "\n".join(testo_out)
+    if args.max_righe and args.max_righe > 0:
+        righe = testo.splitlines()
+        if len(righe) > args.max_righe:
+            testo = "\n".join(righe[:args.max_righe]) + "\n[...tagliato a %d righe]" % args.max_righe
     print(testo)
     if args.out:
         with open(os.path.expanduser(args.out), "w", encoding="utf-8") as f:
