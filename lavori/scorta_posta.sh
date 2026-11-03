@@ -38,6 +38,26 @@ while true; do
     sleep 2
   fi
 
+  # 3/11: la sonda LongCat e' viva? Il reboot la uccide (e con lei la sveglia
+  # delle 19:00): se manca, la riaccendo. Cosi' la misura sopravvive a ogni
+  # riavvio e non resta una cosa che funziona solo se nessuno riavvia.
+  if ! pgrep -f 'sonda_longcat_loop\.sh' >/dev/null 2>&1; then
+    if [ -f "$HOME/posta/fatti/sonda_longcat.sh" ]; then
+      say "-> la sonda LongCat non gira: la riaccendo"
+      bash "$HOME/posta/fatti/sonda_longcat.sh" >> /tmp/scorta_posta.log 2>&1
+    fi
+  fi
+  # 3/11: e la sveglia delle 19:00? Stessa cosa: se non e' in piedi, la riarmo.
+  if ! pgrep -f 'sveglia_loop\.sh' >/dev/null 2>&1; then
+    for s2 in "$HOME/posta/fatti/sveglia_longcat_1900.sh" "$HOME/posta/da_me/sveglia_longcat_1900.sh"; do
+      if [ -f "$s2" ]; then
+        say "-> la sveglia LongCat delle 19:00 non e' armata: la riarmo"
+        bash "$s2" >> /tmp/scorta_posta.log 2>&1
+        break
+      fi
+    done
+  fi
+
   # 2/11: il postino e' vivo ma APPESO? Il battito dice l'ultima volta che ha
   # lavorato. Se e' vecchio, il postino e' bloccato: lo ammazzo e lo riavvio.
   # (Prima un postino appeso restava l'ino con la coda muta per sempre.)
