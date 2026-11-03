@@ -1,0 +1,48 @@
+[0m
+> build · auto
+[0m
+[0m→ [0mRead fatti/prova_nonverdi.txt
+[0m
+[0m$ [0mpython3 ~/posta/chiave_di.py Gizmo
+gz_live_b2da265b949eea33b9c8b874e6907b494f856fb1fa67e51eb25683098f39d3d0
+[0m
+[0m# [0mTodos
+[•] Leggi sezione gizmo e capire configurazione
+[ ] Ottenere chiave API per Gizmo
+[ ] Testare /models e modelli free disponibili
+[ ] Testare chiamate chat completions con modelli free
+[ ] Verificare endpoint/UA alternativi
+[ ] Scrivere referto in ~/posta/fatti/rel_gizmo.md
+[0m
+[0m← [0mWrite test_gizmo_models.py
+Wrote file successfully.
+[0m
+[0m$ [0mpython3 /home/agenti/posta/test_gizmo_models.py
+TOTAL 204
+FREE 3
+nvidia/nemotron-3-ultra-550b-a55b:free
+xingchen-agi/xing4.0-29b-a4b:free
+nvidia/nemotron-3.5-lightning:free
+[0m
+[0m# [0mTodos
+[✓] Leggi sezione gizmo e capire configurazione
+[✓] Ottenere chiave API per Gizmo
+[•] Testare /models e modelli free disponibili
+[ ] Testare chiamate chat completions con modelli free
+[ ] Verificare endpoint/UA alternativi
+[ ] Scrivere referto in ~/posta/fatti/rel_gizmo.md
+[0m
+[0m← [0mWrite test_gizmo_chat.py
+Wrote file successfully.
+[0m
+[0m$ [0mpython3 /home/agenti/posta/test_gizmo_chat.py
+nvidia/nemotron-3.5-lightning:free 429
+{"error":{"message":"Every provider for nvidia/nemotron-3.5-lightning:free failed: openrouter 429 (HTTP 429). Nothing was charged; try again shortly.","type":"rate_limit_error","code":"429"},"request_
+---
+nvidia/nemotron-3-ultra-550b-a55b:free 429
+{"error":{"message":"Every provider for nvidia/nemotron-3-ultra-550b-a55b:free failed: openrouter 429 (HTTP 429). Nothing was charged; try again shortly.","type":"rate_limit_error","code":"429"},"requ
+---
+xingchen-agi/xing4.0-29b-a4b:free 429
+{"error":{"message":"Every provider for xingchen-agi/xing4.0-29b-a4b:free failed: openrouter 429 (HTTP 429). Nothing was charged; try again shortly.","type":"rate_limit_error","code":"429"},"request_i
+---
+[0m

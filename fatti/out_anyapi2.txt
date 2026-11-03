@@ -1,0 +1,2150 @@
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcat ~/posta/fatti/prova_nonverdi.txt
+(no output)
+[0m
+[0m$ [0mls -la ~/posta ~/posta/fatti ~/posta/lavori 2>/dev/null
+/home/agenti/posta:
+total 1844
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:39 .
+drwxr-x--- 1 agenti agenti    4096 Nov  3 14:44 ..
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 .git
+-rw-r--r-- 1 agenti agenti     165 Nov  1 18:21 .gitignore
+-rw-r--r-- 1 agenti agenti      10 Oct 27 15:20 .padrone
+drwxr-xr-x 1 agenti agenti    4096 Oct 27 15:20 00_INSTALLA_AGENTI
+-rw-r--r-- 1 agenti agenti    1116 Oct 27 15:20 6_BROWSER_AGENTI.bat
+-rw-r--r-- 1 agenti agenti     133 Oct 27 15:20 7_SQUADRA_FUSION.bat
+-rw-r--r-- 1 agenti agenti     286 Oct 29 09:40 8_CENTRALE_GUI.bat
+-rw-r--r-- 1 agenti agenti    1897 Oct 27 15:20 APRI_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti     892 Oct 27 15:20 CENTRALE_AGENTI.bat
+-rw-r--r-- 1 agenti agenti    2376 Oct 27 15:20 CONFIGURA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    8674 Oct 27 15:20 GUIDA_OPENCLAW.md
+-rw-r--r-- 1 agenti agenti    2354 Oct 27 15:20 INDICE_CARTELLE.md
+-rw-r--r-- 1 agenti agenti   11563 Oct 27 15:20 INSTALLA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    3770 Oct 27 15:20 RAPPORTO_AGENTI.txt
+-rw-r--r-- 1 agenti agenti      49 Oct 27 15:20 README.md
+drwxr-xr-x 1 agenti agenti    4096 Nov  2 10:48 RISPOSTE_AGENTI
+drwxr-xr-x 1 agenti agenti    4096 Nov  2 12:59 __pycache__
+-rw-r--r-- 1 agenti agenti    6179 Oct 27 15:20 agenti_stato.sh
+-rwxr-xr-x 1 agenti agenti   13517 Nov  2 12:59 aggiorna_tutto.sh
+-rw-r--r-- 1 agenti agenti   19872 Nov  3 17:05 appello_chiavi.sh
+-rwxr-xr-x 1 agenti agenti    3256 Oct 28 17:12 apri_free_llm_hub.sh
+-rwxr-xr-x 1 agenti agenti    4071 Oct 27 15:20 apri_openclaw.sh
+-rwxr-xr-x 1 agenti agenti   12053 Nov  2 12:59 centrale.sh
+-rw-r--r-- 1 agenti agenti  103746 Nov  1 23:23 cervello.py
+-rw-r--r-- 1 agenti agenti   22489 Oct 27 15:20 checkin_agentrouter.py
+-rw-r--r-- 1 agenti agenti    1573 Oct 27 15:20 checkin_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    4439 Nov  3 17:20 chiave_di.py
+-rw-r--r-- 1 agenti agenti    4531 Oct 27 15:20 chiavi_env.sh
+-rw-r--r-- 1 agenti agenti    6493 Oct 31 18:53 compressione.py
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 da_me
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 dal_pc
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 fatti
+drwxr-xr-x 1 agenti agenti    4096 Oct 28 17:12 free-llm-hub
+-rw-r--r-- 1 agenti agenti   17736 Oct 27 15:20 fusion_engine.py
+-rw-r--r-- 1 agenti agenti    5246 Nov  1 18:21 gate_pubblicazione.py
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 20:43 gui
+-rw-r--r-- 1 agenti agenti   11389 Nov  2 12:59 installa_agenti.sh
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 lavori
+-rw-r--r-- 1 agenti agenti    6154 Oct 27 15:20 leggi_discord.py
+-rw-r--r-- 1 agenti agenti    6619 Oct 27 15:20 leggi_fb_cdp.mjs
+-rw-r--r-- 1 agenti agenti    9080 Oct 27 15:20 leggi_fb_cdp.py
+-rwxr-xr-x 1 agenti agenti    6871 Oct 27 15:20 leggi_video.py
+-rwxr-xr-x 1 agenti agenti     164 Nov  1 22:24 lista.txt
+-rw-r--r-- 1 agenti agenti    1002 Oct 27 15:20 mappa_innesto.txt
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 missione
+-rw-r--r-- 1 agenti agenti    5098 Oct 27 15:20 omni_chiavi.sh
+-rw-r--r-- 1 agenti agenti    4982 Oct 27 15:20 omni_free.sh
+-rwxr-xr-x 1 agenti agenti    8549 Oct 27 15:20 openclaw_fix.sh
+-rw-r--r-- 1 agenti agenti    2483 Oct 27 15:20 openclaw_stato.sh
+-rw-r--r-- 1 agenti agenti    3323 Nov  1 22:24 per_agente.py
+-rw-r--r-- 1 agenti agenti  167987 Nov  2 12:59 portiere_catalogo.json
+-rw-r--r-- 1 agenti agenti     317 Oct 31 17:16 portiere_gruppi.txt
+-rw-r--r-- 1 agenti agenti   12081 Nov  3 17:20 portiere_lista.txt
+-rw-r--r-- 1 agenti agenti   30950 Nov  3 17:39 portiere_log.jsonl
+-rw-r--r-- 1 agenti agenti     536 Oct 31 18:21 portiere_quote.txt
+-rw-r--r-- 1 agenti agenti    2127 Nov  3 17:39 portiere_stato.json
+-rw-r--r-- 1 agenti agenti     780 Oct 27 15:20 postino.log
+-rwxr-xr-x 1 agenti agenti   11783 Nov  2 13:32 postino.sh
+-rw-r--r-- 1 agenti agenti     540 Oct 27 15:20 prova.sh
+-rw-r--r-- 1 agenti agenti    4962 Oct 27 15:20 prova_agenti.sh
+-rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
+-rw-r--r-- 1 agenti agenti    7251 Nov  3 11:05 ricerca_strategica.py
+-rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
+-rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
+-rw-r--r-- 1 agenti agenti     315 Nov  2 11:55 stato_fusion.json
+drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 tests
+-rwxr-xr-x 1 agenti agenti    7878 Oct 27 15:20 verifica.sh
+
+/home/agenti/posta/fatti:
+total 856
+drwxr-xr-x 1 agenti agenti  4096 Nov  3 17:20 .
+drwxr-xr-x 1 agenti agenti  4096 Nov  3 17:39 ..
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:25 accendi_omniroute_2.done
+-rwxr-xr-x 1 agenti agenti  1419 Nov  3 15:23 accendi_omniroute_2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:19 accendi_omniroute_e_rilancia.done
+-rwxr-xr-x 1 agenti agenti  1335 Nov  3 15:23 accendi_omniroute_e_rilancia.sh
+-rw-r--r-- 1 agenti agenti  3409 Nov  3 11:43 agenti_mappa.tsv
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 aggiorna_26_skill_e_browser.done
+-rw-r--r-- 1 agenti agenti  4341 Nov  2 15:12 aggiorna_vault_chiavi.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_1.done
+-rwxr-xr-x 1 agenti agenti   389 Nov  1 20:35 analisi_blocco_1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_2.done
+-rwxr-xr-x 1 agenti agenti   386 Nov  1 20:35 analisi_blocco_2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_3.done
+-rwxr-xr-x 1 agenti agenti   392 Nov  1 20:35 analisi_blocco_3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_4.done
+-rwxr-xr-x 1 agenti agenti   392 Nov  1 20:35 analisi_blocco_4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:35 ar_canali_aperti.done
+-rw-r--r-- 1 agenti agenti  1101 Nov  1 14:34 ar_canali_aperti.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:40 ar_processo3.done
+-rw-r--r-- 1 agenti agenti  1384 Nov  1 14:39 ar_processo3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:42 ar_processo4.done
+-rw-r--r-- 1 agenti agenti   858 Nov  1 14:41 ar_processo4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:34 ar_tutte_le_chiavi.done
+-rw-r--r-- 1 agenti agenti   841 Nov  1 14:33 ar_tutte_le_chiavi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:39 audit3_stato.done
+-rw-r--r-- 1 agenti agenti   533 Nov  1 20:35 audit3_stato.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 16:34 audit4_sblocco.done
+-rw-r--r-- 1 agenti agenti   795 Nov  1 16:34 audit4_sblocco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 16:05 audit4_stato.done
+-rw-r--r-- 1 agenti agenti   367 Nov  1 20:35 audit4_stato.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:49 audit_cervello.done
+-rw-r--r-- 1 agenti agenti  1645 Nov  1 20:35 audit_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:44 autonomia_avvio.done
+-rw-r--r-- 1 agenti agenti  2002 Nov  2 12:59 autonomia_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:39 avvia_deepopen.done
+-rw-r--r-- 1 agenti agenti   286 Nov  1 20:35 avvia_deepopen.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 22:00 avvia_setaccio.done
+-rw-r--r-- 1 agenti agenti   218 Oct 31 22:00 avvia_setaccio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 19:00 avvia_sonda_longcat.done
+-rw-r--r-- 1 agenti agenti   377 Nov  2 19:00 avvia_sonda_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:57 blinda_guardiani.done
+-rw-r--r-- 1 agenti agenti  1099 Nov  2 12:59 blinda_guardiani.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:30 buongiorno_1_11.done
+-rw-r--r-- 1 agenti agenti  1908 Nov  2 12:59 buongiorno_1_11.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:37 caccia_intruso.done
+-rw-r--r-- 1 agenti agenti  1066 Nov  2 12:59 caccia_intruso.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:38 cerca_aiza.done
+-rw-r--r-- 1 agenti agenti   750 Nov  1 10:38 cerca_aiza.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 20:30 cervello_restart.done
+-rw-r--r-- 1 agenti agenti  2046 Nov  2 12:59 chat_leggi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:48 chi_lavora.done
+-rw-r--r-- 1 agenti agenti   569 Nov  1 00:48 chi_lavora.sh
+-rw-r--r-- 1 agenti agenti  3553 Nov  2 12:59 collaudo_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 12:48 collaudo_f2b1.done
+-rw-r--r-- 1 agenti agenti  2297 Nov  1 18:25 collaudo_f2b1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 13:43 collaudo_f2b2.done
+-rw-r--r-- 1 agenti agenti  2728 Nov  1 18:25 collaudo_f2b2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 15:58 collaudo_f2b3.done
+-rw-r--r-- 1 agenti agenti  1908 Nov  1 18:25 collaudo_f2b3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:12 collaudo_f2b4.done
+-rw-r--r-- 1 agenti agenti  2944 Nov  1 18:25 collaudo_f2b4.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 09:58 collaudo_fase1.done
+-rw-r--r-- 1 agenti agenti  2458 Nov  1 18:13 collaudo_fase1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:16 collaudo_gruppi_kilo.done
+-rw-r--r-- 1 agenti agenti  3396 Nov  1 18:25 collaudo_gruppi_kilo.sh
+-rw-r--r-- 1 agenti agenti  3587 Nov  2 23:45 collaudo_provider.py
+-rw-r--r-- 1 agenti agenti    26 Oct 31 09:23 consigliere_saggio.done
+-rwxr-xr-x 1 agenti agenti  2341 Nov  1 20:35 consigliere_saggio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:53 conta_postini.done
+-rw-r--r-- 1 agenti agenti   465 Nov  2 12:59 conta_postini.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:27 controlla_omni.done
+-rwxr-xr-x 1 agenti agenti   997 Nov  1 20:35 controlla_omni.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:07 controprova_keyless.done
+-rw-r--r-- 1 agenti agenti  2818 Nov  1 20:35 controprova_keyless.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 14:02 crea_bat_omniroute.done
+-rw-r--r-- 1 agenti agenti   806 Nov  2 12:59 crea_bat_omniroute.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 20:43 cruscotto_nel_repo.done
+-rw-r--r-- 1 agenti agenti  2190 Nov  2 12:59 cruscotto_nel_repo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:21 cura_sicurezza.done
+-rw-r--r-- 1 agenti agenti   919 Nov  1 20:35 cura_sicurezza.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:11 deepdog_antiveleno.done
+-rw-r--r-- 1 agenti agenti   983 Nov  2 12:59 deepdog_antiveleno.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:27 deepdog_both.done
+-rw-r--r-- 1 agenti agenti   294 Nov  2 12:59 deepdog_both.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_definitivo.done
+-rw-r--r-- 1 agenti agenti  5979 Nov  2 12:59 deepdog_definitivo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:59 deepdog_diagnosi.done
+-rw-r--r-- 1 agenti agenti   691 Nov  2 12:59 deepdog_diagnosi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:20 deepdog_email.done
+-rw-r--r-- 1 agenti agenti   833 Nov  2 12:59 deepdog_email.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:49 deepdog_env.done
+-rw-r--r-- 1 agenti agenti  1039 Nov  2 12:59 deepdog_env.sh
+-rw-r--r-- 1 agenti agenti   121 Nov  1 20:39 deepdog_fix.done
+-rw-r--r-- 1 agenti agenti 12404 Nov  2 12:59 deepdog_fix.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  1 20:39 deepdog_fix.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:10 deepdog_mistero.done
+-rw-r--r-- 1 agenti agenti   874 Nov  2 12:59 deepdog_mistero.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_ok_definitivo.abbandonato
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_ok_definitivo.failito
+-rw-r--r-- 1 agenti agenti  3557 Nov  2 12:59 deepdog_ok_definitivo.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  1 22:24 deepdog_ok_definitivo.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  1 21:13 deepdog_report_e_cyndi.done
+-rw-r--r-- 1 agenti agenti  2707 Nov  1 21:13 deepdog_report_e_cyndi.sh
+-rw-r--r-- 1 agenti agenti  5287 Nov  2 12:59 deepdog_report_su_disco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:12 deepdog_toggle.done
+-rw-r--r-- 1 agenti agenti   861 Nov  2 12:59 deepdog_toggle.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:30 deepopen_diagnosi.done
+-rw-r--r-- 1 agenti agenti   440 Nov  1 00:30 deepopen_diagnosi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:04 deepopen_round2.done
+-rw-r--r-- 1 agenti agenti  3288 Nov  1 20:35 deepopen_round2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:12 deepopen_round3.done
+-rw-r--r-- 1 agenti agenti  2357 Nov  1 20:35 deepopen_round3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:24 deepopen_round4.done
+-rw-r--r-- 1 agenti agenti  2811 Nov  1 20:35 deepopen_round4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:33 deepopen_round5.done
+-rw-r--r-- 1 agenti agenti  1779 Nov  1 20:35 deepopen_round5.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:46 deploy_cors.done
+-rw-r--r-- 1 agenti agenti   759 Nov  1 18:12 deploy_cors.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:25 deploy_cura.done
+-rw-r--r-- 1 agenti agenti  1036 Nov  2 12:59 deploy_cura.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:54 deploy_f3.done
+-rw-r--r-- 1 agenti agenti  1157 Nov  1 18:12 deploy_f3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:14 deploy_json_ricco.done
+-rw-r--r-- 1 agenti agenti   969 Nov  1 18:12 deploy_json_ricco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:54 deploy_sent_pagine.done
+-rw-r--r-- 1 agenti agenti  1512 Nov  2 12:59 deploy_sent_pagine.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:08 deploy_sentinella2.done
+-rw-r--r-- 1 agenti agenti   990 Nov  1 18:12 deploy_sentinella2.sh
+-rw-r--r-- 1 agenti agenti  2343 Nov  2 23:39 diag_rete.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:14 diagnosi_cervello.done
+-rwxr-xr-x 1 agenti agenti  1104 Nov  1 20:35 diagnosi_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:34 diagnostica_cervello.done
+-rw-r--r-- 1 agenti agenti  2311 Nov  3 09:34 diagnostica_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:26 exa_completo.done
+-rw-r--r-- 1 agenti agenti   905 Nov  2 12:59 exa_completo.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:51 f3_catena.done
+-rw-r--r-- 1 agenti agenti  1370 Nov  1 20:35 f3_catena.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:17 gateway_diag.done
+-rw-r--r-- 1 agenti agenti  2040 Nov  3 16:17 gateway_diag.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:34 github_models_prova.done
+-rw-r--r-- 1 agenti agenti  1948 Nov  3 16:34 github_models_prova.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:42 github_models_prova2.done
+-rw-r--r-- 1 agenti agenti  2428 Nov  3 16:42 github_models_prova2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:21 github_morto.done
+-rw-r--r-- 1 agenti agenti   538 Oct 31 18:21 github_morto.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:24 github_morto2.done
+-rw-r--r-- 1 agenti agenti   827 Oct 31 18:24 github_morto2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:48 guardiano_fix.done
+-rw-r--r-- 1 agenti agenti  2316 Nov  2 12:59 guardiano_fix.sh
+-rw-r--r-- 1 agenti agenti  3840 Nov  2 23:35 imposta_agent_provider.sh
+-rw-r--r-- 1 agenti agenti  3625 Nov  2 23:15 imposta_browser_openclaw.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 15:42 indaga_navy_longcat.done
+-rwxr-xr-x 1 agenti agenti  5406 Nov  2 15:41 indaga_navy_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 15:45 indaga_navy_longcat_verdetto.done
+-rw-r--r-- 1 agenti agenti  2112 Nov  3 17:19 indaga_navy_longcat_verdetto.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  2 16:10 indaga_quota_8provider.done
+-rwxr-xr-x 1 agenti agenti  9058 Nov  2 16:08 indaga_quota_8provider.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 15:30 installa_freebuff.done
+-rwxr-xr-x 1 agenti agenti  1269 Nov  2 12:59 installa_freebuff.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:44 installa_popup_avvio.done
+-rw-r--r-- 1 agenti agenti  1170 Nov  3 14:44 installa_popup_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 integrita_e_repo.done
+-rw-r--r-- 1 agenti agenti  4643 Nov  1 22:24 integrita_e_repo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 inventario_avvio.done
+-rw-r--r-- 1 agenti agenti  2035 Nov  3 14:44 inventario_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 13:32 istruzioni_cervello.done
+-rw-r--r-- 1 agenti agenti  6186 Nov  3 17:19 istruzioni_cervello.txt
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:36 kilo_finale.done
+-rw-r--r-- 1 agenti agenti  1884 Nov  2 12:59 kilo_finale.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:23 kilo_free.done
+-rw-r--r-- 1 agenti agenti  1135 Nov  2 12:59 kilo_free.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:31 kilo_grezzo.done
+-rw-r--r-- 1 agenti agenti   738 Nov  2 12:59 kilo_grezzo.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:27 kilo_pregiati.done
+-rw-r--r-- 1 agenti agenti   966 Nov  2 12:59 kilo_pregiati.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:20 kilo_redirect.done
+-rw-r--r-- 1 agenti agenti   750 Nov  2 12:59 kilo_redirect.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:01 lancia_audit2.done
+-rw-r--r-- 1 agenti agenti  1238 Nov  1 20:35 lancia_audit2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:14 lancia_audit3.done
+-rw-r--r-- 1 agenti agenti  1854 Nov  1 20:35 lancia_audit3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:44 lancia_revisione.done
+-rwxr-xr-x 1 agenti agenti   470 Nov  1 20:35 lancia_revisione.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_discord_ora.done
+-rw-r--r-- 1 agenti agenti    59 Oct 27 15:20 leggi_discord_ora.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:02 leggi_lista.done
+-rw-r--r-- 1 agenti agenti   749 Oct 31 17:02 leggi_lista.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_post_v2.done
+-rw-r--r-- 1 agenti agenti   627 Nov  2 12:59 leggi_post_v2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_post_vibecoding.done
+-rw-r--r-- 1 agenti agenti   303 Nov  2 12:59 leggi_post_vibecoding.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 11:26 leggi_salvati_nuovi.done
+-rwxr-xr-x 1 agenti agenti  5561 Nov  1 20:35 leggi_salvati_nuovi.sh
+-rwxr-xr-x 1 agenti agenti  2688 Nov  2 13:32 libera_postino.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 16:49 link_freebuff.done
+-rwxr-xr-x 1 agenti agenti  1554 Nov  2 12:59 link_freebuff.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 longcat_esito.done
+-rw-r--r-- 1 agenti agenti  1817 Nov  3 14:44 longcat_esito.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:29 miniera_apri.done
+-rw-r--r-- 1 agenti agenti  1148 Nov  2 12:59 miniera_apri.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:07 miniera_fase0.done
+-rw-r--r-- 1 agenti agenti  2313 Nov  1 20:35 miniera_fase0.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:09 miniera_indice2.done
+-rw-r--r-- 1 agenti agenti  1854 Nov  1 20:35 miniera_indice2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:38 miniera_innesto.done
+-rw-r--r-- 1 agenti agenti  1185 Nov  2 12:59 miniera_innesto.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:40 miniera_innesto2.done
+-rw-r--r-- 1 agenti agenti   825 Nov  2 12:59 miniera_innesto2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:13 miniera_via.done
+-rw-r--r-- 1 agenti agenti   275 Nov  1 12:13 miniera_via.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 15:41 motore_collaudo.done
+-rw-r--r-- 1 agenti agenti  1508 Nov  1 18:21 motore_collaudo.sh
+-rw-r--r-- 1 agenti agenti  1284 Oct 31 15:39 motore_update.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 12:11 nomi_modelli_provider.done
+-rw-r--r-- 1 agenti agenti  6360 Nov  3 17:19 nomi_modelli_provider.txt
+-rw-r--r-- 1 agenti agenti    84 Nov  3 17:19 out_anyapi.txt
+-rw-r--r-- 1 agenti agenti    96 Nov  3 17:39 out_anyapi2.txt
+-rw-r--r-- 1 agenti agenti    83 Nov  3 17:19 out_gizmo.txt
+-rw-r--r-- 1 agenti agenti  8971 Nov  3 17:19 out_typhoon.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:56 patch_browser_agenti.done
+-rw-r--r-- 1 agenti agenti  5264 Nov  3 09:55 patch_browser_agenti.sh
+-rw-r--r-- 1 agenti agenti  1475 Nov  3 17:19 prompt_anyapi.txt
+-rw-r--r-- 1 agenti agenti  1532 Nov  3 17:19 prompt_gizmo.txt
+-rw-r--r-- 1 agenti agenti  1251 Nov  3 17:19 prompt_typhoon.txt
+-rwxr-xr-x 1 agenti agenti  2527 Nov  2 14:18 prova_agentrouter.sh
+-rwxr-xr-x 1 agenti agenti  4185 Nov  2 14:23 prova_agentrouter2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:57 prova_motore_auth.done
+-rw-r--r-- 1 agenti agenti  3992 Nov  3 09:55 prova_motore_auth.sh
+-rw-r--r-- 1 agenti agenti  2034 Nov  2 19:14 prova_nararouter.sh
+-rwxr-xr-x 1 agenti agenti  1037 Nov  2 18:26 prova_navyai.sh
+-rw-r--r-- 1 agenti agenti  4418 Nov  3 17:19 prova_nonverdi.txt
+-rwxr-xr-x 1 agenti agenti  1888 Nov  2 15:16 prova_nscale.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 13:09 prova_opencode2.done
+-rwxr-xr-x 1 agenti agenti  2134 Nov  2 12:59 prova_opencode2.sh
+-rw-r--r-- 1 agenti agenti   434 Nov  3 11:35 prova_reddit_agente.sh
+-rw-r--r-- 1 agenti agenti  2167 Nov  3 10:41 prova_reddit_html.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 12:29 punta_opencode_cervello.done
+-rwxr-xr-x 1 agenti agenti  3229 Nov  1 20:35 punta_opencode_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 14:32 punta_secondhand.done
+-rwxr-xr-x 1 agenti agenti  1754 Nov  2 12:59 punta_secondhand.sh
+-rw-r--r-- 1 agenti agenti  4655 Nov  1 20:35 recupera_push.sh
+-rw-r--r-- 1 agenti agenti 20132 Nov  3 11:35 reddit_leggi.py
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:25 reel2.done
+-rw-r--r-- 1 agenti agenti   194 Nov  1 11:23 reel2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:39 reel2_v7.done
+-rw-r--r-- 1 agenti agenti   181 Nov  1 11:35 reel2_v7.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:48 reel3.done
+-rw-r--r-- 1 agenti agenti   186 Nov  1 11:43 reel3.sh
+-rw-r--r-- 1 agenti agenti  1498 Nov  3 17:19 rel_typhoon.md
+-rwxr-xr-x 1 agenti agenti  2402 Nov  2 13:32 riavvia_guardiani.sh
+-rwxr-xr-x 1 agenti agenti  1802 Nov  2 12:59 riavvia_guardiano_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:49 ripara_motore.done
+-rw-r--r-- 1 agenti agenti  2898 Nov  3 09:44 ripara_motore.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:03 riparazione_seriale.done
+-rwxr-xr-x 1 agenti agenti   248 Nov  1 20:35 riparazione_seriale.sh
+-rw-r--r-- 1 agenti agenti  4754 Nov  2 12:59 ripulisci_preciso.py
+-rw-r--r-- 1 agenti agenti  6072 Nov  2 12:11 ripulisci_report_chiavi.py
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:19 risolvi_ko_avvio.done
+-rw-r--r-- 1 agenti agenti  3296 Nov  3 15:19 risolvi_ko_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:25 risolvi_ko_avvio2.done
+-rw-r--r-- 1 agenti agenti  3618 Nov  3 15:23 risolvi_ko_avvio2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:56 rito_nuovo.done
+-rw-r--r-- 1 agenti agenti  2422 Nov  2 12:59 rito_nuovo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:20 salute_cervello.done
+-rw-r--r-- 1 agenti agenti  1475 Nov  3 09:19 salute_cervello.sh
+-rw-r--r-- 1 agenti agenti  2739 Nov  1 20:39 sanifica_chiavi.sh
+-rw-r--r-- 1 agenti agenti  2831 Nov  1 20:35 sblocca_postino.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 scaglione1_applica_innesti.done
+-rw-r--r-- 1 agenti agenti  1990 Nov  2 12:59 scaglione1_applica_innesti.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 scaglione1_headroom_e_salvati.done
+-rw-r--r-- 1 agenti agenti  7676 Nov  2 12:59 scaglione1_headroom_e_salvati.sh
+-rw-r--r-- 1 agenti agenti    11 Nov  3 14:34 sentinella_ultimo_giro
+-rw-r--r-- 1 agenti agenti    26 Nov  2 18:42 setup_tavily.done
+-rw-r--r-- 1 agenti agenti  3883 Nov  2 18:40 setup_tavily.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:40 sfratto_vecchio_postino.done
+-rw-r--r-- 1 agenti agenti   718 Nov  2 12:59 sfratto_vecchio_postino.sh
+-rw-r--r-- 1 agenti agenti  3665 Nov  2 12:59 skills_opencode.sh
+-rw-r--r-- 1 agenti agenti  1891 Nov  2 19:00 sonda_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:01 sonda_studio.done
+-rw-r--r-- 1 agenti agenti   785 Nov  1 11:01 sonda_studio.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 12:56 sonda_v2.done
+-rw-r--r-- 1 agenti agenti   146 Oct 31 12:55 sonda_v2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 17:15 squadra_nonverdi.done
+-rw-r--r-- 1 agenti agenti 10062 Nov  3 17:05 squadra_nonverdi.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  3 17:20 squadra_nonverdi2.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  2 12:11 squadra_provider_morti.done
+-rw-r--r-- 1 agenti agenti     0 Nov  2 12:11 squadra_provider_morti.tentativi
+-rw-r--r-- 1 agenti agenti  5371 Nov  3 17:19 squadra_provider_morti.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:21 stato_1520.done
+-rw-r--r-- 1 agenti agenti   859 Nov  3 16:21 stato_1520.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:51 stato_invisibili.done
+-rw-r--r-- 1 agenti agenti  1323 Nov  1 18:13 stato_invisibili.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 15:05 sveglia_agentrouter.done
+-rwxr-xr-x 1 agenti agenti  1852 Nov  2 12:59 sveglia_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 sveglia_longcat_1900.done
+-rw-r--r-- 1 agenti agenti  2178 Nov  3 14:44 sveglia_longcat_1900.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:12 sveglia_sentinella.done
+-rw-r--r-- 1 agenti agenti  1171 Nov  1 18:25 sveglia_sentinella.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 14:58 sveglia_zcode.done
+-rwxr-xr-x 1 agenti agenti  1802 Nov  2 12:59 sveglia_zcode.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:37 team_nararouter.done
+-rw-r--r-- 1 agenti agenti  9895 Nov  3 16:34 team_nararouter.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:24 test_blackout.done
+-rw-r--r-- 1 agenti agenti  3356 Nov  1 18:13 test_blackout.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:20 test_occhi.done
+-rw-r--r-- 1 agenti agenti   210 Nov  1 20:35 test_occhi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:24 test_occhi2.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:23 test_occhi2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:28 test_occhi3.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:28 test_occhi3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:34 test_occhi4.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:33 test_occhi4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:42 test_occhi5.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:41 test_occhi5.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:10 test_occhi6.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 11:04 test_occhi6.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:19 togli_popup_e_riarma.done
+-rw-r--r-- 1 agenti agenti  1099 Nov  3 15:19 togli_popup_e_riarma.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 16:12 verdetto_quota_8provider.done
+-rw-r--r-- 1 agenti agenti  5102 Nov  3 17:19 verdetto_quota_8provider.txt
+-rw-r--r-- 1 agenti agenti  5289 Nov  2 21:06 verifica_agent_provider.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:48 verifica_otto_provider.done
+-rw-r--r-- 1 agenti agenti  2859 Nov  3 16:48 verifica_otto_provider.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:53 verifica_riavvio.done
+-rw-r--r-- 1 agenti agenti  1791 Nov  3 16:21 verifica_riavvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:46 verita_403.done
+-rw-r--r-- 1 agenti agenti   422 Nov  1 10:46 verita_403.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:31 verita_agentrouter.done
+-rw-r--r-- 1 agenti agenti  1319 Nov  1 14:31 verita_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:43 via_audit4.done
+-rw-r--r-- 1 agenti agenti   191 Nov  1 15:43 via_audit4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:07 via_cura.done
+-rw-r--r-- 1 agenti agenti   178 Nov  1 17:07 via_cura.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:25 widget_zcode_off.done
+-rw-r--r-- 1 agenti agenti   422 Nov  2 12:59 widget_zcode_off.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 13:34 zcode_audit_chiavi.done
+-rwxr-xr-x 1 agenti agenti  5068 Nov  2 11:55 zcode_audit_chiavi.sh
+
+/home/agenti/posta/lavori:
+total 388
+drwxr-xr-x 1 agenti agenti   4096 Nov  3 17:20 .
+drwxr-xr-x 1 agenti agenti   4096 Nov  3 17:39 ..
+-rwxr-xr-x 1 agenti agenti   4999 Nov  1 22:24 OCCHI_FB_BATCH.md
+-rwxr-xr-x 1 agenti agenti   4971 Nov  1 22:51 OCCHI_FB_RETRY.md
+-rwxr-xr-x 1 agenti agenti   7062 Nov  2 11:55 aggiorna_catalogo.py
+-rwxr-xr-x 1 agenti agenti   2876 Oct 30 17:59 analista.sh
+-rwxr-xr-x 1 agenti agenti   1733 Nov  1 15:43 audit_catena.sh
+-rw-r--r-- 1 agenti agenti 177876 Nov  3 17:20 catalogo_freellmapi.json
+-rwxr-xr-x 1 agenti agenti    363 Oct 30 18:17 catena_completa.sh
+-rw-r--r-- 1 agenti agenti   4375 Nov  2 17:27 cerca.sh
+-rwxr-xr-x 1 agenti agenti   3255 Nov  1 17:07 cura_catena.sh
+-rw-r--r-- 1 agenti agenti   4147 Nov  1 23:21 deepdog_ricerca.sh
+-rwxr-xr-x 1 agenti agenti   4742 Oct 31 21:39 deepopen_prova.sh
+-rwxr-xr-x 1 agenti agenti   1694 Nov  1 15:14 giudice_lusso.sh
+-rwxr-xr-x 1 agenti agenti   2177 Nov  1 12:13 miniera_catena.sh
+-rwxr-xr-x 1 agenti agenti   1246 Nov  2 11:55 modelli_aihorde.py
+-rwxr-xr-x 1 agenti agenti  21158 Nov  1 22:39 occhi_fb.sh
+-rwxr-xr-x 1 agenti agenti   1909 Oct 30 18:44 revisore.sh
+-rwxr-xr-x 1 agenti agenti   2499 Nov  2 11:55 scorta_cervello.sh
+-rwxr-xr-x 1 agenti agenti   1469 Nov  3 17:20 scorta_motore.sh
+-rwxr-xr-x 1 agenti agenti   3833 Nov  3 15:27 scorta_posta.sh
+-rw-r--r-- 1 agenti agenti   5189 Nov  3 17:05 sentinella_chiavi.sh
+-rw-r--r-- 1 agenti agenti   3527 Nov  3 17:05 sentinella_servizi.sh
+-rwxr-xr-x 1 agenti agenti    954 Oct 30 18:03 seriale.sh
+-rwxr-xr-x 1 agenti agenti   4053 Oct 31 22:00 setaccio_vena.sh
+[0m
+[0m→ [0mRead fatti/prova_nonverdi.txt
+[0m
+[0m$ [0mcat /home/agenti/posta/fatti/out_anyapi.txt; echo "---2---"; cat /home/agenti/posta/fatti/out_anyapi2.txt; echo "---prompt---"; cat /home/agenti/posta/fatti/prompt_anyapi.txt
+[91m[1mError: [0mUnexpected error
+
+locking protocol
+(agente anyapi non riuscito)
+---2---
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcat ~/posta/fatti/prova_nonverdi.txt
+(no output)
+[0m
+[0m$ [0mls -la ~/posta ~/posta/fatti ~/posta/lavori 2>/dev/null
+/home/agenti/posta:
+total 1844
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:39 .
+drwxr-x--- 1 agenti agenti    4096 Nov  3 14:44 ..
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 .git
+-rw-r--r-- 1 agenti agenti     165 Nov  1 18:21 .gitignore
+-rw-r--r-- 1 agenti agenti      10 Oct 27 15:20 .padrone
+drwxr-xr-x 1 agenti agenti    4096 Oct 27 15:20 00_INSTALLA_AGENTI
+-rw-r--r-- 1 agenti agenti    1116 Oct 27 15:20 6_BROWSER_AGENTI.bat
+-rw-r--r-- 1 agenti agenti     133 Oct 27 15:20 7_SQUADRA_FUSION.bat
+-rw-r--r-- 1 agenti agenti     286 Oct 29 09:40 8_CENTRALE_GUI.bat
+-rw-r--r-- 1 agenti agenti    1897 Oct 27 15:20 APRI_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti     892 Oct 27 15:20 CENTRALE_AGENTI.bat
+-rw-r--r-- 1 agenti agenti    2376 Oct 27 15:20 CONFIGURA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    8674 Oct 27 15:20 GUIDA_OPENCLAW.md
+-rw-r--r-- 1 agenti agenti    2354 Oct 27 15:20 INDICE_CARTELLE.md
+-rw-r--r-- 1 agenti agenti   11563 Oct 27 15:20 INSTALLA_OPENCLAW.bat
+-rw-r--r-- 1 agenti agenti    3770 Oct 27 15:20 RAPPORTO_AGENTI.txt
+-rw-r--r-- 1 agenti agenti      49 Oct 27 15:20 README.md
+drwxr-xr-x 1 agenti agenti    4096 Nov  2 10:48 RISPOSTE_AGENTI
+drwxr-xr-x 1 agenti agenti    4096 Nov  2 12:59 __pycache__
+-rw-r--r-- 1 agenti agenti    6179 Oct 27 15:20 agenti_stato.sh
+-rwxr-xr-x 1 agenti agenti   13517 Nov  2 12:59 aggiorna_tutto.sh
+-rw-r--r-- 1 agenti agenti   19872 Nov  3 17:05 appello_chiavi.sh
+-rwxr-xr-x 1 agenti agenti    3256 Oct 28 17:12 apri_free_llm_hub.sh
+-rwxr-xr-x 1 agenti agenti    4071 Oct 27 15:20 apri_openclaw.sh
+-rwxr-xr-x 1 agenti agenti   12053 Nov  2 12:59 centrale.sh
+-rw-r--r-- 1 agenti agenti  103746 Nov  1 23:23 cervello.py
+-rw-r--r-- 1 agenti agenti   22489 Oct 27 15:20 checkin_agentrouter.py
+-rw-r--r-- 1 agenti agenti    1573 Oct 27 15:20 checkin_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    4439 Nov  3 17:20 chiave_di.py
+-rw-r--r-- 1 agenti agenti    4531 Oct 27 15:20 chiavi_env.sh
+-rw-r--r-- 1 agenti agenti    6493 Oct 31 18:53 compressione.py
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 da_me
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 dal_pc
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 fatti
+drwxr-xr-x 1 agenti agenti    4096 Oct 28 17:12 free-llm-hub
+-rw-r--r-- 1 agenti agenti   17736 Oct 27 15:20 fusion_engine.py
+-rw-r--r-- 1 agenti agenti    5246 Nov  1 18:21 gate_pubblicazione.py
+drwxr-xr-x 1 agenti agenti    4096 Nov  1 20:43 gui
+-rw-r--r-- 1 agenti agenti   11389 Nov  2 12:59 installa_agenti.sh
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 lavori
+-rw-r--r-- 1 agenti agenti    6154 Oct 27 15:20 leggi_discord.py
+-rw-r--r-- 1 agenti agenti    6619 Oct 27 15:20 leggi_fb_cdp.mjs
+-rw-r--r-- 1 agenti agenti    9080 Oct 27 15:20 leggi_fb_cdp.py
+-rwxr-xr-x 1 agenti agenti    6871 Oct 27 15:20 leggi_video.py
+-rwxr-xr-x 1 agenti agenti     164 Nov  1 22:24 lista.txt
+-rw-r--r-- 1 agenti agenti    1002 Oct 27 15:20 mappa_innesto.txt
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 missione
+-rw-r--r-- 1 agenti agenti    5098 Oct 27 15:20 omni_chiavi.sh
+-rw-r--r-- 1 agenti agenti    4982 Oct 27 15:20 omni_free.sh
+-rwxr-xr-x 1 agenti agenti    8549 Oct 27 15:20 openclaw_fix.sh
+-rw-r--r-- 1 agenti agenti    2483 Oct 27 15:20 openclaw_stato.sh
+-rw-r--r-- 1 agenti agenti    3323 Nov  1 22:24 per_agente.py
+-rw-r--r-- 1 agenti agenti  167987 Nov  2 12:59 portiere_catalogo.json
+-rw-r--r-- 1 agenti agenti     317 Oct 31 17:16 portiere_gruppi.txt
+-rw-r--r-- 1 agenti agenti   12081 Nov  3 17:20 portiere_lista.txt
+-rw-r--r-- 1 agenti agenti   30950 Nov  3 17:39 portiere_log.jsonl
+-rw-r--r-- 1 agenti agenti     536 Oct 31 18:21 portiere_quote.txt
+-rw-r--r-- 1 agenti agenti    2127 Nov  3 17:39 portiere_stato.json
+-rw-r--r-- 1 agenti agenti     780 Oct 27 15:20 postino.log
+-rwxr-xr-x 1 agenti agenti   11783 Nov  2 13:32 postino.sh
+-rw-r--r-- 1 agenti agenti     540 Oct 27 15:20 prova.sh
+-rw-r--r-- 1 agenti agenti    4962 Oct 27 15:20 prova_agenti.sh
+-rw-r--r-- 1 agenti agenti    5223 Oct 27 15:20 prova_provider.sh
+-rw-r--r-- 1 agenti agenti    7251 Nov  3 11:05 ricerca_strategica.py
+-rw-r--r-- 1 agenti agenti    3296 Oct 27 15:20 serbatoio_hub_v2.json
+-rw-r--r-- 1 agenti agenti 1202960 Oct 27 15:20 skills_pack.tar.gz
+-rwxr-xr-x 1 agenti agenti     308 Oct 27 15:20 squadra.sh
+-rw-r--r-- 1 agenti agenti     315 Nov  2 11:55 stato_fusion.json
+drwxr-xr-x 1 agenti agenti    4096 Oct 30 16:49 strumenti
+drwxr-xr-x 1 agenti agenti    4096 Nov  3 17:20 tests
+-rwxr-xr-x 1 agenti agenti    7878 Oct 27 15:20 verifica.sh
+
+/home/agenti/posta/fatti:
+total 856
+drwxr-xr-x 1 agenti agenti  4096 Nov  3 17:20 .
+drwxr-xr-x 1 agenti agenti  4096 Nov  3 17:39 ..
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:25 accendi_omniroute_2.done
+-rwxr-xr-x 1 agenti agenti  1419 Nov  3 15:23 accendi_omniroute_2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:19 accendi_omniroute_e_rilancia.done
+-rwxr-xr-x 1 agenti agenti  1335 Nov  3 15:23 accendi_omniroute_e_rilancia.sh
+-rw-r--r-- 1 agenti agenti  3409 Nov  3 11:43 agenti_mappa.tsv
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 aggiorna_26_skill_e_browser.done
+-rw-r--r-- 1 agenti agenti  4341 Nov  2 15:12 aggiorna_vault_chiavi.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_1.done
+-rwxr-xr-x 1 agenti agenti   389 Nov  1 20:35 analisi_blocco_1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_2.done
+-rwxr-xr-x 1 agenti agenti   386 Nov  1 20:35 analisi_blocco_2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_3.done
+-rwxr-xr-x 1 agenti agenti   392 Nov  1 20:35 analisi_blocco_3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 17:59 analisi_blocco_4.done
+-rwxr-xr-x 1 agenti agenti   392 Nov  1 20:35 analisi_blocco_4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:35 ar_canali_aperti.done
+-rw-r--r-- 1 agenti agenti  1101 Nov  1 14:34 ar_canali_aperti.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:40 ar_processo3.done
+-rw-r--r-- 1 agenti agenti  1384 Nov  1 14:39 ar_processo3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:42 ar_processo4.done
+-rw-r--r-- 1 agenti agenti   858 Nov  1 14:41 ar_processo4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:34 ar_tutte_le_chiavi.done
+-rw-r--r-- 1 agenti agenti   841 Nov  1 14:33 ar_tutte_le_chiavi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:39 audit3_stato.done
+-rw-r--r-- 1 agenti agenti   533 Nov  1 20:35 audit3_stato.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 16:34 audit4_sblocco.done
+-rw-r--r-- 1 agenti agenti   795 Nov  1 16:34 audit4_sblocco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 16:05 audit4_stato.done
+-rw-r--r-- 1 agenti agenti   367 Nov  1 20:35 audit4_stato.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:49 audit_cervello.done
+-rw-r--r-- 1 agenti agenti  1645 Nov  1 20:35 audit_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:44 autonomia_avvio.done
+-rw-r--r-- 1 agenti agenti  2002 Nov  2 12:59 autonomia_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:39 avvia_deepopen.done
+-rw-r--r-- 1 agenti agenti   286 Nov  1 20:35 avvia_deepopen.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 22:00 avvia_setaccio.done
+-rw-r--r-- 1 agenti agenti   218 Oct 31 22:00 avvia_setaccio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 19:00 avvia_sonda_longcat.done
+-rw-r--r-- 1 agenti agenti   377 Nov  2 19:00 avvia_sonda_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:57 blinda_guardiani.done
+-rw-r--r-- 1 agenti agenti  1099 Nov  2 12:59 blinda_guardiani.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:30 buongiorno_1_11.done
+-rw-r--r-- 1 agenti agenti  1908 Nov  2 12:59 buongiorno_1_11.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:37 caccia_intruso.done
+-rw-r--r-- 1 agenti agenti  1066 Nov  2 12:59 caccia_intruso.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:38 cerca_aiza.done
+-rw-r--r-- 1 agenti agenti   750 Nov  1 10:38 cerca_aiza.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 20:30 cervello_restart.done
+-rw-r--r-- 1 agenti agenti  2046 Nov  2 12:59 chat_leggi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:48 chi_lavora.done
+-rw-r--r-- 1 agenti agenti   569 Nov  1 00:48 chi_lavora.sh
+-rw-r--r-- 1 agenti agenti  3553 Nov  2 12:59 collaudo_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 12:48 collaudo_f2b1.done
+-rw-r--r-- 1 agenti agenti  2297 Nov  1 18:25 collaudo_f2b1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 13:43 collaudo_f2b2.done
+-rw-r--r-- 1 agenti agenti  2728 Nov  1 18:25 collaudo_f2b2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 15:58 collaudo_f2b3.done
+-rw-r--r-- 1 agenti agenti  1908 Nov  1 18:25 collaudo_f2b3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:12 collaudo_f2b4.done
+-rw-r--r-- 1 agenti agenti  2944 Nov  1 18:25 collaudo_f2b4.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 09:58 collaudo_fase1.done
+-rw-r--r-- 1 agenti agenti  2458 Nov  1 18:13 collaudo_fase1.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:16 collaudo_gruppi_kilo.done
+-rw-r--r-- 1 agenti agenti  3396 Nov  1 18:25 collaudo_gruppi_kilo.sh
+-rw-r--r-- 1 agenti agenti  3587 Nov  2 23:45 collaudo_provider.py
+-rw-r--r-- 1 agenti agenti    26 Oct 31 09:23 consigliere_saggio.done
+-rwxr-xr-x 1 agenti agenti  2341 Nov  1 20:35 consigliere_saggio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:53 conta_postini.done
+-rw-r--r-- 1 agenti agenti   465 Nov  2 12:59 conta_postini.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:27 controlla_omni.done
+-rwxr-xr-x 1 agenti agenti   997 Nov  1 20:35 controlla_omni.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:07 controprova_keyless.done
+-rw-r--r-- 1 agenti agenti  2818 Nov  1 20:35 controprova_keyless.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 14:02 crea_bat_omniroute.done
+-rw-r--r-- 1 agenti agenti   806 Nov  2 12:59 crea_bat_omniroute.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 20:43 cruscotto_nel_repo.done
+-rw-r--r-- 1 agenti agenti  2190 Nov  2 12:59 cruscotto_nel_repo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:21 cura_sicurezza.done
+-rw-r--r-- 1 agenti agenti   919 Nov  1 20:35 cura_sicurezza.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:11 deepdog_antiveleno.done
+-rw-r--r-- 1 agenti agenti   983 Nov  2 12:59 deepdog_antiveleno.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:27 deepdog_both.done
+-rw-r--r-- 1 agenti agenti   294 Nov  2 12:59 deepdog_both.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_definitivo.done
+-rw-r--r-- 1 agenti agenti  5979 Nov  2 12:59 deepdog_definitivo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:59 deepdog_diagnosi.done
+-rw-r--r-- 1 agenti agenti   691 Nov  2 12:59 deepdog_diagnosi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:20 deepdog_email.done
+-rw-r--r-- 1 agenti agenti   833 Nov  2 12:59 deepdog_email.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:49 deepdog_env.done
+-rw-r--r-- 1 agenti agenti  1039 Nov  2 12:59 deepdog_env.sh
+-rw-r--r-- 1 agenti agenti   121 Nov  1 20:39 deepdog_fix.done
+-rw-r--r-- 1 agenti agenti 12404 Nov  2 12:59 deepdog_fix.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  1 20:39 deepdog_fix.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:10 deepdog_mistero.done
+-rw-r--r-- 1 agenti agenti   874 Nov  2 12:59 deepdog_mistero.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_ok_definitivo.abbandonato
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 deepdog_ok_definitivo.failito
+-rw-r--r-- 1 agenti agenti  3557 Nov  2 12:59 deepdog_ok_definitivo.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  1 22:24 deepdog_ok_definitivo.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  1 21:13 deepdog_report_e_cyndi.done
+-rw-r--r-- 1 agenti agenti  2707 Nov  1 21:13 deepdog_report_e_cyndi.sh
+-rw-r--r-- 1 agenti agenti  5287 Nov  2 12:59 deepdog_report_su_disco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:12 deepdog_toggle.done
+-rw-r--r-- 1 agenti agenti   861 Nov  2 12:59 deepdog_toggle.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:30 deepopen_diagnosi.done
+-rw-r--r-- 1 agenti agenti   440 Nov  1 00:30 deepopen_diagnosi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:04 deepopen_round2.done
+-rw-r--r-- 1 agenti agenti  3288 Nov  1 20:35 deepopen_round2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:12 deepopen_round3.done
+-rw-r--r-- 1 agenti agenti  2357 Nov  1 20:35 deepopen_round3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:24 deepopen_round4.done
+-rw-r--r-- 1 agenti agenti  2811 Nov  1 20:35 deepopen_round4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 00:33 deepopen_round5.done
+-rw-r--r-- 1 agenti agenti  1779 Nov  1 20:35 deepopen_round5.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:46 deploy_cors.done
+-rw-r--r-- 1 agenti agenti   759 Nov  1 18:12 deploy_cors.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:25 deploy_cura.done
+-rw-r--r-- 1 agenti agenti  1036 Nov  2 12:59 deploy_cura.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:54 deploy_f3.done
+-rw-r--r-- 1 agenti agenti  1157 Nov  1 18:12 deploy_f3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:14 deploy_json_ricco.done
+-rw-r--r-- 1 agenti agenti   969 Nov  1 18:12 deploy_json_ricco.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:54 deploy_sent_pagine.done
+-rw-r--r-- 1 agenti agenti  1512 Nov  2 12:59 deploy_sent_pagine.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:08 deploy_sentinella2.done
+-rw-r--r-- 1 agenti agenti   990 Nov  1 18:12 deploy_sentinella2.sh
+-rw-r--r-- 1 agenti agenti  2343 Nov  2 23:39 diag_rete.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:14 diagnosi_cervello.done
+-rwxr-xr-x 1 agenti agenti  1104 Nov  1 20:35 diagnosi_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:34 diagnostica_cervello.done
+-rw-r--r-- 1 agenti agenti  2311 Nov  3 09:34 diagnostica_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:26 exa_completo.done
+-rw-r--r-- 1 agenti agenti   905 Nov  2 12:59 exa_completo.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:51 f3_catena.done
+-rw-r--r-- 1 agenti agenti  1370 Nov  1 20:35 f3_catena.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:17 gateway_diag.done
+-rw-r--r-- 1 agenti agenti  2040 Nov  3 16:17 gateway_diag.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:34 github_models_prova.done
+-rw-r--r-- 1 agenti agenti  1948 Nov  3 16:34 github_models_prova.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:42 github_models_prova2.done
+-rw-r--r-- 1 agenti agenti  2428 Nov  3 16:42 github_models_prova2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:21 github_morto.done
+-rw-r--r-- 1 agenti agenti   538 Oct 31 18:21 github_morto.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 18:24 github_morto2.done
+-rw-r--r-- 1 agenti agenti   827 Oct 31 18:24 github_morto2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:48 guardiano_fix.done
+-rw-r--r-- 1 agenti agenti  2316 Nov  2 12:59 guardiano_fix.sh
+-rw-r--r-- 1 agenti agenti  3840 Nov  2 23:35 imposta_agent_provider.sh
+-rw-r--r-- 1 agenti agenti  3625 Nov  2 23:15 imposta_browser_openclaw.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 15:42 indaga_navy_longcat.done
+-rwxr-xr-x 1 agenti agenti  5406 Nov  2 15:41 indaga_navy_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 15:45 indaga_navy_longcat_verdetto.done
+-rw-r--r-- 1 agenti agenti  2112 Nov  3 17:19 indaga_navy_longcat_verdetto.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  2 16:10 indaga_quota_8provider.done
+-rwxr-xr-x 1 agenti agenti  9058 Nov  2 16:08 indaga_quota_8provider.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 15:30 installa_freebuff.done
+-rwxr-xr-x 1 agenti agenti  1269 Nov  2 12:59 installa_freebuff.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:44 installa_popup_avvio.done
+-rw-r--r-- 1 agenti agenti  1170 Nov  3 14:44 installa_popup_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 22:24 integrita_e_repo.done
+-rw-r--r-- 1 agenti agenti  4643 Nov  1 22:24 integrita_e_repo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 inventario_avvio.done
+-rw-r--r-- 1 agenti agenti  2035 Nov  3 14:44 inventario_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 13:32 istruzioni_cervello.done
+-rw-r--r-- 1 agenti agenti  6186 Nov  3 17:19 istruzioni_cervello.txt
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:36 kilo_finale.done
+-rw-r--r-- 1 agenti agenti  1884 Nov  2 12:59 kilo_finale.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:23 kilo_free.done
+-rw-r--r-- 1 agenti agenti  1135 Nov  2 12:59 kilo_free.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:31 kilo_grezzo.done
+-rw-r--r-- 1 agenti agenti   738 Nov  2 12:59 kilo_grezzo.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:27 kilo_pregiati.done
+-rw-r--r-- 1 agenti agenti   966 Nov  2 12:59 kilo_pregiati.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:20 kilo_redirect.done
+-rw-r--r-- 1 agenti agenti   750 Nov  2 12:59 kilo_redirect.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:01 lancia_audit2.done
+-rw-r--r-- 1 agenti agenti  1238 Nov  1 20:35 lancia_audit2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:14 lancia_audit3.done
+-rw-r--r-- 1 agenti agenti  1854 Nov  1 20:35 lancia_audit3.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:44 lancia_revisione.done
+-rwxr-xr-x 1 agenti agenti   470 Nov  1 20:35 lancia_revisione.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_discord_ora.done
+-rw-r--r-- 1 agenti agenti    59 Oct 27 15:20 leggi_discord_ora.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 17:02 leggi_lista.done
+-rw-r--r-- 1 agenti agenti   749 Oct 31 17:02 leggi_lista.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_post_v2.done
+-rw-r--r-- 1 agenti agenti   627 Nov  2 12:59 leggi_post_v2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 leggi_post_vibecoding.done
+-rw-r--r-- 1 agenti agenti   303 Nov  2 12:59 leggi_post_vibecoding.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 11:26 leggi_salvati_nuovi.done
+-rwxr-xr-x 1 agenti agenti  5561 Nov  1 20:35 leggi_salvati_nuovi.sh
+-rwxr-xr-x 1 agenti agenti  2688 Nov  2 13:32 libera_postino.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 16:49 link_freebuff.done
+-rwxr-xr-x 1 agenti agenti  1554 Nov  2 12:59 link_freebuff.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 longcat_esito.done
+-rw-r--r-- 1 agenti agenti  1817 Nov  3 14:44 longcat_esito.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:29 miniera_apri.done
+-rw-r--r-- 1 agenti agenti  1148 Nov  2 12:59 miniera_apri.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:07 miniera_fase0.done
+-rw-r--r-- 1 agenti agenti  2313 Nov  1 20:35 miniera_fase0.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:09 miniera_indice2.done
+-rw-r--r-- 1 agenti agenti  1854 Nov  1 20:35 miniera_indice2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:38 miniera_innesto.done
+-rw-r--r-- 1 agenti agenti  1185 Nov  2 12:59 miniera_innesto.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 13:40 miniera_innesto2.done
+-rw-r--r-- 1 agenti agenti   825 Nov  2 12:59 miniera_innesto2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:13 miniera_via.done
+-rw-r--r-- 1 agenti agenti   275 Nov  1 12:13 miniera_via.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 15:41 motore_collaudo.done
+-rw-r--r-- 1 agenti agenti  1508 Nov  1 18:21 motore_collaudo.sh
+-rw-r--r-- 1 agenti agenti  1284 Oct 31 15:39 motore_update.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 12:11 nomi_modelli_provider.done
+-rw-r--r-- 1 agenti agenti  6360 Nov  3 17:19 nomi_modelli_provider.txt
+-rw-r--r-- 1 agenti agenti    84 Nov  3 17:19 out_anyapi.txt
+-rw-r--r-- 1 agenti agenti    96 Nov  3 17:39 out_anyapi2.txt
+-rw-r--r-- 1 agenti agenti    83 Nov  3 17:19 out_gizmo.txt
+-rw-r--r-- 1 agenti agenti  8971 Nov  3 17:19 out_typhoon.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:56 patch_browser_agenti.done
+-rw-r--r-- 1 agenti agenti  5264 Nov  3 09:55 patch_browser_agenti.sh
+-rw-r--r-- 1 agenti agenti  1475 Nov  3 17:19 prompt_anyapi.txt
+-rw-r--r-- 1 agenti agenti  1532 Nov  3 17:19 prompt_gizmo.txt
+-rw-r--r-- 1 agenti agenti  1251 Nov  3 17:19 prompt_typhoon.txt
+-rwxr-xr-x 1 agenti agenti  2527 Nov  2 14:18 prova_agentrouter.sh
+-rwxr-xr-x 1 agenti agenti  4185 Nov  2 14:23 prova_agentrouter2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:57 prova_motore_auth.done
+-rw-r--r-- 1 agenti agenti  3992 Nov  3 09:55 prova_motore_auth.sh
+-rw-r--r-- 1 agenti agenti  2034 Nov  2 19:14 prova_nararouter.sh
+-rwxr-xr-x 1 agenti agenti  1037 Nov  2 18:26 prova_navyai.sh
+-rw-r--r-- 1 agenti agenti  4418 Nov  3 17:19 prova_nonverdi.txt
+-rwxr-xr-x 1 agenti agenti  1888 Nov  2 15:16 prova_nscale.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 13:09 prova_opencode2.done
+-rwxr-xr-x 1 agenti agenti  2134 Nov  2 12:59 prova_opencode2.sh
+-rw-r--r-- 1 agenti agenti   434 Nov  3 11:35 prova_reddit_agente.sh
+-rw-r--r-- 1 agenti agenti  2167 Nov  3 10:41 prova_reddit_html.py
+-rw-r--r-- 1 agenti agenti    26 Oct 30 12:29 punta_opencode_cervello.done
+-rwxr-xr-x 1 agenti agenti  3229 Nov  1 20:35 punta_opencode_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 14:32 punta_secondhand.done
+-rwxr-xr-x 1 agenti agenti  1754 Nov  2 12:59 punta_secondhand.sh
+-rw-r--r-- 1 agenti agenti  4655 Nov  1 20:35 recupera_push.sh
+-rw-r--r-- 1 agenti agenti 20132 Nov  3 11:35 reddit_leggi.py
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:25 reel2.done
+-rw-r--r-- 1 agenti agenti   194 Nov  1 11:23 reel2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:39 reel2_v7.done
+-rw-r--r-- 1 agenti agenti   181 Nov  1 11:35 reel2_v7.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:48 reel3.done
+-rw-r--r-- 1 agenti agenti   186 Nov  1 11:43 reel3.sh
+-rw-r--r-- 1 agenti agenti  1498 Nov  3 17:19 rel_typhoon.md
+-rwxr-xr-x 1 agenti agenti  2402 Nov  2 13:32 riavvia_guardiani.sh
+-rwxr-xr-x 1 agenti agenti  1802 Nov  2 12:59 riavvia_guardiano_cervello.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:49 ripara_motore.done
+-rw-r--r-- 1 agenti agenti  2898 Nov  3 09:44 ripara_motore.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 18:03 riparazione_seriale.done
+-rwxr-xr-x 1 agenti agenti   248 Nov  1 20:35 riparazione_seriale.sh
+-rw-r--r-- 1 agenti agenti  4754 Nov  2 12:59 ripulisci_preciso.py
+-rw-r--r-- 1 agenti agenti  6072 Nov  2 12:11 ripulisci_report_chiavi.py
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:19 risolvi_ko_avvio.done
+-rw-r--r-- 1 agenti agenti  3296 Nov  3 15:19 risolvi_ko_avvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:25 risolvi_ko_avvio2.done
+-rw-r--r-- 1 agenti agenti  3618 Nov  3 15:23 risolvi_ko_avvio2.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:56 rito_nuovo.done
+-rw-r--r-- 1 agenti agenti  2422 Nov  2 12:59 rito_nuovo.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 09:20 salute_cervello.done
+-rw-r--r-- 1 agenti agenti  1475 Nov  3 09:19 salute_cervello.sh
+-rw-r--r-- 1 agenti agenti  2739 Nov  1 20:39 sanifica_chiavi.sh
+-rw-r--r-- 1 agenti agenti  2831 Nov  1 20:35 sblocca_postino.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 scaglione1_applica_innesti.done
+-rw-r--r-- 1 agenti agenti  1990 Nov  2 12:59 scaglione1_applica_innesti.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 27 15:20 scaglione1_headroom_e_salvati.done
+-rw-r--r-- 1 agenti agenti  7676 Nov  2 12:59 scaglione1_headroom_e_salvati.sh
+-rw-r--r-- 1 agenti agenti    11 Nov  3 14:34 sentinella_ultimo_giro
+-rw-r--r-- 1 agenti agenti    26 Nov  2 18:42 setup_tavily.done
+-rw-r--r-- 1 agenti agenti  3883 Nov  2 18:40 setup_tavily.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 09:40 sfratto_vecchio_postino.done
+-rw-r--r-- 1 agenti agenti   718 Nov  2 12:59 sfratto_vecchio_postino.sh
+-rw-r--r-- 1 agenti agenti  3665 Nov  2 12:59 skills_opencode.sh
+-rw-r--r-- 1 agenti agenti  1891 Nov  2 19:00 sonda_longcat.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:01 sonda_studio.done
+-rw-r--r-- 1 agenti agenti   785 Nov  1 11:01 sonda_studio.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 12:56 sonda_v2.done
+-rw-r--r-- 1 agenti agenti   146 Oct 31 12:55 sonda_v2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 17:15 squadra_nonverdi.done
+-rw-r--r-- 1 agenti agenti 10062 Nov  3 17:05 squadra_nonverdi.sh
+-rw-r--r-- 1 agenti agenti     2 Nov  3 17:20 squadra_nonverdi2.tentativi
+-rw-r--r-- 1 agenti agenti    26 Nov  2 12:11 squadra_provider_morti.done
+-rw-r--r-- 1 agenti agenti     0 Nov  2 12:11 squadra_provider_morti.tentativi
+-rw-r--r-- 1 agenti agenti  5371 Nov  3 17:19 squadra_provider_morti.txt
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:21 stato_1520.done
+-rw-r--r-- 1 agenti agenti   859 Nov  3 16:21 stato_1520.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:51 stato_invisibili.done
+-rw-r--r-- 1 agenti agenti  1323 Nov  1 18:13 stato_invisibili.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 15:05 sveglia_agentrouter.done
+-rwxr-xr-x 1 agenti agenti  1852 Nov  2 12:59 sveglia_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 14:45 sveglia_longcat_1900.done
+-rw-r--r-- 1 agenti agenti  2178 Nov  3 14:44 sveglia_longcat_1900.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 21:12 sveglia_sentinella.done
+-rw-r--r-- 1 agenti agenti  1171 Nov  1 18:25 sveglia_sentinella.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 30 14:58 sveglia_zcode.done
+-rwxr-xr-x 1 agenti agenti  1802 Nov  2 12:59 sveglia_zcode.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:37 team_nararouter.done
+-rw-r--r-- 1 agenti agenti  9895 Nov  3 16:34 team_nararouter.sh
+-rw-r--r-- 1 agenti agenti    26 Oct 31 16:24 test_blackout.done
+-rw-r--r-- 1 agenti agenti  3356 Nov  1 18:13 test_blackout.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:20 test_occhi.done
+-rw-r--r-- 1 agenti agenti   210 Nov  1 20:35 test_occhi.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:24 test_occhi2.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:23 test_occhi2.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:28 test_occhi3.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:28 test_occhi3.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:34 test_occhi4.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:33 test_occhi4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:42 test_occhi5.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 10:41 test_occhi5.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 11:10 test_occhi6.done
+-rw-r--r-- 1 agenti agenti   115 Nov  1 11:04 test_occhi6.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:19 togli_popup_e_riarma.done
+-rw-r--r-- 1 agenti agenti  1099 Nov  3 15:19 togli_popup_e_riarma.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 16:12 verdetto_quota_8provider.done
+-rw-r--r-- 1 agenti agenti  5102 Nov  3 17:19 verdetto_quota_8provider.txt
+-rw-r--r-- 1 agenti agenti  5289 Nov  2 21:06 verifica_agent_provider.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 16:48 verifica_otto_provider.done
+-rw-r--r-- 1 agenti agenti  2859 Nov  3 16:48 verifica_otto_provider.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  3 15:53 verifica_riavvio.done
+-rw-r--r-- 1 agenti agenti  1791 Nov  3 16:21 verifica_riavvio.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 10:46 verita_403.done
+-rw-r--r-- 1 agenti agenti   422 Nov  1 10:46 verita_403.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 14:31 verita_agentrouter.done
+-rw-r--r-- 1 agenti agenti  1319 Nov  1 14:31 verita_agentrouter.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 15:43 via_audit4.done
+-rw-r--r-- 1 agenti agenti   191 Nov  1 15:43 via_audit4.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 17:07 via_cura.done
+-rw-r--r-- 1 agenti agenti   178 Nov  1 17:07 via_cura.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  1 12:25 widget_zcode_off.done
+-rw-r--r-- 1 agenti agenti   422 Nov  2 12:59 widget_zcode_off.sh
+-rw-r--r-- 1 agenti agenti    26 Nov  2 13:34 zcode_audit_chiavi.done
+-rwxr-xr-x 1 agenti agenti  5068 Nov  2 11:55 zcode_audit_chiavi.sh
+
+/home/agenti/posta/lavori:
+total 388
+drwxr-xr-x 1 agenti agenti   4096 Nov  3 17:20 .
+drwxr-xr-x 1 agenti agenti   4096 Nov  3 17:39 ..
+-rwxr-xr-x 1 agenti agenti   4999 Nov  1 22:24 OCCHI_FB_BATCH.md
+-rwxr-xr-x 1 agenti agenti   4971 Nov  1 22:51 OCCHI_FB_RETRY.md
+-rwxr-xr-x 1 agenti agenti   7062 Nov  2 11:55 aggiorna_catalogo.py
+-rwxr-xr-x 1 agenti agenti   2876 Oct 30 17:59 analista.sh
+-rwxr-xr-x 1 agenti agenti   1733 Nov  1 15:43 audit_catena.sh
+-rw-r--r-- 1 agenti agenti 177876 Nov  3 17:20 catalogo_freellmapi.json
+-rwxr-xr-x 1 agenti agenti    363 Oct 30 18:17 catena_completa.sh
+-rw-r--r-- 1 agenti agenti   4375 Nov  2 17:27 cerca.sh
+-rwxr-xr-x 1 agenti agenti   3255 Nov  1 17:07 cura_catena.sh
+-rw-r--r-- 1 agenti agenti   4147 Nov  1 23:21 deepdog_ricerca.sh
+-rwxr-xr-x 1 agenti agenti   4742 Oct 31 21:39 deepopen_prova.sh
+-rwxr-xr-x 1 agenti agenti   1694 Nov  1 15:14 giudice_lusso.sh
+-rwxr-xr-x 1 agenti agenti   2177 Nov  1 12:13 miniera_catena.sh
+-rwxr-xr-x 1 agenti agenti   1246 Nov  2 11:55 modelli_aihorde.py
+-rwxr-xr-x 1 agenti agenti  21158 Nov  1 22:39 occhi_fb.sh
+-rwxr-xr-x 1 agenti agenti   1909 Oct 30 18:44 revisore.sh
+-rwxr-xr-x 1 agenti agenti   2499 Nov  2 11:55 scorta_cervello.sh
+-rwxr-xr-x 1 agenti agenti   1469 Nov  3 17:20 scorta_motore.sh
+-rwxr-xr-x 1 agenti agenti   3833 Nov  3 15:27 scorta_posta.sh
+-rw-r--r-- 1 agenti agenti   5189 Nov  3 17:05 sentinella_chiavi.sh
+-rw-r--r-- 1 agenti agenti   3527 Nov  3 17:05 sentinella_servizi.sh
+-rwxr-xr-x 1 agenti agenti    954 Oct 30 18:03 seriale.sh
+-rwxr-xr-x 1 agenti agenti   4053 Oct 31 22:00 setaccio_vena.sh
+[0m
+[0m→ [0mRead fatti/prova_nonverdi.txt
+---prompt---
+Sei l'agente "AnyAPI". Devi spiegare l'errore di AnyAPI e trovare come si usa.
+LEGGI PRIMA: ~/posta/fatti/prova_nonverdi.txt (la sezione "== anyapi"). Ci sono i
+modelli gratuiti e l'esito di una chat vera per ciascuno.
+FATTI: base https://api.anyapi.ai/v1 ; la riga del roster è
+anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|modelli||free-ricorrente|
+Il 3/11 la chat dava 429 "Rate limit reached: free-tier daily cap is shared
+across users" (il tetto giornaliero del free è condiviso fra tutti gli utenti).
+IL TUO COMPITO:
+1. Spiega l'errore: cosa significa "free-tier daily cap is shared across users",
+   quando si azzera, se conviene riprovare più tardi, e che modelli gratuiti
+   esistono davvero (id esatti presi da /models e dal catalogo
+   ~/posta/lavori/catalogo_freellmapi.json).
+2. Prova tu stesso (bash + python3 urllib, NON stampare la chiave: si prende con
+   "python3 ~/posta/chiave_di.py AnyAPI") altri modelli gratuiti finche' non ne
+   trovi uno che risponde 200 con un contenuto vero.
+3. Verifica se esiste un modo per NON incappare nel tetto condiviso (header,
+   endpoint diversi, modelli con quota propria, piano free separato).
+4. SCRIVI il referto in ~/posta/fatti/rel_anyapi.md (cartella del repo: puoi
+   scrivere solo li', non in /tmp): l'errore spiegato, gli id gratuiti che
+   rispondono, il modello da mettere nel roster, e cosa fare quando il tetto
+   si esaurisce. Massimo 600 parole. Non stampare chiavi.
+[0m
+[0m$ [0msed -n '1,200p' /home/agenti/posta/chiave_di.py
+(no output)
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json
+p='/home/agenti/posta/lavori/catalogo_freellmapi.json'
+d=json.load(open(p))
+print(type(d))
+if isinstance(d,dict): print(list(d.keys())[:20])
+EOF
+<class 'dict'>
+['generato', 'versione', 'tier', 'provider', 'quirk']
+[0m
+[0m→ [0mRead chiave_di.py
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json
+p='/home/agenti/posta/lavori/catalogo_freellmapi.json'
+d=json.load(open(p))
+print('providers type', type(d['provider']))
+prov=d['provider']
+if isinstance(prov,dict):
+    for k in prov:
+        if 'anyapi' in k.lower(): print('KEY',k)
+else:
+    print(len(prov))
+    for x in prov:
+        s=json.dumps(x).lower()
+        if 'anyapi' in s: print(json.dumps(x)[:2000])
+EOF
+providers type <class 'dict'>
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json
+d=json.load(open('/home/agenti/posta/lavori/catalogo_freellmapi.json'))
+prov=d['provider']
+for k,v in prov.items():
+    if 'anyapi' in k.lower(): print('KEY',k, type(v)); print(json.dumps(v)[:3000])
+print('all provider keys sample:', list(prov.keys())[:40])
+EOF
+(no output)
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json
+d=json.load(open('/home/agenti/posta/lavori/catalogo_freellmapi.json'))
+s=json.dumps(d)
+print('anyapi occurrences', s.lower().count('anyapi'))
+EOF
+anyapi occurrences 0
+[0m
+[0m$ [0mpython3 -c "import json;d=json.load(open('/home/agenti/posta/lavori/catalogo_freellmapi.json'));p=d['provider'];print(len(p));print(list(p)[:60])"
+33
+['google', 'ovh', 'cloudflare', 'groq', 'openrouter', 'cohere', 'llm7', 'mistral', 'zhipu', 'nvidia', 'agnes', 'bazaarlink', 'aihorde', 'kilo', 'aion', 'requesty', 'sealion', 'nara', 'xkiro', 'unorouter', 'routeway', 'electronhub', 'router9', 'septor', 'clod', 'speechify', 'airforce', 'dreamprompting', 'waterfall', 'logfare', 'moondream', 'speka', 'llmtr']
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+print('key len',len(key),'prefix',key[:3])
+base='https://api.anyapi.ai/v1'
+req=urllib.request.Request(base+'/models',headers={'Authorization':'Bearer '+key})
+with urllib.request.urlopen(req,timeout=30) as r:
+    print('models status',r.status)
+    print('ratelimit headers',{k:v for k,v in r.headers.items() if 'rate' in k.lower() or 'quota' in k.lower() or 'limit' in k.lower()})
+    d=json.load(r)
+data=d.get('data',d)
+print('count',len(data))
+for m in data:
+    print(m.get('id'), '|', m.get('name',''))
+EOF
+key len 25 prefix sk-
+models status 200
+ratelimit headers {}
+count 10
+google/gemma-4-26b-a4b-it:free | 
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free | 
+nvidia/nemotron-3-ultra-550b-a55b:free | 
+dots-studio/dots-3-note-preview:free | 
+nvidia/nemotron-3.5-lightning:free | 
+recursive/flint-v1.0:free | 
+xingchen-agi/xing4.0-29b-a4b:free | 
+respan/span-01-lite | 
+respan/span-01-lite:free | 
+convai/laya |
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+models=['google/gemma-4-26b-a4b-it:free','nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free','nvidia/nemotron-3-ultra-550b-a55b:free','dots-studio/dots-3-note-preview:free','nvidia/nemotron-3.5-lightning:free','recursive/flint-v1.0:free','xingchen-agi/xing4.0-29b-a4b:free','respan/span-01-lite:free','respan/span-01-lite','convai/laya']
+for m in models:
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Reply with exactly: OK'}],'max_tokens':32}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    t=time.time()
+    try:
+        with urllib.request.urlopen(req,timeout=45) as r:
+            raw=r.read().decode('utf-8','replace')
+            hd={k:v for k,v in r.headers.items() if 'rate' in k.lower() or 'quota' in k.lower() or 'retry' in k.lower() or 'limit' in k.lower()}
+            print('===',m,'HTTP',r.status,'%.1fs'%(time.time()-t),'headers',hd)
+            try:
+                d=json.loads(raw); c=d['choices'][0]['message'].get('content')
+                print('  CONTENT:',repr((c or '')[:200]))
+            except Exception as e: print('  RAW:',raw[:300])
+    except urllib.error.HTTPError as e:
+        raw=e.read().decode('utf-8','replace')
+        hd={k:v for k,v in e.headers.items() if 'rate' in k.lower() or 'quota' in k.lower() or 'retry' in k.lower() or 'limit' in k.lower()}
+        print('===',m,'HTTP',e.code,'%.1fs'%(time.time()-t),'headers',hd)
+        print('  BODY:',raw[:500])
+    except Exception as e:
+        print('===',m,'ERR',type(e).__name__,e)
+EOF
+=== google/gemma-4-26b-a4b-it:free HTTP 429 0.8s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free HTTP 429 1.1s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== nvidia/nemotron-3-ultra-550b-a55b:free HTTP 429 1.3s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== dots-studio/dots-3-note-preview:free HTTP 429 1.2s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== nvidia/nemotron-3.5-lightning:free HTTP 429 2.3s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== recursive/flint-v1.0:free HTTP 429 1.3s headers {'x-should-retry': 'false'}
+  BODY: {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+=== xingchen-agi/xing4.0-29b-a4b:free HTTP 200 4.5s headers {'x-ratelimit-team-remaining-tokens': '99998', 'x-ratelimit-team-limit-tokens': '100000'}
+  CONTENT: 'OK'
+=== respan/span-01-lite:free HTTP 404 0.5s headers {}
+  BODY: {"error":{"message":"This model answers only /v1/decisions and /v1/systemone.","type":"endpoint_not_available","param":"model","code":"404"}}
+=== respan/span-01-lite HTTP 404 0.4s headers {}
+  BODY: {"error":{"message":"This model answers only /v1/decisions and /v1/systemone.","type":"endpoint_not_available","param":"model","code":"404"}}
+=== convai/laya HTTP 404 0.4s headers {}
+  BODY: {"error":{"message":"This model answers only /v1/decisions and /v1/systemone.","type":"endpoint_not_available","param":"model","code":"404"}}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+req=urllib.request.Request(base+'/models',headers={'Authorization':'Bearer '+key})
+d=json.load(urllib.request.urlopen(req,timeout=30))
+for m in d.get('data',d):
+    print(json.dumps(m,ensure_ascii=False)[:1200]); print()
+EOF
+{"id": "google/gemma-4-26b-a4b-it:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:function_calling"], "mode": "chat", "max_input_tokens": 262144, "max_output_tokens": 32768}
+
+{"id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["assistant_prefill", "chat_completions:assistant_prefill", "chat_completions:reasoning", "chat_completions:streaming", "chat_completions:vision", "messages:assistant_prefill", "messages:reasoning", "messages:streaming", "messages:vision", "reasoning", "responses:assistant_prefill", "responses:reasoning", "responses:streaming", "responses:vision", "streaming", "vision"], "mode": "chat"}
+
+{"id": "nvidia/nemotron-3-ultra-550b-a55b:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:assistant_prefill", "chat_completions:function_calling", "chat_completions:reasoning", "chat_completions:web_search", "responses:function_calling"], "mode": "chat"}
+
+{"id": "dots-studio/dots-3-note-preview:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:function_calling", "chat_completions:pdf_input", "chat_completions:reasoning", "chat_completions:streaming", "chat_completions:tool_choice", "chat_completions:vision", "chat_completions:web_search", "function_calling", "messages:function_calling", "messages:pdf_input", "messages:reasoning", "messages:streaming", "messages:tool_choice", "messages:vision", "messages:web_search", "reasoning", "responses:function_calling", "responses:reasoning", "responses:streaming", "streaming"], "mode": "chat"}
+
+{"id": "nvidia/nemotron-3.5-lightning:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:function_calling", "chat_completions:parallel_function_calling", "chat_completions:pdf_input", "chat_completions:reasoning", "chat_completions:streaming", "chat_completions:tool_choice", "chat_completions:web_search", "function_calling", "messages:function_calling", "messages:parallel_function_calling", "messages:pdf_input", "messages:reasoning", "messages:streaming", "messages:tool_choice", "messages:web_search", "parallel_function_calling", "pdf_input", "reasoning", "responses:function_calling", "responses:parallel_function_calling", "responses:pdf_input", "responses:reasoning", "responses:streaming", "responses:tool_choice", "responses:web_search", "streaming", "tool_choice", "web_search"], "mode": "chat", "max_input_tokens": 1000000, "max_output_tokens": 65536}
+
+{"id": "recursive/flint-v1.0:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:function_calling", "chat_completions:parallel_function_calling", "chat_completions:pdf_input", "chat_completions:reasoning", "chat_completions:streaming", "chat_completions:tool_choice", "chat_completions:web_search", "function_calling", "messages:function_calling", "messages:parallel_function_calling", "messages:pdf_input", "messages:reasoning", "messages:streaming", "messages:tool_choice", "messages:web_search", "parallel_function_calling", "pdf_input", "reasoning", "responses:function_calling", "responses:parallel_function_calling", "responses:pdf_input", "responses:reasoning", "responses:streaming", "responses:tool_choice", "responses:web_search", "streaming", "tool_choice", "web_search"], "mode": "chat", "max_input_tokens": 262144, "max_output_tokens": 235929}
+
+{"id": "xingchen-agi/xing4.0-29b-a4b:free", "object": "model", "created": 1677610602, "owned_by": "openai", "tags": ["chat_completions:parallel_function_calling", "chat_completions:reasoning", "chat_completions:streaming", "chat_completions:tool_choice", "messages:parallel_function_calling", "messages:reasoning", "messages:streaming", "messages:tool_choice", "parallel_function_calling", "reasoning", "responses:parallel_function_calling", "responses:reasoning", "responses:streaming", "responses:tool_choice", "streaming", "tool_choice"], "mode": "chat", "max_input_tokens": 262144, "max_output_tokens": 235929}
+
+{"id": "respan/span-01-lite", "object": "model", "created": 1677610602, "owned_by": "openai", "mode": "decisions"}
+
+{"id": "respan/span-01-lite:free", "object": "model", "created": 1677610602, "owned_by": "openai", "mode": "decisions"}
+
+{"id": "convai/laya", "object": "model", "created": 1677610602, "owned_by": "openai", "mode": "decisions", "max_input_tokens": 8192}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+for i in range(2):
+    body=json.dumps({'model':'xingchen-agi/xing4.0-29b-a4b:free','messages':[{'role':'user','content':'In una frase: qual e la capitale dell Italia?'}],'max_tokens':80}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=60) as r:
+            d=json.load(r); print('call',i+1,'HTTP',r.status,'hdr',{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()})
+            print(' content:',repr(d['choices'][0]['message'].get('content'))[:400])
+            print(' usage:',d.get('usage'))
+    except urllib.error.HTTPError as e:
+        print('call',i+1,'HTTP',e.code,e.read().decode()[:300])
+    time.sleep(1)
+EOF
+call 1 HTTP 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+call 2 HTTP 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request
+for u in ['https://anyapi.ai','https://anyapi.ai/docs','https://api.anyapi.ai','https://anyapi.ai/pricing']:
+  try:
+    req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'})
+    with urllib.request.urlopen(req,timeout=20) as r:
+      b=r.read(4000).decode('utf-8','replace')
+      print('===',u,r.status,len(b)); print(b[:800].replace('\n',' '))
+  except Exception as e: print('===',u,'ERR',e)
+EOF
+=== https://anyapi.ai 200 3959
+<!DOCTYPE html><!-- Last Published: Wed Oct 28 2026 09:31:13 GMT+0000 (Coordinated Universal Time) --><html data-wf-domain="anyapi.ai" data-wf-page="68512c600b9f5b4525767015" data-wf-site="68512c600b9f5b4525766f6e" lang="en"><head><meta charset="utf-8"/><link href="https://cdn.prod.website-files.com" rel="preconnect" crossorigin="anonymous"/><title>AnyAPI — One API for 400+ AI Models | AnyAPI.ai</title><meta content="Power your product with access to 400+ AI models via scalable, low-latency APIs. Bring GPT, Claude, and other top AIs into your app  with one integration." name="description"/><meta content="AnyAPI — One API for 400+ AI Models | AnyAPI.ai" property="og:title"/><meta content="Power your product with access to 400+ AI models via scalable, low-latency APIs. Bring GPT, Claude, and
+=== https://anyapi.ai/docs ERR HTTP Error 404: Not Found
+=== https://api.anyapi.ai ERR HTTP Error 403: Forbidden
+=== https://anyapi.ai/pricing 200 3959
+<!DOCTYPE html><!-- Last Published: Wed Oct 28 2026 09:31:13 GMT+0000 (Coordinated Universal Time) --><html data-wf-domain="anyapi.ai" data-wf-page="68a2ef4568b8b13ac279dbef" data-wf-site="68512c600b9f5b4525766f6e" lang="en"><head><meta charset="utf-8"/><link href="https://cdn.prod.website-files.com" rel="preconnect" crossorigin="anonymous"/><title>Pricing | AnyAPI.ai</title><meta content="Simple, predictable pricing for 400+ AI models. One API key, unified billing, real-time usage tracking. Free tier available. No hidden costs — start in minutes!" name="description"/><meta content="Pricing | AnyAPI.ai" property="og:title"/><meta content="Simple, predictable pricing for 400+ AI models. One API key, unified billing, real-time usage tracking. Free tier available. No hidden costs — start in m
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+for path in ['/decisions','/systemone']:
+  for m in ['respan/span-01-lite:free','respan/span-01-lite','convai/laya']:
+    for payload in [
+      {'model':m,'input':'Say OK'},
+      {'model':m,'messages':[{'role':'user','content':'Say OK'}]},
+      {'model':m,'prompt':'Say OK'},
+    ]:
+      body=json.dumps(payload).encode()
+      req=urllib.request.Request(base+path,data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+      try:
+        with urllib.request.urlopen(req,timeout=30) as r:
+          raw=r.read().decode('utf-8','replace')
+          print(path,m,list(payload)[1],'HTTP',r.status,raw[:200])
+      except urllib.error.HTTPError as e:
+        print(path,m,list(payload)[1],'HTTP',e.code,e.read().decode('utf-8','replace')[:160])
+      except Exception as e:
+        print(path,m,'ERR',type(e).__name__,e)
+EOF
+/decisions respan/span-01-lite:free input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions respan/span-01-lite:free messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions respan/span-01-lite:free prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions respan/span-01-lite input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions respan/span-01-lite messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions respan/span-01-lite prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions convai/laya input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions convai/laya messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/decisions convai/laya prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite:free input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite:free messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite:free prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone respan/span-01-lite prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone convai/laya input HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone convai/laya messages HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+/systemone convai/laya prompt HTTP 400 {"error":{"message":"Bad Request","type":"invalid_request_error","param":null,"code":"400"}}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,re,html
+for u in ['https://anyapi.ai/pricing','https://anyapi.ai']:
+    req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'})
+    b=urllib.request.urlopen(req,timeout=25).read().decode('utf-8','replace')
+    b=re.sub(r'<script.*?</script>',' ',b,flags=re.S|re.I)
+    b=re.sub(r'<style.*?</style>',' ',b,flags=re.S|re.I)
+    t=re.sub(r'<[^>]+>','\n',b)
+    t=html.unescape(t)
+    lines=[x.strip() for x in t.splitlines() if x.strip()]
+    print('=====',u)
+    for x in lines:
+        if any(w in x.lower() for w in ['free','daily','limit','reset','rate','quota','day','credit','trial','shared','cap']):
+            print(x[:300])
+EOF
+===== https://anyapi.ai/pricing
+Compare models by price, speed, and capabilities
+Compare models by price, speed, and capabilities
+Free
+100K / day
+Unlimited
+free models
+No credit card required
+Limited API calls
+Start for free
+Unlimited
+Unlimited
+Shared infrastructure
+Unlimited
+Unlimited
+We design, deploy, and operate your AI stack — ready for production from day one.
+Let models operate a desktop: screenshot, click, type, scroll—end-to-end task execution.
+Let models operate a desktop: screenshot, click, type, scroll—end-to-end task execution.
+Let models operate a desktop: screenshot, click, type, scroll—end-to-end task execution.
+Let models operate a desktop: screenshot, click, type, scroll—end-to-end task execution.
+API Credits Pricing
+From API credits to model performance and integration steps, here are the answers developers and startups ask most.
+Google: Gemma 3n 4B (free)
+inclusionAI: Ling 3.0 Flash Fin (free)
+inclusionAI: Ling 3.0 Flash Sante (free)
+From API credits to model performance and integration steps, here are the answers developers and startups ask most.
+What is a credit?
+A credit is our universal currency for API usage across all 400+ models. Think of it as a unified token that abstracts away the complexity of different pricing models. One credit equals roughly 1,000 tokens for most models, but premium models like GPT-4 or Claude 3 Opus consume more credits per toke
+Yes, Playground usage consumes AnyTokens just like API calls—we believe in transparent pricing with no hidden costs. However, Free plan users get unlimited access to free-tier models in the Playground, so you can experiment without worry.
+Head to your Dashboard → Settings → Billing to view your current plan, usage history, and payment methods. You can upgrade, downgrade, or cancel anytime. Changes take effect at your next billing cycle, and we'll prorate any differences.
+Can I integrate my own model or API key?
+You can switch plans anytime from your dashboard. Upgrades take effect immediately with prorated charges. Downgrades apply at your next billing cycle, and unused AnyTokens from higher tiers roll over for up to 30 days.
+What happens if I exceed my AnyTokens limit?
+We've got you covered. You'll receive alerts at 75% and 90% usage. When you hit your limit, Pay-as-you-go customers are charged automatically for overages. Plan subscribers can enable auto-top-up or upgrade their plan. Your API calls won't be interrupted.
+Start Building with AnyAPI Today
+Start for free
+Qwen: Qwen3.8 27B (free)
+inclusionAI: Ling 3.0 Flash Fin (free)
+inclusionAI: Ling 3.0 Flash Sante (free)
+===== https://anyapi.ai
+Compare models by price, speed, and capabilities
+Compare models by price, speed, and capabilities
+anyapi models ls --capability vision
+Integrate AI into every part of your stack
+Get free API key
+Qwen: Qwen3.8 27B (free)
+inclusionAI: Ling 3.0 Flash Fin (free)
+inclusionAI: Ling 3.0 Flash Sante (free)
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+models=['xingchen-agi/xing4.0-29b-a4b:free','nvidia/nemotron-3.5-lightning:free','google/gemma-4-26b-a4b-it:free','recursive/flint-v1.0:free']
+for rnd in range(3):
+  print('--- round',rnd+1)
+  for m in models:
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Rispondi solo: OK'}],'max_tokens':16}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+      with urllib.request.urlopen(req,timeout=40) as r:
+        d=json.load(r)
+        print(m,'200', {k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()}, repr(d['choices'][0]['message'].get('content'))[:80], d.get('usage'))
+    except urllib.error.HTTPError as e:
+      print(m,e.code,{k:v for k,v in e.headers.items() if 'ratelimit' in k.lower()}, e.read().decode()[:100])
+    except Exception as e: print(m,'ERR',type(e).__name__,e)
+    time.sleep(1)
+  time.sleep(4)
+EOF
+--- round 1
+xingchen-agi/xing4.0-29b-a4b:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+nvidia/nemotron-3.5-lightning:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+google/gemma-4-26b-a4b-it:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+recursive/flint-v1.0:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+--- round 2
+xingchen-agi/xing4.0-29b-a4b:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+nvidia/nemotron-3.5-lightning:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+google/gemma-4-26b-a4b-it:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+recursive/flint-v1.0:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+--- round 3
+xingchen-agi/xing4.0-29b-a4b:free 200 {'x-ratelimit-team-remaining-tokens': '99995', 'x-ratelimit-team-limit-tokens': '100000'} "1.  **Analyze the user's input:** The user replied with" {'completion_tokens': 16, 'prompt_tokens': 13, 'total_tokens': 29, 'completion_tokens_details': {'audio_tokens': 0, 'reasoning_tokens': 16, 'image_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0, 'video_tokens': 0, 'cache_write_tokens': 0, 'cache_creation_tokens': 0}, 'context_window_size': 262144, 'cost': 0.0}
+nvidia/nemotron-3.5-lightning:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+google/gemma-4-26b-a4b-it:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+recursive/flint-v1.0:free 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a pai
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+m='xingchen-agi/xing4.0-29b-a4b:free'
+ok=0
+for i in range(15):
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Scrivi una frase di augurio in italiano.'}],'max_tokens':60}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=60) as r:
+            d=json.load(r); ok+=1
+            h={k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()}
+            print(i+1,'200',h,repr(d['choices'][0]['message'].get('content'))[:160],'usage',d.get('usage',{}).get('total_tokens'))
+    except urllib.error.HTTPError as e:
+        print(i+1,e.code,e.read().decode()[:110])
+    except Exception as e: print(i+1,'ERR',e)
+    time.sleep(2)
+print('successi',ok,'/15')
+EOF
+1 200 {'x-ratelimit-team-remaining-tokens': '99999', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+2 200 {'x-ratelimit-team-remaining-tokens': '99998', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+3 200 {'x-ratelimit-team-remaining-tokens': '99999', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+4 200 {'x-ratelimit-team-remaining-tokens': '99999', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+5 200 {'x-ratelimit-team-remaining-tokens': '99997', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+6 200 {'x-ratelimit-team-remaining-tokens': '99996', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+7 200 {'x-ratelimit-team-remaining-tokens': '99995', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+8 200 {'x-ratelimit-team-remaining-tokens': '99994', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+9 200 {'x-ratelimit-team-remaining-tokens': '99998', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+10 200 {'x-ratelimit-team-remaining-tokens': '99997', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+11 200 {'x-ratelimit-team-remaining-tokens': '99998', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+12 200 {'x-ratelimit-team-remaining-tokens': '99997', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+13 200 {'x-ratelimit-team-remaining-tokens': '99996', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+14 200 {'x-ratelimit-team-remaining-tokens': '99993', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+15 200 {'x-ratelimit-team-remaining-tokens': '99992', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Request:**\n    *   **Task:** Write an Italian greeting/well-wishing phrase (frase di augurio).\n    *   **Language:** Italian.\n    *   **Co usage 79
+successi 15 /15
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+models=['google/gemma-4-26b-a4b-it:free','nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free','nvidia/nemotron-3-ultra-550b-a55b:free','dots-studio/dots-3-note-preview:free','nvidia/nemotron-3.5-lightning:free','recursive/flint-v1.0:free','xingchen-agi/xing4.0-29b-a4b:free']
+for m in models:
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Say OK'}],'max_tokens':16}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=45) as r:
+            d=json.load(r)
+            print(m,'200',{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()},repr(d['choices'][0]['message'].get('content'))[:60])
+    except urllib.error.HTTPError as e:
+        print(m,e.code,e.read().decode()[:120])
+    time.sleep(1)
+EOF
+google/gemma-4-26b-a4b-it:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+nvidia/nemotron-3-ultra-550b-a55b:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+dots-studio/dots-3-note-preview:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+nvidia/nemotron-3.5-lightning:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+recursive/flint-v1.0:free 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best per
+xingchen-agi/xing4.0-29b-a4b:free 200 {'x-ratelimit-team-remaining-tokens': '99998', 'x-ratelimit-team-limit-tokens': '100000'} '1.  **Analyze the Input**: The user said "Say OK".'
+[0m
+[0m% [0mWebFetch https://anyapi.ai/pricing
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,re
+b=urllib.request.urlopen(urllib.request.Request('https://anyapi.ai',headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode('utf-8','replace')
+links=sorted(set(re.findall(r'href="([^"]+)"',b)))
+for l in links:
+    if any(w in l.lower() for w in ['doc','faq','pricing','free','model','guide','blog']): print(l)
+EOF
+/ai-models
+/ai-models/anthropic-claude-fable-5-1
+/ai-models/anthropic-claude-opus-4-8
+/ai-models/anthropic-claude-opus-4-8-fast
+/ai-models/anthropic-claude-opus-5-5
+/ai-models/google-gemini-3-8-flash
+/ai-models/inclusionai-ling-3-0-flash-fin-free
+/ai-models/inclusionai-ling-3-0-flash-sante-free
+/ai-models/nvidia-nemotron-3-nano-30b-a3b
+/ai-models/openai-gpt-6-astra
+/ai-models/qwen-qwen3-8-27b-free
+/ai-models/xai-grok-4-7
+/ai-models/xiaomi-mimo-v2-6-flash
+/ai-models/xiaomi-mimo-v2-6-pro
+/ai-models/z-ai-glm-5-3-flash
+/ai-models/z-ai-glm-5-3-flashx
+/blog
+/blog/ai-agent-orchestration-transitioning-from-simple-scripts-to-langgraph-and-autogen
+/blog/how-much-does-an-ai-agent-actually-cost-the-full-breakdown
+/blog/the-real-cost-of-failed-llm-requests-hidden-losses-and-how-to-stop-them
+/pricing
+https://docs.anyapi.ai/
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,re,html
+for u in ['https://docs.anyapi.ai/','https://docs.anyapi.ai/llms.txt','https://docs.anyapi.ai/sitemap.xml']:
+  try:
+    b=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode('utf-8','replace')
+    print('===',u,len(b)); print(b[:1500])
+  except Exception as e: print('===',u,'ERR',e)
+EOF
+=== https://docs.anyapi.ai/ 238299
+<!doctype html>
+<html
+  lang="en"
+  class="dark"
+  data-banner-state="visible"
+  data-assistant-state="closed"
+  data-page-mode="none"
+  data-current-path="/"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>AnyAPI Documentation</title>
+    <script>(function(c){var P=c.primary,F=c.fallbacks,found,probes={},checks={},down,reported;window.__mintAssets=P;function owned(el){return !el.closest('#root')&&!el.hasAttribute('data-precedence')}function type(r){return (r.headers.get('content-type')||'').toLowerCase()}function fits(r,rest){var t=type(r),f=rest.split('?')[0];return r.ok&&(/\.css$/.test(f)?t.indexOf('text/css')>=0:/\.m?js$/.test(f)?/javascript|ecmascript/.test(t):t.indexOf('text/html')<0)}function broken(rest){return down?Promise.resolve(true):checks[rest]||(checks[rest]=fetch(P+rest).then(function(r){return !fits(r,rest)&&(!r.headers.has('x-mintlify-client-version')||type(r).indexOf('text/html')>=0)},function(){return false}).then(function(yes){if(yes)down=true;else delete checks[rest];return yes}))}function adopt(b){found=b;window.__mintAssets=b;var s=document.querySelectorAll('style');for(var i=0;i<s.length;i++)if(owned(s[i])&&s[i].textContent.indexOf(P)>=0)s[i].textContent=s[i].textContent.split(P).join(b);var l=document.querySelectorAll('link[href^="'+P+'"]');for(var j=0;j<l.length;j++)l[j].setAttribute('href',b+l[j].getAttribute('href').slice(P.length))}function pick(rest
+=== https://docs.anyapi.ai/llms.txt 5985
+# AnyAPI Documentation
+
+> AnyAPI is a unified API for over 400 AI models from providers like OpenAI, Anthropic, and Google, with intelligent routing for cost, latency, and uptime optimization.
+
+- [Overview](https://docs.anyapi.ai/get-started/overview.md)
+- [Setting Up](https://docs.anyapi.ai/get-started/quick-start.md): Get started with AnyAPI in minutes. Create your account, get your API key, and make your first request.
+- [FAQ](https://docs.anyapi.ai/get-started/faq.md): Find answers to the most commonly asked questions about our platform, API, and services
+- [Supported SDKs](https://docs.anyapi.ai/get-started/supported-sdks.md): Integrate AnyAPI using OpenAI-compatible SDKs in your favorite programming language
+- [Model routing](https://docs.anyapi.ai/features/model-routing.md)
+- [Latency & Performance](https://docs.anyapi.ai/features/latency-performance.md)
+- [Privacy logging](https://docs.anyapi.ai/features/privacy-logging.md)
+- [Prompt caching](https://docs.anyapi.ai/features/prompt-caching.md)
+- [Working with Files](https://docs.anyapi.ai/features/working-with-files.md): Send PDFs, documents, and audio to models through /v1/chat/completions using the file and input_audio content types
+- [Tool Calling](https://docs.anyapi.ai/features/tool-calling.md)
+- [Structured Outputs](https://docs.anyapi.ai/features/structured-outputs.md)
+- [Web Search](https://docs.anyapi.ai/features/web-search.md)
+- [Uptime Optimization](https://docs.anyapi.ai/features/uptime-optimization.md)
+- [
+=== https://docs.anyapi.ai/sitemap.xml 5781
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+    
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/embeddings/create-embeddings</loc>
+    <lastmod>2026-08-20T12:02:46.526Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/images/create-image</loc>
+    <lastmod>2026-08-20T12:02:46.517Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/models/list-models</loc>
+    <lastmod>2026-08-20T12:02:46.535Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/moderation/check-content-moderation</loc>
+    <lastmod>2026-08-20T12:02:46.555Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/responses/create-response</loc>
+    <lastmod>2026-08-20T12:02:46.544Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/text/[legacy]-create-completion</loc>
+    <lastmod>2026-08-20T12:02:46.508Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/api-reference/text/create-chat-completion</loc>
+    <lastmod>2026-08-20T12:02:46.499Z</lastmod>
+  </url>
+
+  <url>
+    <loc>https://docs.anyapi.ai/features/latency-performance</loc>
+    <lastmod>2026-10-27T09:52:27.421Z</lastmod>
+  </url>
+
+  <url>
+    <loc>ht
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request
+b=urllib.request.urlopen(urllib.request.Request('https://docs.anyapi.ai/llms.txt',headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode()
+print(b)
+EOF
+# AnyAPI Documentation
+
+> AnyAPI is a unified API for over 400 AI models from providers like OpenAI, Anthropic, and Google, with intelligent routing for cost, latency, and uptime optimization.
+
+- [Overview](https://docs.anyapi.ai/get-started/overview.md)
+- [Setting Up](https://docs.anyapi.ai/get-started/quick-start.md): Get started with AnyAPI in minutes. Create your account, get your API key, and make your first request.
+- [FAQ](https://docs.anyapi.ai/get-started/faq.md): Find answers to the most commonly asked questions about our platform, API, and services
+- [Supported SDKs](https://docs.anyapi.ai/get-started/supported-sdks.md): Integrate AnyAPI using OpenAI-compatible SDKs in your favorite programming language
+- [Model routing](https://docs.anyapi.ai/features/model-routing.md)
+- [Latency & Performance](https://docs.anyapi.ai/features/latency-performance.md)
+- [Privacy logging](https://docs.anyapi.ai/features/privacy-logging.md)
+- [Prompt caching](https://docs.anyapi.ai/features/prompt-caching.md)
+- [Working with Files](https://docs.anyapi.ai/features/working-with-files.md): Send PDFs, documents, and audio to models through /v1/chat/completions using the file and input_audio content types
+- [Tool Calling](https://docs.anyapi.ai/features/tool-calling.md)
+- [Structured Outputs](https://docs.anyapi.ai/features/structured-outputs.md)
+- [Web Search](https://docs.anyapi.ai/features/web-search.md)
+- [Uptime Optimization](https://docs.anyapi.ai/features/uptime-optimization.md)
+- [Tag Routing](https://docs.anyapi.ai/features/tag-routing.md): Route requests to backends with specific capabilities like vision, PDF input, or reasoning
+- [Zero Completion Insurance](https://docs.anyapi.ai/features/zero-completion-insurance.md): Automatic protection from being charged for failed, empty, or error AI responses
+- [Create Images](https://docs.anyapi.ai/use-cases/create-images.md): Generate stunning images from text descriptions using AI image models
+- [Animate Images](https://docs.anyapi.ai/use-cases/animate-images.md): Create dynamic animations, video content, and motion graphics using AI
+- [Create Assistant](https://docs.anyapi.ai/use-cases/create-assistant.md): Build intelligent AI assistants with custom personalities, knowledge, and capabilities
+- [3D Models](https://docs.anyapi.ai/use-cases/3d-models.md): Generate, manipulate, and optimize 3D models using AI for games, product design, and visualization
+- [Semantic Search](https://docs.anyapi.ai/use-cases/semantic-search.md): Build intelligent search systems that understand meaning and context using AI embeddings
+- [Create Embeddings](https://docs.anyapi.ai/use-cases/create-embeddings.md): Convert text to numerical vectors for search, similarity, and classification with AnyAPI
+- [Quick Start](https://docs.anyapi.ai/guides/quick-start.md): Get started with AnyAPI.ai in under 5 minutes
+- [Authentication](https://docs.anyapi.ai/guides/authentication.md): Learn how to authenticate your requests to AnyAPI
+- [Model Parameters](https://docs.anyapi.ai/guides/parameters.md): Complete reference for all model parameters available in AnyChat and API requests.
+- [Errors](https://docs.anyapi.ai/guides/errors.md)
+- [Overview](https://docs.anyapi.ai/integrations/overview.md): Connect AnyAPI with popular AI tools and automation platforms
+- [Claude Code](https://docs.anyapi.ai/integrations/claude-code.md): Use AnyAPI models in Claude Code — Anthropic's terminal-native AI coding agent
+- [VS Code Integration](https://docs.anyapi.ai/integrations/vscode.md): Use AnyAPI models in VS Code with Cline, Continue.dev, GitHub Copilot BYOK, and other AI plugins
+- [n8n Integration](https://docs.anyapi.ai/integrations/n8n.md): Automate AI workflows with AnyAPI and n8n's visual workflow builder
+- [Hermes Agent](https://docs.anyapi.ai/integrations/hermes.md): Connect AnyAPI as a custom provider in Hermes Agent for multi-model access
+- [OpenClaw](https://docs.anyapi.ai/integrations/openclaw.md): Connect AnyAPI as a custom provider in OpenClaw for multi-model AI agent workflows
+- [Hermes Agent Plugin](https://docs.anyapi.ai/plugins/hermes.md): Install the community AnyAPI provider plugin for Hermes Agent
+- [Cline](https://docs.anyapi.ai/plugins/cline.md): Connect AnyAPI as a built-in provider in Cline for VS Code
+- [Kilo Code](https://docs.anyapi.ai/plugins/kilo-code.md): Connect AnyAPI as a provider in Kilo Code's terminal UI
+- [OpenCode](https://docs.anyapi.ai/plugins/opencode.md): Connect AnyAPI as a built-in provider in OpenCode via /connect
+- [Create chat completion](https://docs.anyapi.ai/api-reference/text/create-chat-completion.md): Creates a model response for the given chat conversation
+- [[LEGACY] Create completion](https://docs.anyapi.ai/api-reference/text/[legacy]-create-completion.md): Create text completion from a single prompt .
+- [Create image](https://docs.anyapi.ai/api-reference/images/create-image.md): Creates an image given a text prompt. Supports streaming responses for real-time generation updates.
+- [Create embeddings](https://docs.anyapi.ai/api-reference/embeddings/create-embeddings.md): Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
+- [List models](https://docs.anyapi.ai/api-reference/models/list-models.md): Lists the currently available models, and provides basic information about each one such as the owner and availability.
+- [Create response](https://docs.anyapi.ai/api-reference/responses/create-response.md): Creates a comprehensive AI response with support for conversations, tools, files, and streaming
+- [Check content moderation](https://docs.anyapi.ai/api-reference/moderation/check-content-moderation.md): The moderations endpoint is a tool you can use to check whether content complies with an LLM Providers policies
+
+## OpenAPI Specs
+
+- [openapi](/openapi.json)
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request
+for u in ['https://docs.anyapi.ai/get-started/faq.md','https://docs.anyapi.ai/guides/errors.md','https://docs.anyapi.ai/features/uptime-optimization.md','https://docs.anyapi.ai/get-started/overview.md']:
+  try:
+    b=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode()
+    print('\n=====',u,'len',len(b))
+    import re
+    for m in re.finditer(r'(?i)(free|rate.?limit|429|daily|reset|quota|cap|shared)',b):
+      s=max(0,m.start()-250); e=min(len(b),m.end()+350)
+      print('...',b[s:e].replace('\n',' '),'...')
+      break
+    # print whole if short
+    if len(b)<6000: print(b)
+  except Exception as e: print(u,'ERR',e)
+EOF
+===== https://docs.anyapi.ai/get-started/faq.md len 9794
+... a unified API interface to access multiple AI models and services through a single endpoint. We offer automatic failover, intelligent routing, and cost optimization across hundreds of different AI models and providers, making it easy to integrate AI capabilities into your applications.  > [accordion] Why should I use AnyAPI? > > * **Unified Interface**: Access all major AI models through one consistent API > * **Automatic Fallbacks**: Built-in redundancy ensures high availability > * **Cost Optimization**: Intelligent routing to find the most cost-effective options > * **Simplified Billing**: One ...
+
+===== https://docs.anyapi.ai/guides/errors.md len 15172
+... m"} {   "error": {     "code": 422,     "message": "Model does not support the requested feature",     "type": "unsupported_feature_error",     "metadata": {       "feature": "function_calling",       "model": "some/model-name"     }   } } ```  #### 429 Too Many Requests  Slow down there, speed racer. You're hitting the rate limit.  ```json theme={"system"} {   "error": {     "code": 429,     "message": "Rate limit exceeded. Try again in 60 seconds.",     "type": "rate_limit_error",     "metadata": {       "retry_after": 60,       "limit_type": "requests_per_minute",       "current_usage": 1000,  ...
+
+===== https://docs.anyapi.ai/features/uptime-optimization.md len 7509
+... )     response.raise_for_status()     result = response.json()      except requests.exceptions.HTTPError as e:     if e.response.status_code == 503:         print("The entire AI universe is down. Time for coffee.")     elif e.response.status_code == 429:         print("Everyone's getting rate limited. Slow down, cowboy.")     else:         print(f"Something weird happened: {e}") ```  ## Pro Tips  1. **Add Retry Logic:** Use exponential backoff—be persistent but not annoying 2. **Watch the Headers:** Learn which providers work best for your use case 3. **Set Smart Timeouts:** Don't wait forever, b ...
+
+===== https://docs.anyapi.ai/get-started/overview.md len 5240
+... ocumentation Index > Fetch the complete documentation index at: https://docs.anyapi.ai/llms.txt > Use this file to discover all available pages before exploring further.  # Overview  # Build intelligent applications with the world’s most advanced AI capabilities.  Access over 400 AI models through a single, unified API.  AnyAPI simplifies AI integration by providing a single, unified interface to access hundreds of leading AI models from providers like OpenAI, Anthropic, Google, Cohere, and more. Our intelligent routing system automatically handles model fallbacks, optimizes for cost-effectivenes ...
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.anyapi.ai/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Overview
+
+# Build intelligent applications with the world’s most advanced AI capabilities.
+
+Access over 400 AI models through a single, unified API.
+
+AnyAPI simplifies AI integration by providing a single, unified interface to access hundreds of leading AI models from providers like OpenAI, Anthropic, Google, Cohere, and more.
+Our intelligent routing system automatically handles model fallbacks, optimizes for cost-effectiveness, and ensures high availability—all through one consistent API endpoint.
+
+## AI Model Categories
+
+> [card] [Text Generation & Completion](https://docs.anyapi.ai/api-reference/models/text-models/overview)
+>
+> Unlock human-level language understanding and generation for any task, from writing to reasoning.
+
+> [card] [Image & Visual AI](https://docs.anyapi.ai/api-reference/models/image-models/overview)
+>
+> Transform your visual workflows with cutting-edge image generation and analysis capabilities.
+
+> [card] [Audio & Speech](https://docs.anyapi.ai/api-reference/models/audio-models/overview)
+>
+> Enable voice-powered experiences with advanced audio processing capabilities.
+
+> [card] [Embedding](https://docs.anyapi.ai/api-reference/models/embedding-models/overview)
+>
+> Power semantic search, recommendations, and clustering with high-quality text embeddings.
+
+> [card] [Moderation](https://docs.anyapi.ai/api-reference/models/moderation-models/overview)
+>
+> Ensure safety and trust at scale with AI models tuned for content moderation and policy enforcement.
+
+> [card] [Other AI models](https://docs.anyapi.ai/api-reference/models/other-models/overview)
+>
+> Explore specialized models for code, math, tools, agents, and emerging AI capabilities.
+
+## Popular Use Cases
+
+Discover how developers are using AnyAPI to build intelligent applications.
+
+> [card] [Content Creation & Marketing](https://docs.anyapi.ai/api-reference/models/moderation-models/overview)
+>
+> Generate blog posts, social media content, product descriptions, and marketing copy at scale.
+
+> [card] [Code Generation & Review](https://docs.anyapi.ai/api-reference/models/other-models/overview)
+>
+> Accelerate development with AI-powered code generation, review, and documentation.
+
+> [card] [Data Analysis & Insights](https://docs.anyapi.ai/api-reference/models/other-models/overview)
+>
+> Extract insights from unstructured data, generate reports, and automate analysis workflows.
+
+## Integration Options
+
+> [tab] REST API
+>
+> Standard HTTP requests with JSON responses. Perfect for any programming language.
+>
+> ```bash theme={"system"}
+> curl -X POST "https://api.anyapi.ai/v1/chat/completions" \
+> -H "Authorization: Bearer $ANYAPI_KEY" \
+> -H "Content-Type: application/json" \
+> -d '{
+> "model": "openai/gpt-4-turbo",
+> "messages": [{"role": "user", "content": "Hello!"}]
+> }'
+> ```
+
+> [tab] SDKs
+>
+> Official SDKs available for popular programming languages with built-in error handling and retries.
+>
+> ```python theme={"system"}
+> from anyapi import AnyAPI
+>
+> client = AnyAPI(api_key="your-api-key")
+>
+> response = client.chat.completions.create(
+> model="openai/gpt-4-turbo",
+> messages=[{"role": "user", "content": "Hello!"}]
+> )
+> ```
+
+> [tab] WebSocket
+>
+> Real-time streaming for chat applications and live data processing.
+>
+> ```javascript theme={"system"}
+> const ws = new WebSocket('wss://api.anyapi.ai/v1/stream');
+>
+> ws.onmessage = (event) => {
+> const data = JSON.parse(event.data);
+> console.log(data.choices[0].delta.content);
+> };
+> ```
+
+## Pricing & Plans
+
+> [card]
+>
+> **\$0/month**
+>
+> * 100 000 ₳nyTokens per day for free
+> * Basic and free models access
+> * Community support
+> * Free features
+> * No SLA
+>
+> [Open](https://anyapi.ai/pricing)
+
+> [card]
+>
+> **\$19.90/month**
+>
+> * 100m ₳nyTokens
+> * All models access
+> * Priority support
+> * All Features
+> * 99,9+ Service Availability
+>
+> [Open](https://anyapi.ai/pricing)
+
+> [card]
+>
+> **\$95.90/month**
+>
+> * 500m ₳nyTokens
+> * All models access
+> * Priority support
+> * All Features
+> * 99,9+ Service Availability
+>
+> [Open](https://anyapi.ai/pricing)
+
+> [card]
+>
+> **\$279.90/month**
+>
+> * 1.5b ₳nyTokens
+> * All models access
+> * Dedicated support
+> * All Features
+> * 99,9+ Service Availability
+>
+> [Open](https://anyapi.ai/pricing)
+
+> [card]
+>
+> **Custom**
+> **Custom ₳nyTokens**
+>
+> * Unlimited API calls
+> * All models access
+> * Dedicated support
+> * All Features
+> * Custom SLA
+>
+> [Open](https://anyapi.ai/pricing)
+
+> [card]
+>
+> **Ask for more information**
+>
+> * Write to our support team and ask for more information
+>
+> [Open](https://anyapi.ai/contact)
+
+## Need Help?
+
+> [card] [FAQ](https://docs.anyapi.ai/get-started/faq.md)
+>
+> Comprehensive guides and tutorials
+
+> [card] [API Reference](https://docs.anyapi.ai/api-reference/models/text-models/overview)
+>
+> Complete API documentation
+
+> [card] [Community](https://discord.gg/rJgyzGynHw)
+>
+> Join our Discord community
+
+> [card] [Support](mailto:support@anyapi.ai)
+>
+> Contact our support team
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,re
+b=urllib.request.urlopen(urllib.request.Request('https://docs.anyapi.ai/get-started/faq.md',headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode()
+for line in b.splitlines():
+    if re.search(r'(?i)free|rate.?limit|429|daily|reset|quota|shared|token',line):
+        print(line.strip()[:500])
+EOF
+> ```bash Bearer Token theme={"system"}
+> const token = await getOAuthToken();
+> headers: { 'Authorization': `Bearer ${token}` }
+> * **API Keys**: Bearer token authentication for programmatic access
+> We use Server-Sent Events (SSE) for efficient real-time token delivery.
+> [accordion] Do ₳nytokens expire?
+> * **Free**: Your 100K daily ₳nytokens reset every 24 hours. Unused tokens do not carry over to the next day.
+> * **Developer / Pro / Enterprise**: Your ₳nytokens are accrued at the beginning of each monthly billing cycle. Unused tokens from the previous period **carry over** and are added to your new monthly allocation.
+> * **Pay-as-you-go**: Purchased ₳nytokens **never expire**. Your balance persists indefinitely until used.
+> When changing plans, any unused ₳nytokens you paid for carry over to the new plan. Free tier tokens are not carried over since they are complimentary. If you cancel a paid subscription, all accumulated ₳nytokens are forfeited at the end of your current billing period.
+> > Deleted accounts cannot recover unused ₳nytokens. Export your data before deletion.
+> * Request metadata (timestamp, model, token counts)
+> > Account deletion is permanent. Unused ₳nytokens cannot be recovered.
+> * **Shared ₳nytokens**: Pool resources across team members
+> * Token usage patterns and optimization insights
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,re,html
+for slug in ['qwen-qwen3-8-27b-free','google-gemma-3n-4b-free','inclusionai-ling-3-0-flash-fin-free','inclusionai-ling-3-0-flash-sante-free']:
+    u='https://anyapi.ai/ai-models/'+slug
+    try:
+        b=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read().decode('utf-8','replace')
+        ids=set(re.findall(r'([A-Za-z0-9._-]+/[A-Za-z0-9._:-]+(?::free)?)',b))
+        print('===',slug,'len',len(b))
+        for i in sorted(ids):
+            if '/' in i and 'cdn' not in i and 'website-files' not in i: print(' ',i[:100])
+        t=re.sub(r'<[^>]+>',' ',b); t=html.unescape(t)
+        for kw in ['Model ID','model id','Input','free']:
+            idx=t.find(kw)
+            if idx>=0: print('  ctx',t[max(0,idx-100):idx+200].replace('\n',' ')[:300]); break
+    except Exception as e: print(slug,'ERR',e)
+EOF
+=== qwen-qwen3-8-27b-free len 80086
+  1.6.26/webfont.js
+  1/accordion.js
+  2/attributes.js
+  3yqUApyu/S
+  84d058195b66007bad2235a2/script.js
+  ai-models/anthropic-claude-fable-5-1
+  ai-models/anthropic-claude-opus-4-8
+  ai-models/anthropic-claude-opus-4-8-fast
+  ai-models/anthropic-claude-opus-5-5
+  ai-models/google-gemini-3-8-flash
+  ai-models/inclusionai-ling-3-0-flash-fin-free
+  ai-models/inclusionai-ling-3-0-flash-sante-free
+  ai-models/nvidia-nemotron-3-nano-30b-a3b
+  ai-models/openai-gpt-6-astra
+  ai-models/qwen-qwen3-8-27b-free
+  ai-models/xai-grok-4-7
+  ai-models/xiaomi-mimo-v2-6-flash
+  ai-models/xiaomi-mimo-v2-6-pro
+  ai-models/z-ai-glm-5-3-flash
+  ai-models/z-ai-glm-5-3-flashx
+  ajax.googleapis.com/ajax
+  anyapi.ai/ai-models
+  api/apps
+  application/json
+  application/ld
+  blog/ai-agent-orchestration-transitioning-from-simple-scripts-to-langgraph-and-autogen
+  blog/how-much-does-an-ai-agent-actually-cost-the-full-breakdown
+  blog/the-real-cost-of-failed-llm-requests-hidden-losses-and-how-to-stop-them
+  challenges.cloudflare.com/turnstile
+  css/anyapi-ai.webflow.shared.e9b5e1869.min.css
+  d3e54v103j8qbb.cloudfront.net/js
+  dckG6BTMdubXarOeEqlbWcqQBLPJBhYdJ1BFkMS/KZ
+  desktop/mobile
+  discord.gg/rJgyzGynHw
+  finsweet/attributes
+  finsweet/attributes-accordion
+  github.com/anyapi-ai
+  image/x-icon
+  js/webflow.dba616fa.7df8226a2f1aadaf.js
+  js/webflow.schunk.1a807f015b216e46.js
+  js/webflow.schunk.4913f0d9ee368d76.js
+  js/webflow.schunk.6f6c1930859a83a2.js
+  js/webflow.schunk.f44dc33103d30976.js
+  libs/webfont
+  qwen/qwen3.8-27b:free
+  sha256-9/aliU8dGd2tb6OSsuzixeV4y
+  sha384-DRUM/mpbvp0IyYWz
+  sha384-afQTolscuQs7IgFCwdVv32UOg63bKOH/vfYheiUbydy7A0WlbQPteIDrvIcuA54k
+  sha384-j3R/zD6ANugAuyivaSShu4Pueq0H3b21ZuYGjExFl18
+  sha384-oY4R8SfnVBTWnix6ULiWbZs/5tyRyxEiWcG
+  t/s
+  text/css
+  text/javascript
+  tok/s
+  tokens/second
+  v0/api.js
+  www.googletagmanager.com/gtm.js
+  www.googletagmanager.com/ns.html
+  www.instagram.com/anyapi_ai
+  www.linkedin.com/company
+  x.com/anyapi_ai
+  ctx 0  tok/s         Intelligence Index  *     0  / 100         Context Window  *     0  tokens         Input price    0  Anytoken         Output price    0  Anytoken                 Qwen3.8 27B: Agentic Coding at Local Scale, Free to Deploy   Qwen3.8 27B is a dense 27-billion-parameter, Apache 2.0 open
+=== google-gemma-3n-4b-free len 83335
+  1.6.26/webfont.js
+  1/accordion.js
+  2/attributes.js
+  3yqUApyu/S
+  84d058195b66007bad2235a2/script.js
+  ai-models/anthropic-claude-fable-5-1
+  ai-models/anthropic-claude-opus-4-8
+  ai-models/anthropic-claude-opus-4-8-fast
+  ai-models/anthropic-claude-opus-5-5
+  ai-models/google-gemini-3-8-flash
+  ai-models/inclusionai-ling-3-0-flash-fin-free
+  ai-models/inclusionai-ling-3-0-flash-sante-free
+  ai-models/nvidia-nemotron-3-nano-30b-a3b
+  ai-models/openai-gpt-6-astra
+  ai-models/qwen-qwen3-8-27b-free
+  ai-models/xai-grok-4-7
+  ai-models/xiaomi-mimo-v2-6-flash
+  ai-models/xiaomi-mimo-v2-6-pro
+  ai-models/z-ai-glm-5-3-flash
+  ai-models/z-ai-glm-5-3-flashx
+  ajax.googleapis.com/ajax
+  anyapi.ai/ai-models
+  api.anyapi.ai/v1
+  api/apps
+  application/json
+  application/ld
+  blog/ai-agent-orchestration-transitioning-from-simple-scripts-to-langgraph-and-autogen
+  blog/how-much-does-an-ai-agent-actually-cost-the-full-breakdown
+  blog/the-real-cost-of-failed-llm-requests-hidden-losses-and-how-to-stop-them
+  challenges.cloudflare.com/turnstile
+  chat/completions
+  css/anyapi-ai.webflow.shared.e9b5e1869.min.css
+  d3e54v103j8qbb.cloudfront.net/js
+  dckG6BTMdubXarOeEqlbWcqQBLPJBhYdJ1BFkMS/KZ
+  discord.gg/rJgyzGynHw
+  finsweet/attributes
+  finsweet/attributes-accordion
+  github.com/anyapi-ai
+  google/gemma-4-26b-a4b-it:free
+  image/x-icon
+  js/webflow.dba616fa.7df8226a2f1aadaf.js
+  js/webflow.schunk.1a807f015b216e46.js
+  js/webflow.schunk.4913f0d9ee368d76.js
+  js/webflow.schunk.6f6c1930859a83a2.js
+  js/webflow.schunk.f44dc33103d30976.js
+  libs/webfont
+  sha256-9/aliU8dGd2tb6OSsuzixeV4y
+  sha384-DRUM/mpbvp0IyYWz
+  sha384-afQTolscuQs7IgFCwdVv32UOg63bKOH/vfYheiUbydy7A0WlbQPteIDrvIcuA54k
+  sha384-j3R/zD6ANugAuyivaSShu4Pueq0H3b21ZuYGjExFl18
+  sha384-oY4R8SfnVBTWnix6ULiWbZs/5tyRyxEiWcG
+  text/css
+  text/javascript
+  tok/s
+  v0/api.js
+  www.googletagmanager.com/gtm.js
+  www.googletagmanager.com/ns.html
+  www.instagram.com/anyapi_ai
+  www.linkedin.com/company
+  x.com/anyapi_ai
+  ctx suite of LLMs, Gemma 3n 4B strikes a balance between performance and accessibility. It's a mid-tier model ideal for startups, developers, and data teams looking to enhance production use, solve complex problems, and deploy real-time applications without incurring steep costs.   With its cutting-edge
+=== inclusionai-ling-3-0-flash-fin-free len 82525
+  1.6.26/webfont.js
+  1/accordion.js
+  2/attributes.js
+  3yqUApyu/S
+  84d058195b66007bad2235a2/script.js
+  ai-models/anthropic-claude-fable-5-1
+  ai-models/anthropic-claude-opus-4-8
+  ai-models/anthropic-claude-opus-4-8-fast
+  ai-models/anthropic-claude-opus-5-5
+  ai-models/google-gemini-3-8-flash
+  ai-models/inclusionai-ling-3-0-flash-fin-free
+  ai-models/inclusionai-ling-3-0-flash-sante-free
+  ai-models/nvidia-nemotron-3-nano-30b-a3b
+  ai-models/openai-gpt-6-astra
+  ai-models/qwen-qwen3-8-27b-free
+  ai-models/xai-grok-4-7
+  ai-models/xiaomi-mimo-v2-6-flash
+  ai-models/xiaomi-mimo-v2-6-pro
+  ai-models/z-ai-glm-5-3-flash
+  ai-models/z-ai-glm-5-3-flashx
+  ajax.googleapis.com/ajax
+  anyapi.ai/ai-models
+  api/apps
+  application/json
+  application/ld
+  blog/ai-agent-orchestration-transitioning-from-simple-scripts-to-langgraph-and-autogen
+  blog/how-much-does-an-ai-agent-actually-cost-the-full-breakdown
+  blog/the-real-cost-of-failed-llm-requests-hidden-losses-and-how-to-stop-them
+  challenges.cloudflare.com/turnstile
+  css/anyapi-ai.webflow.shared.e9b5e1869.min.css
+  d3e54v103j8qbb.cloudfront.net/js
+  dckG6BTMdubXarOeEqlbWcqQBLPJBhYdJ1BFkMS/KZ
+  discord.gg/rJgyzGynHw
+  finsweet/attributes
+  finsweet/attributes-accordion
+  github.com/anyapi-ai
+  image/x-icon
+  inclusionai/ling-3.0-flash-fin:free
+  instant/reasoning
+  js/webflow.dba616fa.7df8226a2f1aadaf.js
+  js/webflow.schunk.1a807f015b216e46.js
+  js/webflow.schunk.4913f0d9ee368d76.js
+  js/webflow.schunk.6f6c1930859a83a2.js
+  js/webflow.schunk.f44dc33103d30976.js
+  libs/webfont
+  sha256-9/aliU8dGd2tb6OSsuzixeV4y
+  sha384-DRUM/mpbvp0IyYWz
+  sha384-afQTolscuQs7IgFCwdVv32UOg63bKOH/vfYheiUbydy7A0WlbQPteIDrvIcuA54k
+  sha384-j3R/zD6ANugAuyivaSShu4Pueq0H3b21ZuYGjExFl18
+  sha384-oY4R8SfnVBTWnix6ULiWbZs/5tyRyxEiWcG
+  text/css
+  text/javascript
+  tok/s
+  v0/api.js
+  www.googletagmanager.com/gtm.js
+  www.googletagmanager.com/ns.html
+  www.instagram.com/anyapi_ai
+  www.linkedin.com/company
+  x.com/anyapi_ai
+  ctx          Intelligence Index  *     22.6  / 100         Context Window  *     262144  tokens         Input price    0  Anytoken         Output price    0  Anytoken                 Ling 3.0 Flash Fin: A Finance-Specialized MoE for Source-Grounded Investment Workflows   Ling 3.0 Flash Fin is a finance-
+=== inclusionai-ling-3-0-flash-sante-free len 81515
+  1.6.26/webfont.js
+  1/accordion.js
+  2/attributes.js
+  3yqUApyu/S
+  84d058195b66007bad2235a2/script.js
+  ai-models/anthropic-claude-fable-5-1
+  ai-models/anthropic-claude-opus-4-8
+  ai-models/anthropic-claude-opus-4-8-fast
+  ai-models/anthropic-claude-opus-5-5
+  ai-models/google-gemini-3-8-flash
+  ai-models/inclusionai-ling-3-0-flash-fin-free
+  ai-models/inclusionai-ling-3-0-flash-sante-free
+  ai-models/nvidia-nemotron-3-nano-30b-a3b
+  ai-models/openai-gpt-6-astra
+  ai-models/qwen-qwen3-8-27b-free
+  ai-models/xai-grok-4-7
+  ai-models/xiaomi-mimo-v2-6-flash
+  ai-models/xiaomi-mimo-v2-6-pro
+  ai-models/z-ai-glm-5-3-flash
+  ai-models/z-ai-glm-5-3-flashx
+  ajax.googleapis.com/ajax
+  anyapi.ai/ai-models
+  api/apps
+  application/json
+  application/ld
+  blog/ai-agent-orchestration-transitioning-from-simple-scripts-to-langgraph-and-autogen
+  blog/how-much-does-an-ai-agent-actually-cost-the-full-breakdown
+  blog/the-real-cost-of-failed-llm-requests-hidden-losses-and-how-to-stop-them
+  challenges.cloudflare.com/turnstile
+  css/anyapi-ai.webflow.shared.e9b5e1869.min.css
+  d3e54v103j8qbb.cloudfront.net/js
+  dckG6BTMdubXarOeEqlbWcqQBLPJBhYdJ1BFkMS/KZ
+  discord.gg/rJgyzGynHw
+  finsweet/attributes
+  finsweet/attributes-accordion
+  github.com/anyapi-ai
+  image/x-icon
+  inclusionai/ling-3.0-flash-sante:free
+  js/webflow.dba616fa.7df8226a2f1aadaf.js
+  js/webflow.schunk.1a807f015b216e46.js
+  js/webflow.schunk.4913f0d9ee368d76.js
+  js/webflow.schunk.6f6c1930859a83a2.js
+  js/webflow.schunk.f44dc33103d30976.js
+  libs/webfont
+  sha256-9/aliU8dGd2tb6OSsuzixeV4y
+  sha384-DRUM/mpbvp0IyYWz
+  sha384-afQTolscuQs7IgFCwdVv32UOg63bKOH/vfYheiUbydy7A0WlbQPteIDrvIcuA54k
+  sha384-j3R/zD6ANugAuyivaSShu4Pueq0H3b21ZuYGjExFl18
+  sha384-oY4R8SfnVBTWnix6ULiWbZs/5tyRyxEiWcG
+  text/css
+  text/javascript
+  tok/s
+  tokens/second
+  v0/api.js
+  www.googletagmanager.com/gtm.js
+  www.googletagmanager.com/ns.html
+  www.instagram.com/anyapi_ai
+  www.linkedin.com/company
+  x.com/anyapi_ai
+  ctx          Intelligence Index  *     20.1  / 100         Context Window  *     262144  tokens         Input price    0  Anytoken         Output price    0  Anytoken                 A Medical-Domain Fine-Tune Built for Clinical Reasoning and Evidence Retrieval   Ling 3.0 Flash Sante is inclusionAI's (A
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+models=['qwen/qwen3.8-27b:free','inclusionai/ling-3.0-flash-fin:free','inclusionai/ling-3.0-flash-sante:free','google/gemma-3n-4b:free','google/gemma-3n-4b','qwen/qwen3.8-27b']
+for m in models:
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Say OK'}],'max_tokens':16}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=45) as r:
+            d=json.load(r)
+            print(m,'200',{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()},repr(d['choices'][0]['message'].get('content'))[:80])
+    except urllib.error.HTTPError as e:
+        print(m,e.code,{k:v for k,v in e.headers.items() if 'ratelimit' in k.lower()},e.read().decode()[:180])
+    except Exception as e: print(m,'ERR',type(e).__name__,e)
+    time.sleep(1)
+EOF
+qwen/qwen3.8-27b:free 404 {} {"error":{"message":"Model 'qwen/qwen3.8-27b:free' does not exist. See available models: GET https://api.anyapi.ai/v1/models","type":"model_not_found","param":"model","code":"404"}
+inclusionai/ling-3.0-flash-fin:free 404 {} {"error":{"message":"Model 'inclusionai/ling-3.0-flash-fin:free' does not exist. See available models: GET https://api.anyapi.ai/v1/models","type":"model_not_found","param":"model"
+inclusionai/ling-3.0-flash-sante:free 404 {} {"error":{"message":"Model 'inclusionai/ling-3.0-flash-sante:free' does not exist. See available models: GET https://api.anyapi.ai/v1/models","type":"model_not_found","param":"mode
+google/gemma-3n-4b:free 404 {} {"error":{"message":"Model 'google/gemma-3n-4b:free' does not exist. See available models: GET https://api.anyapi.ai/v1/models","type":"model_not_found","param":"model","code":"404
+google/gemma-3n-4b 404 {} {"error":{"message":"Model 'google/gemma-3n-4b' does not exist. See available models: GET https://api.anyapi.ai/v1/models","type":"model_not_found","param":"model","code":"404"}}
+qwen/qwen3.8-27b 403 {} {"error":{"message":"This API key is not allowed to use this model. Change the key's models at https://dash.anyapi.ai/?page=api-keys","type":"key_model_access_denied","param":"mode
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+tests=[
+ ('/responses',{'model':'xingchen-agi/xing4.0-29b-a4b:free','input':'Say OK','max_output_tokens':16}),
+ ('/responses',{'model':'nvidia/nemotron-3.5-lightning:free','input':'Say OK','max_output_tokens':16}),
+ ('/chat/completions',{'model':'nvidia/nemotron-3.5-lightning:free','messages':[{'role':'user','content':'Say OK'}],'max_tokens':16,'stream':True}),
+ ('/chat/completions',{'model':'xingchen-agi/xing4.0-29b-a4b:free','messages':[{'role':'user','content':'Say OK'}],'max_tokens':16,'stream':True}),
+]
+for path,payload in tests:
+    body=json.dumps(payload).encode()
+    req=urllib.request.Request(base+path,data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json','Accept':'text/event-stream' if payload.get('stream') else 'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=45) as r:
+            raw=r.read(600).decode('utf-8','replace')
+            print(path,payload['model'],'HTTP',r.status,{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()},repr(raw[:300]))
+    except urllib.error.HTTPError as e:
+        print(path,payload['model'],'HTTP',e.code,{k:v for k,v in e.headers.items() if 'ratelimit' in k.lower()},e.read().decode()[:160])
+    except Exception as e: print(path,payload['model'],'ERR',type(e).__name__,e)
+    time.sleep(1)
+EOF
+/responses xingchen-agi/xing4.0-29b-a4b:free HTTP 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","
+/responses nvidia/nemotron-3.5-lightning:free HTTP 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","
+/chat/completions nvidia/nemotron-3.5-lightning:free HTTP 429 {} {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","
+/chat/completions xingchen-agi/xing4.0-29b-a4b:free HTTP 200 {} 'data: {"id":"chatcmpl-759f0d31-8566-4f59-9adb-f679244ee4ac","created":1793724298,"model":"xingchen-agi/xing4.0-29b-a4b:free","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"reasoning_content":"1","reasoning":"1","reasoning_details":[{"type":"reasoning.text","text":"1","format":"unkn'
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import urllib.request,json
+b=urllib.request.urlopen(urllib.request.Request('https://docs.anyapi.ai/openapi.json',headers={'User-Agent':'Mozilla/5.0'}),timeout=30).read().decode()
+d=json.loads(b)
+print('paths:')
+for p in d.get('paths',{}):
+    print(' ',p, list(d['paths'][p].keys()))
+EOF
+paths:
+  /chat/completions ['post']
+  /completions ['post']
+  /images/generations ['post']
+  /embeddings ['post']
+  /models ['get']
+  /responses ['post']
+  /moderations ['post']
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+m='xingchen-agi/xing4.0-29b-a4b:free'
+body=json.dumps({'model':m,'messages':[{'role':'user','content':'Scrivi esattamente: ciao mondo'}],'max_tokens':300}).encode()
+req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+try:
+  with urllib.request.urlopen(req,timeout=90) as r:
+    d=json.load(r)
+    print('HTTP',r.status)
+    print('hdr',{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()})
+    msg=d['choices'][0]['message']
+    print('content:',repr(msg.get('content'))[:600])
+    print('reasoning:',repr(msg.get('reasoning') or msg.get('reasoning_content'))[:200])
+    print('usage',d.get('usage'))
+    print('cost',d.get('usage',{}).get('cost'))
+except urllib.error.HTTPError as e:
+  print('HTTP',e.code,e.read().decode()[:300])
+EOF
+HTTP 429 {"error":{"message":"Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.","type":"free_tier_capacity","param":null,"code":"429"}}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json,subprocess,urllib.request,urllib.error,time
+key=subprocess.check_output(['python3','/home/agenti/posta/chiave_di.py','AnyAPI'],text=True).strip()
+base='https://api.anyapi.ai/v1'
+m='xingchen-agi/xing4.0-29b-a4b:free'
+for i in range(8):
+    body=json.dumps({'model':m,'messages':[{'role':'user','content':'Scrivi esattamente: ciao mondo'}],'max_tokens':300}).encode()
+    req=urllib.request.Request(base+'/chat/completions',data=body,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+      with urllib.request.urlopen(req,timeout=90) as r:
+        d=json.load(r); msg=d['choices'][0]['message']
+        print('attempt',i+1,'HTTP 200')
+        print('hdr',{k:v for k,v in r.headers.items() if 'ratelimit' in k.lower()})
+        print('content:',repr(msg.get('content'))[:500])
+        print('usage',d.get('usage',{}).get('total_tokens'),'cost',d.get('usage',{}).get('cost'))
+        break
+    except urllib.error.HTTPError as e:
+        print('attempt',i+1,'HTTP',e.code)
+        time.sleep(3+2*i)
+EOF
+attempt 1 HTTP 200
+hdr {'x-ratelimit-team-remaining-tokens': '99999', 'x-ratelimit-team-limit-tokens': '100000'}
+content: 'ciao mondo'
+usage 316 cost 0.0
+[0m
+[0m$ [0mgrep -n -i 'anyapi' /home/agenti/posta/portiere_lista.txt /home/agenti/posta/portiere_catalogo.json 2>/dev/null | head -20
+...output truncated...
+
+Full output saved to: /home/agenti/.local/share/opencode/tool-output/tool_1a24d7465001cqzKSMdqYWCw9Y
+
+, "nemotron-3-nano:30b", "mistral-large-3:675b", "minimax-m3", "nemotron-3-super", "gemma4:31b", "kimi-k3", "deepseek-v4.1-flash", "mimo-v2.6-pro", "glm-5.3", "kimi-k2.6", "clef:27b", "mimo-v2.6-flash", "deepseek-v4-pro:0813", "mistral-large-4", "beam", "minimax-m2.7"], "quando": "2026-10-31 15:58"}, "requesty": {"modelli": ["particle/particle-1", "fireworks/ultramarine-1-flash", "openai/gpt-6.1-terra:flex", "azure/gpt-6.1-terra@eastus", "azure/gpt-6.1-terra@francecentral", "azure/gpt-6.1-terra@germanywestcentral", "azure/gpt-6.1-terra@swedencentral", "azure/gpt-6.1-terra@westeurope", "openai/gpt-6.1-terra", "moonshot/kimi-k3.1-pro", "moonshot/kimi-k3.1-pro-highspeed", "melious/clef", "melious/clef-flash", "minimaxi/minimax-m3.1-flash", "tensorx/minimax-m3.1-flash", "deepinfra/deepseek-v4.1-flash-1017", "deepinfra/deepseek-v4.1-flash-1017:priority", "deepseek/deepseek-v4.1-flash-1017", "fireworks/deepseek-v4.1-flash-1017", "melious/deepseek-v4.1-flash-1017", "runware/deepseek-v4.1-flash-1017", "sference/deepseek-v4.1-flash-1017", "tensorx/deepseek-v4.1-flash-1017", "together/deepseek-v4.1-flash-1017", "fireworks/muse-spark-open", "together/muse-spark-open", "typesafe/jev-1.14.0", "vertex/gemini-4-argon", "vertex/gemini-4-argon@eu", "meta/muse-spark-1.3", "meta/muse-wonder-1.0", "azure/decision-1", "azure/decision-1@francecentral", "azure/decision-1@swedencentral", "deepinfra/step-5-preview", "anthropic/claude-haiku-5-5", "bedrock/claude-haiku-5-5", "bedrock/claude-haiku-5-5@eu-central-1", "bedrock/claude-haiku-5-5@eu-north-1", "bedrock/claude-haiku-5-5@eu-west-1", "bedrock/claude-haiku-5-5@eu-west-3", "vertex/claude-haiku-5-5@eu", "mistral/mistral-large-4", "sference/clef", "cloudflare/clef-flash", "cloudflare/clef", "perplexity/pplx-decider-v1-27b", "openai/gpt-6.1-sol", "openai/gpt-6.1-sol:flex", "azure/gpt-6.1-sol@eastus2", "azure/gpt-6.1-sol@francecentral", "azure/gpt-6.1-sol@germanywestcentral", "azure/gpt-6.1-sol@swedencentral", "azure/gpt-6.1-sol@westeurope", "bedrock/claude-sonnet-5-5", "bedrock/claude-sonnet-5-5@eu-central-1", "bedrock/claude-sonnet-5-5@eu-north-1", "bedrock/claude-sonnet-5-5@eu-west-1", "bedrock/claude-sonnet-5-5@eu-west-3", "anthropic/claude-sonnet-5-5", "novita/ling-3.1-flash", "vertex/claude-sonnet-5-5", "vertex/claude-sonnet-5-5@eu", "vertex/claude-sonnet-5-5@us", "deepinfra/mimo-v2.6-flash", "deepinfra/mimo-v2.6-pro", "azure/gpt-6-luna@eastus2", "azure/gpt-6-sol@eastus2", "azure/gpt-6-luna@francecentral", "azure/gpt-6-luna@germanywestcentral", "azure/gpt-6-luna@swedencentral", "azure/gpt-6-luna@westeurope", "azure/gpt-6-sol@francecentral", "azure/gpt-6-sol@germanywestcentral", "azure/gpt-6-sol@swedencentral", "azure/gpt-6-sol@westeurope", "openai/gpt-6-luna:flex", "openai/gpt-6-luna", "openai/gpt-6-sol:flex", "openai/gpt-6-sol", "anthropic/claude-opus-5-5", "vertex/claude-opus-5-5", "vertex/claude-opus-5-5@eu", "vertex/claude-opus-5-5@us", "bedrock/claude-opus-5-5", "bedrock/claude-opus-5-5@eu-central-1", "bedrock/claude-opus-5-5@eu-north-1", "bedrock/claude-opus-5-5@eu-west-1", "bedrock/claude-opus-5-5@eu-west-3", "xiaomi/mimo-v2.6-pro", "xiaomi/mimo-v2.6-flash", "xiaomi/mimo-v2.6-pro-ultraspeed", "bedrock/claude-opus-5-5@ap-northeast-1", "bedrock/claude-opus-5-5@ap-northeast-3", "bedrock/claude-opus-5-5@ap-southeast-2", "tencent/mimo-v2.6-flash", "tencent/mimo-v2.6-pro", "xai/grok-4.7", "typesafe/jev-1.13.0", "tencent/glm-5.3-flashx", "runware/deepseek-v4.1-flash", "mistral/glm-5-3", "sference/deepseek-v4.1-flash", "tensorx/deepseek-v4.1-flash", "fireworks/deepseek-v4.1-flash", "novita/deepseek-v4.1-flash", "deepseek/deepseek-v4.1-flash", "melious/deepseek-v4.1-flash", "tencent/deepseek-v4.1-flash", "deepinfra/deepseek-v4.1-flash", "deepinfra/deepseek-v4.1-flash:flex", "together/deepseek-v4.1-flash", "openai/gpt-6-astra:flex", "azure/gpt-6-astra@eastus2", "openai/gpt-6-astra", "vertex/gemini-3.8-flash", "vertex/gemini-3.8-flash@eu", "anthropic/claude-fable-5.1", "vertex/claude-fable-5.1", "vertex/claude-fable-5.1@eu", "fireworks/deepseek-v4-flash-vision-exp", "runware/glm-5.3-flash", "tencent/hy4-preview", "tensorx/qwen3.8", "tensorx/qwen3.8-2.4t-a95b", "fireworks/glm-5.3-flash", "sference/glm-5.3-flash", "tensorx/glm-5.3-flash", "zai/glm-5.3-flash", "alibaba/qwen3.8-flash", "deepinfra/glm-5.3-flash", "lyceum/glm-5.3-flash", "novita/glm-5.3-flash", "tencent/glm-5.3-flash", "tensorx/qwen3.8-flash-next", "together/glm-5.3-flash", "melious/glm-5.3", "melious/glm-5.3-flash", "sference/glm-5.3", "deepinfra/glm-5.3", "fireworks/glm-5.3", "runware/glm-5.3", "tensorx/glm-5.3", "together/glm-5.3", "zai/glm-5.3", "lyceum/glm-5.3", "tencent/glm-5.3", "deepinfra/qwen3.8-27b", "fireworks/nemotron-lightning-3.5-30b-a3b", "vertex/gemini-3.7-flash", "vertex/gemini-3.7-flash@eu", "deepinfra/deepseek-v4-pro-0813", "tensorx/deepseek-v4-pro-0813", "together/deepseek-v4-pro-0813", "deepinfra/qwen3.8", "fireworks/deepseek-v4-pro-0813", "xai/grok-4.6", "nvidia/nemotron-3.5-lightning-30b-a3b", "fireworks/muse-glimmer-30b", "nvidia/muse-glimmer-30b", "novita/inclusionai/ling-3.0-tiny", "alibaba/qwen3.8-max", "fireworks/qwen3.8-max", "novita/qwen/qwen3.8-max", "deepinfra/deepseek-v4-flash-0731", "deepinfra/deepseek-v4-flash-0731:flex", "fireworks/deepseek-v4-flash-0731", "novita/deepseek/deepseek-v4-flash-0731", "sference/deepseek-v4-flash-0731", "tensorx/deepseek-v4-flash-0731", "lyceum/deepseek-v4-flash-0731", "melious/deepseek-v4-flash-0731", "runware/deepseek-v4-flash-0731", "sail/deepseek-v4-flash-0731", "scaleway/deepseek-v4-flash-0731", "anthropic/claude-opus-5", "vertex/claude-opus-5", "vertex/claude-opus-5@eu", "vertex/claude-opus-5@us", "bedrock/claude-opus-5", "bedrock/claude-opus-5@eu-central-1", "bedrock/claude-opus-5@eu-north-1", "bedrock/claude-opus-5@eu-west-1", "bedrock/claude-opus-5@eu-west-3", "bedrock/claude-opus-5@ap-south-1", "bedrock/claude-opus-5@ap-southeast-2", "google/gemini-3.6-flash", "google/gemini-3.6-flash:flex", "vertex/gemini-3.6-flash", "vertex/gemini-3.6-flash:flex", "google/gemini-3.5-flash-lite", "google/gemini-3.5-flash-lite:flex", "vertex/gemini-3.5-flash-lite", "vertex/gemini-3.5-flash-lite:flex", "vertex/gemini-3.5-flash-lite@eu", "fireworks/kimi-k3", "moonshot/kimi-k3", "nebius/kimi-k3", "sference/kimi-k3", "tensorx/kimi-k3", "thinkingmachines/inkling", "thinkingmachines/inkling-256k", "lyceum/kimi-k3", "tencent/kimi-k3", "fireworks/glm-5.2-fast", "azure/gpt-5.6-luna@eastus2", "azure/gpt-5.6-luna@francecentral", "azure/gpt-5.6-luna@germanywestcentral", "azure/gpt-5.6-luna@swedencentral", "azure/gpt-5.6-luna@westeurope", "openai/gpt-5.6-luna", "openai/gpt-5.6-luna:flex", "azure/gpt-5.6-terra@eastus2", "azure/gpt-5.6-terra@francecentral", "azure/gpt-5.6-terra@germanywestcentral", "azure/gpt-5.6-terra@swedencentral", "azure/gpt-5.6-terra@westeurope", "openai/gpt-5.6-terra", "openai/gpt-5.6-terra:flex", "azure/gpt-5.6-sol@eastus2", "azure/gpt-5.6-sol@francecentral", "azure/gpt-5.6-sol@germanywestcentral", "azure/gpt-5.6-sol@japaneast", "azure/gpt-5.6-sol@koreacentral", "azure/gpt-5.6-sol@swedencentral", "azure/gpt-5.6-sol@westeurope", "openai/gpt-5.6-sol", "openai/gpt-5.6-sol:flex", "bedrock/gpt-5.6-luna@us-east-1", "bedrock/gpt-5.6-luna@us-east-2", "bedrock/gpt-5.6-luna@us-west-2", "bedrock/gpt-5.6-sol@us-east-1", "bedrock/gpt-5.6-sol@us-east-2", "bedrock/gpt-5.6-terra@us-east-1", "bedrock/gpt-5.6-terra@us-east-2", "bedrock/gpt-5.6-terra@us-west-2", "xai/grok-4.5", "novita/tencent/hy3", "tencent/hy3", "anthropic/claude-sonnet-5", "bedrock/claude-sonnet-5", "bedrock/claude-sonnet-5@ap-southeast-2", "bedrock/claude-sonnet-5@eu-central-1", "bedrock/claude-sonnet-5@eu-north-1", "bedrock/claude-sonnet-5@eu-west-1", "bedrock/claude-sonnet-5@eu-west-2", "bedrock/claude-sonnet-5@us-east-1", "bedrock/claude-sonnet-5@us-east-2", "bedrock/claude-sonnet-5@us-west-2", "vertex/claude-sonnet-5", "vertex/claude-sonnet-5@eu", "vertex/claude-sonnet-5@us", "bedrock/claude-sonnet-5@ap-south-1", "doubleword/nvidia-nemotron-3-ultra:flex", "doubleword/nvidia-nemotron-3-ultra", "tencent/kimi-k2.7-code-highspeed", "sakana/fugu-ultra", "google/gemini-3.1-flash-image", "vertex/gemini-3.1-flash-image", "vertex/gemini-3.1-flash-image:flex", "vertex/gemini-3.1-flash-image@eu", "google/gemini-3-pro-image", "vertex/gemini-3-pro-image", "vertex/gemini-3-pro-image:flex", "deepinfra/glm-5.2", "deepinfra/glm-5.2:flex", "doubleword/glm-5.2", "doubleword/glm-5.2:flex", "fireworks/glm-5.2", "inceptron/glm-5.2", "mistral/glm-5-2", "nebius/glm-5.2", "sference/glm-5.2", "tencent/glm-5.2", "tensorx/glm-5.2", "zai/glm-5.2", "runware/glm-5.2", "sail/glm-5.2", "scaleway/glm-5.2", "nvidia/nemotron-3.5-content-safety", "fireworks/nemotron-3-ultra-nvfp4", "fireworks/kimi-k2.7-code", "inceptron/kimi-k2.7-Code", "moonshot/kimi-k2.7-code", "tencent/kimi-k2.7-code", "tensorx/kimi-k2.7-code", "bedrock/claude-fable-5@us-east-1", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "poolside/laguna-m.1", "poolside/laguna-xs.2", "anthropic/claude-fable-5", "vertex/claude-fable-5", "vertex/claude-fable-5@eu", "nebius/nvidia/nemotron-3-ultra-550b-a55b", "nvidia/nemotron-3-ultra-550b-a55b", "alibaba/qwen3.7-plus", "fireworks/qwen3.7-plus", "fireworks/minimax-m3", "minimaxi/minimax-m3", "tencent/minimax-m3", "tensorx/minimax-m3", "novita/stepfun/step-3.7-flash", "anthropic/claude-opus-4-8", "bedrock/claude-opus-4-8", "bedrock/claude-opus-4-8@ap-northeast-1", "bedrock/claude-opus-4-8@eu-central-1", "bedrock/claude-opus-4-8@eu-north-1", "bedrock/claude-opus-4-8@eu-west-1", "bedrock/claude-opus-4-8@eu-west-3", "vertex/claude-opus-4-8", "vertex/claude-opus-4-8@eu", "vertex/claude-opus-4-8@us", "deepinfra/ByteDance/Seed-1.8", "mistral/devstral-latest", "mistral/leanstral-1-5", "alibaba/qwen3.7-max", "xai/grok-build-0.1", "nebius/nvidia/nemotron-3-nano-omni", "google/gemini-3.5-flash", "google/gemini-3.5-flash:flex", "vertex/gemini-3.5-flash", "vertex/gemini-3.5-flash:flex", "vertex/gemini-3.5-flash@asia-northeast1", "vertex/gemini-3.5-flash@eu", "vertex/gemini-3.5-flash@us", "novita/inclusionai/ring-2.6-1t", "google/gemini-3.1-flash-lite", "google/gemini-3.1-flash-lite:flex", "vertex/gemini-3.1-flash-lite", "vertex/gemini-3.1-flash-lite:flex", "vertex/gemini-3.1-flash-lite@eu", "vertex/gemini-3.1-flash-lite@us", "bedrock/claude-opus-4-8@ap-northeast-3", "bedrock/claude-opus-4-8@ap-southeast-2", "xai/grok-4.3", "mistral/mistral-medium-3-5", "mistral/mistral-medium-latest", "openai/gpt-5.5-pro", "azure/gpt-5.5@eastus2", "azure/gpt-5.5@germanywestcentral", "azure/gpt-5.5@swedencentral", "azure/gpt-5.5@westeurope", "bedrock/gpt-5.5@us-east-1", "bedrock/gpt-5.5@us-east-2", "openai/gpt-5.5", "openai/gpt-5.5:flex", "deepinfra/deepseek-v4-pro-0424", "deepinfra/deepseek-v4-pro-0424:flex", "deepseek/deepseek-v4-pro-0813", "doubleword/deepseek-v4-pro-0424", "doubleword/deepseek-v4-pro-0424:flex", "nebius/deepseek-v4-pro-0424", "tensorx/deepseek-v4-pro-0424", "deepinfra/deepseek-v4-flash-0424", "deepinfra/deepseek-v4-flash-0424:flex", "doubleword/deepseek-v4-flash-0424", "doubleword/deepseek-v4-flash-0424:flex", "novita/deepseek/deepseek-v4-flash-0424", "parasail/deepseek-v4-flash-0424", "lyceum/deepseek-v4-pro", "lyceum/deepseek-v4.1-flash", "novita/inclusionai/ling-2.6-1t", "deepinfra/XiaomiMiMo/MiMo-V2.5-Pro", "deepinfra/XiaomiMiMo/MiMo-V2.5-Pro:flex", "xiaomi/mimo-v2.5-pro", "deepinfra/XiaomiMiMo/MiMo-V2.5", "deepinfra/XiaomiMiMo/MiMo-V2.5:flex", "xiaomi/mimo-v2.5", "tencent/mimo-v2.5-pro", "novita/inclusionai/ling-2.6-flash", "sail/kimi-k2.6", "deepinfra/moonshotai/Kimi-K2.6", "deepinfra/moonshotai/Kimi-K2.6:flex", "fireworks/kimi-k2.6", "inceptron/kimi-k2.6", "moonshot/kimi-k2.6", "nebius/moonshotai/kimi-k2.6", "bedrock/claude-opus-4-7", "bedrock/claude-opus-4-7@eu-central-1", "bedrock/claude-opus-4-7@eu-north-1", "bedrock/claude-opus-4-7@eu-west-1", "bedrock/claude-opus-4-7@eu-west-3", "anthropic/claude-opus-4-7", "vertex/claude-opus-4-7", "vertex/claude-opus-4-7@eu", "vertex/claude-opus-4-7@us", "deepinfra/zai-org/GLM-5.1", "deepinfra/zai-org/GLM-5.1:flex", "fireworks/glm-5.1", "nebius/zai-org/glm-5.1", "novita/zai-org/glm-5.1", "zai/glm-5.1", "deepinfra/google/gemma-4-26B-A4B-it", "deepinfra/google/gemma-4-26B-A4B-it:flex", "novita/google/gemma-4-26b-a4b-it", "parasail/google/gemma-4-26B-A4B-it", "deepinfra/google/gemma-4-31B-it", "deepinfra/google/gemma-4-31B-it:flex", "google/gemma-4-31b-it", "alibaba/qwen3.6-plus", "sail/gemma-4-31b-it", "sail/gemma-4-31b-it-nvfp4", "deepinfra/moonshotai/Kimi-K2.5", "novita/kwaipilot/kat-coder-pro", "xai/grok-4.2-beta", "minimaxi/minimax-m2.7-highspeed", "minimaxi/minimax-m2.7", "novita/minimax/minimax-m2.7", "novita/minimax/minimax-m2.7-highspeed", "openai/gpt-5.4-nano", "openai/gpt-5.4-nano:flex", "azure/gpt-5.4-mini", "azure/gpt-5.4-mini@eastus2", "openai/gpt-5.4-mini", "openai/gpt-5.4-mini:flex", "mistral/mistral-small-2603", "mistral/mistral-small-latest", "deepinfra/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B", "deepinfra/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B:flex", "nvidia/nemotron-3-super-120b-a12b", "deepinfra/ByteDance/Seed-2.0-code", "deepinfra/ByteDance/Seed-2.0-pro", "deepinfra/Qwen/Qwen3.5-2B", "openai/gpt-5.4-pro", "azure/gpt-5.4", "azure/gpt-5.4@eastus2", "azure/gpt-5.4@francecentral", "azure/gpt-5.4@germanywestcentral", "azure/gpt-5.4@swedencentral", "azure/gpt-5.4@westeurope", "bedrock/gpt-5.4@us-east-1", "bedrock/gpt-5.4@us-east-2", "bedrock/gpt-5.4@us-west-2", "openai/gpt-5.4", "openai/gpt-5.4:flex", "runware/qwen3.5-4b", "runware/qwen3.5-9b", "deepinfra/ByteDance/Seed-2.0-mini", "deepinfra/Qwen/Qwen3.5-35B-A3B", "deepinfra/Qwen/Qwen3.5-35B-A3B:flex", "deepinfra/Qwen/Qwen3.5-27B", "deepinfra/Qwen/Qwen3.5-27B:flex", "azure/gpt-5.3-codex@eastus2", "openai/gpt-5.3-codex", "google/gemini-3-pro-preview", "google/gemini-3-pro-preview:flex", "google/gemini-3.1-pro-preview", "google/gemini-3.1-pro-preview:flex", "vertex/gemini-3-pro-preview", "vertex/gemini-3.1-pro-preview", "vertex/gemini-3.1-pro-preview:flex", "anthropic/claude-sonnet-4-6", "bedrock/claude-sonnet-4-6", "bedrock/claude-sonnet-4-6@ap-northeast-1", "bedrock/claude-sonnet-4-6@eu-central-1", "bedrock/claude-sonnet-4-6@eu-north-1", "bedrock/claude-sonnet-4-6@eu-west-1", "bedrock/claude-sonnet-4-6@eu-west-3", "bedrock/claude-sonnet-4-6@us-east-1", "bedrock/claude-sonnet-4-6@us-east-2", "bedrock/claude-sonnet-4-6@us-west-2", "vertex/claude-sonnet-4-6", "vertex/claude-sonnet-4-6@europe-west1", "vertex/claude-sonnet-4-6@us-east5", "deepinfra/Qwen/Qwen3.5-397B-A17B", "deepinfra/Qwen/Qwen3.5-397B-A17B:flex", "nebius/qwen/qwen3.5-397b-a17b", "novita/qwen/qwen3.5-397b-a17b", "bedrock/minimax-m2.5@eu-central-1", "bedrock/minimax-m2.5@eu-north-1", "bedrock/minimax-m2.5@eu-south-1", "bedrock/minimax-m2.5@eu-west-1", "bedrock/minimax-m2.5@us-east-1", "bedrock/minimax-m2.5@us-east-2", "bedrock/minimax-m2.5@us-west-2", "inceptron/minimax-m2.5", "minimaxi/minimax-m2.5", "nebius/minimaxi/minimax-m2.5", "minimaxi/minimax-m2.5-highspeed", "novita/GLM-5", "zai/GLM-5", "bedrock/claude-opus-4-6", "anthropic/claude-opus-4-6", "vertex/claude-opus-4-6", "vertex/claude-opus-4-6@europe-west1", "vertex/claude-opus-4-6@us-east5", "bedrock/kimi-k2.5@eu-north-1", "bedrock/kimi-k2.5@eu-west-2", "bedrock/kimi-k2.5@us-east-1", "bedrock/kimi-k2.5@us-east-2", "bedrock/kimi-k2.5@us-west-2", "moonshot/kimi-k2.5", "azure/gpt-5.2-codex@eastus2", "zai/GLM-4.7", "google/gemini-3-flash-preview", "google/gemini-3-flash-preview:flex", "vertex/gemini-3-flash-preview", "vertex/gemini-3-flash-preview:flex", "deepinfra/nvidia/Nemotron-3-Nano-30B-A3B", "deepinfra/nvidia/Nemotron-3-Nano-30B-A3B:flex"], "quando": "2026-10-31 15:58"}, "zhipu": {"modelli": ["glm-4.5", "glm-4.5-air", "glm-4.6", "glm-4.7", "glm-5", "glm-5-turbo", "glm-5.1", "glm-5.2", "glm-5.3", "glm-5.3-flash", "glm-5.3-flashx"], "quando": "2026-10-31 15:58"}, "electronhub": {"modelli": ["gpt-4o", "gpt-4o-2024-05-13", "gpt-4o-2024-08-06", "gpt-4o-2024-11-20", "gpt-4o-mini", "gpt-4o-mini-2024-07-18", "gpt-4.1-mini", "gpt-4.1-mini-2025-04-14", "gpt-4.1", "gpt-4.1-2025-04-14", "gpt-5-nano", "gpt-5-mini", "gpt-5", "gpt-5.1", "gpt-5.2", "gpt-5.3-codex", "gpt-5.4-nano", "gpt-5.4-mini", "gpt-5.4", "gpt-5.5", "gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-oss-20b:free", "gpt-oss-20b", "gpt-oss-120b:free", "gpt-oss-120b", "claude-sonnet-4-20250514", "claude-sonnet-4-20250514-thinking", "claude-haiku-4-5-20251001", "claude-haiku-4-5-20251001-thinking", "claude-haiku-5-5", "claude-sonnet-4-5-20250929", "claude-sonnet-4-5-20250929-thinking", "claude-sonnet-4-6", "claude-sonnet-4-6-thinking", "claude-sonnet-5", "claude-sonnet-5-thinking", "claude-sonnet-5-5", "claude-opus-4-20250514", "claude-opus-4-20250514-thinking", "claude-opus-4-1-20250805", "claude-opus-4-1-20250805-thinking", "claude-opus-4-5-20251101", "claude-opus-4-5-20251101-thinking", "claude-opus-4-6", "claude-opus-4-6-thinking", "claude-opus-4-7", "claude-opus-4-7-thinking", "claude-opus-4-8", "claude-opus-4-8-thinking", "claude-opus-5", "claude-opus-5-thinking", "claude-opus-5-5", "claude-fable-5", "claude-fable-5-1", "gemini-2.5-flash-lite", "gemini-2.5-flash-lite-thinking", "gemini-2.5-flash", "gemini-2.5-flash-thinking", "gemini-2.5-pro", "gemini-3-flash-preview", "gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash", "gemma-7b-it", "gemma-2-9b-it", "gemma-2-27b-it", "gemma-3-1b-it", "gemma-3-4b-it", "gemma-3-12b-it", "gemma-3-27b-it", "gemma-4-26b-a4b-it:free", "gemma-4-26b-a4b-it", "gemma-4-31b-it:free", "gemma-4-31b-it", "llama-guard-4-12b", "llama-3-70b", "llama-3.2-1b", "llama-3.2-3b", "llama-4-scout-17b-16e-instruct", "muse-spark-1.1", "muse-spark-1.2", "muse-spark-1.2-contributor", "muse-spark-1.3", "muse-spark-1.3-contributor", "nemotron-3-nano-omni-30b-a3b-reasoning", "nemotron-3-ultra-550b-a55b", "nemotron-3.5-content-safety", "nemotron-3.5-lightning:free", "nemotron-3.5-lightning", "deepseek-r1-distill-llama-70b", "deepseek-r1-distill-qwen-32b", "deepseek-v3.1", "deepseek-v3.1-terminus", "deepseek-v3.2:free", "deepseek-v3.2", "deepseek-v3.2-exp", "deepseek-v3.2-speciale", "deepseek-v4-flash", "deepseek-v4-flash-thinking", "deepseek-v4.1-flash", "deepseek-v4-pro", "deepseek-v4-pro-thinking", "codestral-2508", "codestral-latest", "devstral-2512", "devstral-latest", "devstral-small-latest", "labs-devstral-small-2512", "ministral-14b-2512", "ministral-14b-latest", "ministral-3b-2512", "ministral-3b-latest", "ministral-8b-2512", "ministral-8b-latest", "mistral-large-2512", "mistral-large-latest", "mistral-medium", "mistral-medium-2505", "mistral-medium-2508", "mistral-medium-2604", "mistral-medium-3-5", "mistral-medium-latest", "mistral-small-2501", "mistral-small-2506", "mistral-small-2603", "mistral-small-latest", "mistral-tiny-2407", "mistral-tiny-latest", "open-mistral-nemo", "open-mistral-nemo-2407", "voxtral-small-2507", "voxtral-small-latest", "ministral-3-8b-instruct:free", "ministral-3-8b-instruct", "mistral-small-3.1-24b-instruct", "mistral-small-3.2-24b-instruct:free", "mistral-small-3.2-24b-instruct", "command-nightly", "command-r-08-2024", "north-mini-code-1-0", "grok-4.20-0309-non-reasoning", "grok-4.20-0309-reasoning", "grok-4.20-multi-agent-0309", "grok-4.3", "grok-4.5", "grok-4.6", "grok-4.7", "phi-4", "minimax-m2", "minimax-m2.1", "minimax-m2-her", "minimax-m2.5", "minimax-m2.7:free", "minimax-m2.7", "minimax-m3", "minimax-m3.1-flash", "qwen-2.5-7b-instruct", "qwen-2.5-32b-instruct", "qwen-2.5-72b-instruct", "qwen-2.5-coder-7b-instruct", "qwen-2.5-coder-32b-instruct", "qwen2.5-vl-72b-instruct", "qwen-plus", "qwen-max", "qwen3-32b", "qwen3-30b-a3b", "qwen3-30b-a3b-instruct-2507", "qwen3-coder-30-a3b-instruct:free", "qwen3-coder-30-a3b-instruct", "qwen3-coder", "qwen3.5-397b-a17b", "qwen3.5-plus", "qwen3.6-flash", "qwen3.6-plus", "qwen3.6-27b:free", "qwen3.6-27b", "qwen3.6-35b-a3b:free", "qwen3.6-35b-a3b", "qwen3.7-flash", "qwen3.7-plus", "qwen3.7-max", "qwen3.8-max", "qwen3.8-2.4t-a95b", "qwen3.8-27b:free", "qwen3.8-27b", "qwen3.8-flash", "qwen3.8-omni-flash", "namazu", "fugu-ultra", "aion-rp-llama-3.1-8b", "aion-3.0-mini:free", "aion-3.0-mini", "aion-3.0:free", "aion-3.0", "palmyra-x5", "laguna-s-2.1", "laguna-xs-2.1", "nova-2-lite-v1", "nova-pro-v1", "mytho-max-l2-13b", "hermes-2-pro-llama-3-8b", "hermes-4-14b", "hermes-4-70b", "hermes-4-405b", "hermes-4.3-36b", "hunyuan-a13b-instruct", "hy4-preview", "longcat-flash-chat", "longcat-flash-chat-thinking", "glm-4.5", "glm-4.5-air", "glm-4.6:free", "glm-4.6", "glm-4.7:free", "glm-4.7", "glm-4.7-flash:free", "glm-4.7-flash", "glm-5:free", "glm-5", "glm-5-turbo", "glm-5.1:free", "glm-5.1", "glm-5.2:free", "glm-5.2", "glm-5.3", "glm-5.3-flash", "kimi-k2-thinking", "kimi-k2.5", "kimi-k2.6", "kimi-k2.7-code", "kimi-k3", "kimi-k3.1-pro", "mimo-v2.6-flash", "step-3.5-flash", "step-3.7-flash", "halloumi-8b", "l3-lunaris-8b", "l3-8b-stheno-v3.2", "llama-3.1-8b-lexi-uncensored-v2", "l3-70b-euryale-v2.1", "deepseek-v4-flash-0731", "gemma-4-31b-agares-v1", "gemma-4-31b-animus-v14.1", "gemma-4-31b-artemis-31b-v1", "gemma-4-31b-artemis-31b-v1.2", "gemma-4-31b-artemis-v1.1", "gemma-4-31b-assguard", "gemma-4-31b-aura-4o-rebirth-merged", "gemma-4-31b-aura-large-v1.1", "gemma-4-31b-claude-4.6-opus-reasoning-distilled", "gemma-4-31b-claude-opus-distill-v2", "gemma-4-31b-cognitive-unshackled", "gemma-4-31b-dark-gemistry", "gemma-4-31b-dark-thoughts-v2", "gemma-4-31b-darkidol", "gemma-4-31b-darwin-frankenstein-ghoul", "gemma-4-31b-equinox", "gemma-4-31b-fable-5-agent-distill", "gemma-4-31b-fabled", "gemma-4-31b-garnet", "gemma-4-31b-garnetv2", "gemma-4-31b-garnetv3", "gemma-4-31b-gembrain", "gemma-4-31b-gembrain-uncensored-heretic", "gemma-4-31b-gembrain-x-core", "gemma-4-31b-gemopus", "gemma-4-31b-gemsicle", "gemma-4-31b-glamour", "gemma-4-31b-glistening-gem-v1.0", "gemma-4-31b-glistening-gem-v2.1", "gemma-4-31b-gutenberg", "gemma-4-31b-isometry-rp", "gemma-4-31b-k1-v5", "gemma-4-31b-lilith-v1.0", "gemma-4-31b-melinoe", "gemma-4-31b-melody1437", "gemma-4-31b-melody1437-v2.0", "gemma-4-31b-mero-artemis-v0.3.1", "gemma-4-31b-meromero", "gemma-4-31b-meromero-v2", "gemma-4-31b-moongem", "gemma-4-31b-musica-v1", "gemma-4-31b-novelist", "gemma-4-31b-novelist-eclipse", "gemma-4-31b-omega-evolution-v4.0", "gemma-4-31b-pantheon-reasoning-1.1", "gemma-4-31b-queen", "gemma-4-31b-scarlet-shadow", "gemma-4-31b-schattenblume", "gemma-4-31b-scotoma-2", "gemma-4-31b-sdft-heretic-rp", "gemma-4-31b-serenity-v1.1", "gemma-4-31b-solar-dawn", "gemma-4-31b-sphinsikus-chronist", "gemma-4-31b-sphinsikus-chronist-v2", "gemma-4-31b-split", "gemma-4-31b-split-untied", "gemma-4-31b-sprinkle-vanilla", "gemma-4-31b-styletune", "gemma-4-31b-the-deckard-heretic-uncensored-thinking", "gemma-4-31b-the-deckards-brain", "gemma-4-31b-versipellis", "glm-4.6-derestricted-v5", "mimo-v2.6-flash-mopd", "qwen3.5-27b-anko", "qwen3.5-27b-blossom-v6.4-derestricted", "qwen3.5-27b-blossom-v6.4-derestricted-lite", "qwen3.5-27b-bluestar-derestricted", "qwen3.5-27b-bluestar-derestricted-lite", "qwen3.5-27b-bluestar-v2-derestricted", "qwen3.5-27b-bluestar-v2-derestricted-lite", "qwen3.5-27b-bluestar-v3-derestricted", "qwen3.5-27b-bluestar-v3-derestricted-lite", "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-derestricted", "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-derestricted-lite", "qwen3.5-27b-dark-nexus-v3.0-derestricted", "qwen3.5-27b-dark-nexus-v3.0-derestricted-lite", "qwen3.5-27b-derestricted", "qwen3.5-27b-derestricted-aconite-v0", "qwen3.5-27b-earica-derestricted", "qwen3.5-27b-earica-derestricted-lite", "qwen3.5-27b-enteles-v0-derestricted", "qwen3.5-27b-enteles-v0-derestricted-lite", "qwen3.5-27b-infracelestial", "qwen3.5-27b-marvin-dpo-v2-derestricted", "qwen3.5-27b-marvin-dpo-v2-derestricted-lite", "qwen3.5-27b-marvin-v2-derestricted", "qwen3.5-27b-marvin-v2-derestricted-lite", "qwen3.5-27b-melinoe-derestricted", "qwen3.5-27b-melinoe-derestricted-lite", "qwen3.5-27b-musica-v1", "qwen3.5-27b-nanovel-derestricted", "qwen3.5-27b-nanovel-derestricted-lite", "qwen3.5-27b-omega-evolution-v2.0-derestricted", "qwen3.5-27b-omega-evolution-v2.0-derestricted-lite", "qwen3.5-27b-omega-evolution-v2.2-derestricted", "qwen3.5-27b-omega-evolution-v2.2-derestricted-lite", "qwen3.5-27b-omnimerge-v2-derestricted", "qwen3.5-27b-omnimerge-v2-derestricted-lite", "qwen3.5-27b-queen-derestricted", "qwen3.5-27b-queen-derestricted-lite", "qwen3.5-27b-quettallms-koreasoner-v3-derestricted", "qwen3.5-27b-quettallms-koreasoner-v3-derestricted-lite", "qwen3.5-27b-rprmax-v1", "qwen3.5-27b-vivid-durian", "qwen3.5-27b-writer-derestricted", "qwen3.5-27b-writer-derestricted-lite", "qwen3.5-27b-writer-v2-derestricted", "qwen3.5-27b-writer-v2-derestricted-lite", "qwen3.8-27b-antislop", "qwen3.8-27b-arliai", "qwen3.8-27b-dark-scarlett-v2.0", "qwen3.8-27b-darker-scarlett-v0.1", "qwen3.8-27b-darkidol-v1.1", "qwen3.8-27b-dominatrix", "qwen3.8-27b-fimi-2", "qwen3.8-27b-fimi-4", "qwen3.8-27b-grug-27b-v2", "qwen3.8-27b-grug-v1.1", "qwen3.8-27b-heimdallr", "qwen3.8-27b-kimiko", "qwen3.8-27b-kimiko-2", "qwen3.8-27b-kiwen1.1", "qwen3.8-27b-moxie", "qwen3.8-27b-novelist1.0", "qwen3.8-27b-omnimerge-v6", "qwen3.8-27b-palimpsest", "qwen3.8-27b-queen", "qwen3.8-27b-qwopus3.8-flash", "qwen3.8-27b-serenity", "qwen3.8-27b-swift", "qwen3.8-27b-synthia-4", "qwen3.8-27b-yes-man-uncensored", "qwen3.8-27b-zwielicht", "qwen3.8-flash-next", "deepseek-v4.1-flash:dev", "mimo-v2.6-flash:dev", "minimax-m2.7:dev", "qwen3.8-27b:dev", "glm-5.3:dev", "glm-5.3-flash:dev", "sdxl", "sdxl-turbo", "sdxl-lightning", "stable-diffusion-3-2b", "stable-diffusion-3.5-large", "flux-2-klein-base-4b", "krea-2-raw", "krea-2-turbo", "neta-lumina", "netayume-lumina-image-2.0-v40", "qwen-image-2512", "qwen-image-edit-2511", "sdxl-aamxl-anime-mix-v10", "sdxl-amanatsu-illustrious-v-20", "sdxl-amanatsu-illustrious-v11", "sdxl-animij-v2", "sdxl-animij-v5", "sdxl-arlimix-v1", "sdxl-aungir-t6ao45", "sdxl-aungir-testa", "sdxl-autismmix-confetti", "sdxl-autismmix-pony", "sdxl-boleromix-illustrious-v290", "sdxl-comradeshipxl-v14kc", "sdxl-copycat-illustrious-v40", "sdxl-copycat-illustrious-v50", "sdxl-halcyon-v19", "sdxl-ikastrious-v142-stable", "sdxl-ikastriousxl-v95", "sdxl-illust3relustion", "sdxl-illustrij-v10", "sdxl-illustrij-v17", "sdxl-illustrious-blackmagic-v30", "sdxl-illustrious-pencilxl-v320", "sdxl-illustriousxl-mmmix-v80", "sdxl-illustriousxl-smoothft-solid", "sdxl-ilustmix-v40", "sdxl-ilustmix-v80", "sdxl-janku-illustrious-v21", "sdxl-janku-v40", "sdxl-kai-illustrious-v-1", "sdxl-kai-illustrious-v-2", "sdxl-kiwimixxl-v3", "sdxl-lunarcherrymix-v22-baseillustrxl20", "sdxl-lunarcherrymix-v23", "sdxl-miaomiao-harem-v16g", "sdxl-naixl-mmmix-v45", "sdxl-naixl-mmmix-v50", "sdxl-nonnette-v050", "sdxl-novaanimexl-ilv100", "sdxl-novaanimexl-ilv60", "sdxl-novafurryxl-illustrious-v100", "sdxl-novaorangexl-v110", "sdxl-novaunrealxl-v70", "sdxl-obliviousmix-v10", "sdxl-oneforallanimew-il", "sdxl-personastyle-il", "sdxl-plantmilkmodelsuite-almond", "sdxl-plantmilkmodelsuite-coconut", "sdxl-plantmilkmodelsuite-flax", "sdxl-plantmilkmodelsuite-oat", "sdxl-plantmilkmodelsuite-walnut", "sdxl-praeclarus-v20", "sdxl-prefectillustriousxl-v10", "sdxl-prefectiousxl-v10", "sdxl-richyrichmixixl-v1", "sdxl-sakuraplatinum-v20250309", "sdxl-shiitakemix-v20", "sdxl-silencemix-v40", "sdxl-ssmixillustrious-v10", "sdxl-sudachixlillustrious-v1", "sdxl-tanemomix-v2", "sdxl-tanemomix-v6", "sdxl-tn3-v8", "sdxl-toonify-illustrious", "sdxl-vixonsillust-v14", "sdxl-wai-illustrious-v130", "sdxl-wai-illustrious-v140", "sdxl-waicheapfastani-v10", "sdxl-zukianimeill-v40", "sdxl-zukibestanimemix-v10", "sdxl-zukicuteill-v60", "sdxl-zukikawaimix-v10", "sdxl-zukisoftill-v10", "z-image", "z-image-turbo", "gemini-2.5-flash-image", "nano-banana-2", "nano-banana-2-edit", "nano-banana-2-lite-edit", "nano-banana-pro", "nano-banana-pro-edit", "chroma", "firered-image-edit", "qwen-image", "wan-2-7-pro-edit", "qwen-edit-uncensored", "qwen-image-2", "qwen-image-2-edit", "qwen-image-2-pro", "qwen-image-2-pro-edit", "sdxl-tastyrice-magic-on-paper-anime-guofeng-animation", "sdxl-tastyrice-lingyun-caijing-zhencai-world", "animagine-xl-4.0", "noobai-xl", "nai-diffusion-furry-3", "nai-diffusion-3", "nai-diffusion-4-full", "nai-diffusion-4-curated-preview", "nai-diffusion-4-5-full"], "quando": "2026-10-31 15:58"}, "inferbase": {"modelli": ["auto", "bfl-flux-1-dev", "bfl-flux-1-schnell", "bfl-flux-2-dev", "bfl-flux-2-klein-4b", "bfl-flux-2-klein-9b", "bytedance-seed-1-8", "bytedance-seed-2-0-code", "bytedance-seed-2-0-mini", "bytedance-seed-2-0-pro", "deepseek-ocr-2", "deepseek-r1-0528", "deepseek-r1-0528:fp4", "deepseek-v3", "deepseek-v3:fp4", "deepseek-v3-1", "deepseek-v3-1:fp4", "deepseek-v3-2", "deepseek-v3-2:fp4", "deepseek-v4-flash", "deepseek-v4-flash:fp8", "deepseek-v4-flash-0731", "deepseek-v4-flash-0731:fp8", "deepseek-v4-pro", "deepseek-v4-pro:fp8", "google-gemma-3-12b-it", "google-gemma-3-27b-it", "google-gemma-3-27b-it:fp8", "google-gemma-3-4b-it", "google-gemma-4-26b-a4b-it", "google-gemma-4-26b-a4b-it:fp8", "google-gemma-4-31b-it", "google-gemma-4-31b-it:fp8", "google-gemma-4-31b-it:turbo", "meta-llama-3-1-70b-instruct", "meta-llama-3-1-70b-instruct:turbo", "meta-llama-3-1-8b-instruct", "meta-llama-3-1-8b-instruct:turbo", "meta-llama-3-3-70b-instruct", "meta-llama-3-3-70b-instruct:turbo", "meta-llama-4-maverick-17b-128e-instruct", "meta-llama-4-maverick-17b-128e-instruct:fp8", "meta-llama-4-scout-17b-16e-instruct", "meta-llama-4-scout-17b-16e-instruct:fp8", "meta-llama-guard-4-12b", "meta-muse-spark-open-816b-a42b", "microsoft-phi-4", "minimax-m2-5", "minimax-m2-7", "minimax-m3", "minimax-m3:fp8", "mistral-nemo-instruct-2407", "mistral-nemo-instruct-2407:fp8", "mistral-small-24b-instruct-2501", "mistral-small-24b-instruct-2501:fp8", "mistral-small-3-2-24b-instruct-2506", "mistral-small-3-2-24b-instruct-2506:fp8", "mistral-voxtral-mini-2507", "mistral-voxtral-small-2507", "moonshot-kimi-k2-5", "moonshot-kimi-k2-6", "moonshot-kimi-k2-6:fp4", "moonshot-kimi-k2-7-code", "moonshot-kimi-k2-instruct", "moonshot-kimi-k3", "nvidia-llama-nemotron-rerank-vl-1b-v2", "nvidia-nemotron-3-5-asr-streaming-0-6b", "nvidia-nemotron-3-5-embed-1b", "nvidia-nemotron-3-5-embed-8b", "nvidia-nemotron-3-5-rerank-8b", "nvidia-nemotron-3-5-super-vl-120b-a12b", "nvidia-nemotron-3-5-super-vl-120b-a12b:fp4", "nvidia-nemotron-3-embed-8b", "nvidia-nemotron-3-super-120b-a12b", "nvidia-parakeet-tdt-0-6b-v3", "openai-gpt-oss-120b", "openai-gpt-oss-20b", "openai-whisper-large-v3", "openai-whisper-large-v3-turbo-2", "qwen2-5-72b-instruct", "qwen2-5-72b-instruct:fp8", "qwen3-14b", "qwen3-14b:fp8", "qwen3-30b-a3b", "qwen3-30b-a3b:fp8", "qwen3-32b", "qwen3-32b:fp8", "qwen3-5-122b-a10b", "qwen3-5-27b", "qwen3-5-27b:fp8", "qwen3-5-35b-a3b", "qwen3-5-35b-a3b:fp8", "qwen3-5-397b-a17b", "qwen3-5-397b-a17b:fp8", "qwen3-5-9b", "qwen3-6-27b", "qwen3-6-27b:fp8", "qwen3-6-35b-a3b", "qwen3-6-35b-a3b:fp8", "qwen3-7-max", "qwen3-8-2-4t-a95b", "qwen3-8-flash", "qwen3-8-max", "qwen3-asr-0-6b", "qwen3-asr-1-7b", "qwen3-coder-480b-a35b-instruct", "qwen3-coder-480b-a35b-instruct:turbo", "qwen3-embedding-0-6b", "qwen3-embedding-4b", "qwen3-embedding-8b", "qwen3-next-80b-a3b-instruct", "qwen3-next-80b-a3b-instruct:fp8", "qwen3-reranker-0-6b", "qwen3-reranker-4b", "qwen3-reranker-8b", "qwen3-tts-12hz-1-7b-customvoice", "qwen3-tts-12hz-1-7b-voicedesign", "qwen3-vl-235b-a22b-instruct", "qwen3-vl-235b-a22b-instruct:fp8", "qwen3-vl-30b-a3b-instruct", "qwen3-vl-30b-a3b-instruct:fp8", "reflection-beam-1-0-501b-a23b", "stepfun-step-5-preview", "zai-glm-4-5-air", "zai-glm-4-5v", "zai-glm-4-6", "zai-glm-4-6:fp4", "zai-glm-4-6v", "zai-glm-4-7", "zai-glm-4-7:fp4", "zai-glm-4-7-flash", "zai-glm-5", "zai-glm-5-1", "zai-glm-5-2", "zai-glm-5-2:fp4"], "quando": "2026-10-31 15:58"}, "blockrun": {"modelli": ["openai/gpt-6-astra", "openai/gpt-6.1-sol", "openai/gpt-6-sol", "openai/gpt-6-luna", "openai/gpt-5.6-sol", "openai/gpt-5.6-terra", "openai/gpt-5.6-luna", "openai/gpt-5.6-sol-pro", "openai/gpt-5.6-terra-pro", "openai/gpt-5.6-luna-pro", "openai/gpt-5.5", "openai/gpt-5.5-pro", "openai/chat-latest", "openai/gpt-5.4", "openai/gpt-5.4-pro", "openai/gpt-5.1", "openai/gpt-5.2", "openai/gpt-5.4-mini", "openai/gpt-5-mini", "openai/gpt-5.4-nano", "openai/gpt-5.2-pro", "openai/gpt-5.3-codex", "openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4.1-nano", "openai/gpt-4o", "openai/gpt-4o-mini", "openai/o1", "openai/o3", "openai/o3-mini", "openai/o4-mini", "anthropic/claude-haiku-4.5", "anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5", "anthropic/claude-sonnet-4.6", "anthropic/claude-sonnet-4.5", "anthropic/claude-opus-4.5", "anthropic/claude-opus-4.7", "anthropic/claude-fable-5.1", "anthropic/claude-fable-5", "anthropic/claude-opus-4.8", "anthropic/claude-opus-5", "anthropic/claude-opus-5.5", "google/gemini-4-argon", "google/gemini-3.1-pro", "google/gemini-3-flash-preview", "google/gemini-3.8-flash", "google/gemini-3.6-flash", "google/gemini-3.5-flash", "google/gemini-2.5-pro", "google/gemini-2.5-flash", "google/gemini-3.5-flash-lite", "google/gemini-3.1-flash-lite", "google/gemini-2.5-flash-lite", "deepseek/deepseek-v4-flash-vision-exp", "deepseek/deepseek-v4-pro", "deepseek/deepseek-v4.1-flash", "deepseek/deepseek-chat", "deepseek/deepseek-reasoner", "moonshot/kimi-k3.1-pro", "zai/glm-5.3", "zai/glm-5.3-flash", "zai/glm-5.2", "zai/glm-5.1", "zai/glm-5", "zai/glm-5-turbo", "xai/grok-4.3", "xai/grok-build-0.1", "xai/grok-4.7", "xai/grok-4.6", "xai/grok-4.5", "minimax/minimax-m2.7", "minimax/minimax-m3", "qwen/qwen3.8-max", "qwen/qwen3.7-max", "qwen/qwen3.7-plus", "qwen/qwen3.7-flash", "qwen/qwen3.8-flash", "tencent/hy4-preview", "xiaomi/mimo-v2.5", "xiaomi/mimo-v2.5-pro", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "nvidia/nemotron-3.5-lightning", "nvidia/llama-3.2-11b-vision", "nvidia/nemotron-3-ultra-550b", "cohere/north-mini-code", "poolside/laguna-xs-2.1", "poolside/laguna-s-2.1", "mistral/mistral-large-4", "nvidia/muse-glimmer-30b", "openai/gpt-image-1", "openai/gpt-image-2", "openai/gpt-image-2.5-flare", "openai/gpt-image-2.5-sunburst", "google/nano-banana", "google/nano-banana-2", "google/nano-banana-pro", "xai/grok-imagine-image", "xai/grok-imagine-image-2.0", "xai/grok-imagine-image-pro", "bytedance/seedream-5-pro", "zai/cogview-4", "minimax/music-2.5+", "elevenlabs/flash-v2.5", "elevenlabs/turbo-v2.5", "elevenlabs/multilingual-v2", "elevenlabs/v3", "bytedance/seed-audio-1.0", "elevenlabs/sound-effects", "xai/grok-imagine-video", "xai/grok-imagine-video-1.5", "bytedance/seedance-1.5-pro", "bytedance/seedance-2.0-fast", "bytedance/seedance-2.0-mini", "bytedance/seedance-2.0", "bytedance/seedance-2.5", "azure/sora-2"], "quando": "2026-10-31 15:58"}, "sail": {"modelli": ["moonshotai/Kimi-K3", "zai-org/GLM-5.3", "zai-org/GLM-5.3-Flash", "deepseek-ai/DeepSeek-V4-Flash-0731", "deepseek-ai/DeepSeek-V4.1-Flash-1017", "deepseek-ai/DeepSeek-V4-Pro-0813", "google/gemma-4-31B-it", "google/gemma-4-12B-it", "nvidia/Gemma-4-31B-IT-NVFP4", "Qwen/Qwen3.6-35B-A3B"], "quando": "2026-10-31 15:58"}, "anyapi": {"modelli": ["google/gemma-4-26b-a4b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "nvidia/nemotron-3-ultra-550b-a55b:free", "dots-studio/dots-3-note-preview:free", "nvidia/nemotron-3.5-lightning:free", "recursive/flint-v1.0:free", "xingchen-agi/xing4.0-29b-a4b:free"], "quando": "2026-10-31 15:58"}, "kilo": {"modelli": ["kilo-auto/efficient", "kilo-auto/free", "nvidia/nemotron-3.5-super-vl:free", "reflection/beam-free", "stealth/glyph-cluster", "anthropic/claude-opus-5.5", "openai/gpt-6.1-sol", "deepseek/deepseek-v4.1-flash", "z-ai/glm-5.3-flash", "particle-ai/particle-1", "openai/gpt-6.1-terra-pro", "openai/gpt-6.1-terra", "moonshotai/kimi-k3.1-pro", "recursive/flint-v1.0:free", "minimax/minimax-m3.1-flash", "deepseek/deepseek-v4.1-flash-1017", "elorian/glimpse", "xingchen-agi/xing4.0-29b-a4b:free", "reflection/beam-1.0-501b-a23b", "inception/mercury-3", "prism-ml/ternary-bonsai-2-9b", "moondream/moondream3-preview", "moondream/moondream3.1-9b-a2b", "meta/muse-spark-open", "nvidia/nemotron-3.5-super-vl", "unbiased/pareto-26.10", "~unbiased/pareto-latest", "unbiased/pareto-26.9", "liquid/lfm-2.5-24b-a2b", "google/gemini-4-argon", "scaledown/summarize", "scaledown/extract", "meta/muse-wonder", "stepfun/step-5-preview", "anthropic/claude-haiku-5.5", "google/gemini-nano-banana-2.1", "mistralai/mistral-large-4-0", "inclusionai/ling-3.1-flash", "openai/gpt-6.1-sol-pro", "anthropic/claude-sonnet-5.5", "perceptron/perceptron-mk1.5", "fireworks/ember-1", "z-ai/glm-5.3-prime", "qwen/qwen3.8-max-prime", "aion-labs/aion-3.5-mini", "aion-labs/aion-3.5", "upstage/solar-mini4", "cohere/command-a-plus", "openai/gpt-6-luna-pro", "openai/gpt-6-luna", "openai/gpt-6-sol-pro", "openai/gpt-6-sol", "xiaomi/mimo-v2.6-pro-ultraspeed", "xiaomi/mimo-v2.6-flash", "xiaomi/mimo-v2.6-pro", "x-ai/grok-4.7", "qwen/qwen3.8-omni-flash", "prism-ml/ternary-bonsai-2-27b", "z-ai/glm-5.3-flashx", "~deepseek/deepseek-pro-latest", "~deepseek/deepseek-flash-latest", "inference-net/schematron-v2-turbo", "inference-net/schematron-v2-small", "~openai/gpt-astra-latest", "~openai/gpt-sol-latest", "~openai/gpt-terra-latest", "~openai/gpt-luna-latest", "sakana/fugu-ultra-v2", "sakana/fugu-max", "inclusionai/ling-3.0-flash-vl", "inception/mercury-2.5", "nex-agi/nex-n2.5-mini", "nex-agi/nex-n2.5-pro", "openai/gpt-6-astra", "openai/gpt-6-astra-pro", "qwen/qwen3.8-max-0902", "meta/muse-spark-1.3-contributor", "meta/muse-spark-1.3", "google/gemini-3.8-flash", "anthropic/claude-fable-5.1", "ibm-granite/granite-4.2-8b", "tencent/hy4-preview", "~z-ai/glm-flash-latest", "qwen/qwen3.8-flash", "meta/muse-spark-1.2-contributor", "deepseek/deepseek-v4-flash-vision-exp", "tencent/hy-mt2-1.8b", "tencent/hy-mt2-30b-a3b", "~z-ai/glm-latest", "tencent/hy-mt2-7b", "z-ai/glm-5.3", "qwen/qwen3.8-27b", "dots-studio/dots-3-note-preview:free", "google/gemini-3.7-flash", "bytedance-seed/seed-2-1-turbo", "qwen/qwen3.8-2.4t-a95b", "bytedance-seed/seed-2.0-code", "deepseek/deepseek-v4-pro-0813", "x-ai/grok-4.6", "liquid/lfm-2.5-2.6b", "liquid/lfm-2.5-2.6b:free", "nvidia/nemotron-3.5-lightning", "nvidia/nemotron-3.5-lightning:free", "sakana/sakana-namazu", "upstage/solar-pro4", "meta/muse-glimmer-30b", "meta/muse-spark-1.2", "~deepseek/deepseek-v4-flash-latest", "deepseek/deepseek-v4-flash-0731", "thinkingmachines/inkling-small", "qwen/qwen3.7-flash", "anthropic/claude-opus-5", "inclusionai/ling-3.0-flash", "google/gemini-3.6-flash", "google/gemini-3.5-flash-lite", "meituan/longcat-2.0", "thinkingmachines/inkling", "moonshotai/kimi-k3", "meta/muse-spark-1.1", "openai/gpt-5.6-luna-pro", "openai/gpt-5.6-luna", "openai/gpt-5.6-terra-pro", "openai/gpt-5.6-terra", "openai/gpt-5.6-sol-pro", "openai/gpt-5.6-sol", "x-ai/grok-4.5", "~x-ai/grok-latest", "aion-labs/aion-3.0-mini", "aion-labs/aion-3.0", "tencent/hy3", "anthropic/claude-sonnet-5", "google/gemini-3.1-flash-lite-image", "sakana/fugu-ultra", "google/gemini-3.1-flash-image", "google/gemini-3-pro-image", "cohere/north-mini-code:free", "z-ai/glm-5.2", "moonshotai/kimi-k2.7-code", "~anthropic/claude-fable-latest", "anthropic/claude-fable-5", "nvidia/nemotron-3.5-content-safety", "nvidia/nemotron-3.5-content-safety:free", "nvidia/nemotron-3-ultra-550b-a55b", "nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3.7-plus", "minimax/minimax-m3", "stepfun/step-3.7-flash", "anthropic/claude-opus-4.8", "qwen/qwen3.7-max", "x-ai/grok-build-0.1", "google/gemini-3.5-flash", "perceptron/perceptron-mk1", "google/gemini-3.1-flash-lite", "openai/gpt-chat-latest", "x-ai/grok-4.3", "mistralai/mistral-medium-3-5", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "~anthropic/claude-haiku-latest", "~openai/gpt-mini-latest", "~google/gemini-pro-latest", "~moonshotai/kimi-latest", "~google/gemini-flash-latest", "~anthropic/claude-sonnet-latest", "qwen/qwen3.5-plus-20260420", "qwen/qwen3.6-flash", "qwen/qwen3.6-35b-a3b", "qwen/qwen3.6-27b", "openai/gpt-5.5-pro", "openai/gpt-5.5", "deepseek/deepseek-v4-pro", "deepseek/deepseek-v4-flash", "tencent/hy3-preview", "xiaomi/mimo-v2.5-pro", "xiaomi/mimo-v2.5", "openai/gpt-5.4-image-2", "~anthropic/claude-opus-latest", "moonshotai/kimi-k2.6", "anthropic/claude-opus-4.7", "z-ai/glm-5.1", "google/gemma-4-26b-a4b-it", "google/gemma-4-31b-it", "qwen/qwen3.6-plus", "z-ai/glm-5v-turbo", "x-ai/grok-4.20-multi-agent", "x-ai/grok-4.20", "google/lyria-3-pro-preview", "google/lyria-3-clip-preview", "rekaai/reka-edge", "minimax/minimax-m2.7", "openai/gpt-5.4-nano", "openai/gpt-5.4-mini", "mistralai/mistral-small-2603", "z-ai/glm-5-turbo", "nvidia/nemotron-3-super-120b-a12b", "bytedance-seed/seed-2.0-lite", "qwen/qwen3.5-9b", "openai/gpt-5.4-pro", "openai/gpt-5.4", "inception/mercury-2", "google/gemini-3.1-flash-lite-preview", "bytedance-seed/seed-2.0-mini", "google/gemini-3.1-flash-image-preview", "qwen/qwen3.5-35b-a3b", "qwen/qwen3.5-27b", "qwen/qwen3.5-122b-a10b", "qwen/qwen3.5-flash-02-23", "google/gemini-3.1-pro-preview-customtools", "openai/gpt-5.3-codex", "aion-labs/aion-2.0", "google/gemini-3.1-pro-preview", "anthropic/claude-sonnet-4.6", "qwen/qwen3.5-plus-02-15", "qwen/qwen3.5-397b-a17b", "minimax/minimax-m2.5", "z-ai/glm-5", "anthropic/claude-opus-4.6", "qwen/qwen3-coder-next", "stepfun/step-3.5-flash", "moonshotai/kimi-k2.5", "minimax/minimax-m2-her", "writer/palmyra-x5", "openai/gpt-audio", "openai/gpt-audio-mini", "z-ai/glm-4.7-flash", "openai/gpt-5.2-codex", "bytedance-seed/seed-1.6-flash", "bytedance-seed/seed-1.6", "minimax/minimax-m2.1", "z-ai/glm-4.7", "google/gemini-3-flash-preview", "nvidia/nemotron-3-nano-30b-a3b", "openai/gpt-5.2-pro", "openai/gpt-5.2", "mistralai/devstral-2512", "relace/relace-search", "z-ai/glm-4.6v", "openai/gpt-5.1-codex-max", "amazon/nova-2-lite-v1", "mistralai/ministral-14b-2512", "mistralai/ministral-8b-2512", "mistralai/ministral-3b-2512", "mistralai/mistral-large-2512", "deepseek/deepseek-v3.2", "anthropic/claude-opus-4.5", "google/gemini-3-pro-image-preview", "openai/gpt-5.1", "openai/gpt-5.1-codex", "openai/gpt-5.1-codex-mini", "moonshotai/kimi-k2-thinking", "amazon/nova-premier-v1", "perplexity/sonar-pro-search", "mistralai/voxtral-small-24b-2507", "openai/gpt-oss-safeguard-20b", "minimax/minimax-m2", "openai/gpt-5-image-mini", "anthropic/claude-haiku-4.5", "qwen/qwen3-vl-8b-instruct", "openai/gpt-5-image", "google/gemini-2.5-flash-image", "qwen/qwen3-vl-30b-a3b-thinking", "qwen/qwen3-vl-30b-a3b-instruct", "openai/gpt-5-pro", "z-ai/glm-4.6", "anthropic/claude-sonnet-4.5", "deepseek/deepseek-v3.2-exp", "thedrummer/cydonia-24b-v4.1", "relace/relace-apply-3", "qwen/qwen3-vl-235b-a22b-instruct", "deepseek/deepseek-v3.1-terminus", "qwen/qwen3-coder-flash", "qwen/qwen3-next-80b-a3b-instruct", "moonshotai/kimi-k2-0905", "nousresearch/hermes-4-405b", "deepseek/deepseek-chat-v3.1", "mistralai/mistral-medium-3.1", "z-ai/glm-4.5v", "openai/gpt-5", "openai/gpt-5-mini", "openai/gpt-5-nano", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "anthropic/claude-opus-4.1", "mistralai/codestral-2508", "qwen/qwen3-coder-30b-a3b-instruct", "qwen/qwen3-30b-a3b-instruct-2507", "z-ai/glm-4.5", "z-ai/glm-4.5-air", "qwen/qwen3-235b-a22b-thinking-2507", "qwen/qwen3-coder", "bytedance/ui-tars-1.5-7b", "google/gemini-2.5-flash-lite", "qwen/qwen3-235b-a22b-2507", "moonshotai/kimi-k2", "cognitivecomputations/dolphin-mistral-24b-venice-edition", "tencent/hunyuan-a13b-instruct", "morph/morph-v3-large", "morph/morph-v3-fast", "mistralai/mistral-small-3.2-24b-instruct", "minimax/minimax-m1", "google/gemini-2.5-flash", "google/gemini-2.5-pro", "openai/o3-pro", "google/gemini-2.5-pro-preview", "deepseek/deepseek-r1-0528", "mistralai/mistral-medium-3", "meta-llama/llama-guard-4-12b", "qwen/qwen3-30b-a3b", "qwen/qwen3-14b", "qwen/qwen3-32b", "openai/o3", "openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4.1-nano", "meta-llama/llama-4-maverick", "meta-llama/llama-4-scout", "deepseek/deepseek-chat-v3-0324", "mistralai/mistral-small-3.1-24b-instruct", "google/gemma-3-4b-it", "google/gemma-3-12b-it", "cohere/command-a", "rekaai/reka-flash-3", "google/gemma-3-27b-it", "thedrummer/skyfall-36b-v2", "perplexity/sonar-reasoning-pro", "perplexity/sonar-pro", "perplexity/sonar-deep-research", "mistralai/mistral-saba", "aion-labs/aion-rp-llama-3.1-8b", "qwen/qwen2.5-vl-72b-instruct", "qwen/qwen-plus", "mistralai/mistral-small-24b-instruct-2501", "perplexity/sonar", "minimax/minimax-01", "microsoft/phi-4", "deepseek/deepseek-chat", "cohere/command-r7b-12-2024", "meta-llama/llama-3.3-70b-instruct", "amazon/nova-lite-v1", "amazon/nova-micro-v1", "amazon/nova-pro-v1", "openai/gpt-4o-2024-11-20", "mistralai/mistral-large-2407", "qwen/qwen-2.5-coder-32b-instruct", "thedrummer/unslopnemo-12b", "anthracite-org/magnum-v4-72b", "qwen/qwen-2.5-7b-instruct", "meta-llama/llama-3.2-1b-instruct", "meta-llama/llama-3.2-3b-instruct", "qwen/qwen-2.5-72b-instruct", "cohere/command-r-08-2024", "cohere/command-r-plus-08-2024", "sao10k/l3.1-euryale-70b", "nousresearch/hermes-3-llama-3.1-70b", "nousresearch/hermes-3-llama-3.1-405b", "sao10k/l3-lunaris-8b", "openai/gpt-4o-2024-08-06", "meta-llama/llama-3.1-70b-instruct", "meta-llama/llama-3.1-8b-instruct", "mistralai/mistral-nemo", "openai/gpt-4o-mini", "openai/gpt-4o-mini-2024-07-18", "google/gemma-2-27b-it", "openai/gpt-4o", "openai/gpt-4o-2024-05-13", "mistralai/mixtral-8x22b-instruct", "mistralai/mistral-large", "openai/gpt-3.5-turbo-0613", "openai/gpt-3.5-turbo-16k", "mancer/weaver", "undi95/remm-slerp-l2-13b", "gryphe/mythomax-l2-13b", "openai/gpt-4", "typesafe/jev-router", "nvidia/switchyard", "openrouter/auto-beta", "openrouter/fusion", "openrouter/pareto-code", "openrouter/free", "openrouter/bodybuilder", "openrouter/auto", "kilo-auto/frontier", "kilo-auto/balanced", "kilo-auto/small", "inclusionai/ling-3.1-flash-1019-free"], "quando": "2026-10-31 15:58"}, "agnes": {"modelli": ["agnes-2.5-pro-alpha", "agnes-video-2.5-flash", "agnes-3.0-flash", "agnes-image-2.1-flash", "agnes-video-2.5", "agnes-image-2.0-flash", "agnes-2.5-flash", "agnes-2.5-pro-beta", "agnes-image-2.5-flash"], "quando": "2026-10-31 15:58"}, "xkiro": {"modelli": ["google/gemini-3.6-flash", "tencent/hy4-preview", "anthropic/claude-sonnet-4.6", "x-ai/grok-4.5", "mistralai/ministral-14b", "anthropic/claude-opus-4.8", "anthropic/claude-fable-5-1", "x-ai/grok-4.7", "anthropic/claude-sonnet-5.5", "minimax/minimax-m3", "minimax/minimax-m2.7", "minimax/minimax-m2.7-highspeed", "anthropic/claude-fable-5", "deepseek/deepseek-v4-pro-0813", "anthropic/claude-haiku-5.5", "deepseek/deepseek-v4.1-flash", "tencent/hy3-preview", "google/gemini-3.8-flash", "moonshotai/kimi-k2.8-preview-agent", "qwen/qwen3-vl-plus:free", "google/gemini-3.7-flash", "x-ai/grok-4.6", "anthropic/claude-opus-5", "anthropic/claude-haiku-4.5", "anthropic/claude-opus-4.5", "openai/gpt-6.1-sol", "openai/gpt-6-astra", "cohere/north-mini-code", "openai/gpt-6-sol", "anthropic/claude-opus-4.6", "anthropic/claude-sonnet-4.5", "cohere/command-r-08-2024", "openai/gpt-5.6-luna", "openai/gpt-5.6-sol", "qwen/qwen-plus-2025-07-28:free", "sensenova/sensenova-6.8-flash-lite", "cohere/command-a", "cohere/aya-vision-32b", "mistralai/ministral-3b", "anthropic/claude-sonnet-4", "cohere/tiny-aya-earth", "cohere/tiny-aya-global", "cohere/command-r-plus-08-2024", "openai/gpt-6.1-terra", "cohere/aya-expanse-32b", "openai/gpt-5.6-terra", "cohere/tiny-aya-fire", "minimax/minimax-m3.1-flash", "cohere/command-a-plus", "nvidia/nemotron-3.5-super-vl", "google/gemini-2.5-pro", "openai/gpt-6-luna", "google/gemini-3.5-flash", "google/gemini-3.1-pro", "anthropic/claude-sonnet-5", "google/gemini-2.5-flash", "mistralai/mistral-large-4-0", "moonshotai/kimi-k3-agent", "mistralai/mistral-large-2512", "mistralai/mistral-medium-3.5", "mistralai/mistral-small-2603", "mistralai/devstral-medium", "anthropic/claude-opus-5.5", "mistralai/codestral-2508", "cohere/command-a-translate", "google/gemini-3-flash", "minimax/minimax-m2.5", "minimax/minimax-m2.1", "qwen/qwen3-omni-flash:free", "mistralai/ministral-8b", "xiaomi/mimo-v2.6-pro", "deepseek/deepseek-v4-flash-0731", "xiaomi/mimo-v2.6-flash", "anthropic/claude-opus-4.7", "minimax/minimax-m2.5-highspeed", "minimax/minimax-m2.1-highspeed", "minimax/minimax-m2", "xiaomi/mimo-v2.5", "tencent/hy3", "qwen/qwen3.6-plus:free", "qwen/qwen3.7-max:free", "qwen/qwen3.7-plus:free", "nvidia/nemotron-3-ultra", "stealth/big-pickle", "qwen/qwen3.5-omni-flash:free", "cohere/command-r7b-12-2024", "nvidia/nemotron-3-nano-omni", "qwen/qwen3.8-max:free", "qwen/qwen3.8-omni-flash:free", "qwen/qwen3.7-flash:free", "qwen/qwen3.6-max-preview:free", "qwen/qwen3-coder-plus:free", "cohere/north-small-translate", "qwen/qwen3.6-27b:free", "qwen/qwen3.5-plus:free", "cohere/command-a-vision", "cohere/command-a-reasoning", "qwen/qwen3.5-omni-plus:free", "qwen/qwen3.6-35b-a3b:free", "qwen/qwen3.5-flash:free", "cohere/tiny-aya-water", "qwen/qwen3.5-397b-a17b:free", "qwen/qwen3-max:free"], "quando": "2026-10-31 15:58"}, "dreamprompting": {"modelli": ["auto", "groq/openai/gpt-oss-120b", "groq/openai/gpt-oss-20b", "groq/qwen/qwen3.6-27b", "groq/groq/compound-mini", "mistral/mistral-small-latest", "mistral/open-mistral-nemo", "mistral/mistral-large-latest", "nvidia/nvidia/nemotron-3-super-120b-a12b", "nvidia/nvidia/nemotron-3-nano-30b-a3b", "nvidia-vision/meta/llama-3.2-11b-vision-instruct", "cohere/command-r-08-2024", "cohere/command-r-plus-08-2024", "cohere/command-a-03-2025", "google/gemini-3.1-flash-lite", "google/gemini-2.5-flash", "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free", "openrouter/google/gemma-4-31b-it:free", "openrouter/nvidia/nemotron-3.5-lightning:free", "openrouter/google/gemma-4-26b-a4b-it:free", "cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast", "cloudflare/@cf/ibm-granite/granite-4.0-h-micro", "cloudflare/@cf/nvidia/nemotron-3-120b-a12b", "cloudflare/@cf/openai/gpt-oss-120b", "cloudflare-vision/@cf/meta/llama-4-scout-17b-16e-instruct", "huggingface/meta-llama/Llama-3.3-70B-Instruct", "huggingface/Qwen/Qwen2.5-72B-Instruct", "codestral/codestral-latest", "chat/ch.at"], "quando": "2026-10-31 15:58"}, "gizmo": {"modelli": ["moonshotai/kimi-k3.1-pro", "deepseek/deepseek-v4.1-flash-1017", "google/gemini-4-argon", "x-ai/grok-4.3:batch", "nvidia/nemotron-3.5-lightning:free", "prism-ml/ternary-bonsai-2-9b", "inclusionai/ling-3.0-flash", "minimax/minimax-m2.7", "aion-labs/aion-2.0", "x-ai/grok-4.6", "qwen/qwen3.5-397b-a17b", "z-ai/glm-5.3-flash", "bytedance-seed/seed-2.0-mini", "sakana/fugu-ultra-v2", "qwen/qwen3-vl-235b-a22b-instruct", "z-ai/glm-5.3-flash:batch", "google/gemini-2.5-flash", "google/gemini-3.1-flash-lite-preview", "z-ai/glm-5.3-flashx", "google/gemini-3.1-pro-preview", "unbiased/pareto-26.9", "bytedance-seed/seed-1.6-flash", "z-ai/glm-4.7", "elorian/glimpse", "reflection/beam-1.0-501b-a23b", "deepseek/deepseek-v4-flash-vision-exp", "openai/gpt-6-astra-pro", "tencent/hy4-preview", "nvidia/nemotron-3-ultra-550b-a55b", "moonshotai/kimi-k2.5", "google/gemini-3.6-flash", "meta/muse-spark-open", "qwen/qwen3-next-80b-a3b-instruct", "google/gemin
+[0m
+[0m$ [0mgrep -n -i 'anyapi' /home/agenti/posta/portiere_lista.txt | cut -c1-300
+9:#   NOTA 2/11: i modelli che «ragionano» (Routeway, UnoRouter, AnyAPI, Gizmo, OVH) rispondono
+64:anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat||free-ricorrente|google/gemma-4-26b-a4b-it:free;nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;nvidia/nemotron-3-ultra-550b-a55b:free;recursive/flint-v1.0:free;dots-studio/dots-3-note-preview:free;xingchen-a
+[0m
+[0m← [0mWrite fatti/rel_anyapi.md
+Wrote file successfully.
+[0m
+[0m$ [0mwc -w /home/agenti/posta/fatti/rel_anyapi.md; grep -nE 'sk-[A-Za-z0-9_-]{10,}|Bearer [A-Za-z0-9]' /home/agenti/posta/fatti/rel_anyapi.md || echo 'nessuna chiave nel referto'
+498 /home/agenti/posta/fatti/rel_anyapi.md
+nessuna chiave nel referto
+[0m
+Referto scritto in `~/posta/fatti/rel_anyapi.md` (498 parole, nessuna chiave).
+
+L'errore è il tetto giornaliero del pool free condiviso (100K AnyToken/giorno, reset ogni 24h). Solo `xingchen-agi/xing4.0-29b-a4b:free` ha risposto 200 con contenuto reale (`ciao mondo`, costo 0.0) e quota team propria; gli altri free danno 429, i modelli `respan`/`convai` sono solo endpoint `decisions`. Nel roster va messo `xingchen-agi/xing4.0-29b-a4b:free` come primario.
