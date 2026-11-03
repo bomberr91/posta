@@ -248,11 +248,12 @@ def parse_feed(xml):
     voci = []
     for e in re.findall(r"<entry>(.*?)</entry>", xml, re.S)[:MAX_ENTRATE]:
         m = re.search(r"<title[^>]*>(.*?)</title>", e, re.S)
-        titolo = html_a_testo(htmllib.unescape(m.group(1))) if m else ""
+        titolo = html_a_testo(htmllib.unescape(htmllib.unescape(m.group(1)))) if m else ""
         m = re.search(r"<name>(.*?)</name>", e, re.S)
         autore = htmllib.unescape(m.group(1)).strip() if m else "?"
         m = re.search(r"<content[^>]*>(.*?)</content>", e, re.S)
-        testo = html_a_testo(htmllib.unescape(m.group(1))) if m else ""
+        # Reddit manda il contenuto doppio-escapato: sblocca due volte
+        testo = html_a_testo(htmllib.unescape(htmllib.unescape(m.group(1)))) if m else ""
         voci.append((autore, titolo, testo))
     return voci
 
