@@ -19,6 +19,11 @@ OUT="$HOME/.posta_appello.json"
 RAP="$QUI/dal_pc/appello_chiavi.md"
 LISTA="$QUI/portiere_lista.txt"   # la lista del Portiere: una sola per tutti
 SVELTO=0; JSON=0; SOLOPROBLEMI=0
+# 3/11 sera (decisione del capo): i provider "parcheggiati" NON vengono
+# chiamati dall'appello e NON contano nel numero: aspettiamo le notizie
+# ufficiali. Li tiene d'occhio la sentinella giornaliera dei servizi
+# (lavori/sentinella_servizi.sh -> dal_pc/sentinella_servizi.md).
+PARCHEGGIATI="waterfall navy"
 for a in "$@"; do
   [ "$a" = "--svelto" ] && SVELTO=1
   [ "$a" = "--json" ] && JSON=1
@@ -325,6 +330,8 @@ while IFS='|' read -r id eti nome base modello modo tipo classe extra auth; do
   if [ -n "$SKIP" ]; then
     case " $SKIP " in *" $id "*) continue ;; esac
   fi
+  # parcheggiati: non si chiamano e non si contano (3/11 sera)
+  case " $PARCHEGGIATI " in *" $id "*) continue ;; esac
   prova "$id" "$eti" "$nome" "$base" "$modello" "${modo:-chat}" "$extra" "$auth" "$tipo" &
   # max 6 alla volta
   while [ "$(jobs -rp | wc -l)" -ge 6 ]; do sleep 0.3; done
@@ -355,9 +362,10 @@ wait
 } > "$RAP"
 
 # JSON per la GUI: ordine = prima chi risponde (riserva)
-python3 - "$TMP" "$OUT" <<'PY'
+python3 - "$TMP" "$OUT" "$PARCHEGGIATI" <<'PY'
 import glob, json, os, sys
 tmp, out = sys.argv[1], sys.argv[2]
+parcheggiati = set(sys.argv[3].split()) if len(sys.argv) > 3 else set()
 voci = []
 # --solo-problemi: si unisce anche il catalogo precedente (chi non e' stato
 # riprovato continua a valere, altrimenti la GUI perderebbe la riserva).
@@ -383,6 +391,7 @@ for f in glob.glob(os.path.join(tmp, "*.res")):
 ordine = {"risponde": 0, "occupato": 1, "strano": 2, "rete": 3, "chiave-no": 4, "no-chiave": 5}
 voci.sort(key=lambda v: (0 if v["esito"] == "risponde" and v.get("prova") == "chat" else
                          1 if v["esito"] == "risponde" else 2, v["ms"]))
+voci = [v for v in voci if v.get("id") not in parcheggiati]
 dati = {"quando": __import__("time").strftime("%d/%m/%Y %H:%M"),
         "riserva": [v["id"] for v in voci if v["esito"] == "risponde"],
         "voci": voci}

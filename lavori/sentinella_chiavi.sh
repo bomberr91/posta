@@ -100,12 +100,16 @@ else
   echo "sonda non avviata: nessun log in ~/sonda_longcat.log" >> "$RAPPORTO"
 fi
 
-# 6) NaraRouter: piano free attivo (7M token/giorno) ma l'unico modello free
-#    (Laguna S 2.1) rifiuta le richieste: se torna, lo reintegriamo.
-echo >> "$RAPPORTO"; echo "## 6. NaraRouter (piano free)" >> "$RAPPORTO"
-NARA=$(timeout 180 bash fatti/prova_nararouter.sh 2>&1 | tail -12)
-echo '```' >> "$RAPPORTO"; echo "$NARA" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
-say "nararouter: $(echo "$NARA" | grep -c 'HTTP 200') risposte 200"
+# 6) Servizi parcheggiati (Waterfall, NavyAI): una volta al giorno la
+#    sentinella dedicata bussa a entrambi e lascia il referto qui sotto.
+echo >> "$RAPPORTO"; echo "## 6. Servizi parcheggiati (Waterfall, NavyAI)" >> "$RAPPORTO"
+SERV=$(timeout 300 bash "$DIR/lavori/sentinella_servizi.sh" 2>&1 | tail -5)
+if [ -f "$DIR/dal_pc/sentinella_servizi.md" ]; then
+  echo '```' >> "$RAPPORTO"; sed -n '1,60p' "$DIR/dal_pc/sentinella_servizi.md" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
+else
+  echo "sentinella servizi: nessun referto ($SERV)" >> "$RAPPORTO"
+fi
+say "servizi parcheggiati: referto in dal_pc/sentinella_servizi.md"
 
 say "giro finito · rapporto: $RAPPORTO"
 exit 0
