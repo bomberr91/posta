@@ -29,3 +29,5 @@ Guida di navigazione della cartella della Centrale Agenti. **Non spostare i file
 ## Regola: agenti separati
 
 Ogni agente mantiene la propria installazione, configurazione e dati. Non migrare o fondere i dati senza richiesta esplicita. OpenClaw era già installato: resta com'è, non va reinstallato né modificato. Hermes è ora installato nativamente su Windows e può essere avviato da PowerShell con `hermes`; il collegamento al Hub è un passaggio separato.
+
+- \`lavori/ponte/\` — ponte arena→agenti locali (poller, PROTOCOLLO.md, consegne in /consegne/)
