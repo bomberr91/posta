@@ -14,7 +14,7 @@ echo "Acceso da: $(uptime -p 2>/dev/null || uptime)"
 echo
 
 echo "## Attesa del boot (Gateway e motore sono lenti)"
-for i in 1 2 3 4 5 6 7 8 9 10; do
+for i in $(seq 1 20); do   # 10 minuti: dopo il reboot il Gateway mette ~4-5 minuti a mettersi in ascolto
   M=$(porta 20128); G=$(porta 18789)
   [ "$M" = "VIVO" ] && [ "$G" = "VIVO" ] && break
   sleep 30
