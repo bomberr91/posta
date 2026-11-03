@@ -48,6 +48,15 @@ ARENA: "leggi la issue #N" → stato + riepilogo + file nel repo
 - Timeout per agente: un task bloccato non immobilizza la coda (viene ucciso e contanto come fallito).
 - Lock a istanza singola (`_stato/poller.lock`): mai due poller in gara.
 
+## Ordine preventivo e contatore (dal 3/11)
+- `max_paralleli` (default 2): al massimo 2 agenti insieme; gli altri aspettano il turno.
+- **Un task per agente**: due issue per lo stesso `target` girano in fila (niente due goose in gara).
+- I commit/push delle consegne sono serializzati (mai index.lock per colpa del ponte).
+- **Contatore**: `_stato/ponte_stato.json` dice chi sta lavorando ora; per l'umano:
+  `bash stato_ponte.sh`. Arena può contare le issue aperte con etichetta `in-corso`.
+- La scorta (`scorta_ponte.sh`, avviata da `PONTE_ARENA.vbs` alla Startup) riavvia
+  il poller se muore — stesso schema delle altre scorte del sistema.
+
 ## Corsia veloce (futuro, opzionale)
 Tailscale Funnel (gratis, URL stabile) esporrà `cervello` per task immediati;
 la coda GitHub resta il fondamento: consegne, storico, conferme, fallback quando

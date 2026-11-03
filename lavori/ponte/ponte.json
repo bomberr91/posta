@@ -2,81 +2,71 @@
   "repo": "bomberr91/posta",
   "intervallo_s": 40,
   "max_tentativi": 3,
+  "max_paralleli": 2,
   "repo_path": "/home/agenti/posta",
   "consegne_dir": "consegne",
   "token_file": "/home/agenti/CHIAVI_LOCALI.md",
   "token_re": "ghp_[A-Za-z0-9]{20,}",
+
   "_note": "Comandi verificati dal vivo il 3/11. Agenti WSL = comando diretto; agenti Windows = eseguiti da WSL con percorso /mnt/c (interop). freebuff escluso: solo interattivo. Aggiungi/ritira agenti a piacere.",
+
   "agenti": {
     "test": {
-      "cmd": [
-        "bash",
-        "-c",
-        "echo ciao dal ponte && date && hostname"
-      ],
+      "cmd": ["bash", "-c", "echo ciao dal ponte && date && hostname"],
+      "workdir": "/home/agenti",
+      "timeout": 60,
+      "raccogli": []
+    },
+    "testlento": {
+      "cmd": ["bash", "-c", "sleep 8; echo test lento completato"],
+      "workdir": "/home/agenti",
+      "timeout": 60,
+      "raccogli": []
+    },
+    "testlento2": {
+      "cmd": ["bash", "-c", "sleep 8; echo test lento 2 completato"],
+      "workdir": "/home/agenti",
+      "timeout": 60,
+      "raccogli": []
+    },
+    "testlento3": {
+      "cmd": ["bash", "-c", "sleep 8; echo test lento 3 completato"],
       "workdir": "/home/agenti",
       "timeout": 60,
       "raccogli": []
     },
     "goose": {
-      "cmd": [
-        "goose",
-        "run",
-        "-t",
-        "{compito}"
-      ],
+      "cmd": ["goose", "run", "-t", "{compito}"],
       "workdir": "/home/agenti",
       "timeout": 1800,
       "raccogli": []
     },
     "opencode": {
-      "cmd": [
-        "opencode",
-        "run",
-        "{compito}"
-      ],
+      "cmd": ["opencode", "run", "{compito}"],
       "workdir": "/home/agenti",
       "timeout": 1800,
       "raccogli": []
     },
     "secondhand": {
-      "cmd": [
-        "interpreter",
-        "exec",
-        "{compito}"
-      ],
+      "cmd": ["interpreter", "exec", "{compito}"],
       "workdir": "/home/agenti",
       "timeout": 1800,
       "raccogli": []
     },
     "hermes": {
-      "cmd": [
-        "/mnt/c/Users/giopi/AppData/Local/hermes/bin/hermes.exe",
-        "-z",
-        "{compito}"
-      ],
+      "cmd": ["/mnt/c/Users/giopi/AppData/Local/hermes/bin/hermes.exe", "-z", "{compito}"],
       "workdir": "/mnt/c/Users/giopi/Documents",
       "timeout": 900,
       "raccogli": []
     },
     "antigravity": {
-      "cmd": [
-        "/mnt/c/Users/giopi/AppData/Local/agy/bin/agy.exe",
-        "-p",
-        "{compito}",
-        "--effort",
-        "low"
-      ],
+      "cmd": ["/mnt/c/Users/giopi/AppData/Local/agy/bin/agy.exe", "-p", "{compito}", "--effort", "low"],
       "workdir": "/mnt/c/Users/giopi/Documents",
       "timeout": 900,
       "raccogli": []
     },
     "openclaw": {
-      "cmd": [
-        "cmd.exe",
-        "/c",
-        "openclaw agent --message {compito} --local"
-      ],
+      "cmd": ["cmd.exe", "/c", "openclaw agent --message {compito} --local"],
       "workdir": "/mnt/c/Users/giopi/Documents",
       "timeout": 1800,
       "raccogli": []

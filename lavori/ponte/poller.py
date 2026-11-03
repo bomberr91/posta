@@ -21,11 +21,13 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 import traceback
 import urllib.request
 import urllib.error
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
@@ -35,6 +37,7 @@ CFG = json.loads((BASE / "ponte.json").read_text(encoding="utf-8"))
 REPO = CFG["repo"]
 INTERVALLO = int(CFG.get("intervallo_s", 40))
 MAX_TENTATIVI = int(CFG.get("max_tentativi", 3))
+MAX_PARALLELI = int(CFG.get("max_paralleli", 2))
 REPO_PATH = CFG.get("repo_path")  # percorso locale del repo git (se impostato: commit+push)
 CONSEGNE_REL = CFG.get("consegne_dir", "consegne")
 TOKEN_FILE = CFG.get("token_file")
@@ -42,6 +45,39 @@ TOKEN_RE = CFG.get("token_re", "ghp_[A-Za-z0-9]{20,}")
 
 API = f"https://api.github.com/repos/{REPO}"
 _token_mem = None
+
+# locks di concorrenza (il ponte esegue fino a MAX_PARALLELI task in parallelo)
+GIT_LOCK = threading.Lock()      # un commit/push alla volta (index.lock del repo)
+FILE_LOCK = threading.Lock()     # scritture su _stato/ponte_stato.json
+AGENT_GUARD = threading.Lock()
+AGENT_LOCKS = {}                 # un task per agente: goose non litiga con goose
+
+
+def ag_lock(target):
+    with AGENT_GUARD:
+        if target not in AGENT_LOCKS:
+            AGENT_LOCKS[target] = threading.Lock()
+        return AGENT_LOCKS[target]
+
+
+def stato_ponte(aggiungi=None, rimuovi=None):
+    """Contatore condiviso: chi sta lavorando ora (leggibile da stato_ponte.sh e arena)."""
+    with FILE_LOCK:
+        s = {"pid": os.getpid(), "max_paralleli": MAX_PARALLELI,
+             "aggiornato": datetime.datetime.now().isoformat(timespec="seconds")}
+        f = STATO / "ponte_stato.json"
+        if f.exists():
+            try:
+                vecchio = json.loads(f.read_text(encoding="utf-8"))
+                s["in_corso"] = vecchio.get("in_corso", [])
+            except Exception:
+                s["in_corso"] = []
+        else:
+            s["in_corso"] = []
+        s["in_corso"] = [t for t in s["in_corso"] if t["numero"] != rimuovi]
+        if aggiungi:
+            s["in_corso"].append(aggiungi)
+        f.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def log(msg):
@@ -251,9 +287,10 @@ def smista(numero, titolo, body, dry):
 
     if ok:
         if REPO_PATH:
-            git(REPO_PATH, "add", f"{CONSEGNE_REL}/{numero}-{slug}")
-            git(REPO_PATH, "commit", "-m", f"ponte: consegna issue #{numero} ({target})")
-            git(REPO_PATH, "push", "origin", "HEAD:main")
+            with GIT_LOCK:  # un commit/push alla volta anche con agenti in parallelo
+                git(REPO_PATH, "add", f"{CONSEGNE_REL}/{numero}-{slug}")
+                git(REPO_PATH, "commit", "-m", f"ponte: consegna issue #{numero} ({target})")
+                git(REPO_PATH, "push", "origin", "HEAD:main")
         commenta(numero, "\n".join(ris))
         nomi = [l for l in labels_di(numero) if l not in ("in-corso", "inbox")]
         set_labels(numero, nomi)  # issue chiusa e pulita
@@ -321,37 +358,48 @@ def esegui(n, titolo, body, dry):
         log(f"[dry-run] prenderei # {n}: {titolo}")
         smista(n, titolo, body or "", dry=True)
         return
-    log(f"presa # {n}: {titolo}")
-    if not claim(n):
-        return
-    try:
-        smista(n, titolo, body or "", dry=False)
-    except Exception as e:
-        traceback.print_exc()
-        tent = leggi_tentativi(n) + 1
-        salva_tentativi(n, tent)
-        msg = f"⚠️ errore interno del poller su # {n} (tentativo {tent}/{MAX_TENTATIVI}): `{e}`"
-        log(msg)
+    target = (parse_campo(body or "", "target", "consegna|compito|contesto") or "?").lower()
+    # lock per agente: un task per ciascuno (niente due goose in gara),
+    # il numero massimo di agenti contemporanei è MAX_PARALLELI (pool del ciclo)
+    with ag_lock(target):
+        log(f"presa # {n}: {titolo}")
+        if not claim(n):
+            return
+        stato_ponte(aggiungi={"numero": n, "target": target,
+                              "dal": datetime.datetime.now().strftime("%H:%M:%S")})
         try:
-            nomi = [l for l in labels_di(n) if l != "in-corso"]
-            nomi.append("inbox")
-            set_labels(n, nomi)
-            commenta(n, msg)
-        except Exception as e2:
-            log(f"  nessun commento possibile: {e2}")
+            smista(n, titolo, body or "", dry=False)
+        except Exception as e:
+            traceback.print_exc()
+            tent = leggi_tentativi(n) + 1
+            salva_tentativi(n, tent)
+            msg = f"⚠️ errore interno del poller su # {n} (tentativo {tent}/{MAX_TENTATIVI}): `{e}`"
+            log(msg)
+            try:
+                nomi = [l for l in labels_di(n) if l != "in-corso"]
+                nomi.append("inbox")
+                set_labels(n, nomi)
+                commenta(n, msg)
+            except Exception as e2:
+                log(f"  nessun commento possibile: {e2}")
+        finally:
+            stato_ponte(rimuovi=n)
 
 
 def ciclo(dry=False, extra=None):
     # le issue appena rimesse in coda non compaiono subito nelle query filtrate
     # (lag di propagazione dell'API): processale direttamente
-    for n, titolo, body in (extra or []):
-        esegui(n, titolo, body, dry)
+    compiti = list(extra or [])
     issues = issue_inbox()
-    if not issues:
+    compiti += [(it["number"], it["title"], it.get("body") or "") for it in issues]
+    if not compiti:
         log("coda vuota")
         return
-    for it in issues:
-        esegui(it["number"], it["title"], it.get("body") or "", dry)
+    # ordine preventivo: massimo MAX_PARALLELI agenti insieme, gli altri aspettano
+    with ThreadPoolExecutor(max_workers=MAX_PARALLELI) as pool:
+        futuri = [pool.submit(esegui, n, t, b, dry) for n, t, b in compiti]
+        for f in futuri:
+            f.result()
 
 
 def main():
