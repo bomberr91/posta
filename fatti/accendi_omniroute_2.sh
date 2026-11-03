@@ -10,8 +10,8 @@ vivo(){ curl -s -m 4 http://127.0.0.1:20128/v1/models -H "Authorization: Bearer 
 echo "# ACCENSIONE OMNIROUTE tentativo 2 — $(date)"
 if vivo; then echo "gia' acceso"
 else
-  echo "avvio: OMNIROUTE_SERVER_HOST=127.0.0.1 omniroute (solo localhost, regola sicurezza)"
-  OMNIROUTE_SERVER_HOST=127.0.0.1 nohup omniroute >> dal_pc/omni_start.log 2>&1 &
+  echo "avvio: OMNIROUTE_SERVER_HOST=127.0.0.1 OMNIROUTE_READY_TIMEOUT_MS=180000 omniroute (solo localhost, regola sicurezza)"
+  OMNIROUTE_SERVER_HOST=127.0.0.1 OMNIROUTE_READY_TIMEOUT_MS=180000 nohup omniroute >> dal_pc/omni_start.log 2>&1 &
   echo "pid: $! — aspetto fino a 2 minuti SENZA toccarlo"
   for i in $(seq 1 24); do sleep 5; vivo && break; done
 fi
