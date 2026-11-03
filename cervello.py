@@ -521,8 +521,8 @@ def stato_salva(forza=False):
         # AUDIT FINALE N9: il timestamp si segna DOPO che il file e' stato
         # scritto: se la scrittura fallisce, i salvataggi restavano muti 2s.
         _ultimo_salvataggio[0] = time.time()
-    except Exception:
-        pass
+    except Exception as e:
+        logga(tipo="errore-stato", nota="salvataggio stato fallito: %s" % str(e)[:120])
 
 
 def castiga(pid, modello, secondi, globale=False):
@@ -1536,6 +1536,7 @@ def scopri():
 
 def pagina():
     """La pagina del Portiere: la SUA lista, provider per provider."""
+    from html import escape as _esc   # CURA-AUDIT LOW-1: i valori della lista non finiscono in HTML
     voci = {v.get("id"): v for v in appello()}
     su_motore = motore_vivo()
     pronti = sum(1 for pid in BASE if (voci.get(pid) or {}).get("esito") == "risponde")
@@ -1568,17 +1569,17 @@ def pagina():
             nota += " · oggi %d" % n_oggi
         corpo.append(
             '<tr><td style="padding:7px 10px;border-bottom:1px solid #ffffff12">'
-            f'<span style="color:{colore}">{icona}</span> <b>{ETICHETTE.get(pid, pid)}</b> '
-            f'<span style="color:#6b7280;font-size:12px">{TIPI.get(pid, "chat")} · {CLASSI.get(pid, "")}</span></td>'
+            f'<span style="color:{colore}">{icona}</span> <b>{_esc(ETICHETTE.get(pid, pid))}</b> '
+            f'<span style="color:#6b7280;font-size:12px">{_esc(TIPI.get(pid, "chat"))} · {_esc(CLASSI.get(pid, ""))}</span></td>'
             '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#9aa4b2">'
-            f'{url.replace("https://", "")} · {modello}</td>'
+            f'{_esc(url.replace("https://", ""))} · {_esc(modello)}</td>'
             '<td style="padding:7px 10px;border-bottom:1px solid #ffffff12;color:#c9d1d9">'
-            f'{nota}</td></tr>')
+            f'{_esc(nota)}</td></tr>')
     fuori = da_confermare()
     righe_fuori = "".join(
         '<div style="display:flex;justify-content:space-between;padding:5px 0;'
-        'border-bottom:1px solid #ffffff0d"><b>' + n + '</b>'
-        '<span style="color:#9aa4b2">' + m + '</span></div>' for n, m in fuori)
+        'border-bottom:1px solid #ffffff0d"><b>' + _esc(n) + '</b>'
+        '<span style="color:#9aa4b2">' + _esc(m) + '</span></div>' for n, m in fuori)
     html = f"""<!doctype html><html lang="it"><head><meta charset="utf-8">
 <title>Portiere — la sua lista</title></head>
 <body style="margin:0;background:#0d1117;color:#e6edf3;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif">
@@ -1600,7 +1601,7 @@ def pagina():
     <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
       <div style="color:#9aa4b2;font-size:12px">in castigo adesso</div>
       <div style="font-size:20px">{castigati or '—'}</div></div>
-    {('<div style="background:#2d1f00;border:1px solid #f5c45155;border-radius:10px;padding:10px 14px;color:#f5c451">📡 ' + STATO.get("sentinella", {}).get("avviso", "") + '</div>') if STATO.get("sentinella", {}).get("avviso") else ''}
+    {('<div style="background:#2d1f00;border:1px solid #f5c45155;border-radius:10px;padding:10px 14px;color:#f5c451">📡 ' + _esc(STATO.get("sentinella", {}).get("avviso", "")) + '</div>') if STATO.get("sentinella", {}).get("avviso") else ''}
     <div style="background:#161b22;border:1px solid #ffffff14;border-radius:10px;padding:10px 14px">
       <div style="color:#9aa4b2;font-size:12px">riserva oggi</div>
       <div style="font-size:20px"><b>{sum(u.get('n', 0) for u in (STATO.get('uso') or {}).values() if u.get('giorno') == oggi())}</b> richieste</div></div>
