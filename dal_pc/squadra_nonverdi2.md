@@ -1,8 +1,9 @@
 # Risposta a «squadra_nonverdi2»
 
-_03/11/2026 17:20 · FilippoPC_
+_03/11/2026 17:51 · FilippoPC_
 
 === AGENTE anyapi (in sequenza) ===
+(il referto c'e' gia')
 # AnyAPI — referto (3/11/2026)
 
 ## L'errore 429
@@ -91,5 +92,12 @@ basso e i prompt corti.
 5. In produzione, tenere un provider non-AnyAPI come fallback.
 
 === AGENTE gizmo (in sequenza) ===
+(nessun rel_gizmo.md — ultime righe)
+[91m[1mError: [0mUnexpected error
 
-<!-- FALLITO (exit 124) squadra_nonverdi2 -->
+locking protocol
+(agente gizmo non riuscito)
+
+=== FINE ===
+
+<!-- fine squadra_nonverdi2 -->
