@@ -1,6 +1,6 @@
 {
- "generato": "02/11/2026 10:12",
- "versione": "2026.11.01.395dc3",
+ "generato": "04/11/2026 14:41",
+ "versione": "2026.11.04",
  "tier": "monthly",
  "provider": {
   "google": {
@@ -1867,16 +1867,6 @@
      "ctx": 256000,
      "strumenti": false,
      "visione": true
-    },
-    {
-     "id": "liquid/lfm-2.5-2.6b:free",
-     "rank": 90,
-     "vel": 3,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 32768,
-     "strumenti": true,
-     "visione": false
     }
    ],
    "quirk": [
@@ -2630,7 +2620,14 @@
      "visione": false
     }
    ],
-   "quirk": []
+   "quirk": [
+    {
+     "slug": "nov03-routeway-minimax-m3-1-flash-free",
+     "titolo": "Shared renewable free allowance",
+     "testo": "200 shared free requests/day; 5 RPM. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://docs.routeway.ai/getting-started/rate-limits",
+     "gravita": "info"
+    }
+   ]
   },
   "electronhub": {
    "nome": "ElectronHub",
@@ -3329,7 +3326,7 @@
     {
      "slug": "router9-shared-monthly-credit",
      "titolo": "Shared monthly free credits",
-     "testo": "Router9 Free renews 20,000 credits (about $2) each calendar month, shared across allowlisted routes, resetting on the first day at 00:00 UTC with no rollover. Current credit documentation and authenticated Free-plan headers agree on 20,000; older marketing pages still quote 50,000. Six added routes passed short non-streaming text tests on September 14, 2026; MiniMax M3 passed earlier text and streaming checks. Context and vision capabilities are provider-advertised, not newly feature-tested. Paid top-ups are outside the free allowance. https://www.router9.com/docs/token-plan/credits",
+     "testo": "Router9 Free grants 10,000 credits (about $1) per monthly billing period, shared across API keys and Studio usage. The allowance renews on the account signup anniversary, not necessarily the first of the month, and unused credits do not roll over. Paid prepaid overage is outside the free allowance. Verified against current provider documentation November 3, 2026. https://www.router9.com/docs/token-plan/credits",
      "gravita": "info"
     },
     {
@@ -4107,6 +4104,16 @@
    "etichetta": "LLMTR",
    "modelli": [
     {
+     "id": "agnes/agnes-3.0-flash",
+     "rank": 35,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 524288,
+     "strumenti": false,
+     "visione": false
+    },
+    {
      "id": "qwen/qwen3.8-27b-free",
      "rank": 39,
      "vel": 10,
@@ -4123,6 +4130,16 @@
      "rpm": null,
      "rpd": null,
      "ctx": 1000000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "agnes/agnes-2.5-flash",
+     "rank": 63,
+     "vel": 5,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 524288,
      "strumenti": false,
      "visione": false
     }
@@ -4744,7 +4761,7 @@
    {
     "slug": "router9-shared-monthly-credit",
     "titolo": "Shared monthly free credits",
-    "testo": "Router9 Free renews 20,000 credits (about $2) each calendar month, shared across allowlisted routes, resetting on the first day at 00:00 UTC with no rollover. Current credit documentation and authenticated Free-plan headers agree on 20,000; older marketing pages still quote 50,000. Six added routes passed short non-streaming text tests on September 14, 2026; MiniMax M3 passed earlier text and streaming checks. Context and vision capabilities are provider-advertised, not newly feature-tested. Paid top-ups are outside the free allowance. https://www.router9.com/docs/token-plan/credits",
+    "testo": "Router9 Free grants 10,000 credits (about $1) per monthly billing period, shared across API keys and Studio usage. The allowance renews on the account signup anniversary, not necessarily the first of the month, and unused credits do not roll over. Paid prepaid overage is outside the free allowance. Verified against current provider documentation November 3, 2026. https://www.router9.com/docs/token-plan/credits",
     "gravita": "info"
    },
    {
@@ -4867,6 +4884,30 @@
     "slug": "blaze-free-daily-oct05",
     "titolo": "Shared daily free allowance",
     "testo": "BlazeAPI Free includes 200,000 shared tokens per day, with email verification. This is a daily allowance, not monthly credits or a per-model grant. All eight listed routes returned valid, matching-model text completions on October 5, 2026 with blaze_plan=free and blaze_billing=plan. Use https://api.blazeapi.org/paid/v1 even on Free. Provider metadata advertises a 128,000-token context and 16,000-token maximum output for these routes; tools, vision and streaming were not verified in this audit. Optional paid balances and upgrades are outside this allowance. See https://blazeapi.org/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov03-blaze-free-glm-5-3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "450,000 shared free tokens/day; resets 00:00 UTC. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://blazeapi.org/api/v1/models?all=1",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov03-blaze-free-glm-5-2",
+    "titolo": "Shared renewable free allowance",
+    "testo": "450,000 shared free tokens/day; resets 00:00 UTC. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://blazeapi.org/api/v1/models?all=1",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov03-blaze-free-qwen3-8-max",
+    "titolo": "Shared renewable free allowance",
+    "testo": "450,000 shared free tokens/day; resets 00:00 UTC. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://blazeapi.org/api/v1/models?all=1",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov03-blaze-free-claude-haiku-4-5",
+    "titolo": "Shared renewable free allowance",
+    "testo": "450,000 shared free tokens/day; resets 00:00 UTC. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://blazeapi.org/api/v1/models?all=1",
     "gravita": "info"
    }
   ],
@@ -5224,6 +5265,46 @@
     "titolo": "Shared renewable free allowance",
     "testo": "Five free video generations/day within ten shared free-model calls/day; no card or top-up. Resets 00:00 UTC+8. Watermarked on never-topped-up accounts.. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://www.aiapi-pro.com/free/index.html",
     "gravita": "info"
+   },
+   {
+    "slug": "nov02-novai-glm-4.6v-flash",
+    "titolo": "Shared daily free allowance",
+    "testo": "10 free-model calls per day shared across NovAI free models, 5 RPM; resets at 00:00 UTC+8. Chat and streaming tested 2026-11-02. Vision and tools are not enabled until tested. https://www.aiapi-pro.com/free/index.html",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov02-novai-glm-4.1v-thinking-flash",
+    "titolo": "Shared daily free allowance",
+    "testo": "10 free-model calls per day shared across NovAI free models, 5 RPM; resets at 00:00 UTC+8. Chat and streaming tested 2026-11-02. Vision and tools are not enabled until tested. https://www.aiapi-pro.com/free/index.html",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov03-novai-cogview-3-flash",
+    "titolo": "Shared renewable free allowance",
+    "testo": "10 shared free-model calls/day; resets 00:00 UTC+8. Image generation tested through the app adapter November 3, 2026. One 1024x1024 image per request; output is validated and normalized to PNG base64. Requires app v0.16.18 or newer. https://www.aiapi-pro.com/free/index.html",
+    "gravita": "info"
+   }
+  ],
+  "routeway": [
+   {
+    "slug": "nov03-routeway-minimax-m3-1-flash-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "200 shared free requests/day; 5 RPM. Text and streaming tested November 3, 2026. Reported model identity is provider asserted, not independent weight verification. Tools and vision are not enabled without tests. https://docs.routeway.ai/getting-started/rate-limits",
+    "gravita": "info"
+   }
+  ],
+  "freeinference": [
+   {
+    "slug": "freeinference-shared-daily-research-quota",
+    "titolo": "Research service: requests logged; shared daily quota",
+    "testo": "Free research/education API without a card. Chat and embeddings share an account quota that resets at 00:00 UTC; the provider does not publish a fixed quota amount. Access may require administrator approval. Prompts and responses are logged for research, and anonymized data may be published: do not submit sensitive data. Text chat, streaming and 1024-dimensional BGE-M3 embeddings were tested through the app adapter on November 4, 2026. Returned identity is provider asserted, not independent weight verification. Requires app v0.16.19 or newer. https://doc.freeinference.org/agents https://freeinference.org/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freeinference-shared-daily-research-quota",
+    "titolo": "Research service: requests logged; shared daily quota",
+    "testo": "Free research/education API without a card. Chat and embeddings share an account quota that resets at 00:00 UTC; the provider does not publish a fixed quota amount. Access may require administrator approval. Prompts and responses are logged for research, and anonymized data may be published: do not submit sensitive data. Text chat, streaming and 1024-dimensional BGE-M3 embeddings were tested through the app adapter on November 4, 2026. Returned identity is provider asserted, not independent weight verification. Requires app v0.16.19 or newer. https://doc.freeinference.org/agents https://freeinference.org/terms",
+    "gravita": "warning"
    }
   ]
  }

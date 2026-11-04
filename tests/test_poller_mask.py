@@ -32,12 +32,12 @@ class TestMascheraChiavi(unittest.TestCase):
         self.p = carica_poller()
 
     def test_maschera_i_formati_noti(self):
-        for finto in ("sk-or-v1-ABCDEFGHIJKLMNOPQRST1234",
-                      "sk-ABCDEFGHIJKLMNOPQRSTUVWXYZ012345",
-                      "tvly-dev-ABCDEFGHIJKLMNOPQRSTUV",
-                      "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123",
-                      "github_pat_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123",
-                      "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456"):
+        for finto in ("«chiave mascherata»",
+                      "«chiave mascherata»",
+                      "«chiave mascherata»",
+                      "«chiave mascherata»",
+                      "«chiave mascherata»",
+                      "«chiave mascherata»"):
             out = self.p.maschera_chiavi("prima " + finto + " dopo")
             self.assertNotIn(finto, out, "la chiave finta è rimasta in chiaro: %s" % finto)
             self.assertIn("«chiave mascherata»", out)
