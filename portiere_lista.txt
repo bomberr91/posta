@@ -1,3 +1,7 @@
+# 4/11 notte (via del capo): tolti LongCat (402 continuo, la quota non rinnova: 55/55 campioni)
+# e NaraRouter (403 telegram_required su tutto: la chiave resta nel portachiavi).
+# Le 5 righe '✅ risolto 21/10' / 'Kilo|risolto 2/11' erano commenti senza '#':
+# il portiere le caricava come provider falsi e si puniva da solo -> ora sono commenti.
 # portiere_lista.txt — LA LISTA DEL PORTIERE (motore nostro, porta 20129)
 # formato: id|etichetta|nome nel portachiavi|indirizzo API|modello di partenza|modo|tipo|classe|extra|auth
 #   nome nel portachiavi = SENZA  → provider che non vuole chiave
@@ -53,7 +57,6 @@ pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
 llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli||free-ricorrente||
-longcat|LongCat|LongCat|https://api.longcat.chat/openai/v1|LongCat-2.5|chat||free-ricorrente|LongCat-2.5-Preview;LongCat-2.0||
 ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli||free-ricorrente||
 requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli||free-ricorrente||
 zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli||free-ricorrente||
@@ -107,8 +110,8 @@ pollinationsimg|Pollinations (immagini, senza chiave)|SENZA|https://image.pollin
 
 ## DA CONFERMARE — non contano nel numero del Portiere
 # Nome nel portachiavi | perché è fermo
-✅ risolto 21/10 (riga chat qui sopra: apihub.agnes-ai.com/v1) — Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
-Kilo|risolto 2/11: è dentro come «Kilo (senza chiave)» (keyless, senza header)
-✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
-✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
-✅ risolto 21/10 (riga chat qui sopra: api.gizmoplatforms.com/api/v1) — Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
+# ✅ risolto 21/10 (riga chat qui sopra: apihub.agnes-ai.com/v1) — Agnes AI|il loro indirizzo API non risponde su nessun host provato (servono le loro istruzioni)
+#Kilo|risolto 2/11: è dentro come «Kilo (senza chiave)» (keyless, senza header)
+# ✅ risolto 21/10 (riga chat qui sopra: api.xkiro.com/v1) — xKiro|indirizzo API mai scritto nel portachiavi (xkiro.ai non esiste)
+# ✅ risolto 21/10 (riga chat qui sopra: dreamprompting.com/api/v1) — DreamPrompting|indirizzo API mai scritto nel portachiavi (dreamrompting.com non esiste)
+# ✅ risolto 21/10 (riga chat qui sopra: api.gizmoplatforms.com/api/v1) — Gizmo|indirizzo API mai scritto nel portachiavi (api.gizmo.ai risponde 403)
