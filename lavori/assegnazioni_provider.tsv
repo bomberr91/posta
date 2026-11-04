@@ -9,9 +9,10 @@
 #   portachiavi: /home/user/assegnazioni_provider.tsv
 #   (copia sincronizzata dal repo; il file VIVO è questo, nel repo pubblico).
 #
-#   REGOLA DEL CAPO (4/11): le chiavi si usano dagli agenti, non da una chat
-#   personale in piu'. Per questo FUSION (progetto FreellmHub) e' stato
-#   scartato: niente progetti di chat extra accanto agli agenti.
+#   NOTA DEL CAPO (4/11): "niente chat extra personale" riguardava SOLO il
+#   caso FreellmHub (= FUSION): non serve uno strumento in piu' per chattare
+#   perche' il capo usa la chat con gli agenti. FUSION e' quindi CHIUSO.
+#   Non e' una regola generale da applicare agli altri progetti.
 #
 # COME SI LEGGE (7 colonne, TAB):
 #   strumento   : chi usa la chiave
@@ -53,8 +54,8 @@ Orchestratore (Arena, sandbox)	SANDBOX	Sail;OpenRouter	vault	CONDIVISA	ATTIVO	le
 Tavily (ricerca, Reddit, browser)	WIN+SANDBOX	Tavily;Linkup;Firecrawl;Exa	diretto	CONDIVISA	ATTIVO	strumenti di ricerca, non provider di chat: usati da ricerca_canale.py, ricerca_strategica.py, cerca.sh
 GitHub PAT (postino, poller, script, sandbox)	WIN+SANDBOX	GitHub (bomberr91)	diretto	CONDIVISA	ATTIVO	utilità, non chat: condiviso per natura (il PAT «GitHub Models» è un altro, lo usa il roster su ghmodels)
 OCCHI-FB	WIN	Gemini Studio (solo per OCCHI-FB)	diretto	CONDIVISA	ATTIVO	lavori/reel Facebook: chiave Gemini dedicata (è già staccata da "Google AI Studio")
-FUSION / AgentRouter	WIN	AgentRouter	diretto	-	SCARTATO	SCARTATO il 4/11 per ordine del capo: progetto FreellmHub chiuso (le chiavi si useranno dagli agenti, niente chat extra personale). La chiave AgentRouter resta nel portachiavi e nel roster del cervello: nessun altro la usa, quindi nessun accavallamento
+FUSION / AgentRouter	WIN	AgentRouter	diretto	-	CHIUSO	CHIUSO il 4/11 per ordine del capo: era il caso FreellmHub (uno strumento per chattare). Non serve perche' il capo usa solo la chat con gli agenti. La chiave AgentRouter resta nel portachiavi e nel roster del cervello: nessun altro la usa, quindi nessun accavallamento
 Bot Telegram	WIN	-	-	-	SOSPESO	non riproporlo
-Deep Dog	-	OpenRouter;Tavily;Exa;DeepSeek	diretto	-	SOSPESO	mai usato
+Deep Dog	-	OpenRouter;Tavily;Exa;DeepSeek	diretto	CONDIVISA	ATTIVO	NON e' sospeso: e' montato e implementato come sistema per gli agenti (Windows, porta 8765): si avvia con 'Avvia Deep Dog Web.bat' (wrapper lavori/deepdog_ricerca.sh), i report finiscono in dal_pc/deepdog_reports/ e il postino li pubblica. Non e' un agente del ponte: e' lo strumento a cui gli agenti chiedono ricerche. Le chiavi di ricerca (Tavily, Exa) si condividono per natura; resta UN punto aperto: OpenRouter e' usata anche dall'orchestratore ed e' nel roster del cervello => da spostare sul cervello (proposta, non applicata)
 LongCat	WIN	LongCat	diretto	ESCLUSIVA	MISURATO	nel roster: la quota non rinnova (402 continuo)
 NaraRouter	-	NaraRouter	-	ESCLUSIVA	MISURATO	fuori dal roster (403 telegram_required): la chiave è libera ma il provider non serve

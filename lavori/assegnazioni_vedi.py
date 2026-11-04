@@ -149,6 +149,9 @@ def main():
     print("-" * 100)
     print(" CHIAVI PROVIDER: chi le usa")
     print("-" * 100)
+    # chiavi di STRUMENTO (Tavily, Exa, Firecrawl, Linkup: ricerca/browser): non sono
+    # chiavi provider di chat, condividerle e' naturale (restano contate, non e' un conflitto)
+    strumenti = set(vault.get("strumenti") or []) if vault else set()
     uso = {}
     for r in righe:
         if r["stato"].upper() == "SOSPESO":
@@ -160,7 +163,9 @@ def main():
         if not agenti:
             continue
         tag = ""
-        if len(agenti) > 1:
+        if len(agenti) > 1 and nome in strumenti:
+            tag = "   (chiave di strumento: si condivide per natura, resta contata)"
+        elif len(agenti) > 1:
             tag = "   <<< DUE STRUMENTI SULLA STESSA CHIAVE"
         elif nome in roster:
             tag = "   ⚠ anche nel roster del cervello (l'appello la prova ogni giorno)"
@@ -217,10 +222,13 @@ def main():
             print("  ⚠ CHIAVE OCCUPATA — non darla in giro")
 
     # ---- conflitti (solo fra strumenti attivi, esclusi allocator/lettori)
+    # Le chiavi di STRUMENTO (Tavily, Exa, Firecrawl, Linkup: ricerca/browser) non
+    # sono chiavi provider di chat: condividerle e' naturale e gia' dichiarato nel
+    # libro mastro, quindi non sono un "accavallamento" (restano contate).
     conflitti = []
     for nome, chi in uso.items():
         attivi = [c for c in chi if not any(c.startswith(s) for s in RUOLI_SPECIALI)]
-        if len(attivi) > 1:
+        if len(attivi) > 1 and nome not in strumenti:
             conflitti.append((nome, attivi, "due strumenti sulla stessa chiave"))
     for r in righe:
         if r["esclusivita"].strip().upper().startswith("DA-SISTEMARE"):
