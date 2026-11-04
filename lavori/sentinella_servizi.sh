@@ -26,23 +26,22 @@ RAPPORTO="$DIR/dal_pc/sentinella_servizi.md"
 {
   echo "# 📡 Sentinella dei servizi parcheggiati — $(date '+%d/%m/%Y %H:%M')"
   echo
-  echo "Ogni giorno bussa a Waterfall e NavyAI: aspettiamo che si muovano da soli."
+  echo "Ogni giorno bussa a Waterfall e NavyAI (parcheggiati, fuori dal roster): aspettiamo che si muovano da soli."
   echo
 } > "$RAPPORTO"
 
 python3 - >> "$RAPPORTO" 2>&1 << 'PY'
 import json, re, subprocess, urllib.request, urllib.error, datetime
 
-PARCHEGGIATI = ["waterfall", "navy"]
-LISTA = "portiere_lista.txt"
-righe = {}
-for l in open(LISTA, encoding="utf-8"):
-    l = l.strip()
-    if not l or l.startswith("#"):
-        continue
-    p = (l + "||||||||||").split("|")
-    if re.match(r"^[a-z0-9_-]+$", p[0]):
-        righe[p[0]] = p
+# 4/11 notte (regola del capo): i parcheggiati stanno FUORI dal roster —
+# non ha senso chiamarli in appello se sappiamo che non rispondono finche'
+# non cambia qualcosa — MA la sentinella li guarda lo stesso. Percio' qui
+# la tabella sta per conto suo e non piu' nel roster.
+#   pid | nome nel portachiavi | indirizzo | modello
+PARCHEGGIATI = [
+    ("waterfall", "Waterfall", "https://api.getwaterfall.org/v1", "auto"),
+    ("navy", "NavyAI", "https://api.navy/v1", "schizogpt"),
+]
 
 def chiave(etichetta):
     if not etichetta or etichetta.upper() == "SENZA":
@@ -68,11 +67,7 @@ def chat(base, modello, key):
     except Exception as e:
         return 0, "ERR %s" % e
 
-for pid in PARCHEGGIATI:
-    r = righe.get(pid)
-    if not r:
-        print("- **%s**: non e' piu' nel roster" % pid); print(); continue
-    etichetta, base, modello = r[2], r[3], r[4]
+for pid, etichetta, base, modello in PARCHEGGIATI:
     key = chiave(etichetta)
     code, body = chat(base, modello, key)
     print("## %s (%s)" % (etichetta, pid))

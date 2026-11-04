@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """cervello.py — il PORTIERE (motore di riserva, porta 20129).  [FASE 1]
 
+  ⚠️  PRIMA DI TOCCARE IL ROSTER, LEGGI `NOTE_CHIAVI_E_ROSTER.md` (qui accanto):
+      come si legge una chiave, cosa vuol dire ogni codice di risposta, come si
+      inserisce bene un provider e chi (sentinella) decide quando torna.
+
 Perché esiste: tutti gli agenti parlano con UNA porta sola. Questo programma
 sta sulla 20129 e fa da portiere:
 
