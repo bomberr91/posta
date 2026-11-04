@@ -1,10 +1,10 @@
 # Risposta a «goose_configura»
 
-_04/11/2026 10:12 · FilippoPC_
+_04/11/2026 10:14 · FilippoPC_
 
 ### 1. AMBIENTE
 utente: agenti  home: /home/agenti  repo: /home/agenti/posta
-commit: c5cee79 4/11: da_me/goose_configura.sh — mette in piedi goose sul PC (provider free verificato) e lo collauda davvero
+commit: 10befc0 postino 04/11 10:13
 
 ### 2. GOOSE
 percorso: /home/agenti/.local/bin/goose
@@ -14,6 +14,11 @@ percorso: /home/agenti/.local/bin/goose
 chiave trovata: 73 caratteri (non stampata)
 
 ### 4. SCRIVO ~/.config/goose/config.yaml
+config presente, ne faccio una copia di sicurezza:
+--- config attuale (mascherata) ---
+GOOSE_PROVIDER: openrouter
+GOOSE_MODEL: google/gemma-4-31b-it:free
+OPENROUTER_API_KEY: ***
 scritto. --- config nuovo (mascherata) ---
 GOOSE_PROVIDER: openrouter
 GOOSE_MODEL: nvidia/nemotron-3-ultra-550b-a55b:free
@@ -32,7 +37,7 @@ For more info, see: https://goose-docs.ai/docs/troubleshooting/#keychainkeyring-
 ### 5b. SECONDO TENTATIVO: modello di scorta + env espliciti
 
     __( O)>  ● new session · openrouter google/gemma-4-31b-it:free
-   \____)    20261104_5 · /home/agenti/posta
+   \____)    20261104_7 · /home/agenti/posta
      L L     goose is ready
 
 error: Ran into this error: Rate limit exceeded: Provider returned error.
