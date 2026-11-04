@@ -30,6 +30,11 @@ import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+# 4/11: git MAI chiede credenziali a terminale: se lo fa, il poller resta
+# appeso per sempre (stesso buco del postino, che ha GIT_TERMINAL_PROMPT=0).
+os.environ.setdefault("GIT_TERMINAL_PROMPT", "0")
+
+
 BASE = Path(__file__).resolve().parent
 STATO = BASE / "_stato"
 
