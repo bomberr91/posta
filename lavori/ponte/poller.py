@@ -184,14 +184,22 @@ def git(cwd, *args):
 
 
 def parse_campo(body, campo, successivi):
-    m = re.search(rf"^\s*{campo}\s*:\s*(.+)$", body, re.M | re.I)
-    if m and m.group(1).strip():
-        return m.group(1).strip()
+    """(fix 4/11) il campo e' TUTTO il testo fino al campo successivo.
+
+    Prima veniva tagliato al PRIMO a capo (la regex "in linea" mangiava anche
+    il newline): gli agenti ricevevano solo la prima riga del compito e
+    rispondevano "dimmi il comando" senza eseguire nulla.
+    """
     m = re.search(
         rf"^\s*{campo}\s*:\s*\n(.*?)(?=^\s*(?:{successivi})\s*:|\Z)",
         body, re.M | re.I | re.S,
     )
-    return m.group(1).strip() if m else None
+    if m and m.group(1).strip():
+        return m.group(1).strip()
+    m = re.search(rf"^\s*{campo}\s*:\s*(.+)$", body, re.M | re.I)
+    if m and m.group(1).strip():
+        return m.group(1).strip()
+    return None
 
 
 def slugify(s, n=40):
