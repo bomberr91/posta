@@ -148,5 +148,43 @@ modello alternativo** dalla lista `extra`.
 
 ---
 
+## 6. LA FILOSOFIA DEL CAPO (4/11 notte): che cosa teniamo davvero
+
+Il capo lavora con questa regola: **tutte le sue chiavi sono gratis e senza
+carta**; l'importante è che diano **modelli gratis** e i limiti si gestiscono
+con i passaggi di modelli e provider. Nella notte del 4/11 l'ha precisata:
+
+1. **COSTO 0**: si deve poter usare senza che nulla venga addebitato, nemmeno
+   per errore.
+2. **Niente carta — MAI**, neanche per sbloccare modelli gratis.
+3. **Niente credito iniziale una tantum**: un provider che dà solo un credito
+   iniziale **è usa-e-getta** ⇒ non si tiene.
+4. **La quota deve valere la pena**: se la quota gratis è minuscola, la
+   spesa (attese, blocchi, gestione) supera la resa ⇒ meglio non averlo.
+5. **Deve rispondere in modo AFFIDABILE**: un provider che risponde a
+   intermittenza (429, free-pool saturo) fa correre il sistema dietro e
+   rallenta ⇒ non entra.
+6. **Serve come "benzina di QUALITÀ" per il cervello**: l'unico uso è dare
+   modelli buoni agli agenti ⇒ si giudica la **qualità dei modelli**, non il
+   fatto che risponda.
+7. **I blocchi Cloudflare non sono un motivo per scartare**: di solito sono
+   aggirabili (User-Agent da browser, header giusti) ⇒ si prova l'aggiramento
+   invece di buttare il provider.
+8. **Il freno va tirato PRIMA dell'esaurimento** (la richiesta non deve
+   partire, la risposta non deve arrivare a metà) **e deve far scattare lo
+   SWITCH** ⇒ il lavoro continua senza problemi.
+   *Stato al 4/11: già così.* `cervello.py` → `freno(pid)` controlla il tetto
+   **prima** di pagare il battito (quindi prima della richiesta) e restituisce
+   `True` ⇒ il ciclo della riserva fa `continue` e **passa al provider
+   successivo** (failover). Verificato nel codice.
+
+**Traduzione operativa:** un provider entra nel roster se **risponde**,
+**non chiede la carta**, **non addebita**, **ha quota rinnovabile**,
+**la quota vale la pena**, **è affidabile**, e **i suoi modelli sono buoni**.
+Il resto si butta (o resta sotto sentinella, fuori dal roster).
+
+
+---
+
 *Tenuto aggiornato dall'orchestratore. Ogni volta che si scopre una nuova
 interpretazione, si aggiunge qui — è più economico che riaprire la discussione.*
