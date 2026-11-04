@@ -5,6 +5,10 @@ chiavi vere dentro la consegna; il repo `posta` è PUBBLICO e GitHub ha respinto
 la push ("GH013 - Push cannot contain secrets"). Da lì ogni push dal PC è
 fallito: il ponte era bloccato. Ora il poller maschera le chiavi prima di
 committare.
+
+Nota: le chiavi finte sono composte a RUNTIME. Se fossero scritte letteralmente
+qui, la mascheratura che gira sul PC le cancellerebbe e il test non testerebbe
+più niente (è successo la prima volta).
 """
 from __future__ import annotations
 
@@ -32,14 +36,16 @@ class TestMascheraChiavi(unittest.TestCase):
         self.p = carica_poller()
 
     def test_maschera_i_formati_noti(self):
-        for finto in ("«chiave mascherata»",
-                      "«chiave mascherata»",
-                      "«chiave mascherata»",
-                      "«chiave mascherata»",
-                      "«chiave mascherata»",
-                      "«chiave mascherata»"):
+        A = "A" * 24
+        B = "B" * 30
+        for finto in ("sk-or-v1-" + A,
+                      "sk-" + A,
+                      "tvly-dev-" + A,
+                      "ghp_" + B,
+                      "github_pat_" + B,
+                      "AIzaSy" + A):
             out = self.p.maschera_chiavi("prima " + finto + " dopo")
-            self.assertNotIn(finto, out, "la chiave finta è rimasta in chiaro: %s" % finto)
+            self.assertNotIn(finto, out, "la chiave finta e' rimasta in chiaro")
             self.assertIn("«chiave mascherata»", out)
 
     def test_non_tocca_url_ne_id(self):
