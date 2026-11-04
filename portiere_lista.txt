@@ -60,7 +60,7 @@ zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli||free-ricorr
 electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli||free-ricorrente||
 inferbase|Inferbase|Inferbase|https://api.inferbase.ai/v1|auto|modelli||free-ricorrente||
 blockrun|BlockRun|BlockRun|https://api.blockrun.ai/v1|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning|modelli||free-ricorrente||
-sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K2.6|chat||free-ricorrente||
+sail|Sail|Sail|https://api.sailresearch.com/v1|moonshotai/Kimi-K3|chat||free-ricorrente||
 anyapi|AnyAPI|AnyAPI|https://api.anyapi.ai/v1|nvidia/nemotron-3.5-lightning:free|chat||free-ricorrente|google/gemma-4-26b-a4b-it:free;nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;nvidia/nemotron-3-ultra-550b-a55b:free;recursive/flint-v1.0:free;dots-studio/dots-3-note-preview:free;xingchen-agi/xing4.0-29b-a4b:free|
 kilo|Kilo (senza chiave)|SENZA|https://api.kilo.ai/api/gateway/v1|liquid/lfm-2.5-2.6b:free|modelli||keyless|nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free;openrouter/free;kilo-auto/free|none
 cloudflare|Cloudflare Workers AI|Cloudflare Workers AI|SPECIALE-CLOUDFLARE|@cf/meta/llama-3.3-70b-instruct-fp8-fast|chat||free-ricorrente||
