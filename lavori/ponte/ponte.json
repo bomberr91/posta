@@ -41,11 +41,11 @@
     },
     "secondhand": {
       "cmd": [
-        "interpreter",
-        "exec",
+        "bash",
+        "/home/agenti/posta/lavori/ponte/secondhand_run.sh",
         "{compito}"
       ],
-      "workdir": "/home/agenti",
+      "workdir": "/home/agenti/posta",
       "timeout": 1800,
       "raccogli": []
     },

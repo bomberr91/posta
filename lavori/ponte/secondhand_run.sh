@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# secondhand_run.sh — Open Interpreter (WSL) che parla col CERVELLO LOCALE.
+#
+# 4/11 (decisione del capo): Secondhand aveva la chiave NVIDIA in proprio
+# ⇒ accavallamento col roster del cervello. Ora passa dal portone del cervello
+# (20129) con la chiave finta "sk-cervello": zero chiavi provider toccate,
+# come OpenCode, OpenClaw e Goose.
+#
+# Serve anche --skip-git-repo-check: il ponte lavora in /home/agenti, che non è
+# una directory fidata (prima: "Not inside a trusted directory and
+# --skip-git-repo-check was not specified").
+set -uo pipefail
+
+REPO="/home/agenti/posta"
+[ -d "$REPO" ] || REPO="$HOME/posta"
+cd "$REPO" || { echo "repo non trovato"; exit 1; }
+
+export OPENAI_API_KEY="sk-cervello"
+export OPENAI_BASE_URL="http://127.0.0.1:20129/v1"
+export OPENAI_HOST="http://127.0.0.1:20129"
+export MODEL_PROVIDER="openai"
+export MODEL="auto"
+
+COMPITO="${1:-}"
+if [ -z "$COMPITO" ]; then echo "compito mancante"; exit 2; fi
+
+echo "[secondhand_run] via cervello locale (nessuna chiave provider) · repo=$REPO"
+exec interpreter exec --skip-git-repo-check "$COMPITO"
