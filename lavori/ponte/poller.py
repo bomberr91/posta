@@ -177,7 +177,14 @@ def git(cwd, *args):
             lock.unlink(missing_ok=True)
             break
         time.sleep(20)
-    r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True)
+    # 4/11: git SENZA timeout poteva restare appeso per sempre (push su una
+    # connessione GitHub stallata): il poller smetteva di girare e il ponte
+    # sembrava morto. Ora ogni comando git ha un tetto e, se lo supera, solleva
+    # un errore onesto invece di bloccare il ciclo.
+    try:
+        r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=180)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"git {' '.join(args)} → TIMEOUT dopo 180s")
     if r.returncode != 0:
         raise RuntimeError(f"git {' '.join(args)} → exit {r.returncode}: {r.stderr.strip()[:400]}")
     return r.stdout
