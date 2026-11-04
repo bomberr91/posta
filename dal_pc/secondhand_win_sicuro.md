@@ -1,6 +1,6 @@
 # Secondhand — profilo Windows reso "controllato" (4/11)
 
-- backup: `/tmp/secondhand_win_20261104-155010`
+- backup: `/tmp/secondhand_win_20261104-155337`
 - YAML Windows: `auto_run` True->False, `safe_mode` "off"->"ask"
 - TOML Windows: `sandbox_mode` danger-full-access->workspace-write,
   `approval_policy` never->on-request
@@ -9,7 +9,9 @@
 
 ## Esito delle sostituzioni
 ```
-python3: can't open file '/home/agenti/posta/da_me/secondhand_patch_win.py': [Errno 2] No such file or directory
+/mnt/c/Users/giopi/.config/open-interpreter/profiles/default.yaml: aggiornato
+/mnt/c/Users/giopi/.openinterpreter/config.toml: aggiornato
+patch finita
 ```
 
 ## Dopo — YAML Windows
@@ -27,9 +29,8 @@ llm:
 computer:
   import_computer_api: True
 
-auto_run: True
-safe_mode: "off"
-
+auto_run: False
+safe_mode: "ask"
 version: 0.2.5  # Profile version (do not modify)
 ```
 
@@ -37,9 +38,8 @@ version: 0.2.5  # Profile version (do not modify)
 ```
 model = "auto"
 model_provider = "cervello"
-approval_policy = "never"
-sandbox_mode = "danger-full-access"
-
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
 [model_providers.cervello]
 name = "Cervello"
 base_url = "http://127.0.0.1:20129/v1"
