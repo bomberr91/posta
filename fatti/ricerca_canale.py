@@ -3,16 +3,54 @@ import json
 import requests
 
 def search_reddit(keywords):
-    # Implementa la ricerca su Reddit
-    pass
+    # Ricerca su Reddit usando l'API di Reddit
+    import praw
+    reddit = praw.Reddit(client_id='YOUR_CLIENT_ID',
+                         client_secret='YOUR_CLIENT_SECRET',
+                         user_agent='Script di ricerca Reddit')
+    subreddit = reddit.subreddit('all')
+    results = []
+    for submission in subreddit.search(' '.join(keywords), limit=10):
+        results.append({
+            'title': submission.title,
+            'url': submission.url,
+            'author': submission.author.name
+        })
+    return results
 
 def search_github(keywords):
-    # Implementa la ricerca su GitHub
-    pass
+    # Ricerca su GitHub usando l'API di GitHub
+    import requests
+    query = '+'.join(keywords)
+    url = f'https://api.github.com/search/repositories?q={query}&sort=stars&order=desc'
+    response = requests.get(url)
+    if response.status_code == 200:
+        repos = response.json()['items'][:10]
+        results = [{
+            'name': repo['name'],
+            'url': repo['html_url'],
+            'description': repo['description']
+        } for repo in repos]
+        return results
+    else:
+        return []
 
 def search_web(keywords):
-    # Implementa la ricerca sul web
-    pass
+    # Ricerca sul web usando l'API di SerpAPI
+    import requests
+    api_key = 'YOUR_SERPAPI_API_KEY'
+    query = '+'.join(keywords)
+    url = f'https://serpapi.com/search.json?q={query}&api_key={api_key}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        results = response.json()['organic_results'][:10]
+        return [{
+            'title': res['title'],
+            'url': res['link'],
+            'snippet': res['snippet']
+        } for res in results]
+    else:
+        return []
 
 def main():
     if len(sys.argv) < 2:
