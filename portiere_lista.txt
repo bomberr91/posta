@@ -48,7 +48,7 @@ speka|Speka|Speka|https://speka.me/v1|nvidia/nemotron-3-ultra-550b-a55b|chat||fr
 nscale|Nscale|Nscale|https://inference.api.nscale.com/v1|Qwen/Qwen3-4B-Instruct-2507|chat||free-ricorrente|Qwen/Qwen3-8B;meta-llama/Llama-3.1-8B-Instruct;Qwen/Qwen3-4B-Thinking-2507|
 ovh|OVH|SENZA|https://oai.endpoints.kepler.ai.cloud.ovh.net/v1|Mistral-Nemo-Instruct-2407|modelli||keyless|gpt-oss-120b;Meta-Llama-3_3-70B-Instruct;Qwen3.5-397B-A17B;gpt-oss-20b|none
 sealion|SeaLION|SeaLION|https://api.sea-lion.ai/v1|aisingapore/Llama-SEA-LION-v3-70B-IT|modelli||free-ricorrente||
-aihorde|AI Horde|AI Horde|https://oai.aihorde.net/v1|koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic|chat||free-ricorrente|koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic;koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic||
+aihorde|AI Horde|AI Horde|https://oai.aihorde.net/v1|koboldcpp/Llama-3.2-1B-Instruct|chat||free-ricorrente|koboldcpp/Llama-3.2-1B-Instruct;koboldcpp/gemma-4-31B-it-heretic;koboldcpp/gemma-4-26B-A4B-it-ultra-uncensored-heretic||
 pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/openai|openai-fast|chat||keyless||none
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
