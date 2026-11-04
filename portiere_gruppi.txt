@@ -1,5 +1,8 @@
 # nome = membro, membro, ...   (membro = pid oppure pid/modello)
 # squadre nate dalla mappa 12/10, coi provider di oggi
+# 4/11 notte: ghmodels entra in RINFORZI = e' la posizione piu' vantaggiosa:
+# quota free ricorrente (PAT GitHub), SEPARATA dalle altre, costo zero;
+# entra come ultima riserva, non come prima scelta (freno sotto a 50/gioro).
 code = mistral/codestral-latest, opencode, llmtr, nvidia, chutes
 forte = llmtr, cohere/command-a-reasoning-08-2025, chutes, cloudflare, groq
-rinforzi = cloudflare, groq, nvidia, pollinations, kilo
+rinforzi = cloudflare, groq, nvidia, pollinations, kilo, ghmodels/openai/gpt-4.1

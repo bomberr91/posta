@@ -15,3 +15,6 @@ agentrouter|0|0|5
 inferbase|5|90|0
 gizmo|2|30|0
 kilo|3|0|0
+# ghmodels: quota free GitHub Models (High 10 RPM/50 RPD · Low 15/150 · DeepSeek-R1 8/giorno)
+# -> freno sotto il tetto alto: 6/min, 40/giorno, 1 richiesta ogni 3 s
+ghmodels|6|40|3
