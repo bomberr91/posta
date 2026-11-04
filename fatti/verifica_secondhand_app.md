@@ -46,3 +46,24 @@ config in formato codex, modalità agent/plan/yolo nel system prompt). L'etichet
 "yolo" in UI riflette la modalità del thread corrente: i thread sono ora
 `untrusted` e il default da config pure — se l'etichetta dovesse restare viola
 riaprendo un VECCHIO thread, è la memoria di quel thread: apri una chat nuova.
+
+
+## PROVA DEFINITIVA (4/11 notte, dopo le cure)
+
+`interpreter.exe exec PIPPO45` (da directory fidata, con CERVELLO_API_KEY
+nell'ambiente): il core è partito, provider cervello, model auto, e il
+**portiere ha instradato la richiesta** — nel log:
+
+    {"agente": "cervello-b9a5eb6397a28585", "rotta": "riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "risparmio_car": 15287}
+
+La risposta è arrivata (7.536 token). La catena APP → portiere → cervello →
+riserva funziona end-to-end.
+
+Note:
+- L'app 0.0.59 legge il config SOLO all'avvio: dopo il fix, l'app va chiusa e
+  rilanciata (così eredita anche CERVELLO_API_KEY dall'ambiente utente).
+- Token Harbor (provider gratis upstream) ha segnalato un flag "cyber" sul
+  prompt di prova monopalabra e ha instradato su gpt-5.2: comportamento loro,
+  la catena ha gestito il reroute da sola. Domande normali non lo triggherano.
+- approval_policy valido in 0.0.59: ON-REQUEST ("untrusted" è stato rimosso
+  dalla 0.0.59: metterlo impedisce l'AVVIO dell'app — scoperto e corretto).
