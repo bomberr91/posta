@@ -13,10 +13,7 @@ REPO="$HOME/posta"
 [ -d "$REPO" ] || REPO="$HOME/posta_ponte"
 cd "$REPO" || { echo "repo non trovato"; exit 1; }
 
-echo "### 1. PULL"
-git pull --rebase --autostash >/tmp/pollerfix_pull.log 2>&1
-echo "exit pull: $?"
-tail -3 /tmp/pollerfix_pull.log
+echo "### 1. STATO (Niente pull: il postino ha gia' fatto il pull; un pull dentro lo script puo' conflictare e bloccare tutto)"
 echo "commit in testa: $(git log --oneline -1 2>/dev/null)"
 echo "fix presente nel file: $(grep -c 'il campo e' "$REPO/lavori/ponte/poller.py" 2>/dev/null)"
 echo

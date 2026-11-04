@@ -17,10 +17,8 @@ REPO="$HOME/posta"
 [ -d "$REPO" ] || REPO="$HOME/posta_ponte"
 cd "$REPO" || { echo "repo non trovato"; exit 1; }
 
-echo "### 1. PULL"
-git pull --rebase --autostash >/tmp/hermescerv_pull.log 2>&1
-echo "exit pull: $?"
-tail -2 /tmp/hermescerv_pull.log
+echo "### 1. STATO (Niente pull dentro lo script: il postino ha gia' fatto il pull)"
+echo "commit in testa: $(git log --oneline -1 2>/dev/null)"
 echo
 
 echo "### 2. BACKUP E SCRITTURA DI api_key = sk-cervello"
