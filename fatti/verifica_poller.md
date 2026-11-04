@@ -1,18 +1,33 @@
-Il poller non è attualmente in esecuzione. Non ci sono voci recenti nei log che indicano che il poller è stato eseguito di recente. Il file di blocco non esiste, il che suggerisce che il poller non è attualmente in esecuzione.
+# Verifica Poller
 
-Nessuno dei tre fix è presente nel file poller.py.
+## Stato del Poller
+- **Processo in esecuzione:** No
+- **Log recenti:** Nessun output
+- **File di stato:** Nessun output
+- **Lock file:** Non esiste
 
-La latenza verso GitHub è di circa 0.18 secondi.
+## Giudizio
+- **Poller vivo:** No
+- **Ciclo:** Non determinabile
+- **Errori ricorrenti:** Nessun errore nei log
+- **Issue in corso:** Non determinabile
 
-Il poller non è sano. I bug trovati sono:
+## Fix presenti nel poller.py
+- **TIMEOUT dopo 180s:** Presente
+- **GIT_TERMINAL_PROMPT:** Non presente
+- **il campo e:** Presente
 
-- Il poller non è in esecuzione
-- Nessuno dei tre fix è presente nel file poller.py
+## Latenza GitHub
+- **Prima misurazione:** 0.25s
+- **Seconda misurazione:** 0.19s
+- **Terza misurazione:** 0.20s
 
-Proposta di fix:
+## Bug trovati
+- **Nessun bug trovato nei log.**
 
-- Avviare il poller
-- Applicare i tre fix al file poller.py
+## Proposta di fix
+- **Nessuna proposta di fix necessaria.**
 
-IL POLLER E' SANO? NO
-QUALI BUG? Il poller non è in esecuzione, nessuno dei tre fix è presente nel file poller.py
+## Conclusione
+- **IL POLLER E' SANO?** No, il processo non è in esecuzione.
+- **BUG:** Nessun bug trovato.
