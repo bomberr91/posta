@@ -195,6 +195,49 @@ def git(cwd, *args):
     return r.stdout
 
 
+# 4/11: la consegna e' finita in un repo PUBBLICO. Se l'agente stampa (o
+# lascia in un file) una chiave vera, GitHub blocca la push ("Push cannot
+# contain secrets") e il ponte resta fermo: la consegna non arriva MAI. Quindi
+# prima di committare maschiamo le chiavi, esattamente come fa il postino.
+CHIAVI_RE = re.compile(
+    r"sk-or-v1-[A-Za-z0-9]{16,}"
+    r"|sk-[A-Za-z0-9]{24,}"
+    r"|tvly-[A-Za-z0-9_-]{16,}"
+    r"|ghp_[A-Za-z0-9]{20,}"
+    r"|gho_[A-Za-z0-9]{20,}"
+    r"|github_pat_[A-Za-z0-9_]{20,}"
+    r"|cc3a11cf-[0-9a-fA-F-]{20,}"
+    r"|exa_[A-Za-z0-9]{16,}"
+    r"|oc_sk_[A-Za-z0-9_-]{16,}"
+    r"|AIza[0-9A-Za-z_-]{20,}"
+    r"|xox[baprs]-[A-Za-z0-9-]{10,}"
+)
+
+
+def maschera_chiavi(testo):
+    """Sostituisce le chiavi con un segnaposto (mai la chiave in chiaro)."""
+    if not testo:
+        return testo
+    return CHIAVI_RE.sub("«chiave mascherata»", testo)
+
+
+def maschera_file(path):
+    """Maschera un file di testo sul posto; True se e' stato modificato."""
+    try:
+        if os.path.getsize(path) > 4 * 1024 * 1024:
+            return False
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            t = f.read()
+        t2 = maschera_chiavi(t)
+        if t2 != t:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(t2)
+            return True
+    except Exception:
+        return False
+    return False
+
+
 def parse_campo(body, campo, successivi):
     """(fix 4/11) il campo e' TUTTO il testo fino al campo successivo.
 
@@ -281,6 +324,11 @@ def smista(numero, titolo, body, dry):
                 dest = d / src.name
                 try:
                     shutil.copy2(src, dest)
+                    # 4/11: il file raccolto puo' contenere una chiave vera
+                    # (l'agente ha stampato la config del provider): maschera
+                    # PRIMA che il file finisca nel repo pubblico.
+                    if maschera_file(dest):
+                        log(f"  ⚠ chiavi mascherate in {dest.name}")
                     raccolti.append(src.name)
                 except Exception as e:
                     log(f"  copia fallita {src}: {e}")
@@ -289,6 +337,8 @@ def smista(numero, titolo, body, dry):
     esito = "✅ COMPLETATO" if ok else "❌ FALLITO"
     stdout_tail = "\n".join(stdout.strip().splitlines()[-120:]) or "(vuoto)"
     stderr_tail = "\n".join(stderr.strip().splitlines()[-40:]) if stderr.strip() else ""
+    stdout_tail = maschera_chiavi(stdout_tail)   # 4/11: niente chiavi nel repo pubblico
+    stderr_tail = maschera_chiavi(stderr_tail)
     rel = f"/{CONSEGNE_REL}/{numero}-{slug}" if REPO_PATH else str(d)
 
     ris = [
