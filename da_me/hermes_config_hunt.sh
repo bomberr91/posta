@@ -96,8 +96,9 @@ echo "### 4. HERMES: PROVA DI UNA CHIAMATA (con le chiavi gia' presenti nell'amb
 HS="/mnt/c/Users/giopi/AppData/Local/hermes/bin/hermes.exe"
 if [ -f "$HS" ]; then
   cd "$WIN/Documents" 2>/dev/null || cd /tmp
-  timeout 180 "$HS" -z "Rispondi esattamente con la parola OK e nient'altro." 2>&1 | tail -25
-  echo "--- exit hermes: ${PIPESTATUS[0]}"
+  timeout 180 "$HS" -z "Rispondi esattamente con la parola OK e nient'altro." > /tmp/hermes_prova.log 2>&1
+  echo "--- exit hermes: $?"
+  tail -25 /tmp/hermes_prova.log
 else
   echo "hermes.exe non trovato"
 fi

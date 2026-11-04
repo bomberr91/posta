@@ -81,24 +81,30 @@ echo
 echo "### 3a. COLLAUDO DAL WSL (interpreter sul cervello)"
 cd "$REPO" || exit 1
 echo "--- versione: $(interpreter --version 2>&1 | head -1)"
-echo "--- prova A: interpreter exec --skip-git-repo-check"
+echo "--- prova A: interpreter exec --skip-git-repo-check (output su file, niente pipe)"
+OUTA=/tmp/secondhand_a.log
 OPENAI_API_KEY=sk-cervello OPENAI_BASE_URL="http://127.0.0.1:20129/v1" \
-  timeout 240 interpreter exec --skip-git-repo-check "Rispondi esattamente con la parola OK e nient'altro." 2>&1 | tail -20
-RCA=${PIPESTATUS[0]}
+  timeout 200 interpreter exec --skip-git-repo-check "Rispondi esattamente con la parola OK e nient'altro." > "$OUTA" 2>&1
+RCA=$?
 echo "--- exit prova A: $RCA"
+tail -20 "$OUTA"
 if [ "$RCA" -ne 0 ]; then
   echo "--- prova B: interpreter --skip-git-repo-check exec"
+  OUTB=/tmp/secondhand_b.log
   OPENAI_API_KEY=sk-cervello OPENAI_BASE_URL="http://127.0.0.1:20129/v1" \
-    timeout 240 interpreter --skip-git-repo-check exec "Rispondi esattamente con la parola OK e nient'altro." 2>&1 | tail -20
-  echo "--- exit prova B: ${PIPESTATUS[0]}"
+    timeout 200 interpreter --skip-git-repo-check exec "Rispondi esattamente con la parola OK e nient'altro." > "$OUTB" 2>&1
+  echo "--- exit prova B: $?"
+  tail -20 "$OUTB"
 fi
 echo
 
 echo "### 3b. COLLAUDO DA WINDOWS (stessa rete che usa l'app)"
 echo "--- /v1/models"
-cmd.exe /c "curl.exe -s -m 25 http://127.0.0.1:20129/v1/models -H \"Authorization: Bearer sk-cervello\"" 2>&1 | tr -d '\r' | head -c 400
+cmd.exe /c "curl.exe -s -m 25 http://127.0.0.1:20129/v1/models -H \"Authorization: Bearer sk-cervello\"" > /tmp/sh_models.txt 2>&1
+tr -d '\r' < /tmp/sh_models.txt | head -c 400
 echo
 echo "--- chat vera dal portone"
-cmd.exe /c "curl.exe -s -m 90 http://127.0.0.1:20129/v1/chat/completions -H \"Content-Type: application/json\" -H \"Authorization: Bearer sk-cervello\" -d \"{\\\"model\\\":\\\"auto\\\",\\\"messages\\\":[{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"rispondi solo OK\\\"}],\\\"max_tokens\\\":60}\"" 2>&1 | tr -d '\r' | head -c 600
+cmd.exe /c "curl.exe -s -m 90 http://127.0.0.1:20129/v1/chat/completions -H \"Content-Type: application/json\" -H \"Authorization: Bearer sk-cervello\" -d \"{\\\"model\\\":\\\"auto\\\",\\\"messages\\\":[{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"rispondi solo OK\\\"}],\\\"max_tokens\\\":60}\"" > /tmp/sh_chat.txt 2>&1
+tr -d '\r' < /tmp/sh_chat.txt | head -c 600
 echo
 echo "FINE"
