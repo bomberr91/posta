@@ -74,7 +74,22 @@ fi
 
 # 2. la domanda
 echo "domanda: $DOMANDA"
-PILLO=$(python3 -c 'import json,sys; print(json.dumps({"prompt": sys.argv[1]}))' "$DOMANDA" 2>/dev/null)
+# CURA (4/11, richiesta di arena): il cane inventava modelli cercandoli sul
+# web — gli diamo il roster VERO del cervello nel prompt, come dato di fatto.
+ROSTER=$(python3 - <<'PYROSTER'
+import json, urllib.request
+try:
+    with urllib.request.urlopen("http://127.0.0.1:20129/v1/models", timeout=8) as _r:
+        _d = json.loads(_r.read().decode())
+    _ids = [str(v.get("id", "")) for v in (_d.get("data") or []) if v.get("id")]
+    print(json.dumps(_ids[:60], ensure_ascii=False))
+except Exception:
+    print("[]")
+PYROSTER
+)
+CONTESTO="[CONTESTO CERVELLO - dato di fatto, NON cercarlo sul web] l'endpoint locale http://127.0.0.1:20129/v1 e' il cervello del PC; i suoi modelli REALI disponibili sono: $ROSTER. Usa SOLO questo elenco quando parli dei modelli di questo endpoint; non inventare nomi o versioni."
+PILLO=$(python3 -c 'import json,sys; print(json.dumps({"prompt": sys.argv[1]}))' "$CONTESTO
+$DOMANDA" 2>/dev/null)
 if [ -z "$PILLO" ]; then echo "non riesco a preparare la domanda"; exit 1; fi
 if ! http_post "http://127.0.0.1:$PORT/api/start" "$PILLO" >/dev/null 2>&1; then
   echo "il cane ha rifiutato la domanda"; exit 1

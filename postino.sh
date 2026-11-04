@@ -36,20 +36,34 @@ sync_down(){
   # a girare per sempre senza mai vedere i compiti nuovi. Qui il fallimento
   # si VEDE, si rimedia e non può durare all'infinito (timeout).
   echo "pull $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
-  if timeout 120 git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 \
-     || timeout 120 git pull -q --autostash --rebase >/dev/null 2>&1; then
-    :
+  # CURA (4/11): il poller lavora sullo STESSO repo. Quando tiene il lock il
+  # pull fallisce al volo e nasceva il loop del simbolo ⛔. Ora si aspetta un
+  # lock libero (max 40s) e si toglie SOLO il lock orfano (nessun git attivo).
+  for _i in 1 2 3 4; do
+    [ -f .git/index.lock ] || break
+    if pgrep -x git >/dev/null 2>&1; then sleep 10; else rm -f .git/index.lock; break; fi
+  done
+  # CURA (4/11): l'errore VERO va nel log (prima: -q + >/dev/null = pull muto,
+  # il buco originale dell'handover). Log con rotazione corta.
+  if timeout 120 git pull --autostash --rebase "$REMOTE" main >> /tmp/postino_pull.log 2>&1 \
+     || timeout 120 git pull --autostash --rebase >> /tmp/postino_pull.log 2>&1; then
+    echo 0 > /tmp/postino_falli 2>/dev/null || true
   else
-    say "⚠ il pull è fallito: rimedio"
+    say "⚠ il pull è fallito (errore vero in coda a /tmp/postino_pull.log): rimedio"
     git rebase --abort >/dev/null 2>&1 || true
     git merge --abort >/dev/null 2>&1 || true
-    git stash drop >/dev/null 2>&1 || true
+    # CURA (4/11): NIENTE stash drop. Con --autostash lo stash viene
+    # ripristinato da git; buttarlo perdeva le modifiche locali (capitato
+    # secondo l'handover: i file "perdonati" e il ciclo che si rialimenta).
     git checkout -- portiere_log.jsonl portiere_stato.json >/dev/null 2>&1 || true
-    if timeout 120 git pull -q --autostash --rebase "$REMOTE" main >/dev/null 2>&1 \
-       || timeout 120 git pull -q --autostash --rebase >/dev/null 2>&1; then
+    if timeout 120 git pull --autostash --rebase "$REMOTE" main >> /tmp/postino_pull.log 2>&1 \
+       || timeout 120 git pull --autostash --rebase >> /tmp/postino_pull.log 2>&1; then
       say "✓ pull rimediato"
+      echo 0 > /tmp/postino_falli 2>/dev/null || true
     else
-      say "⛔ il pull continua a fallire: i compiti in coda NON possono arrivare. Guarda: cd ~/posta && git status"
+      _FALLI=$(( $(cat /tmp/postino_falli 2>/dev/null || echo 0) + 1 ))
+      echo "$_FALLI" > /tmp/postino_falli 2>/dev/null || true
+      say "⛔ il pull continua a fallire ($_FALLI di fila): i compiti in coda NON possono arrivare. Errore vero in coda a /tmp/postino_pull.log"
     fi
   fi
   echo "idle $(date +%s)" > /tmp/postino_stato 2>/dev/null || true
@@ -86,7 +100,7 @@ sync_up(){
   CHIAVI_RE='sk-or-v1-[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{24,}|tvly-[A-Za-z0-9_-]{16,}|ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|cc3a11cf-[0-9a-fA-F-]{20,}|exa_[A-Za-z0-9]{16,}|oc_sk_[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}'
   for _d in dal_pc fatti; do
     [ -d "$_d" ] || continue
-    find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+    find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' -o -name '*.jsonl' \) -print0 2>/dev/null \
     | while IFS= read -r -d '' _f; do
         sed -i -E "s/($CHIAVI_RE)/«chiave mascherata»/g" "$_f" 2>/dev/null || true
       done
@@ -94,7 +108,7 @@ sync_up(){
   RESIDUI=0
   for _d in dal_pc fatti; do
     [ -d "$_d" ] || continue
-    RESIDUI=$(( RESIDUI + $(find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' \) -print0 2>/dev/null \
+    RESIDUI=$(( RESIDUI + $(find "$_d" -maxdepth 2 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.log' -o -name '*.jsonl' \) -print0 2>/dev/null \
       | while IFS= read -r -d '' _f; do grep -cE "$CHIAVI_RE" "$_f" 2>/dev/null || echo 0; done | awk '{s+=$1} END{print s+0}') ))
   done
   if [ "$RESIDUI" -gt 0 ]; then
@@ -104,6 +118,12 @@ sync_up(){
   # I REPORT DI DEEP DOG atterrano sul PC (cartella outputs/): li porto in
   # dal_pc/deepdog_reports/ così vengono pubblicati e gli agenti li ritrovano
   # anche se il PC viene formattato.
+  # CURA (4/11 notte, richiesta di arena): la CODA del log del portiere entra
+  # nel repo (ultime 150 righe) — la prova "richiesta dell'app al cervello"
+  # diventa verificabile da remoto. Il .jsonl è incluso nel mascheramento chiavi.
+  if [ -f "$DIR/portiere_log.jsonl" ]; then
+    tail -n 150 "$DIR/portiere_log.jsonl" > dal_pc/portiere_log_coda.jsonl 2>/dev/null || true
+  fi
   DD_OUT="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/outputs"
   if [ -d "$DD_OUT" ]; then
     mkdir -p dal_pc/deepdog_reports
