@@ -1,7 +1,10 @@
-✅ COMPLETATO — issue #21 — 90s — exit 0
+✅ COMPLETATO — issue #21 — 44s — exit 0
 Agente: `opencode`
 
 ### Output (coda)
+```
+Output completo del comando:
+
 ```
 POSTINO:
 POLLER:
@@ -15,6 +18,7 @@ REPO:
 ?? consegne/10-verifica-mirata-su-sail-unico-non-raggiu/
 ?? consegne/12-ricerca-canale-py-rifare-il-canale-di-ri/
 ?? consegne/12-riscrivi-ricerca-canale-py-senza-placeho/
+?? consegne/20-sbloccare-il-postino-e-appeso-su-un-reba/
 ?? lavori/ponte/cura_low.py
 ?? list_candidates.py
 ?? test_all_free.py
@@ -25,14 +29,17 @@ REPO:
 ?? test_retry.py
 ?? test_ua.py
 ?? test_xingchen_retry.py
+9242fb3 ponte: consegna issue #21 (opencode)
 2980180 postino 04/11 11:43
 c31582c postino 04/11 11:36
-4898272 4/11: niente pull dentro gli script del postino (un rebase in conflitto aprì l'editor e lo bloccava)
 DA_ME:
 cervello_restart.sh
 nomi_modelli_provider.txt
 squadra_provider_morti.txt
 REBASE:
+```
+
+Punti chiave: nessun processo postino attivo (solo il poller, PID 10673), nessun lock di rebase residuo, repo pulito a livello di rebase (solo modifiche non committate e file non tracciati).
 ```
 ### Errori (coda)
 ```
@@ -63,9 +70,9 @@ REPO:
 ?? test_retry.py
 ?? test_ua.py
 ?? test_xingchen_retry.py
+9242fb3 ponte: consegna issue #21 (opencode)
 2980180 postino 04/11 11:43
 c31582c postino 04/11 11:36
-4898272 4/11: niente pull dentro gli script del postino (un rebase in conflitto apriva l'editor e lo bloccava)
 DA_ME:
 cervello_restart.sh
 nomi_modelli_provider.txt
