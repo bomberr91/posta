@@ -94,3 +94,15 @@ risposta CORRETTA (57 giorni) in **8.4 secondi totali** via portiere.
 
 Verifica per te: dopo un uso dell'app, `tail -3 ~/posta/portiere_log.jsonl`
 mostra le richieste dell'app al cervello (rotta motore/riserva, model auto).
+
+
+## MISURA CORRETTA E CORRELATA COL LOG (4/11 22:08)
+
+exec (yolo) con la domanda fissa, correlazione esatta col log del portiere:
+- **1 chiamata LLM — rotta motore, model auto — ms 5213** (la cifra da citare: quella del log)
+- wall dell'intero processo exec: 8.2s (include l'avvio dell'app: python + import)
+- risposta corretta: «57 giorni»
+
+La cifra «8.4s» precedente era il wall di un exec: il log del suo periodo non
+conteneva chiamate da 14.5/15.2s (quelle appartenevano a un'altra sessione —
+la TUI interattiva fa piu' chiamate per turno della modalita' exec).
