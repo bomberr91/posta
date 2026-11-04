@@ -1,63 +1,57 @@
-# 🗣️ Appello delle chiavi — 04/11/2026 08:42
+# 🗣️ Appello delle chiavi — 04/11/2026 08:43
 
-Chiavi provate: 57
+Chiavi provate: 51
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | 🟡 strano | 3082 | elenco modelli: risposta 404 |
-| Agnes AI | 🟡 strano | 1356 | elenco modelli: risposta 404 |
-| AI Horde | 🟡 strano | 2444 | elenco modelli: risposta 404 |
-| Aion Labs | 🟡 strano | 2616 | elenco modelli: risposta 404 |
-| AnyAPI | 🟡 strano | 1863 | elenco modelli: risposta 403 |
-| Api.Airforce | 🟡 strano | 3068 | elenco modelli: risposta 404 |
-| BazaarLink | 🟡 strano | 5627 | elenco modelli: risposta 404 |
-| BlazeAPI | 🟡 strano | 2188 | elenco modelli: risposta 302 |
-| BlockRun | 🟡 strano | 2036 | elenco modelli: risposta 404 |
-| CLōD | 🟡 strano | 2626 | elenco modelli: risposta 404 |
-| Cloudflare Workers AI | ✅ risponde | 1615 | chiave valida · modello visto: eaf31752-a074-441f-8b70-d593255d2811 |
-| Cohere | 🟡 strano | 4825 | elenco modelli: risposta 404 |
-| DreamPrompting | 🟡 strano | 1139 | elenco modelli: risposta 404 |
-| ElectronHub | 🟡 strano | 1748 | elenco modelli: risposta 403 |
-| FreeAI | 🟡 strano | 2185 | elenco modelli: risposta 404 |
-| Google AI Studio | 🟡 strano | 5094 | elenco modelli: risposta 404 |
-| GitHub Models | ✅ risponde | 2444 | chiave valida · modello visto: openai/gpt-4.1 |
-| Gizmo | 🟡 strano | 1415 | elenco modelli: risposta 404 |
-| Groq | 🟡 strano | 5478 | elenco modelli: risposta 404 |
-| HuggingFace Router | 🟡 strano | 2146 | elenco modelli: risposta 404 |
-| Inferbase | 🟡 strano | 1958 | elenco modelli: risposta 404 |
-| Jina AI | 🟡 strano | 1920 | elenco modelli: risposta 404 |
-| Kilo (senza chiave) | 🟡 strano | 1931 | elenco modelli: risposta 404 |
-| LLM7 | 🟡 strano | 3025 | elenco modelli: risposta 404 |
-| LLMTR | 🟡 strano | 2959 | elenco modelli: risposta 301 |
-| Logfare | 🟡 strano | 2172 | elenco modelli: risposta 404 |
-| LongCat | 🟡 strano | 1734 | elenco modelli: risposta 404 |
-| Lucidity | 🟡 strano | 2162 | elenco modelli: risposta 404 |
-| Mistral | 🟡 strano | 4960 | elenco modelli: risposta 404 |
-| Moondream | 🟡 strano | 1741 | elenco modelli: risposta 401 |
-| Nscale | 🟡 strano | 1828 | elenco modelli: risposta 404 |
-| NVIDIA | 🟡 strano | 4619 | elenco modelli: risposta 404 |
-| Ollama Cloud | 🟡 strano | 1447 | elenco modelli: risposta 404 |
-| OpenCode Zen | 🟡 strano | 2553 | elenco modelli: risposta 404 |
-| OpenRouter | 🟡 strano | 4722 | elenco modelli: risposta 404 |
-| OrcaRouter | 🟡 strano | 1949 | elenco modelli: risposta 404 |
-| OVH | 🟡 strano | 1870 | elenco modelli: risposta 404 |
-| Plugsky | 🟡 strano | 1744 | elenco modelli: risposta 404 |
-| Pollinations | ✅ risponde | 2003 | chiave valida · modello visto: openai-fast |
-| Pollinations (senza chiave) | ✅ risponde | 1333 | chiave valida · modello visto: openai-fast |
-| Pollinations (immagini, senza chiave) | ✅ risponde | 1982 | chiave valida · modello visto: flux |
-| Qdrant Cloud | 🟡 strano | 1781 | elenco modelli: risposta 403 |
-| Requesty | 🟡 strano | 1627 | elenco modelli: risposta 404 |
-| Router9 | 🟡 strano | 2408 | elenco modelli: risposta 404 |
-| Routeway | 🟡 strano | 2161 | elenco modelli: risposta 403 |
-| Sail | 🟡 strano | 2115 | elenco modelli: risposta 404 |
-| SeaLION | 🟡 strano | 1742 | elenco modelli: risposta 404 |
-| Septor Labs | 🟡 strano | 1890 | elenco modelli: risposta 404 |
-| SimpleLLM | 🟡 strano | 1637 | elenco modelli: risposta 404 |
-| Speechify | 🟡 strano | 1394 | elenco modelli: risposta 404 |
-| Speka | 🟡 strano | 2345 | elenco modelli: risposta 404 |
-| Token Harbor | ✅ risponde | 2011 | chiave valida · modello visto: deepseek-v4-flash:free |
-| Typhoon | 🟡 strano | 1982 | elenco modelli: risposta 404 |
-| UnoRouter | 🟡 strano | 2034 | elenco modelli: risposta 403 |
-| WaveSpeedAI | 🟡 strano | 1827 | elenco modelli: risposta 404 |
-| xKiro | 🟡 strano | 1332 | elenco modelli: risposta 404 |
-| Zhipu | 🟡 strano | 2285 | elenco modelli: risposta 404 |
+| AgentRouter | ✅ risponde | 6569 | ha risposto davvero (gpt-6-astra) |
+| Agnes AI | ✅ risponde | 4794 | ha risposto davvero (agnes-3.0-flash) |
+| AI Horde | ✅ risponde | 5442 | ha risposto davvero (koboldcpp/Llama-3.2-1B-Instruct) |
+| Aion Labs | ✅ risponde | 4738 | ha risposto davvero (aion-labs/aion-3.0) |
+| AnyAPI | 🟡 occupato adesso | 2377 | limite o credito finito adesso |
+| Api.Airforce | 🟡 occupato adesso | 5366 | limite o credito finito adesso |
+| BazaarLink | 🟡 occupato adesso | 7096 | limite o credito finito adesso |
+| BlazeAPI | ✅ risponde | 8145 | ha risposto davvero (free/claude-haiku-4.5) |
+| BlockRun | ✅ risponde | 1929 | ha risposto davvero (nvidia/nemotron-3-nano-omni-30b-a3b-reasoning) |
+| CLōD | 🔴 chiave rifiutata | 3704 | chiave rifiutata |
+| Cohere | ✅ risponde | 3965 | ha risposto davvero (command-a-plus-05-2026) |
+| DreamPrompting | ✅ risponde | 1688 | ha risposto davvero (google/gemini-3.1-flash-lite) |
+| ElectronHub | ✅ risponde | 44816 | ha risposto davvero (gpt-5.6-luna) |
+| FreeAI | ✅ risponde | 2068 | ha risposto davvero (qwen7b) |
+| Google AI Studio | 🟡 occupato adesso | 25349 | limite o credito finito adesso |
+| Gizmo | 🟡 occupato adesso | 3044 | limite o credito finito adesso |
+| Groq | ✅ risponde | 3812 | ha risposto davvero (qwen/qwen3.8-27b) |
+| HuggingFace Router | 🟡 occupato adesso | 3020 | limite o credito finito adesso |
+| Inferbase | ✅ risponde | 4589 | ha risposto davvero (auto) |
+| Jina AI | · non-chat (escluso) | 799 | escluso dall'appello (tipo: embedding) - il cervello lo usa su richiesta |
+| Kilo (senza chiave) | ✅ risponde | 3098 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| LLM7 | ✅ risponde | 3158 | ha risposto davvero (default) |
+| LLMTR | 🟡 occupato adesso | 5440 | limite o credito finito adesso |
+| Logfare | ✅ risponde | 19546 | ha risposto davvero (logfare/auto) |
+| LongCat | 🟡 occupato adesso | 1902 | limite o credito finito adesso |
+| Lucidity | 🟡 occupato adesso | 2662 | limite o credito finito adesso |
+| Mistral | ✅ risponde | 3654 | ha risposto davvero (mistral-code-latest) |
+| Moondream | · non-chat (escluso) | 592 | escluso dall'appello (tipo: visione) - il cervello lo usa su richiesta |
+| Nscale | ✅ risponde | 2427 | ha risposto davvero (Qwen/Qwen3-8B) |
+| NVIDIA | ✅ risponde | 3818 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Ollama Cloud | ✅ risponde | 2233 | ha risposto davvero (gemma4:31b-cloud) |
+| OpenCode Zen | 🟡 occupato adesso | 3162 | limite o credito finito adesso |
+| OpenRouter | ✅ risponde | 4235 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| OrcaRouter | ✅ risponde | 4157 | ha risposto davvero (orcarouter/free) |
+| OVH | ✅ risponde | 1823 | ha risposto davvero (Qwen3.8-27B) |
+| Plugsky | ✅ risponde | 4821 | ha risposto davvero (plugsky-micro) |
+| Qdrant Cloud | · non-chat (escluso) | 726 | escluso dall'appello (tipo: db) - il cervello lo usa su richiesta |
+| Requesty | ✅ risponde | 2332 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Router9 | ✅ risponde | 4746 | ha risposto davvero (deepseek/deepseek-v4-flash) |
+| Routeway | ✅ risponde | 7107 | ha risposto davvero (muse-glimmer-30b:free) |
+| Sail | ⚪ non raggiungibile | 31770 | non raggiungibile |
+| SeaLION | ✅ risponde | 4183 | ha risposto davvero (aisingapore/Qwen-SEA-LION-v4.5-27B-IT) |
+| Septor Labs | ✅ risponde | 4877 | ha risposto davvero (minimax-m2.5-free) |
+| SimpleLLM | ✅ risponde | 2580 | ha risposto davvero (free-Llama-3.1-8B-Instruct) |
+| Speechify | · non-chat (escluso) | 561 | escluso dall'appello (tipo: voce) - il cervello lo usa su richiesta |
+| Speka | ✅ risponde | 3096 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Typhoon | ✅ risponde | 2697 | ha risposto davvero (typhoon-v2.5-30b-a3b-instruct) |
+| UnoRouter | 🟡 occupato adesso | 2424 | limite o credito finito adesso |
+| WaveSpeedAI | · non-chat (escluso) | 745 | escluso dall'appello (tipo: video) - il cervello lo usa su richiesta |
+| xKiro | 🟡 occupato adesso | 1805 | limite o credito finito adesso |
+| Zhipu | 🟡 occupato adesso | 1936 | limite o credito finito adesso |
