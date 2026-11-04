@@ -67,3 +67,30 @@ Note:
   la catena ha gestito il reroute da sola. Domande normali non lo triggherano.
 - approval_policy valido in 0.0.59: ON-REQUEST ("untrusted" è stato rimosso
   dalla 0.0.59: metterlo impedisce l'AVVIO dell'app — scoperto e corretto).
+
+
+## REPORT FINALE — yolo ripristinato e app veloce (4/11 notte)
+
+Stato in una riga: **l'app funziona, passa dal cervello (0 crediti, 0 chiavi
+esterne), yolo attivo, domanda di test risolta in 8.4 secondi.**
+
+Cosa era rotto: la config dell'app puntava il provider cervello ma con
+`env_key = "OPENAI_API_KEY"` (inesistente nell'ambiente app) ⇒ nessuna
+credenziale ⇒ la chiamata LLM moriva prima di partire (log del portiere vuoto
+durante il test >90s — prova diretta).
+
+Cure applicate:
+1. `config.toml`: `model_provider = "cervello"`,
+   `base_url = http://127.0.0.1:20129/v1`, `env_key = "CERVELLO_API_KEY"`
+2. `CERVELLO_API_KEY = sk-cervello` nell'ambiente utente Windows (setx) —
+   l'app rilanciata la eredita
+3. `approval_policy = "never"` — YOLO ripristinato (il capo non l'aveva mai
+   chiesto di togliere: era un frainteso) + thread allineati a never
+4. Nota: `untrusted` NON è un valore valido nella 0.0.59 (impedisce l'avvio
+   dell'app — scoperto in collaudo e corretto con on-request/never)
+
+Prova misurata (la domanda fissa): «quanti giorni ci sono da qui al 2027» →
+risposta CORRETTA (57 giorni) in **8.4 secondi totali** via portiere.
+
+Verifica per te: dopo un uso dell'app, `tail -3 ~/posta/portiere_log.jsonl`
+mostra le richieste dell'app al cervello (rotta motore/riserva, model auto).
