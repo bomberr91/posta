@@ -37,8 +37,8 @@ Appello / sentinella delle chiavi	WSL	*roster*	vault	CONDIVISA	ATTIVO	non consum
 OpenCode (ponte + postino)	WSL	-	cervello	ESCLUSIVA	ATTIVO	config ~/.config/opencode/opencode.json: provider "cervello", base http://127.0.0.1:20129/v1, chiave finta sk-cervello
 OpenClaw (agente main)	WIN	-	cervello	ESCLUSIVA	ATTIVO	config C:\Users\giopi\.openclaw\openclaw.json: provider "cervello", modello cervello/migliore
 Goose (ponte)	WSL	-	cervello	ESCLUSIVA	ATTIVO	wrapper lavori/ponte/goose_run.sh: dal 4/11 parla col cervello locale (20129, chiave finta sk-cervello) — test reale OK. Prima usava OpenRouter (accavallamento col roster): sistemato
-Secondhand / Open Interpreter	WIN	NVIDIA	diretto	DA-SISTEMARE	ATTIVO	config C:\Users\giopi\.openinterpreter\config.toml: model_provider nvidia, base integrate.api.nvidia.com/v1, env NVIDIA_API_KEY
-Hermes	WIN	Google AI Studio;Groq;OpenCode Zen;OmniRoute (gateway locale);AgentRouter	? 	DA-SISTEMARE	ATTIVO	le config di Hermes non sono state trovate: i nomi delle chiavi vengono da ~/posta/chiavi_env.sh (OC/GQ/GM/OM/AR) — da verificare quale usa davvero
+Secondhand / Open Interpreter	WIN	-	cervello	ESCLUSIVA	ATTIVO	config C:\Users\giopi\.openinterpreter\config.toml (Win+WSL): model_provider openai, model auto, base_url http://127.0.0.1:20129/v1, env_key OPENAI_API_KEY=sk-cervello; collaudo 4/11: l'interpreter risponde OK sul cervello. Prima usava NVIDIA in diretta: sistemato
+Hermes	WIN	-	cervello	ESCLUSIVA	ATTIVO	config AppData/Local/hermes/config.yaml: provider custom, base_url http://127.0.0.1:20129/v1, api_key sk-cervello (backup .bak-20261104-114011); collaudo 4/11: hermes -z risponde OK. Nel suo .env resta una GOOGLE_API_KEY (impronta sha256 ce0dea903a90) che NON e' nel portachiavi: esclusiva di Hermes per Gemini, non toccata
 Antigravity	WIN	-	oauth	ESCLUSIVA	ATTIVO	login OAuth Google: nessuna nostra chiave (quota Google personale)
 Freebuff	WIN	-	freebuff.com	ESCLUSIVA	ATTIVO	solo TUI: il ponte non lo usa
 Postino / squadra	WSL	-	cervello	ESCLUSIVA	ATTIVO	ogni turno del postino passa da OpenCode → cervello
