@@ -1,4 +1,4 @@
-✅ COMPLETATO — issue #15 — 28s — exit 0
+✅ COMPLETATO — issue #15 — 13s — exit 0
 Agente: `goose`
 
 ### Output (coda)
@@ -6,88 +6,12 @@ Agente: `goose`
 [goose_run] via cervello locale (nessuna chiave provider) · modello=auto · bin=/home/agenti/.local/bin/goose
 
     __( O)>  ● new session · openai auto
-   \____)    20261104_14 · /home/agenti/posta
+   \____)    20261104_15 · /home/agenti/posta
      L L     goose is ready
-
-  ────────────────────────────────────────
-  ▸ shell
-    command: cat lavori/assegnazioni_provider.tsv
-
-# ASSEGNAZIONI DELLE CHIAVI AGLI STRUMENTI ATTIVI — libro mastro
-# (4/11, richiesta del capo: "una chiave provider non può servire a due cose")
-#
-# PERCHE' UN FILE A PARTE E NON IL VAULT:
-#   il vault (CHIAVI_LOCALI.md) è PRIVATO e contiene le chiavi; questo repo è
-#   PUBBLICO. Qui ci sono solo NOMI, quote e stato: nessun segreto.
-#   Nel vault, in §5, c'è la riga che punta a questo file.
-#
-# COME SI LEGGE (7 colonne, TAB):
-#   strumento   : chi usa la chiave
-#   ambiente    : WIN / WSL / SANDBOX
-#   chiavi      : nomi esatti delle righe del portachiavi (separati da ";")
-#                 "-" = nessuna chiave provider · "*roster*" = tutte le chiavi
-#                 che il cervello ha nel suo portiere_lista.txt
-#   via         : diretto | cervello | vault | -
-#   esclusivita : ESCLUSIVA | CONDIVISA | DA-SISTEMARE
-#   stato       : ATTIVO | SOSPESO | MISURATO
-#   note        : dove sta il file di config, cosa fare
-#
-# REGOLA (vale per tutto):
-#   1) un agente NON riceve mai una chiave provider: parla con il cervello
-#      locale (http://127.0.0.1:20129/v1, chiave "sk-cervello" finta) o con il
-#      motore (20128) → il cervello è l'allocatore e mette i tetti.
-#   2) chi deve avere una chiave propria la dichiara QUI e la chiave va
-#      TOGLIESTA dal roster del cervello (portiere_lista.txt), altrimenti
-#      l'appello la prova ogni giorno e le quote si sommano.
-#   3) le chiavi "strumento" (Tavily, GitHub, Exa, Firecrawl, Linkup, UptimeRobot,
-#      YouTube, OmniRoute, GitHub Models) non sono provider di chat: possono
-#      essere condivise, ma restano contate.
-#   4) prima di attivare qualcosa: `python3 lavori/assegnazioni_vedi.py <Nome>`
-#      → dice se la chiave è libera e chi la sta usando.
-#
-strumento	ambiente	chiavi	via	esclusivita	stato	note
-Cervello / portiere	WSL (20129)	*roster*	diretto	ESCLUSIVA	ATTIVO	è l'allocatore: è l'unico che può usare tutte le chiavi (file: portiere_lista.txt, quote in portiere_quote.txt)
-Motore locale + sito + OmniRoute	WSL (20128/4000)	*roster*	diretto	CONDIVISA	ATTIVO	stessa catena del cervello: il "migliore" ci passa (rotta motore-mappato)
-Appello / sentinella delle chiavi	WSL	*roster*	vault	CONDIVISA	ATTIVO	non consuma provider ma brucia quota: è un lettore (una chiamata a provider per giro)
-OpenCode (ponte + postino)	WSL	-	cervello	ESCLUSIVA	ATTIVO	config ~/.config/opencode/opencode.json: provider "cervello", base http://127.0.0.1:20129/v1, chiave finta sk-cervello
-OpenClaw (agente main)	WIN	-	cervello	ESCLUSIVA	ATTIVO	config C:\Users\giopi\.openclaw\openclaw.json: provider "cervello", modello cervello/migliore
-Goose (ponte)	WSL	-	cervello	ESCLUSIVA	ATTIVO	wrapper lavori/ponte/goose_run.sh: dal 4/11 parla col cervello locale (20129, chiave finta sk-cervello) — test reale OK. Prima usava OpenRouter (accavallamento col roster): sistemato
-Secondhand / Open Interpreter	WIN	NVIDIA	diretto	DA-SISTEMARE	ATTIVO	config C:\Users\giopi\.openinterpreter\config.toml: model_provider nvidia, base integrate.api.nvidia.com/v1, env NVIDIA_API_KEY
-Hermes	WIN	Google AI Studio;Groq;OpenCode Zen;OmniRoute (gateway locale);AgentRouter	? 	DA-SISTEMARE	ATTIVO	le config di Hermes non sono state trovate: i nomi delle chiavi vengono da ~/posta/chiavi_env.sh (OC/GQ/GM/OM/AR) — da verificare quale usa davvero
-Antigravity	WIN	-	oauth	ESCLUSIVA	ATTIVO	login OAuth Google: nessuna nostra chiave (quota Google personale)
-Freebuff	WIN	-	freebuff.com	ESCLUSIVA	ATTIVO	solo TUI: il ponte non lo usa
-Postino / squadra	WSL	-	cervello	ESCLUSIVA	ATTIVO	ogni turno del postino passa da OpenCode → cervello
-Orchestratore (Arena, sandbox)	SANDBOX	Sail;OpenRouter	vault	CONDIVISA	ATTIVO	le misure dichiarate (più anche il PAT GitHub, che è una chiave di strumento): non usare la chiave "di un altro" per le prove
-Tavily (ricerca, Reddit, browser)	WIN+SANDBOX	Tavily;Linkup;Firecrawl;Exa	diretto	CONDIVISA	ATTIVO	strumenti di ricerca, non provider di chat: usati da ricerca_canale.py, ricerca_strategica.py, cerca.sh
-GitHub PAT (postino, poller, script, sandbox)	WIN+SANDBOX	GitHub (bomberr91)	diretto	CONDIVISA	ATTIVO	utilità, non chat: condiviso per natura (il PAT «GitHub Models» è un altro, lo usa il roster su ghmodels)
-OCCHI-FB	WIN	Gemini Studio (solo per OCCHI-FB)	diretto	CONDIVISA	ATTIVO	lavori/reel Facebook: chiave Gemini dedicata (è già staccata da "Google AI Studio")
-FUSION / AgentRouter	WIN	AgentRouter	diretto	DA-SISTEMARE	SOSPESO	non avviare senza via del capo
-Bot Telegram	WIN	-	-	-	SOSPESO	non riproporlo
-Deep Dog	-	OpenRouter;Tavily;Exa;DeepSeek	diretto	-	SOSPESO	mai usato
-LongCat	WIN	LongCat	diretto	ESCLUSIVA	MISURATO	nel roster: la quota non rinnova (402 continuo)
-NaraRouter	-	NaraRouter	-	ESCLUSIVA	MISURATO	fuori dal roster (403 telegram_required): la chiave è libera ma il provider non serve```tsv
-# ASSEGNAZIONI DELLE CHIAVI AGLI STRUMENTI ATTIVI — libro mastro
-# (4/11, richiesta del capo: "una chiave provider non può servire a due cose")
-#
-# PERCHE' UN FILE A PARTE E NON IL VAULT:
-#   il vault (CHIAVI_LOCALI.md) è PRIVATO e contiene le chiavi; questo repo è
-#   PUBBLICO. Qui ci sono solo NOMI, quote e stato: nessun segreto.
-#   Nel vault, in §5, c'è la riga che punta a questo file.
-#
-# COME SI LEGGE (7 colonne, TAB):
-#   strumento   : chi usa la chiave
-#   ambiente    : WIN / WSL / SANDBOX
-#   chiavi      : nomi esatti delle righe del portachiavi (separati da ";")
-#                 "-" = nessuna chiave provider · "*roster*" = tutte le chiavi
-#                 che il cervello ha nel suo portiere_lista.txt
-#   via         : diretto | cervello | vault | -
-#   esclusivita : ESCLUSIVA | CONDIVISA | DA-SISTEMARE
-#   stato       : ATTIVO | SOSPESO | MISURATO
-#   note        : dove sta il file di config, cosa fare
-#
-# REGOLA (vale per tutto):
-... (33 more lines → /tmp/goose-9HVXq0.txt)
-```
+<turn-context>
+<current-time>2026-11-04 10:44:00 +01:00</current-time>
+<working-directory>/home/agenti/posta</working-directory>
+</turn-context>
 ```
 
 Consegna: `/consegne/15-collaudo-del-libro-mastro-delle-chiavi-l`
