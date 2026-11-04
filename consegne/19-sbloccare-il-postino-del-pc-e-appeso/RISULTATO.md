@@ -1,9 +1,9 @@
-✅ COMPLETATO — issue #19 — 65s — exit 0
+✅ COMPLETATO — issue #19 — 44s — exit 0
 Agente: `opencode`
 
 ### Output (coda)
 ```
-Non hai incluso il comando nel messaggio — dopo i due punti non c'è nulla. Quale comando vuoi che esegua?
+Il comando non è presente nel messaggio: dopo i due punti non c'è nulla da eseguire. Inviami il comando esatto e lo eseguirò riportando l'output completo.
 ```
 ### Errori (coda)
 ```
