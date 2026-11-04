@@ -4,7 +4,14 @@
 # PERCHE' UN FILE A PARTE E NON IL VAULT:
 #   il vault (CHIAVI_LOCALI.md) è PRIVATO e contiene le chiavi; questo repo è
 #   PUBBLICO. Qui ci sono solo NOMI, quote e stato: nessun segreto.
-#   Nel vault, in §5, c'è la riga che punta a questo file.
+#   Nel vault, in §5, c'è la riga che punta a questo file — e in più una copia
+#   di lavoro di questo stesso indice nel workspace interno, accanto al
+#   portachiavi: /home/user/assegnazioni_provider.tsv
+#   (copia sincronizzata dal repo; il file VIVO è questo, nel repo pubblico).
+#
+#   REGOLA DEL CAPO (4/11): le chiavi si usano dagli agenti, non da una chat
+#   personale in piu'. Per questo FUSION (progetto FreellmHub) e' stato
+#   scartato: niente progetti di chat extra accanto agli agenti.
 #
 # COME SI LEGGE (7 colonne, TAB):
 #   strumento   : chi usa la chiave
@@ -46,7 +53,7 @@ Orchestratore (Arena, sandbox)	SANDBOX	Sail;OpenRouter	vault	CONDIVISA	ATTIVO	le
 Tavily (ricerca, Reddit, browser)	WIN+SANDBOX	Tavily;Linkup;Firecrawl;Exa	diretto	CONDIVISA	ATTIVO	strumenti di ricerca, non provider di chat: usati da ricerca_canale.py, ricerca_strategica.py, cerca.sh
 GitHub PAT (postino, poller, script, sandbox)	WIN+SANDBOX	GitHub (bomberr91)	diretto	CONDIVISA	ATTIVO	utilità, non chat: condiviso per natura (il PAT «GitHub Models» è un altro, lo usa il roster su ghmodels)
 OCCHI-FB	WIN	Gemini Studio (solo per OCCHI-FB)	diretto	CONDIVISA	ATTIVO	lavori/reel Facebook: chiave Gemini dedicata (è già staccata da "Google AI Studio")
-FUSION / AgentRouter	WIN	AgentRouter	diretto	DA-SISTEMARE	SOSPESO	non avviare senza via del capo
+FUSION / AgentRouter	WIN	AgentRouter	diretto	-	SCARTATO	SCARTATO il 4/11 per ordine del capo: progetto FreellmHub chiuso (le chiavi si useranno dagli agenti, niente chat extra personale). La chiave AgentRouter resta nel portachiavi e nel roster del cervello: nessun altro la usa, quindi nessun accavallamento
 Bot Telegram	WIN	-	-	-	SOSPESO	non riproporlo
 Deep Dog	-	OpenRouter;Tavily;Exa;DeepSeek	diretto	-	SOSPESO	mai usato
 LongCat	WIN	LongCat	diretto	ESCLUSIVA	MISURATO	nel roster: la quota non rinnova (402 continuo)
