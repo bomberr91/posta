@@ -21,12 +21,11 @@
     },
     "goose": {
       "cmd": [
-        "goose",
-        "run",
-        "-t",
+        "bash",
+        "/home/agenti/posta/lavori/ponte/goose_run.sh",
         "{compito}"
       ],
-      "workdir": "/home/agenti",
+      "workdir": "/home/agenti/posta",
       "timeout": 1800,
       "raccogli": []
     },
