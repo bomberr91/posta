@@ -22,3 +22,13 @@ file con chiavi mascherate: 2
    - ./tests/test_poller_mask.py
 
 ### 5. COMMIT + PUSH
+warning: redirecting to https://github.com/bomberr91/posta.git/
+To https://github.com/bomberr91/posta.git
+   3096458..703c89d  HEAD -> main
+
+### 6. RIAVVIO DEL POLLER (carica il poller.py patchato: maschera le chiavi prima di committare)
+maschera_chiavi nel poller.py: 4
+poller riavviato (pid 22872)
+FINE
+
+<!-- fine sanifica_repo_chiavi -->
