@@ -308,6 +308,21 @@ def smista(numero, titolo, body, dry):
     if ok:
         if REPO_PATH:
             with GIT_LOCK:  # un commit/push alla volta anche con agenti in parallelo
+                # 4/11 (fix bridge, diagnosticato dall'agente): il poller faceva
+                # commit + push SENZA pull. Se nel frattempo arrivava un push dal
+                # sandbox, Git rispondeva "rejected (fetch first)" e la consegna
+                # si perdeva (ripartiva al tentativo successivo, con rumore).
+                # Con la pull prima, la consegna va al primo colpo.
+                try:
+                    git(REPO_PATH, "pull", "--rebase", "--autostash")
+                except Exception as e:  # una pull fallita NON deve perdere la consegna
+                    log(f"  ⚠ pull prima del push fallito: {e}")
+                    for _rim in ("rebase", "merge"):  # lascia il repo pulito
+                        try:
+                            subprocess.run(["git", _rim, "--abort"], cwd=REPO_PATH,
+                                           capture_output=True, text=True, timeout=60)
+                        except Exception:
+                            pass
                 git(REPO_PATH, "add", f"{CONSEGNE_REL}/{numero}-{slug}")
                 git(REPO_PATH, "commit", "-m", f"ponte: consegna issue #{numero} ({target})")
                 git(REPO_PATH, "push", "origin", "HEAD:main")
