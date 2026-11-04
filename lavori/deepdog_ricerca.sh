@@ -13,6 +13,32 @@
 # dice dove sta il file e cosa ha risposto.
 set -uo pipefail
 PORT="${DEEPDOG_PORT:-8765}"
+# --- helper HTTP: nella WSL del PC il `curl` NON esiste -> python3 (4/11) ---
+http_get() {
+  python3 - "$1" << 'PYGET'
+import sys, urllib.request
+try:
+    with urllib.request.urlopen(sys.argv[1], timeout=8) as r:
+        sys.stdout.write(r.read().decode("utf-8", "replace"))
+except Exception:
+    sys.exit(1)
+PYGET
+}
+
+http_post() {
+  python3 - "$1" "$2" << 'PYPOST'
+import sys, urllib.request
+try:
+    req = urllib.request.Request(sys.argv[1], data=sys.argv[2].encode("utf-8"),
+                                 headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=25) as r:
+        sys.stdout.write(r.read().decode("utf-8", "replace"))
+except Exception:
+    sys.exit(1)
+PYPOST
+}
+
+PORT="${DEEPDOG_PORT:-8765}"
 DD_OUT="/mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/outputs"
 cd "$HOME/posta" || exit 1
 mkdir -p dal_pc/deepdog_reports
@@ -26,18 +52,18 @@ T0=$(date +%s)
 
 # 1. il cane è vivo? SE NON LO È, LO AVVIO IO (il capo non deve fare niente
 #    sul PC: il cane è un regalo per gli agenti, e gli agenti lo avviano)
-if ! curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
+if ! http_get "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
   echo "il cane non gira: lo avvio io"
   BAT='C:\Users\giopi\Documents\AgentWorkspace\deepdog\Avvia Deep Dog Web.bat'
   cmd.exe /c start "" "$BAT" >/dev/null 2>&1
   for i in $(seq 1 30); do
     sleep 4
-    if curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
+    if http_get "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
       echo "cane avviato e vivo (~$((i*4))s)"
       break
     fi
   done
-  if ! curl -s -m 5 "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
+  if ! http_get "http://127.0.0.1:$PORT/api/status" >/dev/null 2>&1; then
     echo "non sono riuscito ad avviarlo. Prova: doppio click su 'Avvia Deep Dog Web.bat'"
     echo "oppure guarda se il venv esiste: /mnt/c/Users/giopi/Documents/AgentWorkspace/deepdog/.venv"
     exit 1
@@ -50,8 +76,7 @@ fi
 echo "domanda: $DOMANDA"
 PILLO=$(python3 -c 'import json,sys; print(json.dumps({"prompt": sys.argv[1]}))' "$DOMANDA" 2>/dev/null)
 if [ -z "$PILLO" ]; then echo "non riesco a preparare la domanda"; exit 1; fi
-if ! curl -s -m 20 -X POST -H 'Content-Type: application/json' \
-     -d "$PILLO" "http://127.0.0.1:$PORT/api/start" >/dev/null 2>&1; then
+if ! http_post "http://127.0.0.1:$PORT/api/start" "$PILLO" >/dev/null 2>&1; then
   echo "il cane ha rifiutato la domanda"; exit 1
 fi
 echo "domanda mandata, aspetto il report (max 10 minuti)..."
@@ -61,7 +86,7 @@ FINITO=""
 ST=""
 for i in $(seq 1 120); do
   sleep 5
-  ST=$(curl -s -m 8 "http://127.0.0.1:$PORT/api/status" 2>/dev/null)
+  ST=$(http_get "http://127.0.0.1:$PORT/api/status" 2>/dev/null)
   S=$(printf '%s' "$ST" | python3 -c "import json,sys
 try: print(json.load(sys.stdin).get('status','?'))
 except Exception: print('?')" 2>/dev/null)
