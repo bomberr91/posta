@@ -1,4 +1,3 @@
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-05 19:06:38"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-05 19:06:39"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-05 19:06:39"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-05 19:06:40"}
@@ -148,3 +147,4 @@
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3097, "quando": "2026-11-05 21:13:55"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5252, "quando": "2026-11-05 21:14:02"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 20371, "quando": "2026-11-05 21:14:23"}
+{"tipo": "richiesta", "agente": "cervello-bab8b59dd620090c", "politica": "auto", "rotta": "riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "ms": 92930, "tentativi": 1, "quando": "2026-11-05 21:14:58"}
