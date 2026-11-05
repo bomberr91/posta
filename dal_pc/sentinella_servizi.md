@@ -1,6 +1,6 @@
-# 📡 Sentinella dei servizi parcheggiati — 04/11/2026 08:43
+# 📡 Sentinella dei servizi parcheggiati — 05/11/2026 12:24
 
-Ogni giorno bussa a Waterfall e NavyAI: aspettiamo che si muovano da soli.
+Ogni giorno bussa a Waterfall e NavyAI (parcheggiati, fuori dal roster): aspettiamo che si muovano da soli.
 
 ## Waterfall (waterfall)
 - indirizzo: https://api.getwaterfall.org/v1 · modello: auto · chiave: presente
