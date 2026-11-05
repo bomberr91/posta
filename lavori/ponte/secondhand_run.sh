@@ -25,4 +25,4 @@ COMPITO="${1:-}"
 if [ -z "$COMPITO" ]; then echo "compito mancante"; exit 2; fi
 
 echo "[secondhand_run] via cervello locale (nessuna chiave provider) · repo=$REPO"
-exec interpreter exec --skip-git-repo-check "$COMPITO"
+python3 /home/agenti/posta/lavori/ponte/secondhand_exec.py "$COMPITO"
