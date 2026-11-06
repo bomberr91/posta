@@ -1,60 +1,60 @@
-# 🗣️ Appello delle chiavi — 06/11/2026 20:51
+# 🗣️ Appello delle chiavi — 06/11/2026 23:09
 
 Chiavi provate: 54
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | ⚪ non raggiungibile | 1025 | non raggiungibile |
-| Agnes AI | ⚪ non raggiungibile | 986 | non raggiungibile |
-| AI Horde | ⚪ non raggiungibile | 2867 | non raggiungibile |
-| Aion Labs | ⚪ non raggiungibile | 1043 | non raggiungibile |
-| AnyAPI | ⚪ non raggiungibile | 1045 | non raggiungibile |
-| Api.Airforce | ⚪ non raggiungibile | 1100 | non raggiungibile |
-| BazaarLink | ⚪ non raggiungibile | 920 | non raggiungibile |
-| BlazeAPI | ⚪ non raggiungibile | 1719 | non raggiungibile |
-| BlockRun | ⚪ non raggiungibile | 876 | non raggiungibile |
-| CLōD | ⚪ non raggiungibile | 941 | non raggiungibile |
-| Cloudflare Workers AI | ⚪ non raggiungibile | 869 | non raggiungibile |
-| Cohere | ⚪ non raggiungibile | 1261 | non raggiungibile |
-| DreamPrompting | ⚪ non raggiungibile | 1000 | non raggiungibile |
-| ElectronHub | ⚪ non raggiungibile | 843 | non raggiungibile |
-| FreeAI | ⚪ non raggiungibile | 1256 | non raggiungibile |
-| Google AI Studio | ⚪ non raggiungibile | 1853 | non raggiungibile |
-| GitHub Models | ⚪ non raggiungibile | 946 | non raggiungibile |
-| Gizmo | ⚪ non raggiungibile | 887 | non raggiungibile |
-| Groq | ⚪ non raggiungibile | 401 | non raggiungibile |
-| Inferbase | ⚪ non raggiungibile | 816 | non raggiungibile |
-| Jina AI | ⚪ non raggiungibile | 586 | non raggiungibile |
-| Kilo (senza chiave) | ⚪ non raggiungibile | 900 | non raggiungibile |
-| LLM7 | ⚪ non raggiungibile | 1321 | non raggiungibile |
-| LLMTR | ⚪ non raggiungibile | 911 | non raggiungibile |
-| Logfare | ⚪ non raggiungibile | 1348 | non raggiungibile |
-| Lucidity | ⚪ non raggiungibile | 1288 | non raggiungibile |
-| Mistral | ⚪ non raggiungibile | 1769 | non raggiungibile |
-| Moondream | ⚪ non raggiungibile | 589 | non raggiungibile |
-| Nscale | ⚪ non raggiungibile | 1020 | non raggiungibile |
-| NVIDIA | ⚪ non raggiungibile | 943 | non raggiungibile |
-| Ollama Cloud | ⚪ non raggiungibile | 1113 | non raggiungibile |
-| OpenCode Zen | ⚪ non raggiungibile | 1027 | non raggiungibile |
-| OpenRouter | ⚪ non raggiungibile | 1238 | non raggiungibile |
-| OrcaRouter | ⚪ non raggiungibile | 856 | non raggiungibile |
-| Plugsky | ⚪ non raggiungibile | 947 | non raggiungibile |
-| Pollinations | ⚪ non raggiungibile | 930 | non raggiungibile |
-| Pollinations (senza chiave) | ⚪ non raggiungibile | 639 | non raggiungibile |
-| Pollinations (immagini, senza chiave) | ⚪ non raggiungibile | 596 | non raggiungibile |
-| Qdrant Cloud | ⚪ non raggiungibile | 508 | non raggiungibile |
-| Requesty | ⚪ non raggiungibile | 1078 | non raggiungibile |
-| Router9 | ⚪ non raggiungibile | 810 | non raggiungibile |
-| Routeway | ⚪ non raggiungibile | 935 | non raggiungibile |
-| Sail | ⚪ non raggiungibile | 807 | non raggiungibile |
-| SeaLION | ⚪ non raggiungibile | 695 | non raggiungibile |
-| Septor Labs | ⚪ non raggiungibile | 816 | non raggiungibile |
-| SimpleLLM | ⚪ non raggiungibile | 892 | non raggiungibile |
-| Speechify | ⚪ non raggiungibile | 871 | non raggiungibile |
-| Speka | ⚪ non raggiungibile | 917 | non raggiungibile |
-| Token Harbor | ⚪ non raggiungibile | 658 | non raggiungibile |
-| Typhoon | ⚪ non raggiungibile | 775 | non raggiungibile |
-| UnoRouter | ⚪ non raggiungibile | 1090 | non raggiungibile |
-| WaveSpeedAI | ⚪ non raggiungibile | 644 | non raggiungibile |
-| xKiro | ⚪ non raggiungibile | 1096 | non raggiungibile |
-| Zhipu | ⚪ non raggiungibile | 799 | non raggiungibile |
+| AgentRouter | ✅ risponde | 7341 | ha risposto davvero (gpt-6-astra) |
+| Agnes AI | ✅ risponde | 3651 | ha risposto davvero (agnes-3.0-flash) |
+| AI Horde | ✅ risponde | 6417 | ha risposto davvero (koboldcpp/Llama-3.2-1B-Instruct) |
+| Aion Labs | ✅ risponde | 12547 | ha risposto davvero (aion-labs/aion-3.0) |
+| AnyAPI | 🟡 occupato adesso | 2326 | limite o credito finito adesso |
+| Api.Airforce | 🟡 occupato adesso | 15773 | limite o credito finito adesso |
+| BazaarLink | ✅ risponde | 11405 | ha risposto davvero (deepseek/deepseek-v4-flash-0731free:free) |
+| BlazeAPI | ✅ risponde | 5872 | ha risposto davvero (free/claude-haiku-4.5) |
+| BlockRun | ✅ risponde | 2914 | ha risposto davvero (nvidia/nemotron-3-nano-omni-30b-a3b-reasoning) |
+| CLōD | 🔴 chiave rifiutata | 7849 | chiave rifiutata |
+| Cloudflare Workers AI | ✅ risponde | 4356 | ha risposto davvero (@cf/qwen/qwen3.8-27b) |
+| Cohere | ✅ risponde | 6396 | ha risposto davvero (command-a-plus-05-2026) |
+| DreamPrompting | ✅ risponde | 5286 | ha risposto davvero (google/gemini-3.1-flash-lite) |
+| ElectronHub | ✅ risponde | 6115 | ha risposto davvero (qwen3.8-flash) |
+| FreeAI | ✅ risponde | 7035 | ha risposto davvero (qwen7b) |
+| Google AI Studio | 🟡 occupato adesso | 37268 | limite o credito finito adesso |
+| GitHub Models | 🟡 strano | 5860 | OK |
+| Gizmo | 🟡 occupato adesso | 5385 | limite o credito finito adesso |
+| Groq | ✅ risponde | 4604 | ha risposto davvero (qwen/qwen3.8-27b) |
+| Inferbase | ✅ risponde | 5974 | ha risposto davvero (auto) |
+| Jina AI | · non-chat (escluso) | 6578 | escluso dall'appello (tipo: embedding) - il cervello lo usa su richiesta |
+| Kilo (senza chiave) | ✅ risponde | 4648 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| LLM7 | 🟡 occupato adesso | 32617 | limite o credito finito adesso |
+| LLMTR | ✅ risponde | 5505 | ha risposto davvero (qwen/qwen3.8-27b-free) |
+| Logfare | ✅ risponde | 17688 | ha risposto davvero (gemma-4-26b) |
+| Lucidity | 🟡 occupato adesso | 8313 | limite o credito finito adesso |
+| Mistral | ✅ risponde | 6169 | ha risposto davvero (mistral-code-latest) |
+| Moondream | · non-chat (escluso) | 2705 | escluso dall'appello (tipo: visione) - il cervello lo usa su richiesta |
+| Nscale | 🟡 strano | 5503 | {"error":{"message":"No matching route found. It is likely because the model specified in  |
+| NVIDIA | ✅ risponde | 7476 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Ollama Cloud | ✅ risponde | 4772 | ha risposto davvero (gemma4:31b-cloud) |
+| OpenCode Zen | 🟡 occupato adesso | 4574 | limite o credito finito adesso |
+| OpenRouter | ✅ risponde | 6775 | ha risposto davvero (dots-studio/dots-3-note-preview:free) |
+| OrcaRouter | 🟡 occupato adesso | 7811 | limite o credito finito adesso |
+| Plugsky | ✅ risponde | 5984 | ha risposto davvero (plugsky-micro) |
+| Pollinations | ✅ risponde | 3883 | ha risposto davvero (openai-fast) |
+| Pollinations (senza chiave) | ✅ risponde | 2106 | ha risposto davvero (openai-fast) |
+| Pollinations (immagini, senza chiave) | · non-chat (escluso) | 2899 | escluso dall'appello (tipo: immagini) - il cervello lo usa su richiesta |
+| Qdrant Cloud | · non-chat (escluso) | 6116 | escluso dall'appello (tipo: db) - il cervello lo usa su richiesta |
+| Requesty | 🟡 occupato adesso | 2936 | limite o credito finito adesso |
+| Router9 | 🟡 strano | 7463 | {"error":{"code":"model_requires_upgrade","message":"Model \"deepseek/deepseek-v4-pro\" is |
+| Routeway | ✅ risponde | 12923 | ha risposto davvero (muse-glimmer-30b:free) |
+| Sail | ✅ risponde | 5577 | ha risposto davvero (moonshotai/Kimi-K3) |
+| SeaLION | ✅ risponde | 7857 | ha risposto davvero (aisingapore/Qwen-SEA-LION-v4.5-27B-IT) |
+| Septor Labs | ✅ risponde | 5917 | ha risposto davvero (minimax-m2.5-free) |
+| SimpleLLM | ✅ risponde | 3657 | ha risposto davvero (free-Llama-3.1-8B-Instruct) |
+| Speechify | · non-chat (escluso) | 1556 | escluso dall'appello (tipo: voce) - il cervello lo usa su richiesta |
+| Speka | ✅ risponde | 7234 | ha risposto davvero (nvidia/nemotron-3-ultra-550b-a55b) |
+| Token Harbor | ✅ risponde | 7464 | ha risposto davvero (deepseek-v4-flash:free) |
+| Typhoon | ✅ risponde | 4799 | ha risposto davvero (typhoon-v2.5-30b-a3b-instruct) |
+| UnoRouter | 🟡 occupato adesso | 7082 | limite o credito finito adesso |
+| WaveSpeedAI | · non-chat (escluso) | 2846 | escluso dall'appello (tipo: video) - il cervello lo usa su richiesta |
+| xKiro | ✅ risponde | 8818 | ha risposto davvero (qwen/qwen3.8-max:free) |
+| Zhipu | ✅ risponde | 13838 | ha risposto davvero (glm-4.7-flash) |
