@@ -1,5 +1,4 @@
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:42"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:42"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:43"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:43"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:42:44"}
@@ -148,3 +147,4 @@
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6167, "quando": "2026-11-04 16:22:45"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5571, "quando": "2026-11-04 16:27:57"}
 {"tipo": "sentinella", "nota": "fonti quote aggiornate: FREE-LLM-API-Provider (push 2026-11-07) · awesome-freellm-apis (push 2026-11-07) — ricontrollare portiere_quote.txt", "quando": "2026-11-07 19:17:53"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 96536, "tentativi": 1, "risparmio_car": 36477, "quando": "2026-11-07 19:19:28"}
