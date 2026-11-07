@@ -1,60 +1,60 @@
-# 🗣️ Appello delle chiavi — 07/11/2026 14:04
+# 🗣️ Appello delle chiavi — 07/11/2026 19:03
 
 Chiavi provate: 54
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| AgentRouter | ⚪ non raggiungibile | 1205 | non raggiungibile |
-| Agnes AI | ⚪ non raggiungibile | 1103 | non raggiungibile |
-| AI Horde | ⚪ non raggiungibile | 3166 | non raggiungibile |
-| Aion Labs | ⚪ non raggiungibile | 1097 | non raggiungibile |
-| AnyAPI | ⚪ non raggiungibile | 1160 | non raggiungibile |
-| Api.Airforce | ⚪ non raggiungibile | 1124 | non raggiungibile |
-| BazaarLink | ⚪ non raggiungibile | 1358 | non raggiungibile |
-| BlazeAPI | ⚪ non raggiungibile | 1492 | non raggiungibile |
-| BlockRun | ⚪ non raggiungibile | 1108 | non raggiungibile |
-| CLōD | ⚪ non raggiungibile | 1516 | non raggiungibile |
-| Cloudflare Workers AI | ⚪ non raggiungibile | 1126 | non raggiungibile |
-| Cohere | ⚪ non raggiungibile | 5867 | non raggiungibile |
-| DreamPrompting | ⚪ non raggiungibile | 1101 | non raggiungibile |
-| ElectronHub | ⚪ non raggiungibile | 1307 | non raggiungibile |
-| FreeAI | ⚪ non raggiungibile | 1293 | non raggiungibile |
-| Google AI Studio | ⚪ non raggiungibile | 6010 | non raggiungibile |
-| GitHub Models | ⚪ non raggiungibile | 1244 | non raggiungibile |
-| Gizmo | ⚪ non raggiungibile | 1286 | non raggiungibile |
-| Groq | ⚪ non raggiungibile | 5929 | non raggiungibile |
-| Inferbase | ⚪ non raggiungibile | 1065 | non raggiungibile |
-| Jina AI | ⚪ non raggiungibile | 1143 | non raggiungibile |
-| Kilo (senza chiave) | ⚪ non raggiungibile | 1245 | non raggiungibile |
-| LLM7 | ⚪ non raggiungibile | 1114 | non raggiungibile |
-| LLMTR | ⚪ non raggiungibile | 1112 | non raggiungibile |
-| Logfare | ⚪ non raggiungibile | 1580 | non raggiungibile |
-| Lucidity | ⚪ non raggiungibile | 1443 | non raggiungibile |
-| Mistral | ⚪ non raggiungibile | 5919 | non raggiungibile |
-| Moondream | ⚪ non raggiungibile | 661 | non raggiungibile |
-| Nscale | ⚪ non raggiungibile | 1364 | non raggiungibile |
-| NVIDIA | ⚪ non raggiungibile | 5791 | non raggiungibile |
-| Ollama Cloud | ⚪ non raggiungibile | 992 | non raggiungibile |
-| OpenCode Zen | ⚪ non raggiungibile | 1177 | non raggiungibile |
-| OpenRouter | ⚪ non raggiungibile | 5792 | non raggiungibile |
-| OrcaRouter | ⚪ non raggiungibile | 1304 | non raggiungibile |
-| Plugsky | ⚪ non raggiungibile | 1076 | non raggiungibile |
-| Pollinations | ⚪ non raggiungibile | 1152 | non raggiungibile |
-| Pollinations (senza chiave) | ⚪ non raggiungibile | 1182 | non raggiungibile |
-| Pollinations (immagini, senza chiave) | ⚪ non raggiungibile | 482 | non raggiungibile |
-| Qdrant Cloud | ⚪ non raggiungibile | 1039 | non raggiungibile |
-| Requesty | ⚪ non raggiungibile | 1043 | non raggiungibile |
-| Router9 | ⚪ non raggiungibile | 1154 | non raggiungibile |
-| Routeway | ⚪ non raggiungibile | 1555 | non raggiungibile |
-| Sail | ⚪ non raggiungibile | 1055 | non raggiungibile |
-| SeaLION | ⚪ non raggiungibile | 1318 | non raggiungibile |
-| Septor Labs | ⚪ non raggiungibile | 1202 | non raggiungibile |
-| SimpleLLM | ⚪ non raggiungibile | 1079 | non raggiungibile |
-| Speechify | ⚪ non raggiungibile | 1264 | non raggiungibile |
-| Speka | ⚪ non raggiungibile | 1402 | non raggiungibile |
-| Token Harbor | ⚪ non raggiungibile | 1083 | non raggiungibile |
-| Typhoon | ⚪ non raggiungibile | 1226 | non raggiungibile |
-| UnoRouter | ⚪ non raggiungibile | 1271 | non raggiungibile |
-| WaveSpeedAI | ⚪ non raggiungibile | 937 | non raggiungibile |
-| xKiro | ⚪ non raggiungibile | 1046 | non raggiungibile |
-| Zhipu | ⚪ non raggiungibile | 1305 | non raggiungibile |
+| AgentRouter | 🟡 strano | 1634 | elenco modelli: risposta 404 |
+| Agnes AI | 🟡 strano | 1073 | elenco modelli: risposta 404 |
+| AI Horde | 🟡 strano | 5778 | elenco modelli: risposta 404 |
+| Aion Labs | 🟡 strano | 927 | elenco modelli: risposta 404 |
+| AnyAPI | 🟡 strano | 447 | elenco modelli: risposta 403 |
+| Api.Airforce | 🟡 strano | 1145 | elenco modelli: risposta 404 |
+| BazaarLink | 🟡 strano | 2104 | elenco modelli: risposta 404 |
+| BlazeAPI | 🟡 strano | 1052 | elenco modelli: risposta 302 |
+| BlockRun | 🟡 strano | 820 | elenco modelli: risposta 404 |
+| CLōD | 🟡 strano | 1270 | elenco modelli: risposta 404 |
+| Cloudflare Workers AI | ✅ risponde | 1073 | chiave valida · modello visto: eaf31752-a074-441f-8b70-d593255d2811 |
+| Cohere | 🟡 strano | 1696 | elenco modelli: risposta 404 |
+| DreamPrompting | 🟡 strano | 735 | elenco modelli: risposta 404 |
+| ElectronHub | 🟡 strano | 640 | elenco modelli: risposta 403 |
+| FreeAI | 🟡 strano | 4535 | elenco modelli: risposta 404 |
+| Google AI Studio | 🟡 strano | 1268 | elenco modelli: risposta 404 |
+| GitHub Models | ✅ risponde | 911 | chiave valida · modello visto: openai/gpt-4.1 |
+| Gizmo | 🟡 strano | 594 | elenco modelli: risposta 404 |
+| Groq | 🟡 strano | 1485 | elenco modelli: risposta 404 |
+| Inferbase | 🟡 strano | 782 | elenco modelli: risposta 404 |
+| Jina AI | 🟡 strano | 1082 | elenco modelli: risposta 404 |
+| Kilo (senza chiave) | 🟡 strano | 988 | elenco modelli: risposta 404 |
+| LLM7 | 🟡 strano | 1235 | elenco modelli: risposta 404 |
+| LLMTR | 🟡 strano | 2060 | elenco modelli: risposta 301 |
+| Logfare | 🟡 strano | 1212 | elenco modelli: risposta 404 |
+| Lucidity | 🟡 strano | 1551 | elenco modelli: risposta 404 |
+| Mistral | 🟡 strano | 1324 | elenco modelli: risposta 404 |
+| Moondream | 🟡 strano | 647 | elenco modelli: risposta 401 |
+| Nscale | 🟡 strano | 4272 | elenco modelli: risposta 404 |
+| NVIDIA | 🟡 strano | 1238 | elenco modelli: risposta 404 |
+| Ollama Cloud | 🟡 strano | 1147 | elenco modelli: risposta 404 |
+| OpenCode Zen | 🟡 strano | 842 | elenco modelli: risposta 404 |
+| OpenRouter | 🟡 strano | 1652 | elenco modelli: risposta 404 |
+| OrcaRouter | 🟡 strano | 863 | elenco modelli: risposta 404 |
+| Plugsky | 🟡 strano | 1236 | elenco modelli: risposta 404 |
+| Pollinations | ✅ risponde | 819 | chiave valida · modello visto: openai-fast |
+| Pollinations (senza chiave) | ✅ risponde | 5072 | chiave valida · modello visto: openai-fast |
+| Pollinations (immagini, senza chiave) | ✅ risponde | 1219 | chiave valida · modello visto: flux |
+| Qdrant Cloud | 🟡 strano | 685 | elenco modelli: risposta 403 |
+| Requesty | 🟡 strano | 667 | elenco modelli: risposta 404 |
+| Router9 | 🟡 strano | 1049 | elenco modelli: risposta 404 |
+| Routeway | 🟡 strano | 868 | elenco modelli: risposta 403 |
+| Sail | 🟡 strano | 1221 | elenco modelli: risposta 404 |
+| SeaLION | 🟡 strano | 5574 | elenco modelli: risposta 404 |
+| Septor Labs | 🟡 strano | 1266 | elenco modelli: risposta 404 |
+| SimpleLLM | 🟡 strano | 999 | elenco modelli: risposta 404 |
+| Speechify | 🟡 strano | 822 | elenco modelli: risposta 404 |
+| Speka | 🟡 strano | 5305 | elenco modelli: risposta 404 |
+| Token Harbor | ✅ risponde | 1477 | chiave valida · modello visto: deepseek-v4-flash:free |
+| Typhoon | 🟡 strano | 1745 | elenco modelli: risposta 404 |
+| UnoRouter | 🟡 strano | 1055 | elenco modelli: risposta 403 |
+| WaveSpeedAI | 🟡 strano | 845 | elenco modelli: risposta 404 |
+| xKiro | 🟡 strano | 960 | elenco modelli: risposta 404 |
+| Zhipu | 🟡 strano | 1168 | elenco modelli: risposta 404 |
