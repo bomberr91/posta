@@ -1,4 +1,3 @@
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:43:35"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:43:36"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:43:38"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:39"}
@@ -148,3 +147,4 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "requesty", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 63977, "tentativi": 1, "risparmio_car": 38595, "quando": "2026-11-07 11:58:51"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2548, "quando": "2026-11-07 11:58:54"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2937, "quando": "2026-11-07 11:59:09"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "requesty", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 100936, "tentativi": 1, "risparmio_car": 38595, "quando": "2026-11-07 12:02:55"}
