@@ -1,5 +1,4 @@
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:43:22"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:43:22"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:23"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:23"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:24"}
@@ -148,3 +147,4 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 10367, "quando": "2026-11-07 11:38:02"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "cloudflare", "modello": "@cf/qwen/qwen3.8-27b", "ms": 102555, "tentativi": 1, "quando": "2026-11-07 11:39:44"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "cloudflare", "modello": "@cf/qwen/qwen3.8-27b", "ms": 94593, "tentativi": 1, "risparmio_car": 38595, "quando": "2026-11-07 11:40:01"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 8593, "quando": "2026-11-07 11:42:15"}
