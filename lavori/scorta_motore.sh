@@ -15,7 +15,7 @@ say(){ echo "[$(date '+%d/%m %H:%M')] $*" >> "$LOG"; }
 sleep 25
 MORTI=0
 while true; do
-  flock -n /tmp/omni.lk bash -c '. ~/.nvm/nvm.sh; OMNIROUTE_SERVER_HOST=127.0.0.1 omniroute' >> "$LOG" 2>&1
+  flock -n /tmp/omni.lk bash -c '. ~/.nvm/nvm.sh; OMNIROUTE_SERVER_HOST=127.0.0.1 OMNIROUTE_READY_TIMEOUT_MS=180000 omniroute' >> "$LOG" 2>&1
   sleep 120
   if (exec 3<>/dev/tcp/127.0.0.1/20128) 2>/dev/null; then
     if [ "$MORTI" -gt 0 ]; then say "porta 20128 risorta dopo $MORTI controlli muti"; fi
