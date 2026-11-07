@@ -1,4 +1,3 @@
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:19"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:20"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:20"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:21"}
@@ -148,3 +147,4 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "ms": 25839, "tentativi": 1, "risparmio_car": 38595, "quando": "2026-11-07 23:24:19"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3104, "quando": "2026-11-07 23:24:24"}
 {"tipo": "igiene", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "nota": "ragionatore senza budget (finish=length), nessun castigo", "quando": "2026-11-07 23:24:49"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 34314, "tentativi": 2, "risparmio_car": 38595, "quando": "2026-11-07 23:25:02"}
