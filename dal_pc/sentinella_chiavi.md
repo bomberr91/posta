@@ -38,3 +38,62 @@ scritto: /home/agenti/posta/lavori/catalogo_freellmapi.json
 riserva ora: 38 su 61 provider
 
 ## 3. NavyAI (sentinella dedicata)
+```
+NavyAI: chiave trovata (51 caratteri)
+  schizogpt -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-6.1-sol -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-6-astra -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-5.6-sol -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+```
+
+## 4. Check-in AgentRouter
+check-in non eseguito: o non e' l'ora (dopo le 18:05), o il browser degli agenti non risponde, o e' gia' stato fatto oggi.
+
+## 5. LongCat - quota giornaliera
+- ultimo 200 (quota tornata): nessuno
+- ultimo 402 (quota esaurita): 08/11 00:13 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+```
+07/11 21:17 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 21:27 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 21:37 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 21:47 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 21:53 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:03 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:13 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:23 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:33 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:43 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 22:53 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:03 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:13 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:23 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:33 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:43 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+07/11 23:53 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+08/11 00:03 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+08/11 00:13 | 402 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+09/11 09:46 | 000 | {"error":{"code":"too_many_requests","message":"AppId:**QK9I Usage limit reached.","type":
+```
+
+## 6. Servizi parcheggiati (Waterfall, NavyAI)
+```
+# 📡 Sentinella dei servizi parcheggiati — 09/11/2026 09:50
+
+Ogni giorno bussa a Waterfall e NavyAI (parcheggiati, fuori dal roster): aspettiamo che si muovano da soli.
+
+## Waterfall (waterfall)
+- indirizzo: https://api.getwaterfall.org/v1 · modello: auto · chiave: presente
+- esito: HTTP 401
+```
+{"error":"invalid_api_key","message":"Unknown or revoked API key."}
+```
+
+## NavyAI (navy)
+- indirizzo: https://api.navy/v1 · modello: schizogpt · chiave: presente
+- esito: HTTP 403
+```
+{"error":{"message":"The Free plan is temporarily paused for all users. You can purchase a plan at https://api.navy/dashboard/billing to continue using the API.","type":"permission_error","code":"insufficient_plan"}}
+```
+
+--- fine sentinella servizi ---
+```
