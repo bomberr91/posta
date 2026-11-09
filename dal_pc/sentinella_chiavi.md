@@ -1,8 +1,8 @@
-# 🛡️ Sentinella delle chiavi — 07/11/2026 19:03
+# 🛡️ Sentinella delle chiavi — 09/11/2026 09:48
 
 ## 1. Catalogo freellmapi
 ```
-catalogo 2026.11.07.3db98c · 33 provider · 346 modelli · 81 quirk
+catalogo 2026.11.09 · 33 provider · 350 modelli · 83 quirk
 scritto: /home/agenti/posta/lavori/catalogo_freellmapi.json
 ```
 
