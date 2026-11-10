@@ -158,6 +158,9 @@ CONFIG = {
     "cooldown_chiave": 1800,     # 401/403: chiave rifiutata, riposa 30 min
     "cooldown_pensionato": 21600,# 404/410: modello pensionato, 6 ore per tutti
     "cooldown_passeggero": 30,   # 5xx: incidente passeggero
+    # — CUCITURA 11/11 (da Agent Router): circuit breaker GRADUALE —
+    "castigo_doppio": 2,         # ogni castigo consecutivo della stessa coppia raddoppia
+    "castigo_cap": 900,          # ...ma il castigo non cresce oltre 15 min (il rientro è la sonda)
     "timeout_riserva": 60,       # secondi per ogni provider di riserva (idea 25)
     # CURA-AUDIT (1/11 sera, F7 — audit ZCode): era 180s. Il budget peggiore
     # di una richiesta era motore 180s + riserva 5x60s ~= 9 minuti fatturati
@@ -224,12 +227,12 @@ _lista_mtime = [0.0]
 
 
 def carica_lista():
-    """Legge la lista del Portiere. Ritorna (base, etichette, nomi, modi, tipi, classi)."""
-    base, etichette, nomi, modi, tipi, classi = {}, {}, {}, {}, {}, {}
+    """Legge la lista del Portiere. Ritorna (base, etichette, nomi, modi, tipi, classi, dialetti)."""
+    base, etichette, nomi, modi, tipi, classi, dialetti = {}, {}, {}, {}, {}, {}, {}
     try:
         righe = open(LISTA, encoding="utf-8", errors="replace").read().splitlines()
     except Exception:
-        return base, etichette, nomi, modi, tipi, classi
+        return base, etichette, nomi, modi, tipi, classi, dialetti
     for riga in righe:
         r = riga.strip()
         if not r or r.startswith("#"):
@@ -251,10 +254,15 @@ def carica_lista():
         modi[pid] = modo
         tipi[pid] = tipo
         classi[pid] = classe
-    return base, etichette, nomi, modi, tipi, classi
+        # CUCITURA 11/11: 9° campo "dialetto" (facoltativo): "anthropic" = il
+        # provider parla il formato Messages nativo, non OpenAI-compatible.
+        dialetto = (pezzi[8] if len(pezzi) > 8 else "").strip().lower()
+        if dialetto:
+            dialetti[pid] = dialetto
+    return base, etichette, nomi, modi, tipi, classi, dialetti
 
 
-BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI = carica_lista()
+BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI, DIALETTI = carica_lista()
 
 # ── FASE 2 · B3 · GRUPPI E COMBO CON NOME (idee 30+45) ───────────────────────
 # file portiere_gruppi.txt, una riga per gruppo:  nome = pid, pid/modello, ...
@@ -321,14 +329,14 @@ def chi_ha_modello(nome_modello):
 
 def ricarica():
     """Idea 10 · hot-reload: se portiere_lista.txt è cambiata, la ricarica da sola."""
-    global BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI
+    global BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI, DIALETTI
     try:
         m = os.path.getmtime(LISTA)
     except Exception:
         return
     if m != _lista_mtime[0]:
         _lista_mtime[0] = m
-        BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI = carica_lista()
+        BASE, ETICHETTE, NOMI, MODI, TIPI, CLASSI, DIALETTI = carica_lista()
         logga(tipo="hot-reload", nota="lista ricaricata: %d provider" % len(BASE))
 
 
@@ -458,7 +466,8 @@ def stato_carica():
     for sezione, v in d.items():
         if isinstance(v, dict):
             nuovo[sezione] = v
-    for sezione in ("castighi", "pagella", "uso", "agenti", "sessioni", "sentinella"):
+    for sezione in ("castighi", "pagella", "uso", "agenti", "sessioni", "sentinella",
+                    "consumo"):
         if sezione not in nuovo:
             nuovo[sezione] = {}
     for k, v in list(nuovo["castighi"].items()):
@@ -478,7 +487,7 @@ def stato_carica():
     for pid, p in list(nuovo["pagella"].items()):
         if not isinstance(p, dict):
             continue
-        for campo in ("ok", "ko", "fila_ko"):
+        for campo in ("ok", "ko", "fila_ko", "castigi_fila"):
             if not isinstance(p.get(campo), int) or isinstance(p.get(campo), bool):
                 p[campo] = 0
         for campo in ("ultimo_ko", "ms_quando"):
@@ -495,6 +504,16 @@ def stato_carica():
         if not isinstance(v, dict) or not isinstance(v.get("pid"), str) \
                 or not isinstance(v.get("quando"), (int, float)) or isinstance(v.get("quando"), bool):
             nuovo["sessioni"].pop(s, None)
+    # CUCITURA 11/11: la storia del consumo per agente — giorni = mappa di mappe
+    if isinstance(nuovo.get("consumo"), dict):
+        for g, ag in list(nuovo["consumo"].items()):
+            if not isinstance(g, str) or not isinstance(ag, dict):
+                nuovo["consumo"].pop(g, None)
+                continue
+            for nome, a in list(ag.items()):
+                if not isinstance(a, dict) or not isinstance(a.get("n"), int) \
+                        or not isinstance(a.get("token"), int):
+                    ag.pop(nome, None)
     STATO = nuovo
     STATO.setdefault("castighi", {})
     STATO.setdefault("pagella", {})
@@ -531,7 +550,11 @@ def stato_salva(forza=False):
 
 def castiga(pid, modello, secondi, globale=False):
     """Idea 17: il castigo colpisce la coppia (chiave, modello), non tutta la chiave.
-    modello=None → tutta la chiave. globale=True → quel modello per TUTTI (pensionato)."""
+    modello=None → tutta la chiave. globale=True → quel modello per TUTTI (pensionato).
+    CUCITURA 11/11 (da Agent Router): circuit breaker GRADUALE — ogni castigo
+    consecutivo della stessa coppia raddoppia (tetto: castigo_cap). Il rientro
+    è la SONDA (half-open): la prima richiesta dopo la scadenza prova il
+    provider; se risponde, segna(True) azzera la fila e il breaker si chiude."""
     if globale:
         k = "*|" + (modello or "")
     elif modello is None:
@@ -539,7 +562,18 @@ def castiga(pid, modello, secondi, globale=False):
     else:
         k = pid + "|" + modello
     with LOCK:
-        STATO.setdefault("castighi", {})[k] = time.time() + secondi
+        pag = STATO.setdefault("pagella", {}).setdefault(
+            pid, {"ok": 0, "ko": 0, "ultimo_ko": 0, "fila_ko": 0})
+        fila = pag.get("castigi_fila", 0)
+        if globale:
+            pag["castigi_fila"] = 0          # pensioni: chiuse per tutti, niente crescita
+            effettivo = secondi
+        else:
+            pag["castigi_fila"] = min(fila + 1, 10)
+            # il cap NON deve mai RIDURRE un castigo voluto più lungo del cap
+            effettivo = min(secondi * (CONFIG.get("castigo_doppio", 2) ** fila),
+                            max(secondi, CONFIG.get("castigo_cap", 900)))
+        STATO.setdefault("castighi", {})[k] = time.time() + effettivo
     stato_salva(forza=True)              # i castighi DEVONO sopravvivere al riavvio
 
 
@@ -567,6 +601,7 @@ def segna(pid, ok, ms=None):
         p["ok" if ok else "ko"] += 1
         if ok:
             p["fila_ko"] = 0
+            p["castigi_fila"] = 0            # CUCITURA 11/11: sonda riuscita → breaker chiuso
             if ms is not None:                               # idea 60: EWMA della velocita'
                 vecchio = p.get("ms_ewma")
                 p["ms_ewma"] = int(ms) if vecchio is None else round(0.7 * vecchio + 0.3 * ms)
@@ -629,7 +664,10 @@ def uso_oggi(pid):
 
 
 def conta_agente(sess, token=0):
-    """Idea 26: quanto lavora ogni agente, al giorno (per capire chi consuma)."""
+    """Idea 26: quanto lavora ogni agente, al giorno (per capire chi consuma).
+    CUCITURA 11/11 (da Agent Router): oltre al contatore del giorno, la STORIA
+    per-agente di 14 giorni in STATO["consumo"] (usage attribution: chi ha
+    bruciato cosa, giorno per giorno, esposta in /portiere.json)."""
     with LOCK:                                    # AUDIT FINALE N4: era senza
         a = STATO.setdefault("agenti", {}).setdefault((sess or "ignoto")[:24], {})
         if a.get("giorno") != oggi():
@@ -637,6 +675,15 @@ def conta_agente(sess, token=0):
             a.update(giorno=oggi(), n=0, token=0)
         a["n"] += 1
         a["token"] += int(token or 0)
+        # la storia: giorno → agente → {n, token} (i giorni vecchi si buttano qui)
+        c = STATO.setdefault("consumo", {})
+        g = c.setdefault(oggi(), {})
+        a2 = g.setdefault((sess or "ignoto")[:24], {"n": 0, "token": 0})
+        a2["n"] += 1
+        a2["token"] += int(token or 0)
+        limite = time.strftime("%Y-%m-%d", time.localtime(time.time() - 14 * 86400))
+        for giorno in [k for k in c if str(k) < limite]:
+            c.pop(giorno, None)
     stato_salva()
 
 
@@ -1160,6 +1207,95 @@ def forza_modello(v):
     return len(FORTI)
 
 
+# ── CUCITURA 11/11 · TRADUZIONE DIALETTI (presa da Agent Router) ─────────────
+# Il cervello parla OpenAI-compatible; i provider che parlano SOLO il loro
+# dialetto nativo (Anthropic Messages per primo) erano inutilizzabili. Con il
+# 9° campo "dialetto" in portiere_lista.txt (es. "anthropic") la riserva
+# traduce in andata (in_anthropic) e al ritorno (da_anthropic).
+
+def in_anthropic(dati):
+    """OpenAI-compat → Anthropic Messages: system separato, content a blocchi,
+    tool in formato input_schema, max_tokens obbligatorio."""
+    sistema, messaggi = [], []
+    for m in dati.get("messages") or []:
+        ruolo = m.get("role")
+        c = m.get("content")
+        testo = c if isinstance(c, str) else " ".join(
+            str(b.get("text", "")) for b in (c or []) if isinstance(b, dict))
+        if ruolo == "system":
+            if testo:
+                sistema.append(testo)
+            continue
+        if ruolo == "tool":                    # esito di un tool → tool_result in un user
+            messaggi.append({"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": m.get("tool_call_id", ""),
+                 "content": testo or ""}]})
+            continue
+        if m.get("tool_calls"):                # l'assistente chiede i tool → blocchi tool_use
+            blocchi = [{"type": "text", "text": testo}] if testo else []
+            for tc in m["tool_calls"]:
+                fn = tc.get("function") or {}
+                try:
+                    ingresso = json.loads(fn.get("arguments") or "{}")
+                except Exception:
+                    ingresso = {}
+                blocchi.append({"type": "tool_use", "id": tc.get("id", ""),
+                                "name": fn.get("name", ""), "input": ingresso})
+            messaggi.append({"role": "assistant", "content": blocchi})
+            continue
+        messaggi.append({"role": ruolo or "user",
+                         "content": [{"type": "text", "text": testo or ""}]})
+    corpo = {"model": dati.get("model", ""), "messages": messaggi,
+             "max_tokens": dati.get("max_tokens") or 1200}
+    if sistema:
+        corpo["system"] = "\n".join(sistema)
+    for k in ("temperature", "top_p"):
+        if k in dati:
+            corpo[k] = dati[k]
+    if dati.get("stop"):
+        corpo["stop_sequences"] = dati["stop"] if isinstance(dati["stop"], list) \
+            else [dati["stop"]]
+    if dati.get("tools"):
+        corpo["tools"] = [{"name": t.get("function", {}).get("name", ""),
+                           "description": t.get("function", {}).get("description", ""),
+                           "input_schema": t.get("function", {}).get("parameters")
+                           or {"type": "object"}} for t in dati["tools"]]
+    tc = dati.get("tool_choice")
+    if tc == "auto":
+        corpo["tool_choice"] = {"type": "auto"}
+    elif tc == "none":
+        corpo["tool_choice"] = {"type": "none"}
+    elif isinstance(tc, dict) and tc.get("type") == "function":
+        corpo["tool_choice"] = {"type": "tool",
+                                "name": (tc.get("function") or {}).get("name", "")}
+    return corpo
+
+
+def da_anthropic(d, modello):
+    """Risposta Anthropic → formato OpenAI-compat del cervello (choices/usage)."""
+    contenuto, tool_calls = "", []
+    for b in d.get("content") or []:
+        if b.get("type") == "text":
+            contenuto += b.get("text", "")
+        elif b.get("type") == "tool_use":
+            tool_calls.append({"id": b.get("id", ""), "type": "function",
+                               "function": {"name": b.get("name", ""),
+                                            "arguments": json.dumps(b.get("input") or {})}})
+    fine = {"end_turn": "stop", "stop_sequence": "stop", "max_tokens": "length",
+            "tool_use": "tool_calls"}.get(d.get("stop_reason"), "stop")
+    u = d.get("usage") or {}
+    msg = {"role": "assistant", "content": contenuto or None}
+    if tool_calls:
+        msg["tool_calls"] = tool_calls
+    return {"id": d.get("id", "anthropic"), "object": "chat.completion",
+            "created": int(time.time()), "model": modello,
+            "choices": [{"index": 0, "message": msg, "finish_reason": fine}],
+            "usage": {"prompt_tokens": u.get("input_tokens", 0),
+                      "completion_tokens": u.get("output_tokens", 0),
+                      "total_tokens": u.get("input_tokens", 0)
+                                      + u.get("output_tokens", 0)}}
+
+
 def riserva(payload, politica="auto", sessione="", comprimi=True):
     """Manda la richiesta alla riserva. FASE 2·B1: l'ordine lo decide la PAGELLA
     (salute prima, poi velocita' osservata EWMA con scadenza 10 min); sui codici
@@ -1260,7 +1396,16 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
             dati["tools"] = tools_f3
             if payload.get("tool_choice"):
                 dati["tool_choice"] = payload["tool_choice"]
-        corpo = json.dumps(dati).encode()
+        dia = DIALETTI.get(pid)
+        if dia == "anthropic":
+            # CUCITURA 11/11: dialetto Messages nativo → traduzione in andata
+            intestazioni = dict(intestazioni)
+            intestazioni.pop("Authorization", None)
+            intestazioni["x-api-key"] = k
+            intestazioni["anthropic-version"] = "2023-06-01"
+            corpo = json.dumps(in_anthropic(dati)).encode()
+        else:
+            corpo = json.dumps(dati).encode()
         per_questo = 0                                    # ritenti su QUESTO provider
         while tentativi < CONFIG["max_tentativi"]:
             tentativi += 1
@@ -1274,10 +1419,13 @@ def riserva(payload, politica="auto", sessione="", comprimi=True):
             # freno(pid) (sotto lo stesso lucchetto): registrarlo qui
             # riapriva la corsa.
             try:
-                req = urllib.request.Request(base + "/chat/completions", data=corpo,
-                                             headers=intestazioni)
+                req = urllib.request.Request(
+                    base + ("/messages" if dia == "anthropic" else "/chat/completions"),
+                    data=corpo, headers=intestazioni)
                 d = json.loads(urllib.request.urlopen(
                     req, timeout=CONFIG["timeout_riserva"]).read(3_000_000).decode())
+                if dia == "anthropic":
+                    d = da_anthropic(d, modello)      # CUCITURA: torna in formato OpenAI
                 msg0 = (d.get("choices") or [{}])[0].get("message", {})
                 if msg0.get("content") or msg0.get("tool_calls"):
                     d = ripara_tool_call(d, payload)      # idea 47
@@ -1838,6 +1986,9 @@ class H(BaseHTTPRequestHandler):
                 _pag = dict(STATO.get("pagella") or {})
                 _cast = dict(STATO.get("castighi") or {})
                 _uso = dict(STATO.get("uso") or {})
+                # CUCITURA 11/11: copia degli ultimi 7 giorni della storia consumo
+                _consumo = {g: dict(ag) for g, ag in
+                            (STATO.get("consumo") or {}).items()}
             self._json({"nome": NOME, "porta": PORTA, "totali": len(BASE),
                         "capo": capo, "sostituti": len(sost),
                         "pagelle": {pid: {"ok": p.get("ok", 0), "ko": p.get("ko", 0),
@@ -1849,6 +2000,10 @@ class H(BaseHTTPRequestHandler):
                         "uso_oggi": {pid: u.get("n", 0)
                                      for pid, u in _uso.items()
                                      if u.get("giorno") == oggi()},
+                        "consumo_7giorni": {g: {nome: {"n": a.get("n", 0),
+                                                       "token": a.get("token", 0)}
+                                                for nome, a in ag.items()}
+                                            for g, ag in sorted(_consumo.items())[-7:]},
                         "sentinella_avviso": (STATO.get("sentinella") or {}).get("avviso"),
                         "risponde": [v["id"] for v in appello()
                                      if v.get("esito") == "risponde" and v.get("id") in BASE],

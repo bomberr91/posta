@@ -559,3 +559,112 @@ class NonInquinaTests(unittest.TestCase):
         self.assertNotEqual(str(cerv.STATO_FILE), str(ROOT / "portiere_stato.json"))
         self.assertNotEqual(str(cerv.LOG_FILE), str(ROOT / "portiere_log.jsonl"))
         self.assertIn("test", str(cerv.STATO_FILE))
+
+
+class ProvaCucitureAgentRouterTests(unittest.TestCase):
+    """CUCITURA 11/11 — le tre funzioni prese da Agent Router:
+    circuit breaker graduale, usage attribution, traduzione Anthropic."""
+
+    def test_castigo_graduale_cresce_e_cap_niente(self):
+        # primo castigo: la base. secondo consecutivo: raddoppia. cap: mai sotto
+        # il valore voluto (min() non deve RIDURRE un castigo lungo).
+        import time
+        salvato = dict(cerv.STATO.get("castighi") or {})
+        try:
+            cerv.STATO["pagella"].pop("p-cucitura", None)
+            cerv.castiga("p-cucitura", "m", 60)
+            c1 = cerv.STATO["castighi"]["p-cucitura|m"] - time.time()
+            cerv.castiga("p-cucitura", "m", 60)
+            c2 = cerv.STATO["castighi"]["p-cucitura|m"] - time.time()
+            self.assertGreater(c2, c1, "il castigo consecutivo deve crescere")
+            cerv.castiga("p-cucitura", "m", 2000)
+            c3 = cerv.STATO["castighi"]["p-cucitura|m"] - time.time()
+            self.assertGreaterEqual(c3, 1999,
+                                    "il cap non deve ridurre un castigo voluto piu' lungo")
+        finally:
+            cerv.STATO["castighi"].clear()
+            cerv.STATO["castighi"].update(salvato)
+            cerv.STATO["pagella"].pop("p-cucitura", None)
+
+    def test_sonda_riuscita_azzera_il_breaker(self):
+        salvato = dict(cerv.STATO.get("castighi") or {})
+        try:
+            cerv.STATO["pagella"].pop("p-sonda", None)
+            cerv.castiga("p-sonda", "m", 60)
+            cerv.castiga("p-sonda", "m", 60)
+            self.assertGreater(cerv.STATO["pagella"]["p-sonda"]["castigi_fila"], 0)
+            cerv.segna("p-sonda", True, 10)
+            self.assertEqual(cerv.STATO["pagella"]["p-sonda"]["castigi_fila"], 0,
+                             "la sonda riuscita deve chiudere il breaker")
+        finally:
+            cerv.STATO["castighi"].clear()
+            cerv.STATO["castighi"].update(salvato)
+            cerv.STATO["pagella"].pop("p-sonda", None)
+
+    def test_pensione_non_cresce(self):
+        try:
+            cerv.STATO["pagella"].pop("p-pensione", None)
+            cerv.castiga("p-pensione", "m", 100, globale=True)
+            self.assertEqual(cerv.STATO["pagella"]["p-pensione"]["castigi_fila"], 0,
+                             "le pensioni non devono attivare la crescita")
+        finally:
+            cerv.STATO["pagella"].pop("p-pensione", None)
+
+    def test_consumo_storia_per_agente(self):
+        # conta_agente deve scrivere ANCHE la storia (consumo: giorno→agente)
+        try:
+            cerv.STATO["agenti"].pop("ag-cucitura", None)
+            cerv.STATO.setdefault("consumo", {}).clear()
+            cerv.conta_agente("ag-cucitura", 111)
+            cerv.conta_agente("ag-cucitura", 9)
+            a = (cerv.STATO.get("consumo") or {}).get(cerv.oggi(), {}).get("ag-cucitura")
+            self.assertIsNotNone(a, "la storia consumo deve esistere per oggi")
+            self.assertEqual(a["n"], 2)
+            self.assertEqual(a["token"], 120)
+            # i giorni vecchi si buttano: un giorno oltre il limite sparisce
+            cerv.STATO["consumo"]["2026-01-01"] = {"ag-cucitura": {"n": 1, "token": 1}}
+            cerv.conta_agente("ag-cucitura", 1)
+            self.assertNotIn("2026-01-01", cerv.STATO.get("consumo") or {},
+                             "i giorni oltre i 14 devono essere buttati")
+        finally:
+            cerv.STATO["agenti"].pop("ag-cucitura", None)
+            cerv.STATO.setdefault("consumo", {}).clear()
+
+    def test_in_anthropic_system_max_tokens_tools(self):
+        dati = {"model": "claude-x", "max_tokens": 500,
+                "messages": [{"role": "system", "content": "sei severo"},
+                             {"role": "user", "content": "ciao"}],
+                "tools": [{"type": "function",
+                           "function": {"name": "lancia",
+                                        "description": "tira un dado",
+                                        "parameters": {"type": "object"}}}],
+                "tool_choice": "auto", "stop": "FINE"}
+        c = cerv.in_anthropic(dati)
+        self.assertEqual(c["system"], "sei severo")
+        self.assertEqual(c["max_tokens"], 500, "max_tokens e' obbligatorio per Anthropic")
+        self.assertTrue(all(m["role"] != "system" for m in c["messages"]))
+        self.assertEqual(c["messages"][0]["content"][0]["type"], "text")
+        self.assertEqual(c["tools"][0]["input_schema"], {"type": "object"})
+        self.assertEqual(c["tool_choice"], {"type": "auto"})
+        self.assertEqual(c["stop_sequences"], ["FINE"])
+
+    def test_da_anthropic_uso_e_tool_use(self):
+        r = cerv.da_anthropic(
+            {"id": "msg_1", "content": [{"type": "text", "text": "ecco"},
+                                        {"type": "tool_use", "id": "t1",
+                                         "name": "lancia", "input": {"facce": 6}}],
+             "stop_reason": "tool_use", "usage": {"input_tokens": 10, "output_tokens": 5}},
+            "claude-x")
+        ch = r["choices"][0]
+        self.assertEqual(ch["finish_reason"], "tool_calls")
+        self.assertEqual(ch["message"]["content"], "ecco")
+        tc = ch["message"]["tool_calls"][0]
+        self.assertEqual(tc["function"]["name"], "lancia")
+        self.assertEqual(json.loads(tc["function"]["arguments"]), {"facce": 6})
+        self.assertEqual(r["usage"]["total_tokens"], 15)
+        self.assertEqual(r["model"], "claude-x")
+
+    def test_da_anthropic_max_tokens_is_length(self):
+        r = cerv.da_anthropic({"content": [{"type": "text", "text": "x"}],
+                               "stop_reason": "max_tokens", "usage": {}}, "claude-x")
+        self.assertEqual(r["choices"][0]["finish_reason"], "length")
