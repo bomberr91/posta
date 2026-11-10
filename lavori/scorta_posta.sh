@@ -47,14 +47,9 @@ while true; do
       bash "$HOME/posta/fatti/sonda_longcat.sh" >> /tmp/scorta_posta.log 2>&1
     fi
   fi
-  # 3/11: e la sveglia delle 19:00? Stessa cosa: se non e' in piedi, la riarmo.
-  if ! pgrep -f 'sveglia_loop\.sh' >/dev/null 2>&1; then
-    for s2 in "$HOME/posta/fatti/sveglia_longcat_1900.sh" "$HOME/posta/da_me/sveglia_longcat_1900.sh"; do
-      if [ -f "$s2" ]; then
-        say "-> la sveglia LongCat delle 19:00 non e' armata: la riarmo"
-        bash "$s2" >> /tmp/scorta_posta.log 2>&1
-        break
-      fi
+  # 8/11: la sveglia LongCat e' DISARMA per sempre (provider rimosso dal roster il 4/11,
+# la catena .sveglia_loop/.sveglia_longcat apriva tab senza senso). Se un giorno serve una
+# sveglia provider, si usa il widget Windows (WIDGET_AGENTROUTER.ps1) come modello.
     done
   fi
 
