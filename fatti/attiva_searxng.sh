@@ -6,7 +6,12 @@ log() {{ echo "$1" | tee -a "$R"; }}
 mkdir -p "$(dirname "$R")"
 : > "$R"
 log "# Attivazione SearXNG — $(date -Is)"
-if ! command -v docker >/dev/null 2>&1; then log "ERRORE: docker assente sul PC"; exit 1; fi
+# Fallback nativo (verificato nel sandbox l'11/11): se Docker manca, avviare
+# searxng con venv + `python -m searx.webapp` e SEARXNG_SETTINGS_PATH con
+# formats: [html, json] e port: 8080. Vedi fatti/searxng_attivazione.md § SEGUITO.
+if ! command -v docker >/dev/null 2>&1; then
+  log "Docker assente: usare la via nativa documentata in fatti/searxng_attivazione.md"; exit 1;
+fi
 if ! docker ps --format '{{.Names}}' | grep -qx searxng; then
   docker run -d --name searxng -p 8080:8080 searxng/searxng:latest >>"$R" 2>&1 || {{ log "ERRORE avvio container:"; tail -5 "$R"; exit 1; }}
 fi
