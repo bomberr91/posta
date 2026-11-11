@@ -2,7 +2,7 @@
 # attiva_searxng.sh — esecuzione deterministica della riserva di ricerca (postino/PC).
 set -u
 R="$HOME/posta/fatti/searxng_attivazione.md"
-log() {{ echo "$1" | tee -a "$R"; }}
+log() { echo "$1" | tee -a "$R"; }
 mkdir -p "$(dirname "$R")"
 : > "$R"
 log "# Attivazione SearXNG — $(date -Is)"
@@ -13,7 +13,7 @@ if ! command -v docker >/dev/null 2>&1; then
   log "Docker assente: usare la via nativa documentata in fatti/searxng_attivazione.md"; exit 1;
 fi
 if ! docker ps --format '{{.Names}}' | grep -qx searxng; then
-  docker run -d --name searxng -p 8080:8080 searxng/searxng:latest >>"$R" 2>&1 || {{ log "ERRORE avvio container:"; tail -5 "$R"; exit 1; }}
+  docker run -d --name searxng -p 8080:8080 searxng/searxng:latest >>"$R" 2>&1 || { log "ERRORE avvio container:"; tail -5 "$R"; exit 1; }
 fi
 sleep 5
 OUT="$(curl -sS --max-time 10 'http://127.0.0.1:8080/search?q=test&format=json' 2>&1)"
