@@ -62,9 +62,20 @@ if [ -n "$TAVILY" ]; then
 fi
 
 # ── l'output: prima la risposta di Tavily, poi i risultati di Exa ─────────
-python3 - "$RIS_TAV" "$RIS_EXA" "$N" << 'PYEOF'
+python3 - "$RIS_TAV" "$RIS_EXA" "$N" "$DOMANDA" << 'PYEOF'
 import json, sys
 tav, exa, n = sys.argv[1], sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else 5
+q = sys.argv[4] if len(sys.argv) > 4 else ""
+
+def riserva(q, n):
+    """SearXNG locale: dominio di guasto ip-diverso, si usa SOLO in freno dei titolari."""
+    try:
+        import urllib.request, urllib.parse
+        u = "http://127.0.0.1:8080/search?q=" + urllib.parse.quote(q) + "&format=json"
+        with urllib.request.urlopen(u, timeout=8) as f:
+            return (json.loads(f.read().decode("utf-8", "replace")).get("results") or [])[:n]
+    except Exception:
+        return []
 def carica(t):
     try:
         return json.loads(t)
@@ -72,6 +83,13 @@ def carica(t):
         return {}
 T, E = carica(tav), carica(exa)
 if not T and not E:
+    ris = riserva(q, n)
+    if ris:
+        print("RISERVA SearXNG (titolari in freno):")
+        for r in ris:
+            print("  -", (r.get("title") or "(senza titolo)").strip())
+            print("   ", (r.get("url") or "").strip())
+        sys.exit(0)
     print("nessun motore ha risposto (Exa e Tavily entrambi muti o le chiavi non sono piu' valide)")
     sys.exit(1)
 risposta = (T.get("answer") or "").strip()
@@ -97,7 +115,14 @@ for r in (T.get("results") or []) + (E.get("results") or []):
     if n_out >= n:
         break
 if not n_out:
-    print("nessun risultato")
+    ris = riserva(q, n)
+    if ris:
+        print("RISERVA SearXNG (titolari senza risultati):")
+        for r in ris:
+            print("  -", (r.get("title") or "(senza titolo)").strip())
+            print("   ", (r.get("url") or "").strip())
+    else:
+        print("nessun risultato")
 PYEOF
 RC=$?
 [ "$RC" -eq 0 ] || exit 1
