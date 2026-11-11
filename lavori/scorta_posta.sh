@@ -9,13 +9,22 @@
 #   · se il postino resta sul pull per oltre 3 minuti, è congelato: lo
 #     ammazziamo e lo riavviamo
 #   · il log del guardiano è in /tmp/scorta_posta.log
+#
+# RIPARAZIONE (11/11, ZCode): il blocco "riaccendi la sonda LongCat" (3/11)
+# lanciava `bash sonda_longcat.sh` DIRETTAMENTE (loop infinito, senza nohup/&):
+# il guardiano restava APPESO dentro la sonda e non raggiungeva mai il blocco
+# postino — il corriere morto non veniva più rilanciato (trovato morto il
+# 11/11 sera, locale indietro con 18 file pendenti). La sonda campionava un
+# provider RIMOSSO dal roster il 4/11 con 402 a ogni giro. Blocco RIMOSSO:
+# la sveglia LongCat è disarmata per sempre dall'8/11; se un giorno serve una
+# misura periodica, si lancia con nohup+& (mai in prima persona dal guardiano).
 sleep 15
 export GIT_TERMINAL_PROMPT=0
 LOG="/tmp/scorta_posta.log"
 say(){ echo "[$(date '+%d/%m %H:%M')] $*" | tee -a "$LOG"; }
 
 while true; do
-  # ── il postino è gelato? (stato "pull" vecchio) ───────────────────────────
+  # ── 1/11: il postino è gelato sul pull? ───────────────────────────────────
   if [ -f /tmp/postino_stato ]; then
     read -r STATO T0 < /tmp/postino_stato 2>/dev/null || STATO=""
     if [ "${STATO:-}" = "pull" ]; then
@@ -30,32 +39,19 @@ while true; do
     fi
   fi
 
-  # 2/11: il GUARDIANO DEL CERVELLO e' vivo? Se no, la sentinella delle chiavi
-  # e il cervello (porta 20129) restano giaci' senza che nessuno se ne accorga.
+  # ── 2/11: il GUARDIANO DEL CERVELLO è vivo? ───────────────────────────────
   if ! pgrep -f 'scorta_cervello\.sh' >/dev/null 2>&1; then
     say "-> il guardiano del cervello non gira: lo riavvio"
     ( cd "$HOME/posta" && nohup bash lavori/scorta_cervello.sh >> /tmp/scorta_cervello.log 2>&1 & )
     sleep 2
   fi
 
-  # 3/11: la sonda LongCat e' viva? Il reboot la uccide (e con lei la sveglia
-  # delle 19:00): se manca, la riaccendo. Cosi' la misura sopravvive a ogni
-  # riavvio e non resta una cosa che funziona solo se nessuno riavvia.
-  if ! pgrep -f 'sonda_longcat_loop\.sh' >/dev/null 2>&1; then
-    if [ -f "$HOME/posta/fatti/sonda_longcat.sh" ]; then
-      say "-> la sonda LongCat non gira: la riaccendo"
-      bash "$HOME/posta/fatti/sonda_longcat.sh" >> /tmp/scorta_posta.log 2>&1
-    fi
-  fi
-  # 8/11: la sveglia LongCat e' DISARMA per sempre (provider rimosso dal roster il 4/11,
-# la catena .sveglia_loop/.sveglia_longcat apriva tab senza senso). Se un giorno serve una
-# sveglia provider, si usa il widget Windows (WIDGET_AGENTROUTER.ps1) come modello.
-    done
-  fi
+  # ── 8/11: la sveglia LongCat è DISARMA per sempre (provider rimosso dal
+  #    roster il 4/11, la catena .sveglia_loop/.sveglia_longcat apriva tab
+  #    senza senso). Se un giorno serve una sveglia provider, si usa il
+  #    widget Windows (WIDGET_AGENTROUTER.ps1) come modello. ─────────────────
 
-  # 2/11: il postino e' vivo ma APPESO? Il battito dice l'ultima volta che ha
-  # lavorato. Se e' vecchio, il postino e' bloccato: lo ammazzo e lo riavvio.
-  # (Prima un postino appeso restava l'ino con la coda muta per sempre.)
+  # ── 2/11: il postino è vivo ma APPESO? Il battito dice l'ultima volta che ──
   if [ -f /tmp/postino_battito ]; then
     BAT=$(stat -c %Y /tmp/postino_battito 2>/dev/null || echo 0)
     ETA=$(( $(date +%s) - BAT ))
@@ -66,7 +62,7 @@ while true; do
     fi
   fi
 
-  # 2/11: via il FLOCK. Il lock veniva EREDITATO dai figli del postino (un
+  # ── 2/11: via il FLOCK. Il lock veniva EREDITATO dai figli del postino (un
   # `opencode run` interrotto): se il postino moriva, il figlio teneva ancora
   # il lock e `flock -n` falliva PER SEMPRE, in silenzio (due ore di coda muta).
   # Ora il guardiano chiede semplicemente: il postino c'e' gia'? se no, riavvialo.
