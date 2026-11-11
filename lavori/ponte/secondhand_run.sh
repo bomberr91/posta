@@ -24,5 +24,14 @@ export MODEL="auto"
 COMPITO="${1:-}"
 if [ -z "$COMPITO" ]; then echo "compito mancante"; exit 2; fi
 
+# 11/11: via DETERMINISTICA, a prova di falso verde. Se il compito inizia con
+# PONTE_DETERMINISTICO: si esegue DIRETTAMENTE lo script, senza interpreter.
+case "$COMPITO" in
+  PONTE_DETERMINISTICO:*)
+     S="${COMPITO#PONTE_DETERMINISTICO:}"
+     echo "[secondhand_run] deterministica: bash $REPO/$S"
+     exec bash "$REPO/$S"
+     ;;
+esac
 echo "[secondhand_run] via cervello locale (nessuna chiave provider) · repo=$REPO"
 python3 /home/agenti/posta/lavori/ponte/secondhand_exec.py "$COMPITO"
