@@ -197,12 +197,9 @@ CONFIG = {
                          "open-free-llm-api/awesome-freellm-apis"],
     # sentinelle-PAGINE (1/11): promo e regali — impronta del contenuto utile
     "sentinella_pagine": [
-        {"nome": "zcode-daily (freeaihub)",
-         "url": "https://freeaihub.org/en/benefits/zcode-daily-300m-glm53-flash-tokens/",
-         "estrai": r"(Available|Ended|Expired|tokens daily[^<]{0,60})"},
-        {"nome": "zcode promo (aipromonow)",
-         "url": "https://www.aipromonow.com/en/promos/zcode-global-build-glm53-flash-3e8-oct27-2026",
-         "estrai": r"(no longer works|Verified|every day[^<]{0,40})"},
+        # 11/11 (ordine capo): le 2 pagine promo ZCode SONO il piano di questo
+        # stesso ZCode — i 300M token arrivano ogni giorno senza sorveglianza:
+        # tolte (riscattare/modificare il piano è roba del capo).
     ],
     "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
     # — FASE 3 (idee 1-2: compressione · 13+16: profili per-agente) —
@@ -767,6 +764,19 @@ def sentinella():
         st["avviso"] = "fonti quote aggiornate: " + " · ".join(avvisi) + \
             " — ricontrollare portiere_quote.txt"
         logga(tipo="sentinella", nota=st["avviso"])
+        # 11/11 (ordine capo): l'avviso deve ESSERE VISTO, non restare nel JSON:
+        # messaggio in #flotta col token del cervello (la valutazione delle
+        # nuove chiavi è la catena già viva: cerca.py + PROTOCOLLO_VERIFICA).
+        try:
+            _tokf = os.path.expanduser("~/.swarmchat_tokens/cervello.token")
+            if os.path.exists(_tokf):
+                _msg = ("Sentinella fonti: " + ", ".join(avvisi) +
+                        " — da valutare se è nata una chiave/promo per il roster (PASSO 1: cerca.py)")
+                subprocess.run(["/home/agenti/.local/bin/swarmchat", "--token",
+                                open(_tokf).read().strip(), "send", "#flotta", _msg],
+                               capture_output=True, timeout=20)
+        except Exception:
+            pass
     with LOCK:
         STATO["sentinella"] = st
     stato_salva(forza=True)
