@@ -59,7 +59,6 @@ pollinationsfree|Pollinations (senza chiave)|SENZA|https://text.pollinations.ai/
 
 # ── NUOVE DEL 21/10 (indirizzo trovato e provato stamattina) ────────────────
 llm7|LLM7|LLM7|https://api.llm7.io/v1|DeepSeek-V4-Flash-0731|modelli||free-ricorrente||
-ollamacloud|Ollama Cloud|Ollama Cloud|https://ollama.com/v1|auto|modelli||free-ricorrente||
 requesty|Requesty|Requesty|https://router.requesty.ai/v1|auto|modelli||free-ricorrente||
 zhipu|Zhipu|Zhipu|https://open.bigmodel.cn/api/paas/v4|auto|modelli||free-ricorrente||
 electronhub|ElectronHub|ElectronHub|https://api.electronhub.ai/v1|gpt-4o|modelli||free-ricorrente||
