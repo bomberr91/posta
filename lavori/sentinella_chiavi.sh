@@ -84,21 +84,10 @@ else
   say "check-in agentrouter saltato"
 fi
 
-# 5) LongCat: a che ora rinnova la quota (l'orario non e' nei docs)
-echo >> "$RAPPORTO"; echo "## 5. LongCat - quota giornaliera" >> "$RAPPORTO"
-PIDF="$HOME/.sonda_longcat.pid"
-if [ ! -f "$PIDF" ] || ! kill -0 "$(cat "$PIDF" 2>/dev/null)" 2>/dev/null; then
-  bash fatti/sonda_longcat.sh >/dev/null 2>&1 && echo "sonda non attiva: riavviata" >> "$RAPPORTO"
-fi
-if [ -f "$HOME/sonda_longcat.log" ]; then
-  OK200=$(grep ' | 200 | ' "$HOME/sonda_longcat.log" | tail -1)
-  KO402=$(grep ' | 402 | ' "$HOME/sonda_longcat.log" | tail -1)
-  echo "- ultimo 200 (quota tornata): ${OK200:-nessuno}" >> "$RAPPORTO"
-  echo "- ultimo 402 (quota esaurita): ${KO402:-nessuno}" >> "$RAPPORTO"
-  echo '```' >> "$RAPPORTO"; tail -20 "$HOME/sonda_longcat.log" >> "$RAPPORTO"; echo '```' >> "$RAPPORTO"
-else
-  echo "sonda non avviata: nessun log in ~/sonda_longcat.log" >> "$RAPPORTO"
-fi
+# 5) LongCat RIMOSSO (11/11, ordine capo): chiave cancellata dal vault — la
+# generazione rispondeva sempre 402 Usage limit (confermato con test diretto);
+# il servizio esiste ancora (api.longcat.chat, 1M contesto) ma la nostra chiave
+# non ha quota. Se un giorno rinnova, la nota e' in catalogo_freellmapi.json.
 
 # 6) Servizi parcheggiati (Waterfall, NavyAI): una volta al giorno la
 #    sentinella dedicata bussa a entrambi e lascia il referto qui sotto.
