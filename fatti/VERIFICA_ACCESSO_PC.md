@@ -86,7 +86,7 @@ non era nel PATH → `python3 -m venv /tmp/ifixai_venv` + `pip install "ifixai[o
 | 1 · SearXNG adesso | **VERIFICATO: MORTA** (pid morto, porta muta, config e pid-file restano) |
 | 2 · Persistenza | **VERIFICATO: nessun meccanismo esiste** — niente creato; via minima proposta, da autorizzare |
 | 3 · cerca.sh | **VERIFICATO** (chiavi presenti, titolare intatto con 1 ricerca vera, freno scatta) — lacuna onesta: riserva con risultati reali non producibile finché SearXNG è giù |
-| 4 · iFixAi | 4.1 ✓ HTTP 200 · 4.2 ✓ 4.3.0 nel venv · 4.3 **NON CONCLUSO**: sintassi di Arena obsoleta, audit rilanciato con la sintassi vera ma il giudice (riserva gratuita) va in timeout — **NON LO SO** (vedi Esito 4.3) |
+| 4 · iFixAi | 4.1 ✓ HTTP 200 · 4.2 ✓ 4.3.0 nel venv · 4.3 **NON ESEGUIBILE**: giudice reale → timeout della riserva gratuita; deterministic → 7/8 ispezioni richiedono il giudice per costruzione (Run `1451283dd7d0892f`). Serve un giudice su canale serio (vedi Esito 4.3 + append) |
 | 5 · Flotta | **VERIFICATO** (poller vivo, ponte ha consegnato oggi, issue 0) — note: 0 file `.done`, 12 file pendenti (modifiche vive + 3 backup), nessun processo chiamato "postino" |
 | 6 · Coerenza | **VERIFICATO** (0 avvisi, 290 voci — non 287: push successivi legittimi; HEAD posta ≥ atteso) — **NON VERIFICATO** il confronto hash di LEGENDA_SISTEMA.md: il file non esiste più sul PC (resta solo il blob remoto `c1490d0…`) |
 
@@ -102,6 +102,12 @@ non era nel PATH → `python3 -m venv /tmp/ifixai_venv` + `pip install "ifixai[o
 **Motivo (prova, non impressione):** SUT e giudice corrono entrambi sulla riserva del cervello (`auto` su chiavi gratuite): per i prompt giudice di iFixAi (ispezioni di governance, prompt lunghi) i provider gratuiti superano il timeout di 60 s o rispondono senza il formato atteso dal giudice. Lo stesso guasto che Arena aveva visto nel sandbox in `--eval-mode self`/`smoke` si riproduce sul PC in `single` con giudice reale.
 
 **La via (da autorizzare):** giudice su un canale più serio (provider dedicato via OmniRoute o una chiave con contratto) oppure `--eval-mode deterministic` (solo ispezioni strutturali, senza giudice — dà una misura parziale ma non biased). Il comando pronto è nel log di questa verifica.
+
+### Append 11/11 sera — la via deterministic è stata PROVATA: non basta
+
+`ifixai run -p openai -m auto --suite essential --eval-mode deterministic` (Run ID `1451283dd7d0892f`, 76 s) → **RUN INVALID**: **7 di 8 ispezioni richiedono il giudice per costruzione** (`judge pipeline required` su B06, B09, B12, B16, B18, B20, B27), 1 inconclusive, score n/a. La suite essential **non si può fare senza un giudice analitico** — nessuna scorciatoia offline.
+
+**Verdetto finale punto 4: iFixAi 4.3.0 installata e viva, /v1/models 200, ma l'audit essenziale non è eseguibile finché SUT e giudice corrono sulla riserva gratuita del cervello. Serve un giudice su canale serio (OmniRoute con una chiave con contratto, o una chiave dedicata).** Tutto documentato: due run, due cause diverse, stesso collasso.
 
 ## Cosa resta da fare sul PC e chi lo deve autorizzare
 
