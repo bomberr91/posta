@@ -1,3 +1,5 @@
+{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:41"}
+{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:42"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:42"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:43"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:43"}
@@ -146,5 +148,3 @@
 {"tipo": "cache", "agente": "cervello-168fedf2616d6d39", "rotta": "cache", "ms": 0, "quando": "2026-11-04 16:22:38"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6167, "quando": "2026-11-04 16:22:45"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5571, "quando": "2026-11-04 16:27:57"}
-{"tipo": "banale", "agente": "cervello-2de5c12e398bc6e0", "rotta": "locale", "ms": 0, "quando": "2026-11-11 20:28:07"}
-{"tipo": "sentinella", "nota": "fonti quote aggiornate: zcode-daily (freeaihub) CAMBIATA (Ended · tokens daily (Global Building only) · tokens daily (Global Building only) · zcode promo (aipromonow) CAMBIATA (Verified · every day · every day\",\"inLanguage\":\"en\",\"description\":\"ZCode · every) · FREE-LLM-API-Provider (push 2026-11-07) · awesome-freellm-apis (push 2026-11-11) — ricontrollare portiere_quote.txt", "quando": "2026-11-11 20:28:11"}
