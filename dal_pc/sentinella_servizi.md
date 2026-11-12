@@ -1,4 +1,4 @@
-# 📡 Sentinella dei servizi parcheggiati — 11/11/2026 23:19
+# 📡 Sentinella dei servizi parcheggiati — 12/11/2026 09:54
 
 Ogni giorno bussa a Waterfall e NavyAI (parcheggiati, fuori dal roster): aspettiamo che si muovano da soli.
 
