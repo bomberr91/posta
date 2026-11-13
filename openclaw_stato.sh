@@ -10,7 +10,7 @@ PORT="${OPENCLAW_PORT:-18789}"
 TIPO=$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null); TIPO=${TIPO:-no}
 DOVE=$(bash "$QUI/apri_openclaw.sh" --trova 2>/dev/null)
 
-# comando eseguibile: su Windows è un .cmd, dentro Ubuntu è un binario
+# comando eseguibile: su Windows è un .cmd, dentro Ubuntu2 è un binario
 CMD=""
 case "$TIPO" in
   wsl|bun) CMD=$(command -v openclaw 2>/dev/null || echo "$HOME/.bun/bin/openclaw") ;;

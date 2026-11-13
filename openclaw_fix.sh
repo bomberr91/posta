@@ -5,10 +5,10 @@
 #   OpenClaw (dalla v2026.9.3) vuole Node >= 24.16, ma su WSL1 i Node 23/24 non partono
 #   proprio ("cannot execute binary file: Exec format error", bug nodejs/node#63735:
 #   hanno un segmento a 2 MB che WSL1 rifiuta). Il v22 funziona, ma OpenClaw non lo accetta.
-#   Quindi le strade buone sono DUE: Windows nativo (consigliata) oppure Bun dentro Ubuntu.
+#   Quindi le strade buone sono DUE: Windows nativo (consigliata) oppure Bun dentro Ubuntu2.
 #
 # Ordine di questo script (si ferma alla prima che riesce):
-#   1. OpenClaw già presente (Ubuntu / Bun / Windows)  → non tocca niente
+#   1. OpenClaw già presente (Ubuntu2 / Bun / Windows)  → non tocca niente
 #   2. Windows nativo: PowerShell installa anche il Node che gli serve
 #   3. Bun dentro WSL1: runtime alternativo, Node non serve
 #   4. niente funziona → ti dice esattamente cosa fare a mano (INSTALLA_OPENCLAW.bat)
@@ -46,11 +46,11 @@ echo " 🦾 OPENCLAW — messa in funzione ($(date '+%d/%m %H:%M'))"
 echo "══════════════════════════════════════════════════════════"
 [ "$PROVA" = 1 ] && at "MODALITÀ PROVA: guardo soltanto, non installo niente"
 
-# ── 1 · ce l'hai già? (Ubuntu, Bun o Windows)
+# ── 1 · ce l'hai già? (Ubuntu2, Bun o Windows)
 TIPO=$(stato_oc)
 if [ "$TIPO" != "no" ]; then
   case "$TIPO" in
-    wsl)         ok "OpenClaw già installato in Ubuntu: $(openclaw --version 2>&1 | head -1)" ;;
+    wsl)         ok "OpenClaw già installato in Ubuntu2: $(openclaw --version 2>&1 | head -1)" ;;
     bun)         ok "OpenClaw già installato con Bun: $("$HOME/.bun/bin/openclaw" --version 2>&1 | head -1)" ;;
     windows-exe) ok "OpenClaw è già installato su Windows: $(bash "$QUI/apri_openclaw.sh" --trova 2>/dev/null)" ;;
     windows-app) ok "C'è l'app grafica di OpenClaw: $(bash "$QUI/apri_openclaw.sh" --trova 2>/dev/null)" ;;
@@ -81,7 +81,7 @@ done
 if [ -n "$NODE_OK" ]; then ok "Node adatto: $("$NODE_OK/node" -v) ($NODE_OK)"
 elif ls -d "$HOME"/.nvm/versions/node/v2[4-9]* >/dev/null 2>&1; then
   at "Il Node 24 che hai scaricato NON esegue su WSL1 → lo salto (bug node#63735, non è colpa tua)"
-else d "Nessun Node 24 in Ubuntu (e comunque qui non servirebbe)."
+else d "Nessun Node 24 in Ubuntu2 (e comunque qui non servirebbe)."
 fi
 
 # timbro: non riprovo la stessa strada ogni volta
@@ -145,7 +145,7 @@ mkdir -p "$STAMP_DIR"; date '+%F %H:%M' > "$STAMP"
 ko "Da qui non ci sono riuscito (strade provate:$PROVATE)."
 echo
 echo " LA STRADA SICURA, 3 MINUTI E UNA VOLTA SOLA:"
-echo "   1. In Windows apri la cartella del ponte:  \\\\wsl.localhost\\Ubuntu\\home\\agenti\\posta"
+echo "   1. In Windows apri la cartella del ponte:  \\\\wsl.localhost\\Ubuntu2\\home\\agenti\\posta"
 echo "      (oppure dalla Centrale: [6] apre la cartella)"
 echo "   2. Doppio clic su:  INSTALLA_OPENCLAW.bat"
 echo "   3. Scegli [1] TUTTO AUTOMATICO e lascia lavorare: installa su Windows,"

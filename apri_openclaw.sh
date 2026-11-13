@@ -46,8 +46,8 @@ case "${1:-}" in
   --stato) echo "$TIPO"; [ "$TIPO" = "no" ] && exit 1 || exit 0 ;;
   --trova)
     case "$TIPO" in
-      wsl)         echo "OpenClaw (dentro Ubuntu): $DOVE" ;;
-      bun)         echo "OpenClaw (runtime Bun, dentro Ubuntu): $DOVE" ;;
+      wsl)         echo "OpenClaw (dentro Ubuntu2): $DOVE" ;;
+      bun)         echo "OpenClaw (runtime Bun, dentro Ubuntu2): $DOVE" ;;
       windows-exe) echo "OpenClaw (installato su Windows): $DOVE" ;;
       windows-app) echo "App grafica OpenClaw: $DOVE" ;;
       *)           echo "OpenClaw non è ancora installato. Doppio clic su INSTALLA_OPENCLAW.bat (una volta sola)." ;;
@@ -86,7 +86,7 @@ case "$TIPO" in
     echo ""
     echo "  Fai partire, UNA VOLTA SOLA, il file:   INSTALLA_OPENCLAW.bat"
     echo "  (sta in questa cartella ~/posta: doppio clic da Esplora Risorse, oppure)"
-    echo "     cmd.exe /c start \"\" \"\\wsl.localhost\\Ubuntu$(wslpath -m "$HOME" 2>/dev/null)/posta/INSTALLA_OPENCLAW.bat\""
+    echo "     cmd.exe /c start \"\" \"\\wsl.localhost\\Ubuntu2$(wslpath -m "$HOME" 2>/dev/null)/posta/INSTALLA_OPENCLAW.bat\""
     echo ""
     echo "  Perché su Windows: OpenClaw vuole Node ≥24.16 e su WSL1 i Node 23/24 non partono."
     exit 1

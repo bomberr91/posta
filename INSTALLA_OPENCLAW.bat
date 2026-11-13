@@ -7,11 +7,11 @@ cd /d "%USERPROFILE%" 2>nul
 
 REM ══════════════════════════════════════════════════════════════════════════
 REM  INSTALLA_OPENCLAW.bat — mette OpenClaw su Windows in automatico.
-REM  Perché su Windows e non dentro Ubuntu(WSL1): OpenClaw dalla v2026.9.3
+REM  Perché su Windows e non dentro Ubuntu2(WSL1): OpenClaw dalla v2026.9.3
 REM  vuole Node >= 24.16, e quei Node NON partono su WSL1 (Exec format error,
 REM  nodejs/node#63735). Su Windows invece Node 24/26 gira benissimo e
 REM  l'installer se lo porta dietro da solo.
-REM  Non serve essere amministratore. Non tocca Ubuntu né il ponte ~/posta.
+REM  Non serve essere amministratore. Non tocca Ubuntu2 né il ponte ~/posta.
 REM  Ogni cosa viene scritta nel log: %USERPROFILE%\openclaw_install.log
 REM ══════════════════════════════════════════════════════════════════════════
 
@@ -42,7 +42,7 @@ echo  ======================================================================
 echo    OpenClaw  -  installazione automatica   (tuo Windows: %ARCH%)
 echo  ======================================================================
 echo.
-echo    Hai Node 24 su Ubuntu? Non c'entra: dentro WSL1 non parte.
+echo    Hai Node 24 su Ubuntu2? Non c'entra: dentro WSL1 non parte.
 echo    Qui lo installiamo SU WINDOWS, dove funziona davvero.
 echo.
 if defined NODEWINV echo    Il tuo Node di Windows: %NODEWINV%  -  lo usa il Free LLM Hub, NON lo tocchiamo
@@ -133,7 +133,7 @@ echo    Comando: %TROVATO%
 echo.
 echo    Come lo usi da qui in avanti:
 echo      - Dal menu Start di Windows: cerca "OpenClaw"
-echo      - Dalla Centrale Ubuntu: [1] poi [e]  (ora funziona)
+echo      - Dalla Centrale Ubuntu2: [1] poi [e]  (ora funziona)
 echo      - Da solo, doppio clic su APRI_OPENCLAW.bat
 echo.
 echo    Adesso faccio il PRIMO AVVIO in una finestra a parte.
@@ -189,7 +189,7 @@ echo    Non è un problema: mandami il file del log, lo sistemo io.
 echo.
 echo       %LOG%
 echo.
-echo    (dalla Centrale Ubuntu lo trovi in:  /mnt/c/Users/%USERNAME%/openclaw_install.log)
+echo    (dalla Centrale Ubuntu2 lo trovi in:  /mnt/c/Users/%USERNAME%/openclaw_install.log)
 echo.
 goto FINE_OK
 

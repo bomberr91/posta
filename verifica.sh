@@ -52,11 +52,11 @@ for a in opencode goose interpreter hermes gemini; do
   if c_e "$a"; then A_ok="$A_ok $a"; else A_manca="$A_manca $a"; fi
 done
 [ -n "$A_ok" ] && ok "Agenti presenti" "$A_ok"
-# openclaw merita un rigo suo (può stare in Ubuntu, con Bun, o su Windows)
+# openclaw merita un rigo suo (può stare in Ubuntu2, con Bun, o su Windows)
 QUI=$(cd "$(dirname "$0")" && pwd)
 OC_TIPO=$(bash "$QUI/apri_openclaw.sh" --stato 2>/dev/null); OC_TIPO=${OC_TIPO:-no}
 case "$OC_TIPO" in
-  wsl)         ok   "OpenClaw (Ubuntu)"  "$(ver openclaw)" ;;
+  wsl)         ok   "OpenClaw (Ubuntu2)"  "$(ver openclaw)" ;;
   bun)         ok   "OpenClaw (Bun)"     "$("$HOME/.bun/bin/openclaw" --version 2>&1 | head -1)" ;;
   windows-exe) ok   "OpenClaw (Windows)" "installato · si apre con [1]→[e]" ;;
   windows-app) att  "OpenClaw (Windows)" "c'è l'app grafica: aprila dal menu Start di Windows" ;;
