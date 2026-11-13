@@ -70,9 +70,10 @@ while :; do
   echo "  [v] 🩺 CONTROLLO SALUTE (2 secondi: dice subito se qualcosa è rotto, non installa niente)"
   echo "  [g] 🖥️ GUI CENTRALE POSTA (Router Hub e dashboard storica)"
   echo ""
-  echo "  [0] Esci"
+  echo "  [L] 🛰️ AGENTI LIVE — il pannello: chi sta facendo cosa, consumi, servizi (si apre nel browser)
+  [0] Esci"
   echo "======================================================================"
-  read -r -p "Scegli un numero [0-9] e premi INVIO: " SCELTA
+  read -r -p "Scegli un numero [0-9] o L e premi INVIO: " SCELTA
   echo ""
   case "$SCELTA" in
     1)
@@ -97,6 +98,7 @@ while :; do
       bash "$HOME/posta/squadra.sh"
       read -r -p "Premi INVIO per tornare al menu..." _
       ;;
+    l|L) cmd.exe /c start "" "http://localhost:20201" >/dev/null 2>&1; echo "Pannello aperto nel browser (http://localhost:20201)."; read -r -p "INVIO per tornare al menu..." _ ;;
     3)
       python3 "$HOME/posta/leggi_video.py"
       read -r -p "Premi INVIO per tornare al menu..." _
