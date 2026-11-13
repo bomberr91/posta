@@ -1153,8 +1153,12 @@ def ordina_per_politica(ordine, politica):
 try:
     os.environ.setdefault("HEADROOM_OFFLINE", "1")
     from headroom import compress as headroom_compress   # CUCITURA 13/11: comprime sul PC, niente rete, niente chiavi
+    from headroom import CompressConfig as headroom_config
+    HEADROOM_CFG = headroom_config(compress_system_messages=False,   # i system prompt di casa restano intatti
+                                   protect_recent=4)                  # la coda calda della conversazione resta intatta
 except Exception:
     headroom_compress = None                             # se manca: il cervello funziona identico a prima
+    HEADROOM_CFG = None
 
 def comprimi_per_motore(payload, comprimi=True):
     """CUCITURA 13/11 (da Paperclip→Headroom): la dieta anche per il percorso MOTORE.
@@ -1169,7 +1173,7 @@ def comprimi_per_motore(payload, comprimi=True):
         if not msgs:
             return payload
         prima = sum(len(m.get("content") or "") for m in msgs if isinstance(m, dict))
-        r = headroom_compress(msgs, model=(payload.get("model") or "gpt-4o"))
+        r = headroom_compress(msgs, model=(payload.get("model") or "gpt-4o"), config=HEADROOM_CFG)
         dopo = sum(len(m.get("content") or "") for m in r.messages if isinstance(m, dict))
         if dopo < prima and len(r.messages) == len(msgs):
             logga(tipo="compressione", nota="motore: %d -> %d caratteri (-%.0f%%)"
