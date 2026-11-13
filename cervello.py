@@ -204,6 +204,7 @@ CONFIG = {
     "sentinella_ore": 24,        # un controllo al giorno, a costo zero (0 = spenta)
     # — FASE 3 (idee 1-2: compressione · 13+16: profili per-agente) —
     "comprimi_riserva": True,    # la dieta vale SOLO per la riserva (il motore fa da se')
+    "comprimi_motore": True,     # CUCITURA 13/11 (Headroom): la compressione anche sul percorso motore (dip. opzionale, degrada da sola)
     "system_min_car": 1200,      # system sotto questa taglia: non si tocca
     "storia_max_car": 24000,     # storia oltre questa taglia: si taglia (mai con tool-call in mezzo)
     # — CURA-AUDIT (1/11 sera): i numeri che il motore non aveva ——
@@ -1147,6 +1148,39 @@ def ordina_per_politica(ordine, politica):
             return len(FORTI)
         return sorted(ordine, key=forza)
     return ordine                        # auto e veloce: già in ordine di velocità
+
+
+try:
+    os.environ.setdefault("HEADROOM_OFFLINE", "1")
+    from headroom import compress as headroom_compress   # CUCITURA 13/11: comprime sul PC, niente rete, niente chiavi
+except Exception:
+    headroom_compress = None                             # se manca: il cervello funziona identico a prima
+
+def comprimi_per_motore(payload, comprimi=True):
+    """CUCITURA 13/11 (da Paperclip→Headroom): la dieta anche per il percorso MOTORE.
+    La vecchia f3_prepara vale solo per la riserva; il percorso normale (OmniRoute vivo)
+    portava contesti interi. Headroom comprime tool-output/log ripetuti sul PC:
+    misurato 13/11 -53% sul carico tipo casa, tool_calls e struttura conservati.
+    Mai distruttivo: se headroom manca o qualcosa vibra, si passa invariati."""
+    if not headroom_compress or not CONFIG.get("comprimi_motore") or not comprimi:
+        return payload
+    try:
+        msgs = payload.get("messages") or []
+        if not msgs:
+            return payload
+        prima = sum(len(m.get("content") or "") for m in msgs if isinstance(m, dict))
+        r = headroom_compress(msgs, model=(payload.get("model") or "gpt-4o"))
+        dopo = sum(len(m.get("content") or "") for m in r.messages if isinstance(m, dict))
+        if dopo < prima and len(r.messages) == len(msgs):
+            logga(tipo="compressione", nota="motore: %d -> %d caratteri (-%.0f%%)"
+                  % (prima, dopo, (1 - dopo / prima) * 100))
+            return dict(payload, messages=r.messages)
+    except Exception as e:
+        try:
+            logga(tipo="compressione", nota="saltata: %s" % str(e)[:60])
+        except Exception:
+            pass
+    return payload
 
 
 def inoltra(corpo, percorso="chat/completions", secondi=None, sessione=""):
@@ -2270,6 +2304,7 @@ class H(BaseHTTPRequestHandler):
                                              "Prova con 'auto'." % politica}}, 503)
             return
 
+        payload = comprimi_per_motore(payload, comprimi_agente)
         corpo = json.dumps(payload).encode()
         if motore_vivo():
             d = inoltra(corpo, sessione=sess)

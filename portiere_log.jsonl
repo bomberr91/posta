@@ -2302,3 +2302,13 @@
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6167, "quando": "2026-11-04 16:22:45"}
 {"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5571, "quando": "2026-11-04 16:27:57"}
 {"tipo": "hot-reload", "nota": "lista ricaricata: 54 provider", "quando": "2026-11-13 23:13:13"}
+{"tipo": "sentinella", "nota": "fonti quote aggiornate: FREE-LLM-API-Provider (push 2026-11-13) · awesome-freellm-apis (push 2026-11-13) — ricontrollare portiere_quote.txt", "quando": "2026-11-13 23:39:29"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 19016, "quando": "2026-11-13 23:39:47"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 99304, "tentativi": 1, "risparmio_car": 18021, "quando": "2026-11-13 23:41:54"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 10099, "quando": "2026-11-13 23:42:06"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 19562, "quando": "2026-11-13 23:42:29"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 97758, "tentativi": 1, "risparmio_car": 18021, "quando": "2026-11-13 23:44:09"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 95389, "tentativi": 1, "risparmio_car": 18021, "quando": "2026-11-13 23:45:53"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 27026, "quando": "2026-11-13 23:46:25"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 125161, "tentativi": 1, "risparmio_car": 18021, "quando": "2026-11-13 23:48:33"}
+{"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 24269, "quando": "2026-11-13 23:49:00"}
