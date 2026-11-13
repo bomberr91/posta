@@ -49,7 +49,7 @@ while :; do
   # Verdetto di salute: 1 decimo di secondo, così una rottura si vede subito (senza rifare [8])
   SALUTE=""
   if [ -x "$HOME/posta/verifica.sh" ]; then
-    SALUTE=$(bash "$HOME/posta/verifica.sh" 2>/dev/null | grep -oE '🟢 TUTTO A POSTO|🟡 [0-9]+ cose da guardare|🔴 [0-9]+ PROBLEMI' | head -1)
+    SALUTE=$(timeout 25 bash "$HOME/posta/verifica.sh" 2>/dev/null | grep -oE '🟢 TUTTO A POSTO|🟡 [0-9]+ cose da guardare|🔴 [0-9]+ PROBLEMI' | head -1)
     [ -z "$SALUTE" ] && SALUTE="🩺 verifica non disponibile"
   fi
   echo "======================================================================"

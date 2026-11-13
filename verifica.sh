@@ -22,7 +22,7 @@ c_e(){  command -v "$1" >/dev/null 2>&1 && return 0
 ver(){  ( command -v "$1" >/dev/null 2>&1 && "$1" --version 2>&1 | head -1 ) \
         || ( ls "$HOME/.nvm/versions/node/"*/bin/"$1" 2>/dev/null | head -1 | xargs -r -I{} sh -c '{} --version 2>&1 | head -1' ) \
         || echo "?"; }
-porta(){ (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null && { exec 3<&-; echo up; } || echo down; }
+porta(){ timeout 3 bash -c "(exec 3<>/dev/tcp/127.0.0.1/$1)" 2>/dev/null && echo up || echo down; }
 
 echo "══════════════════════════════════════════════════════════"
 echo " 🩺 SALUTE DI FILIPPOPC — $(date '+%d/%m/%Y %H:%M')  (sola lettura)"
