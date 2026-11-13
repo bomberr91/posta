@@ -109,7 +109,7 @@ while :; do
       if [ -z "$TARGET_U" ] || [[ "$TARGET_U" == *"discord.com"* ]]; then
         python3 "$HOME/posta/leggi_discord.py"
       else
-        python3 "$HOME/posta/leggi_fb_cdp.py" "$TARGET_U"
+        python3 "/mnt/c/Users/giopi/Documents/AgentWorkspace/Strumenti/fb-commenti/fb_commenti.py" "$TARGET_U"
       fi
       read -r -p "Fatto! Premi INVIO per tornare al menu..." _
       ;;
