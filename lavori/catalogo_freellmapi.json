@@ -1,6 +1,6 @@
 {
- "generato": "04/11/2026 14:41",
- "versione": "2026.11.04",
+ "generato": "13/11/2026 16:14",
+ "versione": "2026.11.13",
  "tier": "monthly",
  "provider": {
   "google": {
@@ -190,6 +190,18 @@
      "titolo": "Shared renewable free allowance",
      "testo": "Ongoing Gemini API free-tier quota; account limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://ai.google.dev/gemini-api/docs/pricing",
      "gravita": "info"
+    },
+    {
+     "slug": "nov13-google-gemini-4-hydrogen",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing Gemini Free-tier quota; model-specific account limits, not monthly cash credits. Tested November 13, 2026. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aistudio.google.com/docs/pricing#gemini-4-hydrogen",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov13-google-gemini-decision-1",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing Free-tier input quota; zero output tokens. Tested November 13, 2026. Requires app v0.16.28 or newer. https://aistudio.google.com/docs/pricing#gemini-decision",
+     "gravita": "info"
     }
    ]
   },
@@ -286,16 +298,6 @@
      "ctx": 32768,
      "strumenti": false,
      "visione": true
-    },
-    {
-     "id": "Mistral-Nemo-Instruct-2407",
-     "rank": 99,
-     "vel": 9,
-     "rpm": 2,
-     "rpd": null,
-     "ctx": 128000,
-     "strumenti": true,
-     "visione": false
     }
    ],
    "quirk": [
@@ -618,6 +620,12 @@
      "titolo": "Needs token room",
      "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
      "gravita": "info"
+    },
+    {
+     "slug": "nov13-cloudflare--cf-google-embeddinggemma-2",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Shared 10,000 Neurons/day; 154 Neurons per million input tokens; no paid Workers requirement in roster. Tested November 13, 2026. Requires app v0.16.28 or newer. Text-only API integration; fixed 768-dimensional vectors in their own embeddinggemma-2 family, never interchangeable with EmbeddingGemma 300M. https://developers.cloudflare.com/workers-ai/models/embeddinggemma-2/",
+     "gravita": "info"
     }
    ]
   },
@@ -666,7 +674,20 @@
      "visione": false
     }
    ],
-   "quirk": []
+   "quirk": [
+    {
+     "slug": "nov09-groq-canopylabs-orpheus-v1-english",
+     "titolo": "Renewable free access",
+     "testo": "Shared recurring daily Groq Free-plan quota; not monthly cash credits. PCM16 WAV; maximum 200 characters. Standard voices map to troy. Requires organization-admin acceptance of model terms and app v0.16.23 or newer. Tested through the app router November 9, 2026. https://console.groq.com/docs/rate-limits",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov09-groq-canopylabs-orpheus-arabic-saudi",
+     "titolo": "Renewable free access",
+     "testo": "Shared recurring daily Groq Free-plan quota; not monthly cash credits. PCM16 WAV; maximum 200 characters. Standard voices map to fahad. Requires organization-admin acceptance of model terms and app v0.16.23 or newer. Tested through the app router November 9, 2026. https://console.groq.com/docs/rate-limits",
+     "gravita": "info"
+    }
+   ]
   },
   "openrouter": {
    "nome": "OpenRouter",
@@ -789,6 +810,24 @@
      "titolo": "Developer evaluation and data-use terms",
      "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
      "gravita": "warning"
+    },
+    {
+     "slug": "nov08-openrouter-liquid-lfm-3-1-7b-free",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Ongoing zero-price :free route; shared daily free-model quota. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. Free-route prompts/outputs may be retained or used by the upstream; review data terms. https://openrouter.ai/docs/api_reference/limits",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov12-openrouter-baidu-ernie-5-5-flash-preview-free",
+     "titolo": "Shared renewable free access",
+     "testo": "Ongoing zero-price :free route; shared daily request quota, not monthly credits. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://openrouter.ai/docs/api_reference/limits",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov13-openrouter-particle-ai-particle-1-free",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Zero-price :free route under shared daily free quota. Tested November 13, 2026. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://openrouter.ai/particle-ai/particle-1:free",
+     "gravita": "info"
     }
    ]
   },
@@ -972,6 +1011,16 @@
    "nome": "LLM7",
    "etichetta": "LLM7",
    "modelli": [
+    {
+     "id": "gpt-oss:20b",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
     {
      "id": "default",
      "rank": 87,
@@ -1192,6 +1241,16 @@
    "nome": "NVIDIA NIM",
    "etichetta": "NVIDIA",
    "modelli": [
+    {
+     "id": "z-ai/glm-5.3-flash",
+     "rank": 23,
+     "vel": 10,
+     "rpm": 40,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": true,
+     "visione": false
+    },
     {
      "id": "nvidia/nemotron-3-ultra-550b-a55b",
      "rank": 61,
@@ -1791,6 +1850,96 @@
      "titolo": "123B has heavy queue (seeded disabled)",
      "testo": "Behemoth-X-123B has deep queue depth (50s+ ETA even on trivial prompts). Seeded disabled; enable only if minute-scale latency is acceptable.",
      "gravita": "warning"
+    },
+    {
+     "slug": "nov09-aihorde-koboldcpp-Rocinante-XL-16B-v1",
+     "titolo": "Renewable free access",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Text completion and exact reported model identity tested November 9, 2026. Existing adapter emulates streaming after completion. Community fine-tune, not a new foundation model; volunteer queues vary. Tools, vision and context limits were not independently verified. https://aihorde.net/",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov09-aihorde-koboldcpp-debug-gemma-4-E2B-Queen-it-qat-q4-0-unquantized-i1-Q4-K-M",
+     "titolo": "Renewable free access",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Text completion and exact reported model identity tested November 9, 2026. Existing adapter emulates streaming after completion. Community fine-tune, not a new foundation model; volunteer queues vary. Tools, vision and context limits were not independently verified. https://aihorde.net/",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov12-aihorde-aphrodite-TheDrummer-Behemoth-128B-v3",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-debug-Vesper-26B-A4B-Nocturne-i1-Q4-K-M-hb16",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Llama-3-Lumimaid-8B-v0-1",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Qwen3-1-7B",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Qwen3-0-6B",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Sao10K-L3-8B-Stheno-v3-2",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-G4-MeroMero-26B-A4B-it-uncensored-heretic",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-gemma-4-E4B-it",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Llama-3-2-3B-Instruct",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-gemma-3-4b-it-Q4-K-M",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov12-aihorde-koboldcpp-Cydonia-24B-v4zg-Q4-K-M",
+     "titolo": "Volunteer-worker free route; availability varies",
+     "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov13-aihorde-koboldcpp-Qwen3-14B",
+     "titolo": "Volunteer free access",
+     "testo": "Ongoing volunteer worker access; variable availability, not recurring token credits. Tested November 13, 2026. Community worker variant, not a new foundation model; online workers and queue delays vary. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
+    },
+    {
+     "slug": "nov13-aihorde-lmstudio-Qwen3-5-9B",
+     "titolo": "Volunteer free access",
+     "testo": "Ongoing volunteer worker access; variable availability, not recurring token credits. Tested November 13, 2026. Community worker variant, not a new foundation model; online workers and queue delays vary. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aihorde.net/",
+     "gravita": "warning"
     }
    ]
   },
@@ -1905,6 +2054,24 @@
      "titolo": "Developer evaluation and data-use terms",
      "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
      "gravita": "warning"
+    },
+    {
+     "slug": "nov08-kilo-liquid-lfm-3-1-7b-free",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Keyless zero-price route; shared capacity and rate limits. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. Free-route prompts/outputs may be retained or used by the upstream; review data terms. https://kilo.ai/docs/gateway/usage-and-billing",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov12-kilo-baidu-ernie-5-5-flash-preview-free",
+     "titolo": "Shared renewable free access",
+     "testo": "Ongoing keyless :free route; shared free quota, not monthly credits. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://kilo.ai/docs/gateway/usage-and-billing",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov13-kilo-particle-ai-particle-1-free",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Zero-price keyless route under shared rate limits; roster flags possible prompt training. Tested November 13, 2026. Provider flags possible training on submitted prompts. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://api.kilo.ai/api/gateway/models",
+     "gravita": "warning"
     }
    ]
   },
@@ -1987,16 +2154,6 @@
      "rpd": 200,
      "ctx": 131072,
      "strumenti": false,
-     "visione": false
-    },
-    {
-     "id": "nvidia/nemotron-3-super-120b-a12b",
-     "rank": 81,
-     "vel": 9,
-     "rpm": null,
-     "rpd": 200,
-     "ctx": 1048576,
-     "strumenti": true,
      "visione": false
     },
     {
@@ -2674,6 +2831,156 @@
      "visione": false
     },
     {
+     "id": "gpt-6-luna",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1050000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "hy4-preview",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mimo-v2.6-flash",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1000000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gpt-oss-20b",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 128000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "devstral-2512",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-small-2603",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-large-2512",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "deepseek-v4-flash-0731",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 524000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen3.8-flash-next",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mimo-v2.6-flash-mopd",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 524000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen3.8-27b-swift",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen3.8-27b-omnimerge-v6",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "mistral-medium-3-5",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "gemma-2-27b-it",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 8000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "glm-4.5-air",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 131000,
+     "strumenti": false,
+     "visione": false
+    },
+    {
      "id": "laguna-s-2.1",
      "rank": 57,
      "vel": 9,
@@ -3264,87 +3571,23 @@
      "titolo": "Shared renewable free allowance",
      "testo": "$0.25/week shared free credits; test account had no purchased balance. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.electronhub.ai/billing/credits",
      "gravita": "info"
-    }
-   ]
-  },
-  "router9": {
-   "nome": "Router9",
-   "etichetta": "Router9",
-   "modelli": [
-    {
-     "id": "deepseek/deepseek-v4-flash",
-     "rank": 38,
-     "vel": 9,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 1048576,
-     "strumenti": false,
-     "visione": false
     },
     {
-     "id": "z-ai/glm-5.2",
-     "rank": 39,
-     "vel": 8,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 1048576,
-     "strumenti": false,
-     "visione": false
-    },
-    {
-     "id": "deepseek/deepseek-v4-pro",
-     "rank": 46,
-     "vel": 9,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 1048576,
-     "strumenti": false,
-     "visione": false
-    },
-    {
-     "id": "minimax/minimax-m3",
-     "rank": 48,
-     "vel": 7,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 1048576,
-     "strumenti": false,
-     "visione": true
-    },
-    {
-     "id": "qwen/qwen3-235b-a22b-2507",
-     "rank": 83,
-     "vel": 10,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 262144,
-     "strumenti": false,
-     "visione": false
-    }
-   ],
-   "quirk": [
-    {
-     "slug": "router9-shared-monthly-credit",
-     "titolo": "Shared monthly free credits",
-     "testo": "Router9 Free grants 10,000 credits (about $1) per monthly billing period, shared across API keys and Studio usage. The allowance renews on the account signup anniversary, not necessarily the first of the month, and unused credits do not roll over. Paid prepaid overage is outside the free allowance. Verified against current provider documentation November 3, 2026. https://www.router9.com/docs/token-plan/credits",
-     "gravita": "info"
-    },
-    {
-     "slug": "router9-deepseek-flash-0731-alias",
-     "titolo": "Unversioned route resolves to 0731",
-     "testo": "On September 14, 2026, deepseek/deepseek-v4-flash returned a valid completion identifying deepseek/deepseek-v4-flash-0731. The public free-model listing still labels this route 0423. The catalog displays the observed 0731 revision while preserving the tested request ID. Response identifiers are provider assertions, not independent verification of weights.",
-     "gravita": "info"
-    },
-    {
-     "slug": "oct31-router9-z-ai-glm-5-3",
+     "slug": "nov13-electronhub-kokoro-tts",
      "titolo": "Shared renewable free allowance",
-     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+     "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. https://docs.electronhub.ai/billing/subscriptions",
      "gravita": "info"
     },
     {
-     "slug": "oct31-router9-qwen-qwen3-8-flash",
+     "slug": "nov13-electronhub-voxtral-mini-2602",
      "titolo": "Shared renewable free allowance",
-     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+     "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. Requires app v0.16.28 or newer. https://docs.electronhub.ai/billing/subscriptions",
+     "gravita": "info"
+    },
+    {
+     "slug": "nov13-electronhub-deepgram-nova-3",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. Requires app v0.16.28 or newer. https://docs.electronhub.ai/billing/subscriptions",
      "gravita": "info"
     }
    ]
@@ -3509,6 +3752,78 @@
      "slug": "speechify-shared-monthly-characters",
      "titolo": "Monthly free text-to-speech characters",
      "testo": "Speechify Free includes 500,000 characters per month shared across TTS models, with no card required. Free usage pauses when exhausted. Characters are not tokens and are not a grant per model. Both Simba 3.0 and Simba 3.2 generated valid MP3 audio. Use the native TTS adapter; these are not chat models. API version 2026-09-08, default tested voice alec. See https://speechify.ai/pricing and the workspace allowance.",
+     "gravita": "info"
+    }
+   ]
+  },
+  "router9": {
+   "nome": "Router9",
+   "etichetta": "Router9",
+   "modelli": [
+    {
+     "id": "deepseek/deepseek-v4-flash",
+     "rank": 38,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "z-ai/glm-5.2",
+     "rank": 39,
+     "vel": 8,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "deepseek/deepseek-v4-pro",
+     "rank": 46,
+     "vel": 9,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 1048576,
+     "strumenti": false,
+     "visione": false
+    },
+    {
+     "id": "qwen/qwen3-235b-a22b-2507",
+     "rank": 83,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": 262144,
+     "strumenti": false,
+     "visione": false
+    }
+   ],
+   "quirk": [
+    {
+     "slug": "router9-shared-monthly-credit",
+     "titolo": "Shared monthly free credits",
+     "testo": "Router9 Free grants 10,000 credits (about $1) per monthly billing period, shared across API keys and Studio usage. The allowance renews on the account signup anniversary, not necessarily the first of the month, and unused credits do not roll over. Paid prepaid overage is outside the free allowance. Verified against current provider documentation November 3, 2026. https://www.router9.com/docs/token-plan/credits",
+     "gravita": "info"
+    },
+    {
+     "slug": "router9-deepseek-flash-0731-alias",
+     "titolo": "Unversioned route resolves to 0731",
+     "testo": "On September 14, 2026, deepseek/deepseek-v4-flash returned a valid completion identifying deepseek/deepseek-v4-flash-0731. The public free-model listing still labels this route 0423. The catalog displays the observed 0731 revision while preserving the tested request ID. Response identifiers are provider assertions, not independent verification of weights.",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct31-router9-z-ai-glm-5-3",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
+     "gravita": "info"
+    },
+    {
+     "slug": "oct31-router9-qwen-qwen3-8-flash",
+     "titolo": "Shared renewable free allowance",
+     "testo": "Monthly free credits shared across the account. Text and streaming tested 2026-10-31; response identity is provider-reported, not independent weight verification. Live account headers reported a 10,000-credit allowance with separate rolling request caps. Account entitlements vary; no per-model credit pool. https://www.router9.com/docs/token-plan/credits",
      "gravita": "info"
     }
    ]
@@ -3856,6 +4171,16 @@
      "visione": false
     },
     {
+     "id": "kimi-k3-nvidia-direct",
+     "rank": 50,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
      "id": "laguna-s-2.1-free",
      "rank": 57,
      "vel": 9,
@@ -4038,6 +4363,16 @@
      "visione": false
     },
     {
+     "id": "meta/muse-glimmer-30b",
+     "rank": 67,
+     "vel": 10,
+     "rpm": null,
+     "rpd": null,
+     "ctx": null,
+     "strumenti": false,
+     "visione": false
+    },
+    {
      "id": "google/gemma-4-31b-it",
      "rank": 69,
      "vel": 10,
@@ -4104,16 +4439,6 @@
    "etichetta": "LLMTR",
    "modelli": [
     {
-     "id": "agnes/agnes-3.0-flash",
-     "rank": 35,
-     "vel": 10,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 524288,
-     "strumenti": false,
-     "visione": false
-    },
-    {
      "id": "qwen/qwen3.8-27b-free",
      "rank": 39,
      "vel": 10,
@@ -4130,16 +4455,6 @@
      "rpm": null,
      "rpd": null,
      "ctx": 1000000,
-     "strumenti": false,
-     "visione": false
-    },
-    {
-     "id": "agnes/agnes-2.5-flash",
-     "rank": 63,
-     "vel": 5,
-     "rpm": null,
-     "rpd": null,
-     "ctx": 524288,
      "strumenti": false,
      "visione": false
     }
@@ -4191,6 +4506,12 @@
     "titolo": "Needs token room",
     "testo": "Some free routes spend hidden reasoning tokens before visible output. Avoid tiny max_tokens values or requests can finish by length with empty content.",
     "gravita": "info"
+   },
+   {
+    "slug": "nov13-cloudflare--cf-google-embeddinggemma-2",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Shared 10,000 Neurons/day; 154 Neurons per million input tokens; no paid Workers requirement in roster. Tested November 13, 2026. Requires app v0.16.28 or newer. Text-only API integration; fixed 768-dimensional vectors in their own embeddinggemma-2 family, never interchangeable with EmbeddingGemma 300M. https://developers.cloudflare.com/workers-ai/models/embeddinggemma-2/",
+    "gravita": "info"
    }
   ],
   "kilo": [
@@ -4228,6 +4549,24 @@
     "slug": "nvidia-trial-oct15-evening",
     "titolo": "Developer evaluation and data-use terms",
     "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov08-kilo-liquid-lfm-3-1-7b-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Keyless zero-price route; shared capacity and rate limits. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. Free-route prompts/outputs may be retained or used by the upstream; review data terms. https://kilo.ai/docs/gateway/usage-and-billing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-kilo-baidu-ernie-5-5-flash-preview-free",
+    "titolo": "Shared renewable free access",
+    "testo": "Ongoing keyless :free route; shared free quota, not monthly credits. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://kilo.ai/docs/gateway/usage-and-billing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-kilo-particle-ai-particle-1-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Zero-price keyless route under shared rate limits; roster flags possible prompt training. Tested November 13, 2026. Provider flags possible training on submitted prompts. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://api.kilo.ai/api/gateway/models",
     "gravita": "warning"
    }
   ],
@@ -4393,6 +4732,24 @@
     "titolo": "Developer evaluation and data-use terms",
     "testo": "Ongoing zero-price hosted developer access, not a monthly credit grant or unrestricted production service. NVIDIA trial/prototyping and data-use terms apply. Do not submit personal or confidential data. Text completions with exact model identity passed on October 15, 2026; tool and vision flags remain off until separately tested. Sources: https://build.nvidia.com/stepfun-ai/step-5-preview and https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free",
     "gravita": "warning"
+   },
+   {
+    "slug": "nov08-openrouter-liquid-lfm-3-1-7b-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing zero-price :free route; shared daily free-model quota. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. Free-route prompts/outputs may be retained or used by the upstream; review data terms. https://openrouter.ai/docs/api_reference/limits",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-openrouter-baidu-ernie-5-5-flash-preview-free",
+    "titolo": "Shared renewable free access",
+    "testo": "Ongoing zero-price :free route; shared daily request quota, not monthly credits. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://openrouter.ai/docs/api_reference/limits",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-openrouter-particle-ai-particle-1-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Zero-price :free route under shared daily free quota. Tested November 13, 2026. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://openrouter.ai/particle-ai/particle-1:free",
+    "gravita": "info"
    }
   ],
   "requesty": [
@@ -4432,6 +4789,18 @@
     "slug": "nov01-media-google-gemini-3-5-transcribe",
     "titolo": "Shared renewable free allowance",
     "testo": "Ongoing Gemini API free-tier quota; account limits apply. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://ai.google.dev/gemini-api/docs/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-google-gemini-4-hydrogen",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing Gemini Free-tier quota; model-specific account limits, not monthly cash credits. Tested November 13, 2026. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aistudio.google.com/docs/pricing#gemini-4-hydrogen",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-google-gemini-decision-1",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Ongoing Free-tier input quota; zero output tokens. Tested November 13, 2026. Requires app v0.16.28 or newer. https://aistudio.google.com/docs/pricing#gemini-decision",
     "gravita": "info"
    }
   ],
@@ -4538,6 +4907,96 @@
     "slug": "aihorde-behemoth-slow",
     "titolo": "123B has heavy queue (seeded disabled)",
     "testo": "Behemoth-X-123B has deep queue depth (50s+ ETA even on trivial prompts). Seeded disabled; enable only if minute-scale latency is acceptable.",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov09-aihorde-koboldcpp-Rocinante-XL-16B-v1",
+    "titolo": "Renewable free access",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Text completion and exact reported model identity tested November 9, 2026. Existing adapter emulates streaming after completion. Community fine-tune, not a new foundation model; volunteer queues vary. Tools, vision and context limits were not independently verified. https://aihorde.net/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov09-aihorde-koboldcpp-debug-gemma-4-E2B-Queen-it-qat-q4-0-unquantized-i1-Q4-K-M",
+    "titolo": "Renewable free access",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Text completion and exact reported model identity tested November 9, 2026. Existing adapter emulates streaming after completion. Community fine-tune, not a new foundation model; volunteer queues vary. Tools, vision and context limits were not independently verified. https://aihorde.net/",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-aihorde-aphrodite-TheDrummer-Behemoth-128B-v3",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-debug-Vesper-26B-A4B-Nocturne-i1-Q4-K-M-hb16",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Llama-3-Lumimaid-8B-v0-1",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Qwen3-1-7B",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Qwen3-0-6B",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Sao10K-L3-8B-Stheno-v3-2",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-G4-MeroMero-26B-A4B-it-uncensored-heretic",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-gemma-4-E4B-it",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Llama-3-2-3B-Instruct",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-gemma-3-4b-it-Q4-K-M",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov12-aihorde-koboldcpp-Cydonia-24B-v4zg-Q4-K-M",
+    "titolo": "Volunteer-worker free route; availability varies",
+    "testo": "Ongoing community-provided free API; volunteer capacity, not monthly credits. Non-streaming completion and exact reported model ID tested November 12, 2026. The existing adapter emulates streaming. This is a community fine-tune/worker route, not a new foundation model; worker availability and queue delays vary. Reported identity is provider asserted, not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov13-aihorde-koboldcpp-Qwen3-14B",
+    "titolo": "Volunteer free access",
+    "testo": "Ongoing volunteer worker access; variable availability, not recurring token credits. Tested November 13, 2026. Community worker variant, not a new foundation model; online workers and queue delays vary. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aihorde.net/",
+    "gravita": "warning"
+   },
+   {
+    "slug": "nov13-aihorde-lmstudio-Qwen3-5-9B",
+    "titolo": "Volunteer free access",
+    "testo": "Ongoing volunteer worker access; variable availability, not recurring token credits. Tested November 13, 2026. Community worker variant, not a new foundation model; online workers and queue delays vary. Only text completion is enabled; tools and vision require separate capability tests. Provider-asserted identity is not independent weight attestation. https://aihorde.net/",
     "gravita": "warning"
    }
   ],
@@ -4740,6 +5199,24 @@
     "slug": "nov01-media-electronhub-gpt-4o-mini-tts",
     "titolo": "Shared renewable free allowance",
     "testo": "$0.25/week shared free credits; test account had no purchased balance. Live tested 2026-11-01. Model entries share the provider allowance; they do not each grant separate credits. https://docs.electronhub.ai/billing/credits",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-electronhub-kokoro-tts",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. https://docs.electronhub.ai/billing/subscriptions",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-electronhub-voxtral-mini-2602",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. Requires app v0.16.28 or newer. https://docs.electronhub.ai/billing/subscriptions",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov13-electronhub-deepgram-nova-3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "Shared $0.25/week Free-plan allowance; freemium, not a separate grant per route. Tested November 13, 2026. Requires app v0.16.28 or newer. https://docs.electronhub.ai/billing/subscriptions",
     "gravita": "info"
    }
   ],
@@ -5135,7 +5612,7 @@
    {
     "slug": "plugsky-permanent-free-aliases",
     "titolo": "Permanent free aliases, shared fair use",
-    "testo": "Plugsky Free includes Micro and Lite chat/JSON aliases without a card, separately from the wider seven-day trial. Shared fair-use rate limits apply, not a separate monthly credit grant per model. Backing models may change or fail over; streaming can identify the underlying upstream. Chat, JSON mode and streaming were tested on October 8, 2026. Tools and vision are not enabled without Free-plan route-specific verification. See https://plugsky.com/docs.",
+    "testo": "Plugsky Free includes Micro and Lite chat/JSON aliases without a card. Free trials were retired in November 2026. Shared fair-use rate limits apply, not a separate monthly credit grant per model. Backing models may change or fail over; streaming can identify the underlying upstream. Chat, JSON mode and streaming were tested October 8, 2026; funding terms rechecked November 7, 2026. Tools and vision remain disabled without Free-plan route-specific verification. Image generation is paid-only. https://plugsky.com/docs",
     "gravita": "info"
    }
   ],
@@ -5144,6 +5621,60 @@
     "slug": "inferbase-managed-free-allowance",
     "titolo": "Shared monthly and daily free allowance",
     "testo": "Inferbase Free needs no card. The shared account allowance is 5,000 requests/month, also capped at 100 managed requests and $0.50 of model usage/day. Free managed chat permits 8,192 input and 1,024 output tokens per request. Counts are shared, not per-model grants. Model IDs including FP8 and Turbo variants are explicit; a changed response identity fails rather than silently substituting another model. Update FreeLLMAPI to a build with the Inferbase adapter. See https://inferbase.ai/pricing.",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-google-gemma-3-27b-it-fp8",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-google-gemma-4-26b-a4b-it-fp8",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-google-gemma-4-31b-it-fp8",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-google-gemma-4-31b-it-turbo",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-meta-llama-3-1-8b-instruct-turbo",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-meta-llama-3-3-70b-instruct-turbo",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-meta-llama-4-scout-17b-16e-instruct",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-qwen3-5-35b-a3b-fp8",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-inferbase-qwen3-6-35b-a3b-fp8",
+    "titolo": "Shared renewable free access",
+    "testo": "5,000 requests/month; 100 managed requests and $0.50 usage/day shared. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://inferbase.ai/pricing",
     "gravita": "info"
    }
   ],
@@ -5216,6 +5747,54 @@
     "slug": "oct30-kenari-qwen3-8-27b-free",
     "titolo": "Shared renewable free allowance",
     "testo": "50 requests/day and 5 RPM shared on new accounts. Text chat and streaming tested; model identity reported by provider, not independent weight verification. Verified 2026-10-30. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "kenari-nov06-renewable-free",
+    "titolo": "Shared renewable daily allowance",
+    "testo": "These explicit :free routes share 50 successful requests/day and 5 RPM on a new account, with no top-up required. Text and streaming tested November 5, 2026. Model identities and context sizes are provider asserted; tools/vision are not enabled without tests. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "kenari-nov06-renewable-free",
+    "titolo": "Shared renewable daily allowance",
+    "testo": "These explicit :free routes share 50 successful requests/day and 5 RPM on a new account, with no top-up required. Text and streaming tested November 5, 2026. Model identities and context sizes are provider asserted; tools/vision are not enabled without tests. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov07-kenari-muse-glimmer-30b-free",
+    "titolo": "Shared renewable daily allowance",
+    "testo": "Explicit :free route with no balance or subscription required. Shares 50 successful requests/day and 5 RPM on a new account with other free models; not a separate allowance per model. Normal and streaming chat passed November 7, 2026. Identity and context are provider asserted; tools and vision remain disabled without tests. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-kenari-longcat-2-5-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 successful free requests/day shared; 5 RPM; no top-up. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-kenari-crouton-alpha-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 successful free requests/day shared; 5 RPM; no top-up. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-kenari-glm-4-6v-flash-free",
+    "titolo": "Shared renewable free allowance",
+    "testo": "50 successful free requests/day shared; 5 RPM; no top-up. Normal and streaming text tests passed November 8, 2026. Tools, vision and long-context capability are not independently tested and remain disabled. Provider-reported identity is not independent weight verification. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-kenari-ernie-5-5-flash-preview-free",
+    "titolo": "Shared renewable free access",
+    "testo": "50 successful free requests/day shared; 5 RPM; no top-up. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://kenari.id/en/docs/free-models",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov12-kenari-lfm-3-1-7b-free",
+    "titolo": "Shared renewable free access",
+    "testo": "50 successful free requests/day shared; 5 RPM; no top-up. Normal and streaming completion with exact reported model ID tested November 12, 2026. Tools and vision are not enabled without live capability tests. Reported identity is provider asserted, not independent weight attestation. https://kenari.id/en/docs/free-models",
     "gravita": "info"
    }
   ],
@@ -5305,6 +5884,308 @@
     "titolo": "Research service: requests logged; shared daily quota",
     "testo": "Free research/education API without a card. Chat and embeddings share an account quota that resets at 00:00 UTC; the provider does not publish a fixed quota amount. Access may require administrator approval. Prompts and responses are logged for research, and anonymized data may be published: do not submit sensitive data. Text chat, streaming and 1024-dimensional BGE-M3 embeddings were tested through the app adapter on November 4, 2026. Returned identity is provider asserted, not independent weight verification. Requires app v0.16.19 or newer. https://doc.freeinference.org/agents https://freeinference.org/terms",
     "gravita": "warning"
+   },
+   {
+    "slug": "nov07-freeinference-deepseek-v4-flash",
+    "titolo": "Research service: logged requests; shared daily quota",
+    "testo": "Free research/education API. Shared account quota resets at 00:00 UTC; no fixed amount is published. Prompts and responses are logged for research and anonymized data may be published; do not send sensitive data. Access may require approval. Normal and streaming chat passed through the app adapter November 7, 2026. Returned identity and context are provider asserted, not independent weight or long-context verification. Tools and vision remain disabled without tests. Requires app v0.16.21+ for this DeepSeek route. https://doc.freeinference.org/agents https://freeinference.org/terms",
+    "gravita": "warning"
+   }
+  ],
+  "freemodel": [
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   },
+   {
+    "slug": "freemodel-shared-monthly-byok",
+    "titolo": "Shared monthly allowance; personal BYOK",
+    "testo": "FreeModel advertises 1M shared input/output tokens per month, no card; Telegram verification is required. This is one account allowance, not one grant per model. Keep the provider wallet unfunded for free-only use: a funded wallet can be charged after the free allowance. Rate-limit headers do not verify the monthly balance. Text and streaming tested November 5–6, 2026; identities and context sizes are provider asserted, not independently verified weights or long-context tests. Tools/vision remain untested and disabled. FreeModel may raise max_tokens below 2048 to 2048. Requires app v0.16.20+. Custom clients are documented, but terms restrict resale and competing gateways; this personal BYOK integration does not establish provider permission for shared/commercial gateway use. https://freemodel.in/free-ai-api https://freemodel.in/docs/coding-agents https://freemodel.in/terms",
+    "gravita": "warning"
+   }
+  ],
+  "varosity": [
+   {
+    "slug": "nov08-varosity-flux-3-klein",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. One tested square image; GPT Image Flare uses low quality. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-openai-tts-1",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested native speech preset; standard voices map to native defaults. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-qwen-image-3-0",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. One tested square image; GPT Image Flare uses low quality. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-elevenlabs-tts-v3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested native speech preset; standard voices map to native defaults. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-grok-imagine-video",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested preset: one-second landscape video with audio (7 cents), within shared daily grant. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-gpt-image-2-5-flare",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. One tested square image; GPT Image Flare uses low quality. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-fal-kokoro",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested native speech preset; standard voices map to native defaults. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-heygen-voice-turbo",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested native speech preset; standard voices map to native defaults. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-flux-2-pro",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. One tested square image; GPT Image Flare uses low quality. No paid BYOK fallback. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-varosity-lyria-2",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$0.10/day shared media credits after email verification; expires midnight UTC. Tested preset: 30-second instrumental music (10 cents), within shared daily grant. Requires app v0.16.22 or newer. Live tested 2026-11-07; grant renews on the documented schedule, not once per model. https://varosity.ai/pricing",
+    "gravita": "info"
+   }
+  ],
+  "rime": [
+   {
+    "slug": "nov08-rime-coda",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$50/month shared across all Rime models; no card. WAV at 24 kHz; English; up to 1,000 characters. Standard OpenAI voice names map to a tested native voice. Requires app v0.16.22 or newer. Live tested 2026-11-08; grant renews on the documented schedule, not once per model. https://www.rime.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-rime-mistv3",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$50/month shared across all Rime models; no card. WAV at 24 kHz; English; up to 1,000 characters. Standard OpenAI voice names map to a tested native voice. Requires app v0.16.22 or newer. Live tested 2026-11-08; grant renews on the documented schedule, not once per model. https://www.rime.ai/pricing",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov08-rime-rime-stt",
+    "titolo": "Shared renewable free allowance",
+    "testo": "$50/month shared across all Rime models; no card. PCM16 WAV, mono/stereo, 8–48 kHz, normalized to native 16 kHz mono. English/Spanish; no native subtitle timestamps. rime-stt is a catalog slug, not a native model selector. Requires app v0.16.22 or newer. Live tested 2026-11-08; grant renews on the documented schedule, not once per model. https://www.rime.ai/pricing",
+    "gravita": "info"
+   }
+  ],
+  "groq": [
+   {
+    "slug": "nov09-groq-canopylabs-orpheus-v1-english",
+    "titolo": "Renewable free access",
+    "testo": "Shared recurring daily Groq Free-plan quota; not monthly cash credits. PCM16 WAV; maximum 200 characters. Standard voices map to troy. Requires organization-admin acceptance of model terms and app v0.16.23 or newer. Tested through the app router November 9, 2026. https://console.groq.com/docs/rate-limits",
+    "gravita": "info"
+   },
+   {
+    "slug": "nov09-groq-canopylabs-orpheus-arabic-saudi",
+    "titolo": "Renewable free access",
+    "testo": "Shared recurring daily Groq Free-plan quota; not monthly cash credits. PCM16 WAV; maximum 200 characters. Standard voices map to fahad. Requires organization-admin acceptance of model terms and app v0.16.23 or newer. Tested through the app router November 9, 2026. https://console.groq.com/docs/rate-limits",
+    "gravita": "info"
+   }
+  ],
+  "powertokens": [
+   {
+    "slug": "nov10-powertokens-glm-4-7-flash",
+    "titolo": "Free zero-credit model; frequent overload 429s",
+    "testo": "PowerTokens lists glm-4.7-flash at $0 / 1M input and output tokens (0 Credits); no RPM/RPD/TPD is published. Tested November 10, 2026 through the app router: non-streaming chat, streaming and tool calling all returned 200, in 3 to 18 s. Availability is low: PowerTokens often answers 429 code 1305 (\"temporarily overloaded\"; about 5 of 6 attempts during testing), which the router treats as an ordinary cooldown and skips, so treat it as an extra fallback rather than a primary route. Keys can be restricted per model in the PowerTokens dashboard: 403 token_model_forbidden means the key does not include glm-4.7-flash. Context window mirrors the upstream GLM-4.7 Flash model and was not long-context tested on PowerTokens. Requires app v0.16.24 or newer. https://www.powertokens.ai",
+    "gravita": "info"
+   }
+  ],
+  "freetts": [
+   {
+    "slug": "nov11-freetts-personal-byok",
+    "titolo": "Personal local BYOK only; spoken watermark",
+    "testo": "FreeTTS Free is for your own personal, non-commercial use with your own local API key. Do not resell or share raw generation access, repackage a competing TTS service, or remove the spoken watermark. The account allowance renews monthly without a card and is shared across voices and web/API use. November 11 live tests with Jenny and Sonia both reported chars_limit=15,000; the API FAQ also states 5,000/month, so the account response is authoritative for your key and this is not a second allowance. The keyless voice list does not validate credentials. MP3 only through this adapter; conservative 1,000-character plain-text request ceiling from the native API parameter docs. Default voice en-US-JennyNeural; en-GB-SoniaNeural also tested. neural-tts is the local adapter engine ID, not a separate provider model family per voice. Requires app v0.16.25 or newer. https://freetts.org/developers https://freetts.org/pricing https://freetts.org/terms",
+    "gravita": "warning"
+   }
+  ],
+  "zro": [
+   {
+    "slug": "nov12-zro-deepseek-v4-1-flash",
+    "titolo": "Shared renewable free access",
+    "testo": "Shared daily free DeepSeek usage; resets daily; numeric allowance unpublished. Normal chat, streaming, tool calling and JSON mode tested November 12, 2026 with a Free account and no prepaid balance. Requires app v0.16.27 or newer. The API nominal usage.cost is not a separate cash grant or proof of a cash debit. Reported identity is provider asserted, not independent weight attestation. https://zro.moonmath.ai/pricing",
+    "gravita": "info"
    }
   ]
  }
