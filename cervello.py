@@ -183,7 +183,7 @@ CONFIG = {
     # — FASE 2 · BLOCCO 2 —
     "fascia_ms": 250,            # idea 7/31: provider nella stessa fascia di velocita'
                                  #   (250ms) si alternano per consumo, round-robin
-    "tetto_agente": 0,           # idea 26: tetto richieste/giorno per agente (0 = spento)
+    "tetto_agente": 300,         # idea 26: tetto richieste/giorno per agente (13/11: acceso — approvabile dal pannello AGENTI LIVE)
     # — FASE 2 · BLOCCO 3 —
     "sticky_scadenza": 900,      # idea 4: la sessione resta fedele al suo provider 15 min
     "complessita_soglia": 4000,  # idea 11: sopra questi caratteri (o con codice) l'auto
@@ -684,10 +684,41 @@ def conta_agente(sess, token=0):
     stato_salva()
 
 
+def _nome_file_agente(sess):
+    """nome sicuro per i file di battito/approvazione (i sess sono UUID ma non si sa mai)."""
+    return re.sub(r"[^A-Za-z0-9._-]", "_", (sess or "ignoto"))[:48]
+
+def battito_brain(agente, stato, nota):
+    """CUCITURA 13/11 (da Paperclip): il cervello scrive il battito negli stessi
+    file del pannello AGENTI LIVE — così il pannello vede anche gli agenti fermi."""
+    try:
+        d = os.path.join(os.path.expanduser("~/posta"), "stato_agenti")
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, _nome_file_agente(agente) + ".json"), "w", encoding="utf-8") as fh:
+            json.dump({"agente": agente, "stato": stato, "nota": nota,
+                       "ts": time.strftime("%Y-%m-%d %H:%M:%S"), "epoch": int(time.time())},
+                      fh, ensure_ascii=False, indent=1)
+    except Exception:
+        pass
+
+def approvato_oggi(sess):
+    """CUCITURA 13/11: il capo approva dal pannello AGENTI LIVE — il file
+    ~/posta/approvazioni/<agente>.ok vale per il giorno scritto dentro."""
+    try:
+        d = os.path.join(os.path.expanduser("~/posta"), "approvazioni")
+        with open(os.path.join(d, _nome_file_agente(sess) + ".ok"), encoding="utf-8") as fh:
+            return fh.read().strip() == oggi()
+    except Exception:
+        return False
+
 def agente_oltre(sess):
-    """Idea 26: se il tetto per agente e' acceso e superato, si ferma qui."""
+    """Idea 26: se il tetto per agente e' acceso e superato, si ferma qui.
+    CUCITURA 13/11: l'approvazione del capo (pannello AGENTI LIVE) sblocca
+    l'agente per il giorno corrente."""
     tetto = CONFIG.get("tetto_agente") or 0
     if not tetto:
+        return False
+    if approvato_oggi(sess):
         return False
     a = (STATO.get("agenti") or {}).get((sess or "ignoto")[:24]) or {}
     return a.get("giorno") == oggi() and a.get("n", 0) >= tetto
@@ -2156,14 +2187,21 @@ class H(BaseHTTPRequestHandler):
         if regola and regola.get("tetto"):
             a = (STATO.get("agenti") or {}).get((sess or "ignoto")[:24]) or {}
             if a.get("giorno") == oggi() and a.get("n", 0) >= regola["tetto"]:
-                logga(tipo="tetto-agente", agente=sess, rotta="regole")
-                self._json({"error": {"message": "Tetto giornaliero dell'agente (regola: %d) "
-                                                 "raggiunto." % regola["tetto"]}}, 429)
-                return
+                if approvato_oggi(sess):
+                    battito_brain(sess, "running", "tetto regola superato ma approvato dal capo oggi")
+                else:
+                    battito_brain(sess, "blocked", "tetto giornaliero (regola %d) — attesa approvazione dal pannello" % regola["tetto"])
+                    logga(tipo="tetto-agente", agente=sess, rotta="regole")
+                    self._json({"error": {"message": "Tetto giornaliero dell'agente (regola: %d) "
+                                                     "raggiunto. Approvabile dal pannello AGENTI LIVE "
+                                                     "(localhost:20201)." % regola["tetto"]}}, 429)
+                    return
         if agente_oltre(sess):                            # idea 26: tetto per agente
+            battito_brain(sess, "blocked", "tetto giornaliero (%d richieste) — attesa approvazione dal pannello" % (CONFIG.get("tetto_agente") or 0))
             logga(tipo="tetto-agente", agente=sess, rotta="fermato")
             self._json({"error": {"message": "Tetto giornaliero dell'agente raggiunto "
-                                             "(CONFIG tetto_agente). Riparte domani."}}, 429)
+                                             "(CONFIG tetto_agente: %d). Approvabile dal pannello "
+                                             "AGENTI LIVE (localhost:20201)." % (CONFIG.get("tetto_agente") or 0)}}, 429)
             return
 
         # idea 21: la guardia solo-gratis ferma i modelli a pagamento sul portone

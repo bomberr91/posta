@@ -73,9 +73,10 @@ def pagina():
         colore = COLORI.get(stato, "#6b7280")
         if stato in ("blocked",):
             problemi += 1
+        bottone = ("<a href='/approva?agente=" + nome + "' style='color:#22c55e'>✅ approva</a>") if stato == "blocked" else ""
         righe_agenti.append(
             f"<tr><td><b>{nome}</b></td><td style='color:{colore}'>● {stato}</td>"
-            f"<td>{d.get('nota','') or '—'}</td><td style='font-family:monospace'>{d.get('ts','')}</td></tr>")
+            f"<td>{d.get('nota','') or '—'} {bottone}</td><td style='font-family:monospace'>{d.get('ts','')}</td></tr>")
     # servizi
     righe_servizi = []
     for nome, porta in SERVIZI:
@@ -116,6 +117,7 @@ h2{{margin:28px 0 8px;font-size:15px;color:#93c5fd;text-transform:uppercase;lett
 <h2>Agenti — chi sta facendo cosa</h2>
 <table><tr><td><b>Agente</b></td><td><b>Stato</b></td><td><b>Cosa / nota</b></td><td><b>Ultimo battito</b></td></tr>
 {''.join(righe_agenti)}</table>
+<p style="color:#6b7280;font-size:12px">approvati oggi: {' '.join(sorted(f[:-3] for f in os.listdir(APPR_DIR) if f.endswith('.ok') and open(os.path.join(APPR_DIR, f), encoding='utf-8').read().strip() == time.strftime('%Y-%m-%d'))) if os.path.isdir(APPR_DIR) and any(f.endswith('.ok') for f in os.listdir(APPR_DIR)) else 'nessuno'}</p>
 <h2>Servizi</h2>
 <table><tr><td><b>Servizio</b></td><td><b>Porta</b></td><td><b>Stato</b></td></tr>
 {''.join(righe_servizi)}</table>
@@ -137,6 +139,14 @@ class H(BaseHTTPRequestHandler):
         elif u.path == "/salute":
             self.send_response(200); self.end_headers()
             self.wfile.write(b"OK")
+        elif u.path == "/approva":
+            import re as _re
+            agente = (parse_qs(u.query).get("agente") or [""])[0]
+            nome_f = _re.sub(r"[^A-Za-z0-9._-]", "_", agente)[:48]
+            os.makedirs(APPR_DIR, exist_ok=True)
+            with open(os.path.join(APPR_DIR, nome_f + ".ok"), "w", encoding="utf-8") as f:
+                f.write(time.strftime("%Y-%m-%d"))
+            self.send_response(302); self.send_header("Location", "/"); self.end_headers()
         else:
             self.send_response(404); self.end_headers()
 

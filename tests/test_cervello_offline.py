@@ -355,6 +355,51 @@ class MaxTokensTests(unittest.TestCase):
         self.assertGreater(cerv.CONFIG["max_tokens"], 0)
 
 
+
+
+class ProvaTettoAgenteTests(unittest.TestCase):
+    """La cucitura 13/11 (da Paperclip): tetto per agente acceso + approvazione del capo."""
+
+    def setUp(self):
+        self._vecchio = cerv.CONFIG.get("tetto_agente")
+        cerv.CONFIG["tetto_agente"] = 2
+
+    def tearDown(self):
+        cerv.CONFIG["tetto_agente"] = self._vecchio
+        for f in ("provina.json",):
+            try:
+                os.remove(os.path.join(os.path.expanduser("~"), "posta", "stato_agenti", f))
+            except OSError:
+                pass
+        try:
+            os.remove(os.path.join(os.path.expanduser("~"), "posta", "approvazioni", "provina.ok"))
+        except OSError:
+            pass
+
+    def test_tetto_superato_blocca(self):
+        cerv.STATO["agenti"] = {"provina": {"giorno": cerv.oggi(), "n": 2, "token": 0}}
+        self.assertTrue(cerv.agente_oltre("provina"))
+
+    def test_sotto_tetto_passa(self):
+        cerv.STATO["agenti"] = {"provina": {"giorno": cerv.oggi(), "n": 1, "token": 0}}
+        self.assertFalse(cerv.agente_oltre("provina"))
+
+    def test_lapprovazione_del_capo_sblocca_oggi(self):
+        cerv.STATO["agenti"] = {"provina": {"giorno": cerv.oggi(), "n": 5, "token": 0}}
+        d = os.path.join(os.path.expanduser("~"), "posta", "approvazioni")
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "provina.ok"), "w", encoding="utf-8") as fh:
+            fh.write(cerv.oggi())
+        self.assertFalse(cerv.agente_oltre("provina"))
+
+    def test_battito_del_cervello_scrive_lo_stato(self):
+        cerv.battito_brain("provina", "blocked", "test di casa")
+        p = os.path.join(os.path.expanduser("~"), "posta", "stato_agenti", "provina.json")
+        with open(p, encoding="utf-8") as fh:
+            d = json.load(fh)
+        self.assertEqual(d["stato"], "blocked")
+        self.assertEqual(d["nota"], "test di casa")
+
 if __name__ == "__main__":
     unittest.main()
 
