@@ -85,12 +85,12 @@ while :; do
       echo "  [f] Gemini CLI (Agente da terminale Google)"
       read -r -p "Scelta [a/b/c/d/e/f, INVIO=a]: " AG
       case "${AG:-a}" in
-        b|B) cd "$HOME/posta" && goose session ;;
-        c|C) cd "$HOME/posta" && interpreter ;;
-        d|D) cd "$HOME/posta" && (hermes || "$HOME/.hermes/hermes-agent/venv/bin/hermes") ;;
-        e|E) bash "$HOME/posta/apri_openclaw.sh" ;;
-        f|F) cd "$HOME/posta" && (gemini || "$NODE22_BIN/gemini") ;;
-        *)   cd "$HOME/posta" && opencode ;;
+        b|B) bash "$HOME/posta/lavori/battito.sh" goose running "lanciato dalla Centrale" && cd "$HOME/posta" && goose session; bash "$HOME/posta/lavori/battito.sh" goose idle "uscito" ;;
+        c|C) bash "$HOME/posta/lavori/battito.sh" secondhand running "lanciato dalla Centrale" && cd "$HOME/posta" && interpreter; bash "$HOME/posta/lavori/battito.sh" secondhand idle "uscito" ;;
+        d|D) bash "$HOME/posta/lavori/battito.sh" hermes running "lanciato dalla Centrale" && cd "$HOME/posta" && { hermes || "$HOME/.hermes/hermes-agent/venv/bin/hermes"; }; bash "$HOME/posta/lavori/battito.sh" hermes idle "uscito" ;;
+        e|E) bash "$HOME/posta/lavori/battito.sh" openclaw running "lanciato dalla Centrale" && bash "$HOME/posta/apri_openclaw.sh"; bash "$HOME/posta/lavori/battito.sh" openclaw idle "uscito" ;;
+        f|F) bash "$HOME/posta/lavori/battito.sh" gemini running "lanciato dalla Centrale" && cd "$HOME/posta" && { gemini || "$NODE22_BIN/gemini"; }; bash "$HOME/posta/lavori/battito.sh" gemini idle "uscito" ;;
+        *)   bash "$HOME/posta/lavori/battito.sh" opencode running "lanciato dalla Centrale" && cd "$HOME/posta" && opencode; bash "$HOME/posta/lavori/battito.sh" opencode idle "uscito" ;;
       esac
       ;;
     2)
