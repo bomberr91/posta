@@ -10,7 +10,7 @@ for %%D in ("%USERPROFILE%\Desktop" "%USERPROFILE%\OneDrive\Desktop") do (
   )
 )
 
-wsl.exe -d Ubuntu2 -u agenti -- bash -lc "cd ~/posta && git fetch origin main && git reset --hard origin/main && chmod +x centrale.sh aggiorna_tutto.sh squadra.sh postino.sh leggi_video.py verifica.sh openclaw_fix.sh apri_openclaw.sh && bash ~/posta/centrale.sh"
+wsl.exe -d Ubuntu2 -u agenti -- bash -lc "bash ~/posta/avvio_centrale.sh"
 echo.
 echo La Centrale si e' chiusa. Premi un tasto per uscire...
 pause >nul
