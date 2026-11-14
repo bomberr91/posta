@@ -1,6 +1,3 @@
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 1, "quando": "2026-11-04 14:42:59"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:42:59"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:00"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:00"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 3, "quando": "2026-11-04 14:43:01"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:01"}
@@ -148,3 +145,6 @@
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 49131, "quando": "2026-11-14 00:04:35"}
 {"tipo": "errore-riserva", "provider": "dreamprompting", "modello": "google/gemini-3.1-flash-lite", "errore": "contesto", "codice": 413, "tentativo": 1, "quando": "2026-11-14 01:59:06"}
 {"tipo": "errore-riserva", "provider": "kilo", "modello": "google/gemini-3.1-flash-lite", "errore": "chiave", "codice": 401, "tentativo": 2, "quando": "2026-11-14 01:59:07"}
+{"tipo": "errore-riserva", "provider": "blockrun", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-14 01:59:14"}
+{"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
+{"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
