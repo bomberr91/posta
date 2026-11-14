@@ -184,7 +184,7 @@ gemini_guarda() {  # $1 MOD (std|riserva)  $2 STATO
   VIA=auto
   [ "$MOD" = riserva ] && VIA=inline
 python3 - "$V" "$K" "$VIA" "$STATO" << 'PYEOF' || via_casa "$STATO"
-import base64, json, sys, time, urllib.request
+import base64, json, os, sys, time, urllib.request
 video, chiave, via, stato = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 dati = open(video, "rb").read()
 PROMPT = "Analizza questo video in ITALIANO: 1) trascrivi il parlato 2) riporta TUTTO il testo che appare a schermo (titoli, scritte, sottotitoli) 3) elenca nomi di strumenti/repo/siti/link citati 4) riassunto in 3 righe del contenuto utile."
