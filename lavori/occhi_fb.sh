@@ -214,14 +214,16 @@ if via == "auto":
                      "X-Goog-Upload-Header-Content-Length": str(len(dati)),
                      "X-Goog-Upload-Header-Content-Type": "video/mp4",
                      "Content-Type": "application/json"})
-        r = urllib.request.urlopen(avvio, timeout=60)
+        r = urllib.request.urlopen(avvio, timeout=int(os.environ.get("OCCHI_GEMINI_TIMEOUT", "60")))
         url_su = r.headers.get("X-Goog-Upload-URL")
         carica = urllib.request.Request(url_su, data=dati, method="POST",
             headers={"X-Goog-Upload-Command": "upload, finalize", "X-Goog-Upload-Offset": "0"})
-        f = json.loads(urllib.request.urlopen(carica, timeout=600).read().decode())["file"]
+        f = json.loads(urllib.request.urlopen(carica, timeout=int(os.environ.get("OCCHI_GEMINI_TIMEOUT", "600"))).read().decode())["file"]
+        scadenza = time.time() + int(os.environ.get("OCCHI_GEMINI_TIMEOUT", "600"))
         for _ in range(40):
             st = json.loads(urllib.request.urlopen(BASE + "/v1beta/" + f["name"] + "?key=" + chiave, timeout=30).read().decode())
             if st.get("state") == "ACTIVE": break
+            if time.time() > scadenza: break
             time.sleep(4)
         print(genera({"file_data": {"mime_type": "video/mp4", "file_uri": f["uri"]}}))
         nota("gemini FileAPI", "ok")
