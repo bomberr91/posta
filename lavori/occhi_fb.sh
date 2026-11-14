@@ -39,9 +39,46 @@ USO
 # ---------- chiavi: SOLO LETTURA (il .env c'è già, non si tocca) ----------
 [ -f "$HOME/posta/.env" ] && { set -a; . "$HOME/posta/.env" 2>/dev/null; set +a; }
 [ -f "$HOME/.posta_agenti.env" ] && { set -a; . "$HOME/.posta_agenti.env" 2>/dev/null; set +a; }
+# ---------- TERZA VIA (cucitura 14/11): whisper + vision quando Gemini tace ----------
+via_casa() {  # $1 STATO
+  local STATO="$1" FF GSK CFL t0 PARLATO
+  echo
+  echo "### 🏠 TERZA VIA — casa (Groq whisper + Cloudflare vision, niente Gemini)"
+  t0=$SECONDS
+  FF="$HOME/.hermes/tools/ffmpeg-9.0.1-linux-x64/bin/ffmpeg"
+  [ -x "$FF" ] || FF=ffmpeg
+  GSK=$(grep -oE 'gsk_[A-Za-z0-9_-]{20,}' ~/CHIAVI_LOCALI.md 2>/dev/null | head -1)
+  CFL=$(grep -oE '[a-f0-9]{32}:[A-Za-z0-9_-]{20,}' ~/CHIAVI_LOCALI.md 2>/dev/null | head -1)
+  if [ -z "$GSK" ]; then
+    echo "G3|whisper|ko: chiave gsk_ mancante" >> "$STATO"
+    echo "**PARLATO:** (chiave Groq mancante)"
+  else
+    "$FF" -y -loglevel error -i /tmp/occhi_video.mp4 -vn -ac 1 -ar 16000 -b:a 48k /tmp/occhi_audio.mp3 2>/dev/null
+    PARLATO=$(curl -s --max-time 60 -X POST "https://api.groq.com/openai/v1/audio/transcriptions" \
+      -H "Authorization: Bearer $GSK" \
+      -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/157.0.0.0" \
+      -F model=whisper-large-v3 -F language=it -F "file=@/tmp/occhi_audio.mp3" | \
+      python3 -c "import json,sys; print(json.load(sys.stdin).get('text','')[:1200])" 2>/dev/null)
+    echo "G3|whisper|ok" >> "$STATO"
+    echo "**PARLATO (Groq whisper):** $PARLATO"
+  fi
+  if [ -z "$CFL" ]; then
+    echo "G3|vision|ko: chiave Cloudflare mancante" >> "$STATO"
+    return 0
+  fi
+  mkdir -p /tmp/occhi_frames
+  "$FF" -y -loglevel error -i /tmp/occhi_video.mp4 -vf 'fps=1,scale=720:-2' /tmp/occhi_frames/f%02d.jpg 2>/dev/null
+  echo "**SCRITE A SCHERMO (Cloudflare vision, frame per frame):**"
+  python3 "$HOME/posta/lavori/vision_cf_frames.py" /tmp/occhi_frames "$CFL"
+  echo "G3|vision|ok" >> "$STATO"
+  echo "   (terza via in $((SECONDS - t0))s)"
+  return 0
+}
+
 chiave_gemini() {
   local K="${GEMINI_API_KEY:-${GEMINI_STUDIO:-}}"
   [ -n "$K" ] || K=$(grep "^GEMINI_STUDIO=" ~/CHIAVI_LOCALI.md 2>/dev/null | head -1 | cut -d= -f2)
+  [ -n "$K" ] || K=$(grep -i "Gemini Studio" ~/CHIAVI_LOCALI.md 2>/dev/null | grep -oE 'AQ\.[A-Za-z0-9_-]+' | head -1)   # 13/11: il vault riordinato tiene la chiave nel formato lista
   printf '%s' "$K"
 }
 
@@ -146,7 +183,7 @@ gemini_guarda() {  # $1 MOD (std|riserva)  $2 STATO
   fi
   VIA=auto
   [ "$MOD" = riserva ] && VIA=inline
-python3 - "$V" "$K" "$VIA" "$STATO" << 'PYEOF'
+python3 - "$V" "$K" "$VIA" "$STATO" << 'PYEOF' || via_casa "$STATO"
 import base64, json, sys, time, urllib.request
 video, chiave, via, stato = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 dati = open(video, "rb").read()
@@ -165,7 +202,7 @@ def genera(parte_video):
     corpo = json.dumps({"contents": [{"parts": [parte_video, {"text": PROMPT}]}]}).encode()
     req = urllib.request.Request(BASE + "/v1beta/models/gemini-3.8-flash:generateContent?key=" + chiave,
                                  data=corpo, headers={"Content-Type": "application/json"})
-    d = json.loads(urllib.request.urlopen(req, timeout=600).read().decode())
+    d = json.loads(urllib.request.urlopen(req, timeout=int(os.environ.get("OCCHI_GEMINI_TIMEOUT", "600"))).read().decode())
     return d["candidates"][0]["content"]["parts"][0]["text"]
 
 # VIA 1 (solo al primo tentativo): File API col protocollo resumable VERO

@@ -1,7 +1,7 @@
 {
  "agente": "clone-b",
  "stato": "running",
- "nota": "setaccio cervello: XERJ + needle (ricerca a poco token + embeddings on-device)",
- "ts": "2026-11-13 23:38:48",
- "epoch": 1794609528
+ "nota": "setaccio cervello (2° giro): XERJ + needle (ricerca a poco token + embeddings on-device)",
+ "ts": "2026-11-13 23:59:30",
+ "epoch": 1794610770
 }
