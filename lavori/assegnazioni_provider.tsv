@@ -59,3 +59,8 @@ Bot Telegram	WIN	-	-	-	SOSPESO	non riproporlo
 Deep Dog	-	Tavily;Exa	cervello	CONDIVISA	ATTIVO	4/11: il cane chiama il LLM del cervello (20129, model auto, chiave sk-cervello nel .env); le chiavi OpenRouter/DeepSeek restano nel portachiavi ma non sono piu' usate dal cane; le chiavi di ricerca (Tavily, Exa) si condividono per natura. Il check 'pronto' non chiede piu' DeepSeek col provider cervello. Collaudo: ricerca completata, rotta motore nel portiere_log.
 LongCat	WIN	LongCat	diretto	ESCLUSIVA	MISURATO	nel roster: la quota non rinnova (402 continuo)
 NaraRouter	-	NaraRouter	-	ESCLUSIVA	MISURATO	fuori dal roster (403 telegram_required): la chiave è libera ma il provider non serve
+
+# 17/11 notte — entrano nel libro due strumenti nuovi (ordine capo: il libro si aggiorna sempre)
+# e si registra lo stato: MOLAB IN PAUSA (la connessione sessioni gira a vuoto)
+Molab (pipeline video leo)	MOLAB	Agnes AI	diretto	ESCLUSIVA	SOSPESO	la chiave Agnes sta in chiave_agnes.txt sulla macchina molab (uso diretto, dichiarato per la regola 2 del libro: chi viene tolto dal roster lo dichiara qui) — pipeline video: MOLAB IN PAUSA dal 17/11 (la connessione sessioni gira a vuoto, pulizie e relogin inutili) — si riattiva al ritorno del servizio
+Instagram Studio (dashboard)	BROWSER	-	cervello	ESCLUSIVA	ATTIVO	la dashboard (newspop-studio.vercel.app) chiama il cervello DAL BROWSER (127.0.0.1:20129, CORS gia' aperto nel gateway, chiave finta sk-cervello nel localStorage — nessuna chiave provider vera nel progetto: la regola 1 del libro e' rispettata) — pannello 🧠 Intelligence montato il 17/11 (import competitor, pesi, gate)
