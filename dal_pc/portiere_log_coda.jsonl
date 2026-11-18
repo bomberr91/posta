@@ -1,5 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 2046, "tentativi": 1, "quando": "2026-11-18 22:19:37"}
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 706, "tentativi": 1, "quando": "2026-11-18 22:19:38"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 1731, "tentativi": 1, "quando": "2026-11-18 22:20:01"}
 {"tipo": "errore-riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "errore": "quota", "codice": 429, "tentativo": 1, "quando": "2026-11-18 22:20:01"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 5377, "tentativi": 2, "quando": "2026-11-18 22:20:06"}
@@ -148,3 +146,5 @@
 {"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "provider": "llmtr", "modello": "qwen/qwen3.8-27b-free", "ms": 1630, "tentativi": 1, "quando": "2026-11-18 22:33:09"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 16499, "tentativi": 1, "quando": "2026-11-18 22:33:46"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 22337, "tentativi": 1, "quando": "2026-11-18 22:34:08"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 106065, "tentativi": 1, "quando": "2026-11-18 22:35:54"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 13031, "quando": "2026-11-18 22:36:01"}
