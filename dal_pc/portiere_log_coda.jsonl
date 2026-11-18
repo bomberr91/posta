@@ -1,9 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 525, "quando": "2026-11-18 17:25:15"}
-{"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:25:19"}
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 674, "quando": "2026-11-18 17:25:19"}
-{"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:25:21"}
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 721, "quando": "2026-11-18 17:25:21"}
-{"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:25:24"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 885, "quando": "2026-11-18 17:25:25"}
 {"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:25:26"}
 {"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:25:27"}
@@ -148,3 +142,9 @@
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 331, "tentativi": 1, "quando": "2026-11-18 19:54:00"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 236, "tentativi": 1, "quando": "2026-11-18 19:54:00"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 808, "tentativi": 1, "quando": "2026-11-18 19:54:00"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 326, "tentativi": 1, "quando": "2026-11-18 19:55:22"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 503, "tentativi": 1, "quando": "2026-11-18 19:55:24"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 299, "tentativi": 1, "quando": "2026-11-18 19:55:26"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 436, "tentativi": 1, "quando": "2026-11-18 19:55:26"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 527, "tentativi": 1, "quando": "2026-11-18 19:55:28"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 1025, "tentativi": 1, "quando": "2026-11-18 19:55:28"}
