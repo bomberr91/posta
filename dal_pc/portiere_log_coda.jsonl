@@ -1,4 +1,3 @@
-{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 2, "quando": "2026-11-18 22:17:47"}
 {"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-18 22:17:50"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 6511, "tentativi": 5, "quando": "2026-11-18 22:17:51"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 2046, "tentativi": 1, "quando": "2026-11-18 22:19:37"}
@@ -148,3 +147,4 @@
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:28:05"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:28:05"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:28:25"}
+{"tipo": "richiesta", "agente": "cervello-2de5c12e398bc6e0", "politica": "gratis", "rotta": "riserva", "provider": "llmtr", "modello": "qwen/qwen3.8-27b-free", "ms": 1630, "tentativi": 1, "quando": "2026-11-18 22:33:09"}
