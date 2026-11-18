@@ -8,15 +8,6 @@
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:49"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:51"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:51"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:26:09"}
@@ -148,3 +139,12 @@
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 4111, "tentativi": 1, "quando": "2026-11-18 22:54:09"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 1387, "tentativi": 1, "quando": "2026-11-18 22:54:13"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "migliore", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 113478, "tentativi": 1, "quando": "2026-11-18 22:54:53"}
+{"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "chiave", "codice": 403, "tentativo": 1, "quando": "2026-11-18 23:37:27"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 4318, "tentativi": 2, "quando": "2026-11-18 23:37:30"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "pollinations", "modello": "openai-fast", "ms": 304, "tentativi": 1, "quando": "2026-11-18 23:37:42"}
+{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "passeggero", "codice": 503, "tentativo": 2, "quando": "2026-11-18 23:37:49"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-18 23:37:52"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "mistral", "modello": "mistral-code-latest", "ms": 6917, "tentativi": 5, "quando": "2026-11-18 23:37:54"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "mistral", "modello": "mistral-code-latest", "ms": 452, "tentativi": 1, "quando": "2026-11-18 23:37:56"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "mistral", "modello": "mistral-code-latest", "ms": 1320, "tentativi": 1, "quando": "2026-11-18 23:38:03"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "mistral", "modello": "mistral-code-latest", "ms": 486, "tentativi": 1, "quando": "2026-11-18 23:38:05"}
