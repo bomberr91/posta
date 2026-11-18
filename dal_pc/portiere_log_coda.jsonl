@@ -10,9 +10,6 @@
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
-{"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:16"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:19"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:20"}
 {"tipo": "tetto-agente", "agente": "cervello-fc80c19f3f342ce9", "rotta": "fermato", "quando": "2026-11-18 22:25:48"}
@@ -148,3 +145,6 @@
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 16436, "tentativi": 1, "quando": "2026-11-18 22:45:31"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 4802, "quando": "2026-11-18 22:45:35"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 1908, "quando": "2026-11-18 22:46:27"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 2548, "quando": "2026-11-18 22:47:15"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "motore-mappato", "modello": "auto/best-fast", "ms": 2301, "quando": "2026-11-18 22:47:17"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "migliore", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 108045, "tentativi": 1, "quando": "2026-11-18 22:47:23"}
