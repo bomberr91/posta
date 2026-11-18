@@ -1,6 +1,3 @@
-{"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:39:28"}
-{"tipo": "fallita", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "quando": "2026-11-18 17:39:33"}
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3059, "quando": "2026-11-18 17:39:44"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6100, "quando": "2026-11-18 17:39:48"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3214, "quando": "2026-11-18 17:39:50"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 11924, "quando": "2026-11-18 17:39:53"}
@@ -148,3 +145,6 @@
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 4186, "tentativi": 3, "quando": "2026-11-18 20:22:12"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 474, "tentativi": 1, "quando": "2026-11-18 20:22:52"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "veloce", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 90526, "tentativi": 1, "quando": "2026-11-18 20:24:23"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "migliore", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 90454, "tentativi": 1, "quando": "2026-11-18 20:24:53"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 90611, "tentativi": 1, "quando": "2026-11-18 20:25:23"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "auto", "rotta": "riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "ms": 67076, "tentativi": 1, "quando": "2026-11-18 20:25:29"}
