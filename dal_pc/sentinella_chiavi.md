@@ -38,3 +38,36 @@ scritto: /home/agenti/posta/lavori/catalogo_freellmapi.json
 riserva ora: 37 su 61 provider
 
 ## 3. NavyAI (sentinella dedicata)
+```
+NavyAI: chiave trovata (51 caratteri)
+  schizogpt -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-6.1-sol -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-6-astra -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+  gpt-5.6-sol -> HTTP 403 "message":"The Free plan is temporarily paused for all users. You can purchase a plan at ht
+```
+
+## 4. Check-in AgentRouter
+check-in non eseguito: o non e' l'ora (dopo le 18:05), o il browser degli agenti non risponde, o e' gia' stato fatto oggi.
+
+## 6. Servizi parcheggiati (Waterfall, NavyAI)
+```
+# 📡 Sentinella dei servizi parcheggiati — 20/11/2026 01:48
+
+Ogni giorno bussa a Waterfall e NavyAI (parcheggiati, fuori dal roster): aspettiamo che si muovano da soli.
+
+## Waterfall (waterfall)
+- indirizzo: https://api.getwaterfall.org/v1 · modello: auto · chiave: presente
+- esito: HTTP 0
+```
+ERR <urlopen error [Errno -3] Temporary failure in name resolution>
+```
+
+## NavyAI (navy)
+- indirizzo: https://api.navy/v1 · modello: schizogpt · chiave: presente
+- esito: HTTP 0
+```
+ERR <urlopen error [Errno -3] Temporary failure in name resolution>
+```
+
+--- fine sentinella servizi ---
+```
