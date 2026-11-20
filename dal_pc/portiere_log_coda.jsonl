@@ -1,7 +1,3 @@
-{"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
-{"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
-{"tipo": "sentinella", "nota": "fonti quote aggiornate: FREE-LLM-API-Provider (push 2026-11-17) · awesome-freellm-apis (push 2026-11-20) — ricontrollare portiere_quote.txt", "quando": "2026-11-20 16:20:09"}
-{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "pollinationsfree", "modello": "openai-fast", "ms": 6056, "tentativi": 1, "quando": "2026-11-20 16:20:11"}
 {"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "breve", "codice": 402, "tentativo": 2, "quando": "2026-11-20 16:20:17"}
 {"tipo": "errore-riserva", "provider": "cloudflare", "modello": "eaf31752-a074-441f-8b70-d593255d2811", "errore": "altro", "codice": 400, "tentativo": 3, "quando": "2026-11-20 16:20:18"}
 {"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "chiave", "codice": 403, "tentativo": 4, "quando": "2026-11-20 16:20:19"}
@@ -148,3 +144,7 @@
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 2461, "tentativi": 1, "quando": "2026-11-20 17:11:01"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 2479, "tentativi": 1, "quando": "2026-11-20 17:11:01"}
 {"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 3500, "tentativi": 1, "quando": "2026-11-20 17:11:05"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 2563, "tentativi": 1, "quando": "2026-11-20 17:11:53"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 3502, "tentativi": 1, "quando": "2026-11-20 17:11:57"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 2288, "tentativi": 1, "quando": "2026-11-20 17:12:02"}
+{"tipo": "richiesta", "agente": "cervello-fc80c19f3f342ce9", "politica": "gratis", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 3641, "tentativi": 1, "quando": "2026-11-20 17:12:07"}
