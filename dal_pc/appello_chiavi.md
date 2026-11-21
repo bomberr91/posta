@@ -1,18 +1,17 @@
-# 🗣️ Appello delle chiavi — 21/11/2026 12:19
+# 🗣️ Appello delle chiavi — 21/11/2026 18:20
 
-Chiavi provate: 12
+Chiavi provate: 11
 
 | Provider | Esito | ms | Nota |
 |---|---|---|---|
-| Api.Airforce | 🟡 occupato adesso | 6206 | limite o credito finito adesso |
-| BlazeAPI | ⚪ non raggiungibile | 3168 | non raggiungibile |
-| CLōD | 🔴 chiave rifiutata | 5868 | chiave rifiutata |
-| Google AI Studio | 🟡 occupato adesso | 68203 | limite o credito finito adesso |
-| Lucidity | 🟡 occupato adesso | 5386 | limite o credito finito adesso |
-| Nscale | 🟡 strano | 4033 | {"error":{"message":"No matching route found. It is likely because the model specified in  |
-| OpenCode Zen | 🟡 occupato adesso | 7270 | limite o credito finito adesso |
+| Api.Airforce | ⚪ non raggiungibile | 40563 | non raggiungibile |
+| BlazeAPI | ⚪ non raggiungibile | 20390 | non raggiungibile |
+| CLōD | ⚪ non raggiungibile | 40577 | non raggiungibile |
+| Google AI Studio | ⚪ non raggiungibile | 40692 | non raggiungibile |
+| Lucidity | ⚪ non raggiungibile | 20390 | non raggiungibile |
+| Nscale | ⚪ non raggiungibile | 40506 | non raggiungibile |
+| OpenCode Zen | ⚪ non raggiungibile | 40700 | non raggiungibile |
 | Qdrant Cloud | — nessuna chiave | 0 | nessuna chiave nel portachiavi |
-| Router9 | 🟡 strano | 7308 | {"error":{"code":"model_requires_upgrade","message":"Model \"deepseek/deepseek-v4-pro\" is |
-| Sail | 🟡 strano | 3615 | {"error":{"message":"model 'moonshotai/Kimi-K3' is not supported","type":"invalid_request_ |
-| Speka | ✅ risponde | 9785 | ha risposto davvero (meta/muse-glimmer-30b) |
-| UnoRouter | 🟡 occupato adesso | 5799 | limite o credito finito adesso |
+| Router9 | ⚪ non raggiungibile | 40595 | non raggiungibile |
+| Sail | ⚪ non raggiungibile | 20364 | non raggiungibile |
+| UnoRouter | ⚪ non raggiungibile | 40621 | non raggiungibile |
