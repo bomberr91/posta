@@ -1,8 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4035, "quando": "2026-11-25 18:49:39"}
-{"tipo": "compressione", "nota": "motore: 312164 -> 131621 caratteri (-58%)", "quando": "2026-11-25 18:49:40"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2036, "quando": "2026-11-25 18:49:42"}
-{"tipo": "compressione", "nota": "motore: 312836 -> 132293 caratteri (-58%)", "quando": "2026-11-25 18:49:54"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5417, "quando": "2026-11-25 18:50:00"}
 {"tipo": "compressione", "nota": "motore: 313771 -> 133228 caratteri (-58%)", "quando": "2026-11-25 18:51:50"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4983, "quando": "2026-11-25 18:51:54"}
 {"tipo": "compressione", "nota": "motore: 314106 -> 133563 caratteri (-57%)", "quando": "2026-11-25 18:51:55"}
@@ -148,3 +143,8 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11144, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:19:18"}
 {"tipo": "compressione", "nota": "motore: 649971 -> 360073 caratteri (-45%)", "quando": "2026-11-25 19:20:40"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 28236, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:21:08"}
+{"tipo": "compressione", "nota": "motore: 700912 -> 360403 caratteri (-49%)", "quando": "2026-11-25 19:21:36"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 12639, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:21:48"}
+{"tipo": "compressione", "nota": "motore: 712243 -> 360477 caratteri (-49%)", "quando": "2026-11-25 19:21:59"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11393, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:22:10"}
+{"tipo": "compressione", "nota": "motore: 725676 -> 360551 caratteri (-50%)", "quando": "2026-11-25 19:22:15"}
