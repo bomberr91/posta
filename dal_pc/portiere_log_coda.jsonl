@@ -1,12 +1,3 @@
-{"tipo": "compressione", "nota": "motore: 89373 -> 52649 caratteri (-41%)", "quando": "2026-11-25 14:41:58"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 21780, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 14:42:20"}
-{"tipo": "compressione", "nota": "motore: 90186 -> 52975 caratteri (-41%)", "quando": "2026-11-25 14:42:24"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 10213, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 14:42:34"}
-{"tipo": "compressione", "nota": "motore: 96012 -> 56629 caratteri (-41%)", "quando": "2026-11-25 14:42:35"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4122, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 14:42:39"}
-{"tipo": "compressione", "nota": "motore: 96455 -> 57072 caratteri (-41%)", "quando": "2026-11-25 14:43:38"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 52757, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 14:44:31"}
-{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "altro", "codice": 400, "tentativo": 1, "quando": "2026-11-25 14:46:08"}
 {"tipo": "errore-riserva", "provider": "simplellm", "modello": "free-Llama-3.1-8B-Instruct", "errore": "altro", "codice": 400, "tentativo": 2, "quando": "2026-11-25 14:46:09"}
 {"tipo": "richiesta", "agente": "cervello-d8a7200003673ce4", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 98290, "tentativi": 3, "quando": "2026-11-25 14:46:12"}
 {"tipo": "compressione", "nota": "motore: 101586 -> 58268 caratteri (-43%)", "quando": "2026-11-25 14:46:12"}
@@ -148,3 +139,12 @@
 {"tipo": "compressione", "nota": "motore: 106751 -> 63189 caratteri (-41%)", "quando": "2026-11-25 18:21:30"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4070, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:34"}
 {"tipo": "compressione", "nota": "motore: 106796 -> 63234 caratteri (-41%)", "quando": "2026-11-25 18:21:36"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4341, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:40"}
+{"tipo": "compressione", "nota": "motore: 107111 -> 63549 caratteri (-41%)", "quando": "2026-11-25 18:21:45"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 8731, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:53"}
+{"tipo": "compressione", "nota": "motore: 118523 -> 63623 caratteri (-46%)", "quando": "2026-11-25 18:21:56"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11341, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:22:07"}
+{"tipo": "compressione", "nota": "motore: 118696 -> 63796 caratteri (-46%)", "quando": "2026-11-25 18:22:09"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 6700, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:22:15"}
+{"tipo": "compressione", "nota": "motore: 118797 -> 63897 caratteri (-46%)", "quando": "2026-11-25 18:22:17"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 12535, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:22:30"}
