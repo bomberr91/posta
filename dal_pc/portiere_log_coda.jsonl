@@ -1,8 +1,3 @@
-{"tipo": "errore-riserva", "provider": "blockrun", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-14 01:59:14"}
-{"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
-{"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
-{"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "rete", "nota": "<urlopen error [Errno 101] Network is unreachable>", "tentativo": 2, "quando": "2026-11-25 18:49:08"}
-{"tipo": "errore-riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "errore": "contesto", "codice": 413, "tentativo": 4, "quando": "2026-11-25 18:49:12"}
 {"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 5, "quando": "2026-11-25 18:49:13"}
 {"tipo": "fallita", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "nessuna", "quando": "2026-11-25 18:49:13"}
 {"tipo": "compressione", "nota": "motore: 310644 -> 130637 caratteri (-58%)", "quando": "2026-11-25 18:49:13"}
@@ -148,3 +143,8 @@
 {"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 3, "quando": "2026-11-25 19:15:06"}
 {"tipo": "errore-riserva", "provider": "simplellm", "modello": "free-Llama-3.1-8B-Instruct", "errore": "passeggero", "codice": 502, "tentativo": 4, "quando": "2026-11-25 19:15:12"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 49669, "tentativi": 5, "risparmio_car": 36068, "quando": "2026-11-25 19:15:31"}
+{"tipo": "compressione", "nota": "motore: 596626 -> 357646 caratteri (-40%)", "quando": "2026-11-25 19:18:02"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 22094, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:18:24"}
+{"tipo": "compressione", "nota": "motore: 596671 -> 357691 caratteri (-40%)", "quando": "2026-11-25 19:18:28"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11025, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 19:18:38"}
+{"tipo": "compressione", "nota": "motore: 596771 -> 357791 caratteri (-40%)", "quando": "2026-11-25 19:18:40"}
