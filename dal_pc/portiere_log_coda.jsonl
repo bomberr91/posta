@@ -1,6 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3413, "quando": "2026-11-25 11:34:24"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1649, "quando": "2026-11-25 11:34:30"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4205, "quando": "2026-11-25 11:34:36"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2227, "quando": "2026-11-25 11:36:27"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2067, "quando": "2026-11-25 11:36:32"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5107, "quando": "2026-11-25 11:36:39"}
@@ -148,3 +145,6 @@
 {"tipo": "compressione", "nota": "motore: 52012 -> 49029 caratteri (-6%)", "quando": "2026-11-25 18:09:04"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 6292, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:09:10"}
 {"tipo": "compressione", "nota": "motore: 52299 -> 49316 caratteri (-6%)", "quando": "2026-11-25 18:09:12"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 5026, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:09:17"}
+{"tipo": "compressione", "nota": "motore: 54981 -> 49402 caratteri (-10%)", "quando": "2026-11-25 18:09:28"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4775, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:09:32"}
