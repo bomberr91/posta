@@ -1,4 +1,3 @@
-{"tipo": "errore-riserva", "provider": "blockrun", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-14 01:59:14"}
 {"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
 {"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
 {"tipo": "sentinella", "nota": "fonti quote aggiornate: awesome-freellm-apis (push 2026-11-24) — ricontrollare portiere_quote.txt", "quando": "2026-11-25 11:24:13"}
@@ -148,3 +147,4 @@
 {"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 4, "quando": "2026-11-25 18:05:17"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 10543, "tentativi": 5, "risparmio_car": 36068, "quando": "2026-11-25 18:05:20"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1779, "quando": "2026-11-25 18:05:22"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 9520, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:07:25"}
