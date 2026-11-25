@@ -1,10 +1,3 @@
-{"tipo": "compressione", "nota": "motore: 106751 -> 63189 caratteri (-41%)", "quando": "2026-11-25 18:21:30"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4070, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:34"}
-{"tipo": "compressione", "nota": "motore: 106796 -> 63234 caratteri (-41%)", "quando": "2026-11-25 18:21:36"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4341, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:40"}
-{"tipo": "compressione", "nota": "motore: 107111 -> 63549 caratteri (-41%)", "quando": "2026-11-25 18:21:45"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 8731, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:21:53"}
-{"tipo": "compressione", "nota": "motore: 118523 -> 63623 caratteri (-46%)", "quando": "2026-11-25 18:21:56"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11341, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:22:07"}
 {"tipo": "compressione", "nota": "motore: 118696 -> 63796 caratteri (-46%)", "quando": "2026-11-25 18:22:09"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 6700, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:22:15"}
@@ -148,3 +141,10 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2182, "quando": "2026-11-25 18:43:36"}
 {"tipo": "compressione", "nota": "motore: 308196 -> 128189 caratteri (-58%)", "quando": "2026-11-25 18:43:36"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3237, "quando": "2026-11-25 18:43:40"}
+{"tipo": "compressione", "nota": "motore: 308448 -> 128441 caratteri (-58%)", "quando": "2026-11-25 18:45:08"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 8296, "quando": "2026-11-25 18:45:16"}
+{"tipo": "compressione", "nota": "motore: 309139 -> 129132 caratteri (-58%)", "quando": "2026-11-25 18:45:17"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3895, "quando": "2026-11-25 18:45:21"}
+{"tipo": "compressione", "nota": "motore: 309536 -> 129529 caratteri (-58%)", "quando": "2026-11-25 18:45:22"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4077, "quando": "2026-11-25 18:45:26"}
+{"tipo": "compressione", "nota": "motore: 310123 -> 130116 caratteri (-58%)", "quando": "2026-11-25 18:45:26"}
