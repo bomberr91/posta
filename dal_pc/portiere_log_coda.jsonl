@@ -1,12 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6062, "quando": "2026-11-25 11:36:47"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2418, "quando": "2026-11-25 11:36:50"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5022, "quando": "2026-11-25 11:36:57"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2063, "quando": "2026-11-25 11:39:12"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2540, "quando": "2026-11-25 11:40:00"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3858, "quando": "2026-11-25 11:40:23"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4551, "quando": "2026-11-25 11:42:17"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7358, "quando": "2026-11-25 11:44:36"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5491, "quando": "2026-11-25 11:45:49"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2266, "quando": "2026-11-25 11:45:52"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4118, "quando": "2026-11-25 11:46:30"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5240, "quando": "2026-11-25 11:47:17"}
@@ -148,3 +139,12 @@
 {"tipo": "compressione", "nota": "motore: 55528 -> 49949 caratteri (-10%)", "quando": "2026-11-25 18:11:34"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 11934, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:11:46"}
 {"tipo": "compressione", "nota": "motore: 55582 -> 50003 caratteri (-10%)", "quando": "2026-11-25 18:11:50"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 6740, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:11:56"}
+{"tipo": "compressione", "nota": "motore: 55627 -> 50048 caratteri (-10%)", "quando": "2026-11-25 18:11:58"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 5118, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:12:03"}
+{"tipo": "compressione", "nota": "motore: 57012 -> 51433 caratteri (-10%)", "quando": "2026-11-25 18:12:05"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 5095, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:12:10"}
+{"tipo": "compressione", "nota": "motore: 57057 -> 51478 caratteri (-10%)", "quando": "2026-11-25 18:12:12"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 5756, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:12:18"}
+{"tipo": "compressione", "nota": "motore: 57171 -> 51592 caratteri (-10%)", "quando": "2026-11-25 18:12:20"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "agnes", "modello": "agnes-3.0-flash", "ms": 4118, "tentativi": 1, "risparmio_car": 36068, "quando": "2026-11-25 18:12:24"}
