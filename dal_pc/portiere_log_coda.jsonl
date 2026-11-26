@@ -1,5 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6167, "quando": "2026-11-04 16:22:45"}
-{"tipo": "richiesta", "agente": "cervello-168fedf2616d6d39", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5571, "quando": "2026-11-04 16:27:57"}
 {"tipo": "hot-reload", "nota": "lista ricaricata: 54 provider", "quando": "2026-11-13 23:13:13"}
 {"tipo": "sentinella", "nota": "fonti quote aggiornate: FREE-LLM-API-Provider (push 2026-11-13) · awesome-freellm-apis (push 2026-11-13) — ricontrollare portiere_quote.txt", "quando": "2026-11-13 23:39:29"}
 {"tipo": "richiesta", "agente": "cervello-a6329df7ee2e09f2", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 19016, "quando": "2026-11-13 23:39:47"}
@@ -148,3 +146,5 @@
 {"tipo": "compressione", "nota": "motore: 597920 -> 250926 caratteri (-58%)", "quando": "2026-11-26 12:28:53"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 82131, "quando": "2026-11-26 12:30:14"}
 {"tipo": "compressione", "nota": "motore: 599035 -> 251314 caratteri (-58%)", "quando": "2026-11-26 12:30:15"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 35644, "quando": "2026-11-26 12:30:51"}
+{"tipo": "compressione", "nota": "motore: 599826 -> 252105 caratteri (-58%)", "quando": "2026-11-26 12:30:52"}
