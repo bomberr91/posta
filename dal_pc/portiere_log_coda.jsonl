@@ -1,10 +1,3 @@
-{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 3, "quando": "2026-11-26 15:10:15"}
-{"tipo": "errore-riserva", "provider": "cloudflare", "modello": "eaf31752-a074-441f-8b70-d593255d2811", "errore": "altro", "codice": 400, "tentativo": 4, "quando": "2026-11-26 15:10:16"}
-{"tipo": "fallita", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "nessuna", "quando": "2026-11-26 15:10:16"}
-{"tipo": "compressione", "nota": "motore: 72397 -> 67507 caratteri (-7%)", "quando": "2026-11-26 15:10:16"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 13553, "quando": "2026-11-26 15:10:29"}
-{"tipo": "compressione", "nota": "motore: 114304 -> 79909 caratteri (-30%)", "quando": "2026-11-26 15:11:13"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 4162, "quando": "2026-11-26 15:11:17"}
 {"tipo": "compressione", "nota": "motore: 116163 -> 81768 caratteri (-30%)", "quando": "2026-11-26 15:11:18"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5448, "quando": "2026-11-26 15:11:23"}
 {"tipo": "compressione", "nota": "motore: 114600 -> 80205 caratteri (-30%)", "quando": "2026-11-26 15:12:16"}
@@ -148,3 +141,10 @@
 {"tipo": "compressione", "nota": "motore: 195065 -> 160670 caratteri (-18%)", "quando": "2026-11-26 17:44:22"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5304, "quando": "2026-11-26 17:44:27"}
 {"tipo": "compressione", "nota": "motore: 195246 -> 160851 caratteri (-18%)", "quando": "2026-11-26 17:45:28"}
+{"tipo": "errore-riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "errore": "altro", "codice": 400, "tentativo": 1, "quando": "2026-11-26 17:46:59"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 2, "quando": "2026-11-26 17:46:59"}
+{"tipo": "errore-riserva", "provider": "simplellm", "modello": "free-Llama-3.1-8B-Instruct", "errore": "passeggero", "codice": 502, "tentativo": 3, "quando": "2026-11-26 17:47:03"}
+{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 4, "quando": "2026-11-26 17:47:04"}
+{"tipo": "errore-riserva", "provider": "plugsky", "modello": "plugsky-micro", "errore": "contesto", "codice": 400, "tentativo": 5, "quando": "2026-11-26 17:47:05"}
+{"tipo": "fallita", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "nessuna", "quando": "2026-11-26 17:47:05"}
+{"tipo": "compressione", "nota": "motore: 195246 -> 160851 caratteri (-18%)", "quando": "2026-11-26 17:47:05"}
