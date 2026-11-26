@@ -1,5 +1,3 @@
-{"tipo": "compressione", "nota": "motore: 61427 -> 60188 caratteri (-2%)", "quando": "2026-11-26 14:36:48"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 5356, "quando": "2026-11-26 14:36:53"}
 {"tipo": "compressione", "nota": "motore: 61906 -> 60667 caratteri (-2%)", "quando": "2026-11-26 14:36:55"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2021, "quando": "2026-11-26 14:36:57"}
 {"tipo": "compressione", "nota": "motore: 62408 -> 61169 caratteri (-2%)", "quando": "2026-11-26 14:37:00"}
@@ -148,3 +146,5 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "riserva", "provider": "blockrun", "modello": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "ms": 99828, "tentativi": 5, "risparmio_car": 33550, "quando": "2026-11-26 17:22:05"}
 {"tipo": "compressione", "nota": "motore: 149651 -> 115256 caratteri (-23%)", "quando": "2026-11-26 17:22:46"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 33208, "quando": "2026-11-26 17:23:20"}
+{"tipo": "compressione", "nota": "motore: 150181 -> 115786 caratteri (-23%)", "quando": "2026-11-26 17:26:41"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 19009, "quando": "2026-11-26 17:27:00"}
