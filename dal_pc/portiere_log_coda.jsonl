@@ -1,9 +1,3 @@
-{"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
-{"tipo": "compressione", "nota": "motore: 617253 -> 268871 caratteri (-56%)", "quando": "2026-11-26 12:47:36"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 16282, "quando": "2026-11-26 12:47:51"}
-{"tipo": "compressione", "nota": "motore: 618442 -> 269414 caratteri (-56%)", "quando": "2026-11-26 12:48:24"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 14726, "quando": "2026-11-26 12:48:38"}
-{"tipo": "compressione", "nota": "motore: 618743 -> 269715 caratteri (-56%)", "quando": "2026-11-26 12:48:44"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6216, "quando": "2026-11-26 12:48:50"}
 {"tipo": "compressione", "nota": "motore: 618900 -> 269872 caratteri (-56%)", "quando": "2026-11-26 12:48:51"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3731, "quando": "2026-11-26 12:48:55"}
@@ -148,3 +142,9 @@
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7312, "quando": "2026-11-26 16:41:24"}
 {"tipo": "compressione", "nota": "motore: 143095 -> 108700 caratteri (-24%)", "quando": "2026-11-26 16:41:25"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7814, "quando": "2026-11-26 16:41:33"}
+{"tipo": "compressione", "nota": "motore: 143690 -> 109295 caratteri (-24%)", "quando": "2026-11-26 16:47:51"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 12136, "quando": "2026-11-26 16:48:03"}
+{"tipo": "compressione", "nota": "motore: 144816 -> 110421 caratteri (-24%)", "quando": "2026-11-26 16:48:09"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 8277, "quando": "2026-11-26 16:48:17"}
+{"tipo": "compressione", "nota": "motore: 145430 -> 111035 caratteri (-24%)", "quando": "2026-11-26 16:48:19"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 9989, "quando": "2026-11-26 16:48:29"}
