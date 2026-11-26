@@ -1,7 +1,3 @@
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 3, "quando": "2026-11-04 14:43:15"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:15"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:16"}
-{"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:18"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:18"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:19"}
 {"tipo": "cache", "agente": "cervello-bab8b59dd620090c", "rotta": "cache", "ms": 0, "quando": "2026-11-04 14:43:20"}
@@ -148,3 +144,7 @@
 {"tipo": "compressione", "nota": "motore: 640505 -> 290603 caratteri (-55%)", "quando": "2026-11-26 13:49:12"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 23907, "quando": "2026-11-26 13:49:35"}
 {"tipo": "compressione", "nota": "motore: 642274 -> 291539 caratteri (-55%)", "quando": "2026-11-26 13:49:39"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 56003, "quando": "2026-11-26 13:50:35"}
+{"tipo": "compressione", "nota": "motore: 642379 -> 291644 caratteri (-55%)", "quando": "2026-11-26 13:50:41"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 20331, "quando": "2026-11-26 13:51:01"}
+{"tipo": "compressione", "nota": "motore: 644685 -> 291952 caratteri (-55%)", "quando": "2026-11-26 13:51:02"}
