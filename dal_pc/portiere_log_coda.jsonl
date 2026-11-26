@@ -1,5 +1,3 @@
-{"tipo": "errore-riserva", "provider": "dreamprompting", "modello": "google/gemini-3.1-flash-lite", "errore": "contesto", "codice": 413, "tentativo": 1, "quando": "2026-11-14 01:59:06"}
-{"tipo": "errore-riserva", "provider": "kilo", "modello": "google/gemini-3.1-flash-lite", "errore": "chiave", "codice": 401, "tentativo": 2, "quando": "2026-11-14 01:59:07"}
 {"tipo": "errore-riserva", "provider": "blockrun", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-14 01:59:14"}
 {"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
 {"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
@@ -148,3 +146,5 @@
 {"tipo": "compressione", "nota": "motore: 255294 -> 102007 caratteri (-60%)", "quando": "2026-11-26 11:27:49"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 40725, "quando": "2026-11-26 11:28:29"}
 {"tipo": "compressione", "nota": "motore: 255538 -> 102251 caratteri (-60%)", "quando": "2026-11-26 11:28:31"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 83717, "quando": "2026-11-26 11:29:55"}
+{"tipo": "compressione", "nota": "motore: 255699 -> 102412 caratteri (-60%)", "quando": "2026-11-26 11:29:56"}
