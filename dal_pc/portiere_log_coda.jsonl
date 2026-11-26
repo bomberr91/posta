@@ -1,4 +1,3 @@
-{"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "chiave", "codice": 403, "tentativo": 2, "quando": "2026-11-26 14:21:47"}
 {"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 3, "quando": "2026-11-26 14:21:49"}
 {"tipo": "errore-riserva", "provider": "cloudflare", "modello": "eaf31752-a074-441f-8b70-d593255d2811", "errore": "altro", "codice": 400, "tentativo": 4, "quando": "2026-11-26 14:21:49"}
 {"tipo": "errore-riserva", "provider": "anyapi", "modello": "google/gemma-4-26b-a4b-it:free", "errore": "quota", "codice": 429, "tentativo": 5, "quando": "2026-11-26 14:21:51"}
@@ -148,3 +147,4 @@
 {"tipo": "fallita", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "nessuna", "quando": "2026-11-26 17:17:13"}
 {"tipo": "compressione", "nota": "motore: 149442 -> 115047 caratteri (-23%)", "quando": "2026-11-26 17:17:13"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7249, "quando": "2026-11-26 17:17:21"}
+{"tipo": "compressione", "nota": "motore: 149568 -> 115173 caratteri (-23%)", "quando": "2026-11-26 17:18:51"}
