@@ -1,11 +1,3 @@
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7830, "quando": "2026-11-26 14:07:12"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 817, "quando": "2026-11-26 14:07:13"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 2656, "quando": "2026-11-26 14:15:10"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 925, "quando": "2026-11-26 14:15:11"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 6171, "quando": "2026-11-26 14:16:03"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 1088, "quando": "2026-11-26 14:16:05"}
-{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 27903, "quando": "2026-11-26 14:20:02"}
-{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 1, "quando": "2026-11-26 14:21:39"}
 {"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "chiave", "codice": 403, "tentativo": 2, "quando": "2026-11-26 14:21:47"}
 {"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 3, "quando": "2026-11-26 14:21:49"}
 {"tipo": "errore-riserva", "provider": "cloudflare", "modello": "eaf31752-a074-441f-8b70-d593255d2811", "errore": "altro", "codice": 400, "tentativo": 4, "quando": "2026-11-26 14:21:49"}
@@ -148,3 +140,11 @@
 {"tipo": "compressione", "nota": "motore: 148935 -> 114540 caratteri (-23%)", "quando": "2026-11-26 17:13:58"}
 {"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 85502, "quando": "2026-11-26 17:15:24"}
 {"tipo": "compressione", "nota": "motore: 149442 -> 115047 caratteri (-23%)", "quando": "2026-11-26 17:15:37"}
+{"tipo": "errore-riserva", "provider": "tokenharbor", "modello": "deepseek-v4-flash:free", "errore": "chiave", "codice": 403, "tentativo": 1, "quando": "2026-11-26 17:17:09"}
+{"tipo": "errore-riserva", "provider": "groq", "modello": "qwen/qwen3.8-27b", "errore": "contesto", "codice": 413, "tentativo": 2, "quando": "2026-11-26 17:17:10"}
+{"tipo": "errore-riserva", "provider": "pollinationsfree", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 3, "quando": "2026-11-26 17:17:11"}
+{"tipo": "errore-riserva", "provider": "simplellm", "modello": "free-Llama-3.1-8B-Instruct", "errore": "passeggero", "codice": 502, "tentativo": 4, "quando": "2026-11-26 17:17:13"}
+{"tipo": "errore-riserva", "provider": "pollinations", "modello": "openai-fast", "errore": "contesto", "codice": 413, "tentativo": 5, "quando": "2026-11-26 17:17:13"}
+{"tipo": "fallita", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "nessuna", "quando": "2026-11-26 17:17:13"}
+{"tipo": "compressione", "nota": "motore: 149442 -> 115047 caratteri (-23%)", "quando": "2026-11-26 17:17:13"}
+{"tipo": "richiesta", "agente": "cervello-724b90c971a758cb", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 7249, "quando": "2026-11-26 17:17:21"}
