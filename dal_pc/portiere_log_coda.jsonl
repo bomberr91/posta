@@ -1,5 +1,3 @@
-{"tipo": "errore-riserva", "provider": "blockrun", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 4, "quando": "2026-11-14 01:59:14"}
-{"tipo": "errore-riserva", "provider": "requesty", "modello": "google/gemini-3.1-flash-lite", "errore": "breve", "codice": 402, "tentativo": 5, "quando": "2026-11-14 01:59:15"}
 {"tipo": "fallita", "agente": "vision-reel-test", "politica": "google/gemini-3.1-flash-lite", "rotta": "nessuna", "quando": "2026-11-14 01:59:15"}
 {"tipo": "richiesta", "agente": "cervello-6e1014f4b3421869", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 3773, "quando": "2026-11-26 21:52:36"}
 {"tipo": "richiesta", "agente": "cervello-6e1014f4b3421869", "politica": "auto", "rotta": "motore", "modello": "auto", "ms": 13959, "quando": "2026-11-26 21:52:44"}
@@ -148,3 +146,5 @@
 {"tipo": "richiesta", "agente": "ses_de3c92ca0ffefAkfCEyTxwG4xb", "politica": "gruppo:code", "rotta": "riserva", "provider": "nvidia", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 6229, "tentativi": 1, "risparmio_car": 10503, "quando": "2026-11-27 10:49:43"}
 {"tipo": "richiesta", "agente": "ses_de3c92ca0ffefAkfCEyTxwG4xb", "politica": "gruppo:code", "rotta": "riserva", "provider": "nvidia", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 5334, "tentativi": 1, "risparmio_car": 10503, "quando": "2026-11-27 10:49:53"}
 {"tipo": "richiesta", "agente": "ses_de3c92ca0ffefAkfCEyTxwG4xb", "politica": "gruppo:code", "rotta": "riserva", "provider": "nvidia", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 4029, "tentativi": 1, "risparmio_car": 10503, "quando": "2026-11-27 10:51:58"}
+{"tipo": "richiesta", "agente": "ses_de3c92ca0ffefAkfCEyTxwG4xb", "politica": "gruppo:code", "rotta": "riserva", "provider": "nvidia", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 5223, "tentativi": 1, "risparmio_car": 10503, "quando": "2026-11-27 10:52:50"}
+{"tipo": "richiesta", "agente": "ses_de3c92ca0ffefAkfCEyTxwG4xb", "politica": "gruppo:code", "rotta": "riserva", "provider": "nvidia", "modello": "nvidia/nemotron-3-ultra-550b-a55b", "ms": 12503, "tentativi": 1, "risparmio_car": 10503, "quando": "2026-11-27 10:53:05"}
